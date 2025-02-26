@@ -11,6 +11,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Data
 @AllArgsConstructor
@@ -21,6 +22,7 @@ public class Company implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "company_id")
     private Integer id;
 
     private String companyName;
@@ -38,9 +40,12 @@ public class Company implements UserDetails {
 
     private String serviceDescription;
 
-
     @Column(name = "avatar_url")
     private String avatarUrl;
+
+    @OneToMany(mappedBy = "company", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
+    private Set<Employee> employees;
 
 
     @ManyToMany(fetch = FetchType.EAGER)
@@ -87,4 +92,16 @@ public class Company implements UserDetails {
                 ", createdAt=" + createdAt +
                 '}';
     }
+
+    public Set<Appointment> getAppointments() {
+        return employees.stream()
+                .flatMap(employee -> employee.getAppointments().stream())
+                .collect(Collectors.toSet());
+    }
+
+   public Set<Service> getServices()
+   {
+       return employees.stream().flatMap(employee -> employee.getServices().stream())
+               .collect(Collectors.toSet());
+   }
 }

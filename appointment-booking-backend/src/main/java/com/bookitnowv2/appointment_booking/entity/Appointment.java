@@ -19,6 +19,7 @@ public class Appointment {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name="appointment_id")
     private Integer id;
 
     @JsonBackReference
@@ -27,8 +28,18 @@ public class Appointment {
     private User user;
 
     @ManyToOne
+    @JoinColumn(name = "employee_id")
+    private Employee employee;
+
+    @ManyToOne
     @JoinColumn(name = "company_id")
+    @JsonBackReference
     private Company company;
+
+    @ManyToOne
+    @JoinColumn(name = "service_id")
+    @JsonBackReference
+    private Service service;
 
     private Timestamp dateAndTime;
 
