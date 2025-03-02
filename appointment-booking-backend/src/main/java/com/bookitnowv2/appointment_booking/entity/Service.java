@@ -38,7 +38,7 @@ public class Service {
     @JsonBackReference
     private Company company;
 
-    @OneToMany(mappedBy = "sevice", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "service", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
     private Set<Appointment> appointments;
 
