@@ -1,4 +1,4 @@
-package com.bookitnowv2.appointment_booking.entity.dto;
+package com.bookitnowv2.appointment_booking.entity.dto.appointment;
 
 import jakarta.annotation.Nullable;
 import lombok.AllArgsConstructor;
@@ -12,7 +12,7 @@ import java.sql.Timestamp;
 @NoArgsConstructor
 @Getter
 @Setter
-public class AppointmentByCompanyIDResponseDTO {
+public class AppointmentGetResponseDTO {
 
     private Integer appointmentId;
 
@@ -24,6 +24,10 @@ public class AppointmentByCompanyIDResponseDTO {
 
     @Nullable
     private String userEmail;
+
+    private Integer employeeId;
+
+    private String employeeName;
 
     private Integer companyId;
 

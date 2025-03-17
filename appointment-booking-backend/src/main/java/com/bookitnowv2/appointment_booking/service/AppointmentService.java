@@ -4,11 +4,15 @@ import com.bookitnowv2.appointment_booking.entity.Appointment;
 import com.bookitnowv2.appointment_booking.entity.Company;
 import com.bookitnowv2.appointment_booking.entity.Employee;
 import com.bookitnowv2.appointment_booking.entity.Service;
+import com.bookitnowv2.appointment_booking.entity.dto.appointment.AppointmentGetResponseDTO;
+import com.bookitnowv2.appointment_booking.mapper.AppointmentMapper;
 import com.bookitnowv2.appointment_booking.repository.*;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.sql.Timestamp;
+import java.util.List;
+import java.util.Set;
 
 public class AppointmentService {
 
@@ -17,25 +21,46 @@ public class AppointmentService {
     private final IUserRepository userRepository;
     private final IServiceRepository serviceRepository;
     private final IEmployeeRepository employeeRepository;
+    private final AppointmentMapper appointmentMapper;
 
     @Autowired
-    AppointmentService(IAppointmentRepository appointmentRepository, ICompanyRepository companyRepository, IUserRepository userRepository, IServiceRepository serviceRepository, IEmployeeRepository employeeRepository)
+    AppointmentService(IAppointmentRepository appointmentRepository, ICompanyRepository companyRepository, IUserRepository userRepository, IServiceRepository serviceRepository, IEmployeeRepository employeeRepository,
+                       AppointmentMapper appointmentMapper)
     {
         this.appointmentRepository = appointmentRepository;
         this.companyRepository = companyRepository;
         this.userRepository = userRepository;
         this.serviceRepository = serviceRepository;
         this.employeeRepository = employeeRepository;
+        this.appointmentMapper = appointmentMapper;
     }
 
     public Appointment createAppointment(Integer serviceId, Timestamp timestamp) {
         Service foundService = serviceRepository.findById(serviceId)
-                .orElseThrow(() -> new RuntimeException("Error: Service not found!"));
+                .orElseThrow(() -> new RuntimeException("Error: Service not found by Id!"));
 
         Appointment newAppointment = createAppointmentFromService(foundService, timestamp);
 
         return appointmentRepository.save(newAppointment);
     }
+
+    public List<AppointmentGetResponseDTO> getAppointmentsByCompanyId(Integer companyId)
+    {
+        Company foundCompany = companyRepository.findById(companyId)
+                .orElseThrow(() -> new RuntimeException("Error: Company not found by Id!"));
+
+        Set<Appointment> appointmentSet = foundCompany.getAppointments();
+
+        return appointmentSet.stream()
+                .map(appointmentMapper::toGetDTO)
+                .toList();
+    }
+
+    public List<Appointment> getAppointments()
+    {
+        return appointmentRepository.findAll();
+    }
+
 
     private static @NotNull Appointment createAppointmentFromService(Service foundService, Timestamp timestamp) {
         Company foundCompany = foundService.getCompany();
@@ -52,5 +77,7 @@ public class AppointmentService {
 
         return newAppointment;
     }
+
+
 
 }
