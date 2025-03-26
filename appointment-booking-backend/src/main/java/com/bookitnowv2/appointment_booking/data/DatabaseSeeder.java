@@ -13,7 +13,6 @@ import com.bookitnowv2.appointment_booking.repository.*;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
@@ -33,7 +32,7 @@ import java.util.Set;
 public class DatabaseSeeder implements CommandLineRunner {
 
     private final IUserRepository userRepository;
-    private final IServiceRepository serviceRepository;
+    private final IServiceEntityRepository serviceRepository;
     private final IEmployeeRepository employeeRepository;
 
     private final ICompanyRepository companyRepository;
@@ -45,7 +44,7 @@ public class DatabaseSeeder implements CommandLineRunner {
     private final String avatarDirectory;
 
     public DatabaseSeeder(IAppointmentRepository appointmentRepository, ICompanyRepository companyRepository, IRoleRepository roleRepository, IUserRepository userRepository, PasswordEncoder passwordEncoder, @Value("${avatar.directory.path}") String avatarDirectory,
-                          IServiceRepository serviceRepository, IEmployeeRepository employeeRepository) {
+                          IServiceEntityRepository serviceRepository, IEmployeeRepository employeeRepository) {
         this.appointmentRepository = appointmentRepository;
         this.companyRepository = companyRepository;
 
@@ -129,9 +128,9 @@ public class DatabaseSeeder implements CommandLineRunner {
 
         Employee employee1 = createEmployee("John David", "jdavid", "jdavid@gmail.com", "jdavidpass", new Timestamp(System.currentTimeMillis()), employeeRoles, company1);
 
-        Service service1 = createService("Shave", "Shaving", (long) 15.0, employee1, company1);
+        ServiceEntity service1 = createService("Shave", "Shaving", (long) 15.0, employee1, company1);
 
-        Set<Service> serviceSet = new HashSet<>();
+        Set<ServiceEntity> serviceSet = new HashSet<>();
         serviceSet.add(service1);
 
         employee1.setServices(serviceSet);
@@ -172,9 +171,9 @@ public class DatabaseSeeder implements CommandLineRunner {
         return employee;
     }
 
-    private Service createService(String name, String description, Long price, Employee employee, Company company)
+    private ServiceEntity createService(String name, String description, Long price, Employee employee, Company company)
     {
-        Service service = new Service();
+        ServiceEntity service = new ServiceEntity();
         service.setName(name);
         service.setDescription(description);
         service.setPrice(price);

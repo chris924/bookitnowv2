@@ -6,22 +6,24 @@ import com.bookitnowv2.appointment_booking.mapper.AppointmentMapper;
 import com.bookitnowv2.appointment_booking.repository.*;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.Set;
 
+@Service
 public class AppointmentService {
 
     private final IAppointmentRepository appointmentRepository;
     private final ICompanyRepository companyRepository;
     private final IUserRepository userRepository;
-    private final IServiceRepository serviceRepository;
+    private final IServiceEntityRepository serviceRepository;
     private final IEmployeeRepository employeeRepository;
     private final AppointmentMapper appointmentMapper;
 
     @Autowired
-    AppointmentService(IAppointmentRepository appointmentRepository, ICompanyRepository companyRepository, IUserRepository userRepository, IServiceRepository serviceRepository, IEmployeeRepository employeeRepository,
+    AppointmentService(IAppointmentRepository appointmentRepository, ICompanyRepository companyRepository, IUserRepository userRepository, IServiceEntityRepository serviceRepository, IEmployeeRepository employeeRepository,
                        AppointmentMapper appointmentMapper)
     {
         this.appointmentRepository = appointmentRepository;
@@ -33,7 +35,7 @@ public class AppointmentService {
     }
 
     public Appointment createAppointment(Integer serviceId, Timestamp timestamp) {
-        Service foundService = serviceRepository.findById(serviceId)
+        ServiceEntity foundService = serviceRepository.findById(serviceId)
                 .orElseThrow(() -> new RuntimeException("Error: Service not found by Id!"));
 
         Appointment newAppointment = createAppointmentFromService(foundService, timestamp);
@@ -53,9 +55,9 @@ public class AppointmentService {
                 .toList();
     }
 
-    public List<Appointment> getAppointments()
+    public List<AppointmentGetResponseDTO> getAppointments()
     {
-        return appointmentRepository.findAll();
+        return appointmentRepository.findAll().stream().map(appointmentMapper::toGetDTO).toList();
     }
 
     public void deleteAppointmentById(Integer id)
@@ -92,7 +94,7 @@ public class AppointmentService {
 
 
 
-    private static @NotNull Appointment createAppointmentFromService(Service foundService, Timestamp timestamp) {
+    private static @NotNull Appointment createAppointmentFromService(ServiceEntity foundService, Timestamp timestamp) {
         Company foundCompany = foundService.getCompany();
         Employee foundEmployee = foundService.getEmployee();
 

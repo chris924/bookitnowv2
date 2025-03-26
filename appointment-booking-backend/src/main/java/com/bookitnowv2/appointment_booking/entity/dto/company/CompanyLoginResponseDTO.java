@@ -1,18 +1,19 @@
-package com.bookitnowv2.appointment_booking.entity.dto;
-
+package com.bookitnowv2.appointment_booking.entity.dto.company;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
-public class CompanyLoginDTO {
+@Setter
+public class CompanyLoginResponseDTO {
 
     private String email;
 
-    private String password;
+    private String jwt;
 
 
 }

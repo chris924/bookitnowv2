@@ -5,7 +5,6 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.sql.Date;
 import java.sql.Timestamp;
 
 @Data
@@ -39,7 +38,7 @@ public class Appointment {
     @ManyToOne
     @JoinColumn(name = "service_id")
     @JsonBackReference
-    private Service service;
+    private ServiceEntity service;
 
     private Timestamp dateAndTime;
 
