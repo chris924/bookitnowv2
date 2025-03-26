@@ -1,7 +1,9 @@
 package com.bookitnowv2.appointment_booking.service;
 
+import com.bookitnowv2.appointment_booking.entity.Company;
 import com.bookitnowv2.appointment_booking.entity.dto.company.CompanyGetResponseDTO;
 import com.bookitnowv2.appointment_booking.entity.dto.company.CompanyRegistrationResponseDTO;
+import com.bookitnowv2.appointment_booking.entity.dto.company.CompanyUpdateDTO;
 import com.bookitnowv2.appointment_booking.mapper.AppointmentMapper;
 import com.bookitnowv2.appointment_booking.mapper.CompanyMapper;
 import com.bookitnowv2.appointment_booking.repository.*;
@@ -37,8 +39,34 @@ public class CompanyService {
         return companyRepository.findAll().stream().map(companyMapper::toGetDTO).toList();
     }
 
+    public CompanyGetResponseDTO getCompanyById(Integer id)
+    {
+        Company foundCompany = companyRepository.findById(id).orElseThrow(() -> new RuntimeException("Error: Company not found by Id!"));
 
+        return companyMapper.toGetDTO(foundCompany);
 
+    }
+
+    public void deleteCompanyById(Integer id)
+    {
+        Company foundCompany = companyRepository.findById(id).orElseThrow(() -> new RuntimeException("Error: Company not found by Id!"));
+
+        companyRepository.delete(foundCompany);
+    }
+
+    public CompanyGetResponseDTO updateCompany(CompanyUpdateDTO updateDTO)
+    {
+        Company foundCompany = companyRepository.findById(updateDTO.getId()).orElseThrow(() -> new RuntimeException("Error: Company not found by Id!"));
+
+        if(updateDTO.getCompanyName() != null) foundCompany.setCompanyName(updateDTO.getCompanyName());
+        if(updateDTO.getServiceName() != null) foundCompany.setServiceName(updateDTO.getServiceName());
+        if(updateDTO.getServiceDescription() != null) foundCompany.setServiceDescription(updateDTO.getServiceDescription());
+        if(updateDTO.getDescription() != null) foundCompany.setDescription(updateDTO.getDescription());
+
+        companyRepository.save(foundCompany);
+
+        return companyMapper.toGetDTO(foundCompany);
+    }
 
 
 }

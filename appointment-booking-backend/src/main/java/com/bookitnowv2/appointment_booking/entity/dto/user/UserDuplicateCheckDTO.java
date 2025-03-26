@@ -1,4 +1,4 @@
-package com.bookitnowv2.appointment_booking.entity.dto;
+package com.bookitnowv2.appointment_booking.entity.dto.user;
 
 
 import com.fasterxml.jackson.annotation.JsonProperty;

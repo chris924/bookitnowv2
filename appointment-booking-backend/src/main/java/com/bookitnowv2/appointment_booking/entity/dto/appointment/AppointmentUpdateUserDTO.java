@@ -4,7 +4,7 @@ import lombok.Getter;
 
 @Getter
 
-public class AppointmentUpdateDTO {
+public class AppointmentUpdateUserDTO {
 
     private Integer appointmentId;
 
