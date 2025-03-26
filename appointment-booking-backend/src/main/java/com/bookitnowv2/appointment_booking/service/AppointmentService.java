@@ -1,9 +1,6 @@
 package com.bookitnowv2.appointment_booking.service;
 
-import com.bookitnowv2.appointment_booking.entity.Appointment;
-import com.bookitnowv2.appointment_booking.entity.Company;
-import com.bookitnowv2.appointment_booking.entity.Employee;
-import com.bookitnowv2.appointment_booking.entity.Service;
+import com.bookitnowv2.appointment_booking.entity.*;
 import com.bookitnowv2.appointment_booking.entity.dto.appointment.AppointmentGetResponseDTO;
 import com.bookitnowv2.appointment_booking.mapper.AppointmentMapper;
 import com.bookitnowv2.appointment_booking.repository.*;
@@ -60,6 +57,39 @@ public class AppointmentService {
     {
         return appointmentRepository.findAll();
     }
+
+    public void deleteAppointmentById(Integer id)
+    {
+        Appointment foundAppointment = appointmentRepository.findById(id).orElseThrow(() -> new RuntimeException("Error: Appointment not found by Id!"));
+
+
+        appointmentRepository.deleteById(id);
+    }
+
+    public void addUserToAppointment(Integer appointmentId, Integer userId)
+    {
+        Appointment foundAppointment = appointmentRepository.findById(appointmentId).orElseThrow(() -> new RuntimeException("Error: Appointment not found by Id!"));
+        User foundUser = userRepository.findById(userId).orElseThrow(() -> new RuntimeException(("Error: User not found by Id!")));
+
+        List<Appointment> userAppointments = foundUser.getAppointments();
+
+        if(foundAppointment.getUser() != null) throw new RuntimeException("Error: Appointment already has an User!");
+        if(!userAppointments.contains(foundAppointment)) throw new RuntimeException("Error: Appointment already added to the User!");
+
+        foundAppointment.setUser(foundUser);
+        foundUser.getAppointments().add(foundAppointment);
+        appointmentRepository.save(foundAppointment);
+        userRepository.save(foundUser);
+    }
+
+    public void deleteUserFromAppointment(Integer id)
+    {
+        Appointment foundAppointment = appointmentRepository.findById(id).orElseThrow(() -> new RuntimeException("Error: Appointment not found by Id!"));
+
+        foundAppointment.setUser(null);
+        appointmentRepository.save(foundAppointment);
+    }
+
 
 
     private static @NotNull Appointment createAppointmentFromService(Service foundService, Timestamp timestamp) {
