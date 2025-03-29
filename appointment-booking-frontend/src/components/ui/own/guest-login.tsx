@@ -8,9 +8,11 @@ export default function GuestLogin()
     return(
         <Dialog>
       <DialogTrigger asChild>
-        <Button variant="outline">Belépés</Button>
+        <Button variant="outline" 
+          className="text-base md:text-3xl md:h-12 lg:text-3xl px-4 py-2 md:px-6 md:py-3 rounded-3xl">
+            Belépés</Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-[425px] p-6 md:p-8">
         <DialogHeader>
           <DialogTitle className="text-center">Bejelentkezés</DialogTitle>
         </DialogHeader>
@@ -32,7 +34,7 @@ export default function GuestLogin()
           </div>
         </div>
         <DialogFooter>            
-          <Button type="submit">Belépés</Button>
+          <Button type="submit" className="bg-blue-400">Belépés</Button>
         </DialogFooter>
         <Separator />
         <DialogDescription className="text-center">
