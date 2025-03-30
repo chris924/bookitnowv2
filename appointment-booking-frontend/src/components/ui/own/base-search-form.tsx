@@ -30,7 +30,7 @@ import { Button } from "../button"
 import { cn } from "@/lib/utils"
 import { useState } from "react"
 
-interface BaseItemInterface
+export interface BaseItemInterface
 {
     label: string,
     value: string,
