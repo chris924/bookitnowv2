@@ -1,5 +1,5 @@
-import FeaturedSpecialist from "@/features/home/FeaturedSpecialist";
-import SearchForm from "@/features/home/SearchForm";
+import FeaturedSpecialist from "@/features/home/components/FeaturedSpecialist";
+import SearchForm from "@/features/home/components/SearchForm";
 import HomeForm from "@/features/home/HomeForm";
 
 
@@ -10,8 +10,7 @@ export default function HomePage()
 
     return(
         <>
-        <HomeForm/>
-      
+        <HomeForm/>  
         </>
     )
 }

@@ -1,6 +1,7 @@
-import FeaturedSpecialist from "@/features/home/FeaturedSpecialist";
-import SearchForm from "@/features/home/SearchForm";
+import FeaturedSpecialist from "@/features/home/components/FeaturedSpecialist";
+import SearchForm from "@/features/home/components/SearchForm";
 import defaultImage from "@/assets/default.jpg"
+import MostRatedSpecialist from "./components/MostRatedSpecialist";
 
 export default function HomeForm()
 {
@@ -73,6 +74,15 @@ export default function HomeForm()
         <div className="flex justify-center">    
         <FeaturedSpecialist specialists={specialists}/>
         </div>
+
+        <div className="flex justify-center m-10 text-xl md:text-4xl">
+            Legjobbra értékelt Szakemberek
+        </div>
+
+        <div className="flex justify-center">    
+        <MostRatedSpecialist specialists={specialists}/>
+        </div>
+
         </>
     )
 }

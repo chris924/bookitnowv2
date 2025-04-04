@@ -1,7 +1,7 @@
 import { useAuthStore } from "@/stores/AuthStore";
 import { useEffect } from "react";
-import GuestLogin from "../../features/home/GuestLogin";
-import DropdownUser from "../../features/home/UserDropdown";
+import GuestLogin from "../ui/own/GuestLogin";
+import DropdownUser from "../../features/home/components/UserDropdown";
 import { ModeToggle } from "../ui/own/theme-toggle";
 
 

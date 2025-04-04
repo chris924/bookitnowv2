@@ -5,8 +5,8 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { useState } from "react"
 import defaultImage from "@/assets/default.jpg"
-import SpecialistSelectorForm from "../../components/ui/own/specialist-selector(not-used)"
-import BaseSearchForm from "../../components/ui/own/base-search-form"
+import SpecialistSelectorForm from "../../../components/ui/own/specialist-selector(not-used)"
+import BaseSearchForm from "../../../components/ui/own/base-search-form"
 
 
  let specialists = [
