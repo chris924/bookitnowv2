@@ -5,14 +5,11 @@ import com.bookitnowv2.appointment_booking.entity.Role;
 import com.bookitnowv2.appointment_booking.entity.User;
 import com.bookitnowv2.appointment_booking.entity.dto.user.UserLoginResponseDTO;
 import com.bookitnowv2.appointment_booking.entity.dto.user.UserRegistrationResponseDTO;
+import com.bookitnowv2.appointment_booking.exception.RoleNotFoundException;
 import com.bookitnowv2.appointment_booking.repository.IRoleRepository;
-import com.bookitnowv2.appointment_booking.repository.IUserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,33 +25,32 @@ import java.util.Set;
 public class UserAuthenticationService {
 
 
-        @Autowired
-        private IUserRepository userRepository;
-        @Autowired
-        private IRoleRepository roleRepository;
-        @Autowired
-        private PasswordEncoder passwordEncoder;
+        private final UserService userService;
+        private final RoleService roleService;
+        private final PasswordEncoder passwordEncoder;
+        private final AuthenticationManager authenticationManager;
+        private final TokenService tokenService;
 
-        @Qualifier("userAuthManager")
-        @Autowired
-        private AuthenticationManager authenticationManager;
-
-        @Autowired
-        private TokenService tokenService;
+        public UserAuthenticationService(UserService userService, RoleService roleService, PasswordEncoder passwordEncoder, AuthenticationManager authenticationManager, TokenService tokenService)
+        {
+            this.userService = userService;
+            this.roleService =  roleService;
+            this.passwordEncoder = passwordEncoder;
+            this.authenticationManager = authenticationManager;
+            this.tokenService = tokenService;
+        }
 
 
         public UserRegistrationResponseDTO registerUser(String name, String username, String email, String password)
         {
-            try {
-                String encodedPassword = passwordEncoder.encode(password);
-                Role userRole = roleRepository.findByAuthority("USER").get();
 
+                String encodedPassword = passwordEncoder.encode(password);
+                Role userRole = roleService.findByAuthority("USER");
 
                 Set<Role> authorities = new HashSet<>();
                 List<Appointment> appointments = new ArrayList<>();
 
                 authorities.add(userRole);
-
                 User newUser = new User();
                 newUser.setName(name);
                 newUser.setUsername(username);
@@ -64,37 +60,26 @@ public class UserAuthenticationService {
                 newUser.setAppointments(appointments);
                 newUser.setAuthorities(authorities);
 
-                userRepository.save(newUser);
-
-                return new UserRegistrationResponseDTO(name, username, email);
-
-            }catch (Exception e)
-            {
-                return new UserRegistrationResponseDTO("","","");
-            }
-
-
+                User savedUser = userService.saveUser(newUser);
+                return new UserRegistrationResponseDTO(savedUser.getName(), savedUser.getUsername(), savedUser.getEmail());
 
         }
 
         public UserLoginResponseDTO loginUser(String email, String password)
         {
-            try{
+            User user = userService.getUserByEmail(email);
+            String userEmail = user.getEmail();
 
-                Authentication auth = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(email, password));
-                String token = tokenService.generateJwt(auth, userRepository.getUserByEmail(email).get().getUserId());
+            Authentication auth = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(userEmail, user.getPassword()));
 
+            String token = tokenService.generateJwt(auth, user.getUserId());
 
-                return new UserLoginResponseDTO(userRepository.getUserByEmail(email).get().getEmail(), token);
-
-            }catch (AuthenticationException e) {
-                return new UserLoginResponseDTO(null, "");
-            }
+            return new UserLoginResponseDTO(userEmail, token);
 
         }
+
         public Integer getUserData(String jwt)
         {
-
             return Integer.valueOf(tokenService.decodeJwt(jwt).getSubject());
         }
 
