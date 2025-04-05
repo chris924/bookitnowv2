@@ -16,7 +16,6 @@ import java.util.Objects;
 
 @RestController
 @RequestMapping("/auth/user")
-@CrossOrigin("*")
 public class UserAuthenticationController {
 
     private final UserAuthenticationService userAuthenticationService;

@@ -2,9 +2,30 @@ import { Label, Separator } from "@radix-ui/react-dropdown-menu";
 import { Button } from "../button";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "../dialog";
 import { Input } from "../input";
+import { useState } from "react";
+import { useMutation } from "@tanstack/react-query";
+import { loginUser } from "@/api/user";
 
 export default function GuestLogin()
 {
+
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const {mutate, isPending, isError, error} = useMutation({
+
+    mutationFn: loginUser,
+    onSuccess: (data) => {
+      console.log('Logged in:', data);
+    }
+  })
+
+
+  const handleSubmit = (e: any) => {
+    e.preventDefault();
+    mutate({ email, password });
+  };
+
     return(
         <Dialog>
       <DialogTrigger asChild>
@@ -21,7 +42,7 @@ export default function GuestLogin()
             <Label className="text-right">
               E-mail
             </Label>
-            <Input id="email" value="" className="col-span-3" />
+            <Input id="email" value={email} className="col-span-3" onChange={(e) => setEmail(e.target.value)}/>
           </div>
           <Label className="text-right">
               Elfelejtett jelszó
@@ -30,11 +51,11 @@ export default function GuestLogin()
             <Label className="text-right">
               Jelszó
             </Label>
-            <Input id="password" value="" className="col-span-3" />
+            <Input id="password" type="password" value={password} className="col-span-3" onChange={(e) => setPassword(e.target.value)} />
           </div>
         </div>
         <DialogFooter>            
-          <Button type="submit" className="bg-blue-400">Belépés</Button>
+          <Button type="submit" className="bg-blue-400" onClick={(e) => handleSubmit(e)}>Belépés</Button>
         </DialogFooter>
         <Separator />
         <DialogDescription className="text-center">

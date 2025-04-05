@@ -67,10 +67,11 @@ public class UserAuthenticationService {
 
         public UserLoginResponseDTO loginUser(String email, String password)
         {
+
             User user = userService.getUserByEmail(email);
             String userEmail = user.getEmail();
 
-            Authentication auth = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(userEmail, user.getPassword()));
+            Authentication auth = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(userEmail, password));
 
             String token = tokenService.generateJwt(auth, user.getUserId());
 
