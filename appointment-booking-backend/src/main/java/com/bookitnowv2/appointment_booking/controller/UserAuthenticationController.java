@@ -1,17 +1,23 @@
 package com.bookitnowv2.appointment_booking.controller;
 
+import com.bookitnowv2.appointment_booking.entity.User;
 import com.bookitnowv2.appointment_booking.entity.dto.user.UserLoginDTO;
 import com.bookitnowv2.appointment_booking.entity.dto.user.UserLoginResponseDTO;
 import com.bookitnowv2.appointment_booking.entity.dto.user.UserRegistrationDTO;
 import com.bookitnowv2.appointment_booking.entity.dto.user.UserRegistrationResponseDTO;
+import com.bookitnowv2.appointment_booking.service.UserAuthService;
 import com.bookitnowv2.appointment_booking.service.UserAuthenticationService;
 import jakarta.validation.Valid;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.Authentication;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 @RestController
@@ -53,6 +59,24 @@ public class UserAuthenticationController {
 
         return ResponseEntity.ok(response);
 
+    }
+
+    @GetMapping("/me")
+    public ResponseEntity<?> checkUserAuth(Authentication authentication)
+    {
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User Not authenticated!");
+        }
+
+        User foundUser = (User) authentication.getPrincipal();
+
+        Map<String, Object> userInfo = new HashMap<>();
+
+        userInfo.put("id", foundUser.getId());
+        userInfo.put("name", foundUser.getName());
+        userInfo.put("email", foundUser.getEmail());
+
+        return ResponseEntity.ok(userInfo);
     }
 
 }
