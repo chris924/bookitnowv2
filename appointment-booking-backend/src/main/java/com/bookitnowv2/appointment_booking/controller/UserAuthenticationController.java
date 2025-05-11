@@ -7,15 +7,19 @@ import com.bookitnowv2.appointment_booking.entity.dto.user.UserRegistrationDTO;
 import com.bookitnowv2.appointment_booking.entity.dto.user.UserRegistrationResponseDTO;
 import com.bookitnowv2.appointment_booking.service.UserAuthService;
 import com.bookitnowv2.appointment_booking.service.UserAuthenticationService;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -33,18 +37,31 @@ public class UserAuthenticationController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> loginUser(@Valid @RequestBody UserLoginDTO body, @NotNull BindingResult bindingResult) {
+    public ResponseEntity<?> loginUser(@Valid @RequestBody UserLoginDTO body, @NotNull BindingResult bindingResult, HttpServletResponse servletResponse) {
         if (bindingResult.hasErrors()) {
             throw new BadCredentialsException("Invalid user login request body!");
         }
+        UserLoginResponseDTO response = new UserLoginResponseDTO(body.getEmail());
 
-        UserLoginResponseDTO response = userAuthenticationService.loginUser(body.getEmail(), body.getPassword());
-
-        if (response.getEmail() == null || Objects.equals(response.getJwt(), "")) {
+        if (response.getEmail() == null) {
             throw new BadCredentialsException("Invalid user !");
         }
 
-        return ResponseEntity.ok(response);
+        String token = userAuthenticationService.loginUser(body.getEmail(), body.getPassword());
+
+        ResponseCookie cookie = ResponseCookie.from("jwt", token)
+                .httpOnly(true)
+                // ! ONLY FOR LOCALHOST TESTING !
+                .secure(false)
+                // ! ONLY FOR LOCALHOST TESTING !
+                .sameSite("Strict")
+                .path("/")
+                .maxAge(Duration.ofHours(2))
+                .build();
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.SET_COOKIE, cookie.toString())
+                .body(response);
     }
 
     @PostMapping("/register")

@@ -1,14 +1,6 @@
 package com.bookitnowv2.appointment_booking.configuration;
 
-import com.bookitnowv2.appointment_booking.utils.RSAKeyProperties;
-import com.nimbusds.jose.jwk.JWK;
-import com.nimbusds.jose.jwk.JWKSet;
-import com.nimbusds.jose.jwk.RSAKey;
-import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
-import com.nimbusds.jose.jwk.source.JWKSource;
-import com.nimbusds.jose.proc.SecurityContext;
-import jakarta.servlet.http.HttpServletRequest;
-import lombok.AllArgsConstructor;
+import com.bookitnowv2.appointment_booking.service.UserAuthService;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -20,61 +12,53 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.oauth2.jwt.JwtDecoder;
-import org.springframework.security.oauth2.jwt.JwtEncoder;
-import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
-import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-
-
 import java.util.Arrays;
-import java.util.List;
 
-import static org.springframework.security.config.Customizer.withDefaults;
 
 
 @Configuration
-@AllArgsConstructor
 @EnableWebSecurity
 public class SecurityConfiguration {
 
-    private final RSAKeyProperties keys;
+    private final JwtAuthFilter jwtAuthFilter;
 
-
-    @Bean
-    public PasswordEncoder passwordEncoder()
-    {
-        return new BCryptPasswordEncoder();
+    public SecurityConfiguration(JwtAuthFilter jwtAuthFilter, UserAuthService userAuthService) {
+        this.jwtAuthFilter = jwtAuthFilter;
     }
+
 
     @Primary
     @Bean
-    public AuthenticationManager userAuthManager(@Qualifier("userAuthService") UserDetailsService userDetailsService)
-    {
+    public AuthenticationManager userAuthManager(
+            @Qualifier("userAuthService") UserDetailsService userDetailsService,
+            PasswordEncoder passwordEncoder
+    ) {
         DaoAuthenticationProvider daoProvider = new DaoAuthenticationProvider();
-        daoProvider.setPasswordEncoder(passwordEncoder());
+        daoProvider.setPasswordEncoder(passwordEncoder);
         daoProvider.setUserDetailsService(userDetailsService);
         return new ProviderManager(daoProvider);
     }
 
     @Bean
-    public AuthenticationManager companyAuthManager(@Qualifier("companyAuthService") UserDetailsService userDetailsService)
-    {
+    public AuthenticationManager companyAuthManager(
+            @Qualifier("companyAuthService") UserDetailsService userDetailsService,
+            PasswordEncoder passwordEncoder
+    ) {
         DaoAuthenticationProvider daoProvider = new DaoAuthenticationProvider();
-        daoProvider.setPasswordEncoder(passwordEncoder());
+        daoProvider.setPasswordEncoder(passwordEncoder);
         daoProvider.setUserDetailsService(userDetailsService);
         return new ProviderManager(daoProvider);
     }
 
-
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> {
@@ -84,44 +68,24 @@ public class SecurityConfiguration {
                     auth.requestMatchers("/user/**").hasAnyRole("ADMIN", "USER");
                     auth.requestMatchers("/company/**").hasAnyRole("ADMIN", "COMPANY");
                     auth.requestMatchers("/appointment/**").hasAnyRole("ADMIN", "USER", "COMPANY");
-
-
-
+                    auth.requestMatchers("/auth/user/me").hasAnyRole("USER");
                     auth.anyRequest().authenticated();
-
                 })
-
+                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
                 .oauth2ResourceServer(oauth2 -> oauth2
                         .jwt(jwtConfigurer -> jwtConfigurer.jwtAuthenticationConverter(jwtAuthenticationConverter())))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .cors((cors) -> cors
-                .configurationSource(corsConfigurationSource())
-        );
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()));
 
         return http.build();
     }
 
     @Bean
-    public JwtDecoder jwtDecoder()
-    {
-        return NimbusJwtDecoder.withPublicKey(keys.getPublicKey()).build();
-    }
-
-    @Bean
-    public JwtEncoder jwtEncoder()
-    {
-        JWK jwk = new RSAKey.Builder(keys.getPublicKey()).privateKey(keys.getPrivateKey()).build();
-        JWKSource<SecurityContext> jwks = new ImmutableJWKSet<>(new JWKSet(jwk));
-        return new NimbusJwtEncoder(jwks);
-    }
-
-
-    @Bean
-    public JwtAuthenticationConverter jwtAuthenticationConverter()
-    {
+    public JwtAuthenticationConverter jwtAuthenticationConverter() {
         JwtGrantedAuthoritiesConverter jwtGrantedAuthoritiesConverter = new JwtGrantedAuthoritiesConverter();
         jwtGrantedAuthoritiesConverter.setAuthoritiesClaimName("roles");
         jwtGrantedAuthoritiesConverter.setAuthorityPrefix("ROLE_");
+
         JwtAuthenticationConverter jwtConverter = new JwtAuthenticationConverter();
         jwtConverter.setJwtGrantedAuthoritiesConverter(jwtGrantedAuthoritiesConverter);
         return jwtConverter;
@@ -130,13 +94,16 @@ public class SecurityConfiguration {
     @Bean
     UrlBasedCorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:5173", "http://localhost:3000", "http://localhost:8080"));
-        configuration.setAllowedMethods(Arrays.asList("GET","POST"));
+        configuration.setAllowedOrigins(Arrays.asList(
+                "http://localhost:5173",
+                "http://localhost:3000",
+                "http://localhost:8080"
+        ));
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST"));
         configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type"));
         configuration.setAllowCredentials(true);
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
     }
-
 }

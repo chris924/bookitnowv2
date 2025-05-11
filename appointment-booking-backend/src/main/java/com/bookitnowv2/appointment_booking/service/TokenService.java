@@ -1,5 +1,6 @@
 package com.bookitnowv2.appointment_booking.service;
 
+import org.antlr.v4.runtime.Token;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -13,11 +14,14 @@ import java.util.stream.Collectors;
 @Service
 public class TokenService {
 
-    @Autowired
-    private JwtEncoder jwtEncoder;
+    private final JwtEncoder jwtEncoder;
+    private final JwtDecoder jwtDecoder;
 
-    @Autowired
-    private JwtDecoder jwtDecoder;
+    public TokenService(JwtEncoder jwtEncoder, JwtDecoder jwtDecoder)
+    {
+        this.jwtEncoder = jwtEncoder;
+        this.jwtDecoder = jwtDecoder;
+    }
 
     public String generateJwt(Authentication auth, Integer id)
     {
@@ -43,6 +47,11 @@ public class TokenService {
     public Jwt decodeJwt(String jwt)
     {
         return jwtDecoder.decode(jwt);
+    }
+
+    public Boolean isTokenValid(Jwt jwt)
+    {
+        return jwt.getExpiresAt() != null && jwt.getExpiresAt().isAfter(Instant.now());
     }
 
 }

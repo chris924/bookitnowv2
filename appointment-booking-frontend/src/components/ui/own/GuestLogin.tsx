@@ -5,6 +5,8 @@ import { Input } from "../input";
 import { useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { loginUser } from "@/api/user";
+import { useNavigate } from "react-router-dom";
+import { useAuthStore } from "@/stores/AuthStore";
 
 export default function GuestLogin()
 {
@@ -12,11 +14,15 @@ export default function GuestLogin()
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
+  const navigate = useNavigate();
+
   const {mutate, isPending, isError, error} = useMutation({
 
     mutationFn: loginUser,
-    onSuccess: (data) => {
+    onSuccess: async (data) => {
       console.log('Logged in:', data);
+      await useAuthStore.getState().checkAuth();
+      navigate("/");
     }
   })
 

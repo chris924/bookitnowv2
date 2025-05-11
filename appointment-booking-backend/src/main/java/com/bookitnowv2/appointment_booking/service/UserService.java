@@ -29,6 +29,11 @@ public class UserService {
         return userRepository.getUserByUsername(username).orElseThrow(() -> new UserNotFoundException(username));
     }
 
+    public User getUserById(Integer id)
+    {
+        return userRepository.findById(id).orElseThrow(() -> new UserNotFoundException(id.toString()));
+    }
+
     public User saveUser(User user)
     {
         return userRepository.save(user);
