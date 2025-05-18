@@ -126,7 +126,7 @@ public class DatabaseSeeder implements CommandLineRunner {
         employeeRoles.add(roleRepository.findByAuthority("EMPLOYEE").orElseThrow(() -> new RuntimeException("EMPLOYEE role not found")));
 
 
-        Employee employee1 = createEmployee("John David", "jdavid", "jdavid@gmail.com", "jdavidpass", new Timestamp(System.currentTimeMillis()), employeeRoles, company1);
+        Employee employee1 = createEmployee("John David", "jdavid", "jdavid@gmail.com", "jdavidpass", new Timestamp(System.currentTimeMillis()), employeeRoles, company1, 4.5);
 
         ServiceEntity service1 = createService("Shave", "Shaving", (long) 15.0, employee1, company1);
 
@@ -155,7 +155,7 @@ public class DatabaseSeeder implements CommandLineRunner {
     }
 
     @NotNull
-    private Employee createEmployee(String name, String username, String email, String password, Timestamp createdAt, Set<Role> roles, Company company)
+    private Employee createEmployee(String name, String username, String email, String password, Timestamp createdAt, Set<Role> roles, Company company, Double rating)
     {
         Employee employee = new Employee();
         employee.setName(name);
@@ -165,6 +165,7 @@ public class DatabaseSeeder implements CommandLineRunner {
         employee.setAuthorities(roles);
         employee.setServices(new HashSet<>());
         employee.setCompany(company);
+        employee.setRating(rating);
 
         employeeRepository.save(employee);
 

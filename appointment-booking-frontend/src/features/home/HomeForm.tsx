@@ -2,9 +2,15 @@ import FeaturedSpecialist from "@/features/home/components/FeaturedSpecialist";
 import SearchForm from "@/features/home/components/SearchForm";
 import defaultImage from "@/assets/default.jpg"
 import MostRatedSpecialist from "./components/MostRatedSpecialist";
+import { useEffect, useState } from "react";
+import { getMostRatedEmployees, TopRatedEmp } from "@/api/employee";
+
+
 
 export default function HomeForm()
 {
+    const [topRatedEmployees, setTopRatedEmployees] = useState<TopRatedEmp[]>([]);
+ 
     let specialists = [
         {
           label: "John Doe",
@@ -49,7 +55,22 @@ export default function HomeForm()
             rating: 4.6,
           }
       ]
+      
+      useEffect(() => {
 
+        async function fetchMostRatedEmployees()
+        {
+         try {
+            const response = await getMostRatedEmployees();
+            setTopRatedEmployees(response);
+            console.log("RESPONSE:", response)
+          } catch (error) {
+            console.error('Failed to fetch top-rated employees:', error);
+          }
+        } 
+        
+        fetchMostRatedEmployees();
+      }, [])
 
 
     return(
@@ -79,8 +100,8 @@ export default function HomeForm()
             Legjobbra értékelt Szakemberek
         </div>
 
-        <div className="flex justify-center">    
-        <MostRatedSpecialist specialists={specialists}/>
+        <div className="flex justify-center">
+          {topRatedEmployees && <MostRatedSpecialist specialists={topRatedEmployees}/> }    
         </div>
 
         </>

@@ -1,10 +1,17 @@
 package com.bookitnowv2.appointment_booking.service;
 
+import com.bookitnowv2.appointment_booking.entity.Employee;
+import com.bookitnowv2.appointment_booking.entity.dto.employee.MostRatedEmployeesResponseDTO;
 import com.bookitnowv2.appointment_booking.mapper.AppointmentMapper;
 import com.bookitnowv2.appointment_booking.mapper.EmployeeMapper;
 import com.bookitnowv2.appointment_booking.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+
+import java.awt.print.Pageable;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class EmployeeService {
@@ -28,6 +35,16 @@ public class EmployeeService {
         this.employeeRepository = employeeRepository;
         this.employeeMapper = employeeMapper;
     }
+
+    public List<MostRatedEmployeesResponseDTO> getMostRatedEmployees()
+    {
+        List<Employee> employees = employeeRepository.findTopRatedEmployees(PageRequest.of(0, 20));
+        System.out.println("Found employees: " + employees.size());
+       return employeeRepository.findTopRatedEmployees(PageRequest.of(0, 20))
+               .stream().map(employee -> new MostRatedEmployeesResponseDTO(employee.getName(), employee.getName(), employee.getAvatarUrl(), employee.getCompany().getCompanyName(), employee.getRating()
+               )).toList();
+    }
+
 
 
 }

@@ -14,7 +14,7 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "employees")
+@Table(name = "employees", indexes = { @Index(name = "idx_employee_rating", columnList = "rating")})
 public class Employee implements UserDetails {
 
     @Id
@@ -29,6 +29,8 @@ public class Employee implements UserDetails {
     private String email;
 
     private String password;
+
+    private Double rating;
 
     @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
