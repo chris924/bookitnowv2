@@ -3,7 +3,7 @@ package com.bookitnowv2.appointment_booking.entity.dto.employee;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
-public class MostRatedEmployeesResponseDTO {
+public class EmployeeGetResponseDTO {
 
     public String label;
     public String value;

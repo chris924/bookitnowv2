@@ -1,17 +1,15 @@
 package com.bookitnowv2.appointment_booking.service;
 
+import com.bookitnowv2.appointment_booking.elasticSearch.repository.ElasticEmployeeRepository;
 import com.bookitnowv2.appointment_booking.entity.Employee;
-import com.bookitnowv2.appointment_booking.entity.dto.employee.MostRatedEmployeesResponseDTO;
-import com.bookitnowv2.appointment_booking.mapper.AppointmentMapper;
+import com.bookitnowv2.appointment_booking.entity.dto.employee.EmployeeGetResponseDTO;
 import com.bookitnowv2.appointment_booking.mapper.EmployeeMapper;
 import com.bookitnowv2.appointment_booking.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
-import java.awt.print.Pageable;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class EmployeeService {
@@ -21,30 +19,44 @@ public class EmployeeService {
     private final IUserRepository userRepository;
     private final IServiceEntityRepository serviceRepository;
     private final IEmployeeRepository employeeRepository;
+    private final ElasticEmployeeRepository elasticEmployeeRepository;
     private final EmployeeMapper employeeMapper;
 
 
     @Autowired
     EmployeeService(IAppointmentRepository appointmentRepository, ICompanyRepository companyRepository, IUserRepository userRepository, IServiceEntityRepository serviceRepository, IEmployeeRepository employeeRepository,
-                    EmployeeMapper employeeMapper)
+                    EmployeeMapper employeeMapper, ElasticEmployeeRepository elasticEmployeeRepository)
     {
         this.appointmentRepository = appointmentRepository;
         this.companyRepository = companyRepository;
         this.userRepository = userRepository;
         this.serviceRepository = serviceRepository;
         this.employeeRepository = employeeRepository;
+        this.elasticEmployeeRepository = elasticEmployeeRepository;
         this.employeeMapper = employeeMapper;
     }
 
-    public List<MostRatedEmployeesResponseDTO> getMostRatedEmployees()
-    {
-        List<Employee> employees = employeeRepository.findTopRatedEmployees(PageRequest.of(0, 20));
-        System.out.println("Found employees: " + employees.size());
-       return employeeRepository.findTopRatedEmployees(PageRequest.of(0, 20))
-               .stream().map(employee -> new MostRatedEmployeesResponseDTO(employee.getName(), employee.getName(), employee.getAvatarUrl(), employee.getCompany().getCompanyName(), employee.getRating()
-               )).toList();
+    public void createEmployee()
+    { //TODO
+        // employeeRepository.save(employee); // DB
+        //
+        //    // Sync to Elasticsearch
+        //    EmployeeDocument document = employeeMapper.toDocument(employee);
+        //    elasticEmployeeRepository.save(document);
     }
 
+    public List<EmployeeGetResponseDTO> getMostRatedEmployees()
+    {
+        List<Employee> employees = employeeRepository.findTopRatedEmployees(PageRequest.of(0, 20));
+
+       return employeeRepository.findTopRatedEmployees(PageRequest.of(0, 20))
+               .stream().map(employeeMapper::toGetDTO).toList();
+    }
+
+    public List<EmployeeGetResponseDTO> searchByName(String employeeName)
+    {
+       return elasticEmployeeRepository.findByName(employeeName).stream().map(employeeMapper::toGetDTO).toList();
+    }
 
 
 }
