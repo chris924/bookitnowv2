@@ -1,9 +1,12 @@
 package com.bookitnowv2.appointment_booking.data;
 
+import com.bookitnowv2.appointment_booking.elasticSearch.document.EmployeeDocument;
+import com.bookitnowv2.appointment_booking.elasticSearch.repository.ElasticEmployeeRepository;
 import com.bookitnowv2.appointment_booking.entity.Appointment;
 import com.bookitnowv2.appointment_booking.entity.Company;
 import com.bookitnowv2.appointment_booking.entity.Role;
 import com.bookitnowv2.appointment_booking.entity.User;
+import com.bookitnowv2.appointment_booking.mapper.EmployeeMapper;
 import com.bookitnowv2.appointment_booking.repository.IAppointmentRepository;
 import com.bookitnowv2.appointment_booking.repository.ICompanyRepository;
 import com.bookitnowv2.appointment_booking.repository.IRoleRepository;
@@ -41,10 +44,13 @@ public class DatabaseSeeder implements CommandLineRunner {
     private final IRoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
 
+    private final ElasticEmployeeRepository elasticEmployeeRepository;
+    private final EmployeeMapper employeeMapper;
+
     private final String avatarDirectory;
 
     public DatabaseSeeder(IAppointmentRepository appointmentRepository, ICompanyRepository companyRepository, IRoleRepository roleRepository, IUserRepository userRepository, PasswordEncoder passwordEncoder, @Value("${avatar.directory.path}") String avatarDirectory,
-                          IServiceEntityRepository serviceRepository, IEmployeeRepository employeeRepository) {
+                          IServiceEntityRepository serviceRepository, IEmployeeRepository employeeRepository, ElasticEmployeeRepository elasticEmployeeRepository, EmployeeMapper employeeMapper) {
         this.appointmentRepository = appointmentRepository;
         this.companyRepository = companyRepository;
 
@@ -54,6 +60,8 @@ public class DatabaseSeeder implements CommandLineRunner {
         this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
         this.avatarDirectory = avatarDirectory;
+        this.elasticEmployeeRepository = elasticEmployeeRepository;
+        this.employeeMapper = employeeMapper;
     }
 
     @Override
@@ -70,6 +78,7 @@ public class DatabaseSeeder implements CommandLineRunner {
         employeeRepository.deleteAll();
         companyRepository.deleteAll();
         roleRepository.deleteAll();
+        elasticEmployeeRepository.deleteAll();
         deleteAvatarDirectoryContents();
 
         createRolesIfNotExists();
@@ -168,6 +177,10 @@ public class DatabaseSeeder implements CommandLineRunner {
         employee.setRating(rating);
 
         employeeRepository.save(employee);
+
+        EmployeeDocument employeeDocument = employeeMapper.toDocument(employee);
+
+        elasticEmployeeRepository.save(employeeDocument);
 
         return employee;
     }
