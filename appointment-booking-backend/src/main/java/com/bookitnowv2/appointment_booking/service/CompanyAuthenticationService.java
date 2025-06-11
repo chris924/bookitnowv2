@@ -25,6 +25,18 @@ import java.util.Set;
 @Transactional
 public class CompanyAuthenticationService {
 
+    private final CompanyService companyService;
+    private final AuthenticationManager authenticationManager;
+    private final TokenService tokenService;
+
+    public CompanyAuthenticationService(CompanyService companyService, AuthenticationManager authenticationManager,
+                                        TokenService tokenService)
+    {
+        this.companyService = companyService;
+        this.authenticationManager = authenticationManager;
+        this.tokenService = tokenService;
+    }
+
     @Autowired
     private ICompanyRepository companyRepository;
 
@@ -34,23 +46,14 @@ public class CompanyAuthenticationService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    @Qualifier("companyAuthManager")
-    @Autowired
-    private AuthenticationManager authenticationManager;
-
-    @Autowired
-    private TokenService tokenService;
 
     public CompanyRegistrationResponseDTO registerCompany(String companyName, String password, String email, String appServiceName, String appServiceDescription, String description)
     {
         try{
 
-
-
             String encodedPassword = passwordEncoder.encode(password);
 
             Role companyRole = roleRepository.findByAuthority("COMPANY").get();
-
 
             Set<Role> authorities = new HashSet<>();
             Set<Employee> employees = new HashSet<>();
@@ -68,12 +71,9 @@ public class CompanyAuthenticationService {
             newCompany.setEmployees(employees);
             newCompany.setServiceDescription(appServiceDescription);
 
+           Company savedCompany = companyService.saveCompany(newCompany);
 
-
-            companyRepository.save(newCompany);
-
-
-            return new CompanyRegistrationResponseDTO(companyName, email);
+           return new CompanyRegistrationResponseDTO(savedCompany.getCompanyName(), savedCompany.getEmail());
 
         }catch (Exception e)
         {

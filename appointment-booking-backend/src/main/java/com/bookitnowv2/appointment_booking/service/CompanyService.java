@@ -6,6 +6,7 @@ import com.bookitnowv2.appointment_booking.entity.Company;
 import com.bookitnowv2.appointment_booking.entity.dto.company.CompanyGetResponseDTO;
 import com.bookitnowv2.appointment_booking.entity.dto.company.CompanyRegistrationResponseDTO;
 import com.bookitnowv2.appointment_booking.entity.dto.company.CompanyUpdateDTO;
+import com.bookitnowv2.appointment_booking.exception.CompanyNotFoundException;
 import com.bookitnowv2.appointment_booking.mapper.AppointmentMapper;
 import com.bookitnowv2.appointment_booking.mapper.CompanyMapper;
 import com.bookitnowv2.appointment_booking.repository.*;
@@ -53,7 +54,15 @@ public class CompanyService {
 
     public CompanyGetResponseDTO getCompanyById(Integer id)
     {
-        Company foundCompany = companyRepository.findById(id).orElseThrow(() -> new RuntimeException("Error: Company not found by Id!"));
+        Company foundCompany = companyRepository.findById(id).orElseThrow(() -> new CompanyNotFoundException(id.toString()));
+
+        return companyMapper.toGetDTO(foundCompany);
+
+    }
+
+    public CompanyGetResponseDTO getCompanyByEmail(String email)
+    {
+        Company foundCompany = companyRepository.getCompanyByEmail(email).orElseThrow(() -> new CompanyNotFoundException(email));
 
         return companyMapper.toGetDTO(foundCompany);
 
@@ -61,14 +70,14 @@ public class CompanyService {
 
     public void deleteCompanyById(Integer id)
     {
-        Company foundCompany = companyRepository.findById(id).orElseThrow(() -> new RuntimeException("Error: Company not found by Id!"));
+        Company foundCompany = companyRepository.findById(id).orElseThrow(() -> new CompanyNotFoundException(id.toString()));
 
         companyRepository.delete(foundCompany);
     }
 
     public CompanyGetResponseDTO updateCompany(CompanyUpdateDTO updateDTO)
     {
-        Company foundCompany = companyRepository.findById(updateDTO.getId()).orElseThrow(() -> new RuntimeException("Error: Company not found by Id!"));
+        Company foundCompany = companyRepository.findById(updateDTO.getId()).orElseThrow(() -> new CompanyNotFoundException(updateDTO.getId().toString()));
 
         if(updateDTO.getCompanyName() != null) foundCompany.setCompanyName(updateDTO.getCompanyName());
         if(updateDTO.getServiceName() != null) foundCompany.setServiceName(updateDTO.getServiceName());
