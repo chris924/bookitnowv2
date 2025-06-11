@@ -1,8 +1,11 @@
 package com.bookitnowv2.appointment_booking.service;
 
+import com.bookitnowv2.appointment_booking.elasticSearch.document.EmployeeDocument;
 import com.bookitnowv2.appointment_booking.elasticSearch.repository.ElasticEmployeeRepository;
+import com.bookitnowv2.appointment_booking.entity.Company;
 import com.bookitnowv2.appointment_booking.entity.Employee;
-import com.bookitnowv2.appointment_booking.entity.dto.employee.EmployeeGetResponseDTO;
+import com.bookitnowv2.appointment_booking.entity.dto.employee.EmployeeResponseDTO;
+import com.bookitnowv2.appointment_booking.exception.EmployeeNotFoundException;
 import com.bookitnowv2.appointment_booking.mapper.EmployeeMapper;
 import com.bookitnowv2.appointment_booking.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,16 +39,19 @@ public class EmployeeService {
         this.employeeMapper = employeeMapper;
     }
 
-    public void createEmployee()
-    { //TODO
-        // employeeRepository.save(employee); // DB
-        //
-        //    // Sync to Elasticsearch
-        //    EmployeeDocument document = employeeMapper.toDocument(employee);
-        //    elasticEmployeeRepository.save(document);
+    public Employee saveEmployee(Employee employee)
+    {
+        EmployeeDocument document = employeeMapper.toDocument(employee);
+        elasticEmployeeRepository.save(document);
+        return employeeRepository.save(employee);
     }
 
-    public List<EmployeeGetResponseDTO> getMostRatedEmployees()
+    public Employee getEmployeeByEmail(String email)
+    {
+        return employeeRepository.getEmployeeByEmail(email).orElseThrow(()-> new EmployeeNotFoundException(email));
+    }
+
+    public List<EmployeeResponseDTO> getMostRatedEmployees()
     {
         List<Employee> employees = employeeRepository.findTopRatedEmployees(PageRequest.of(0, 20));
 
@@ -53,7 +59,7 @@ public class EmployeeService {
                .stream().map(employeeMapper::toGetDTO).toList();
     }
 
-    public List<EmployeeGetResponseDTO> searchByName(String employeeName)
+    public List<EmployeeResponseDTO> searchByName(String employeeName)
     {
        return elasticEmployeeRepository.findByName(employeeName).stream().map(employeeMapper::toGetDTO).toList();
     }

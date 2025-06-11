@@ -8,6 +8,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.sql.Timestamp;
+import java.util.List;
 import java.util.Set;
 
 @Data
@@ -38,7 +40,7 @@ public class Employee implements UserDetails {
 
     @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
-    private Set<Appointment> appointments;
+    private List<Appointment> appointments;
 
     @ManyToOne
     @JoinColumn(name = "company_id")
@@ -75,4 +77,5 @@ public class Employee implements UserDetails {
     public boolean isEnabled() {
         return false;
     }
+
 }

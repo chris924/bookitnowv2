@@ -114,7 +114,6 @@ public class DatabaseSeeder implements CommandLineRunner {
        User user3 = createUser("Bob Johnson", "bob.johnson", "bob.johnson@email.com", "qwerty", new Timestamp(System.currentTimeMillis()), new ArrayList<>(), userRoles);
 
 
-
         Set<Role> companyRoles = new HashSet<>();
         companyRoles.add(roleRepository.findByAuthority("COMPANY").orElseThrow(() -> new RuntimeException("COMPANY role not found")));
 
