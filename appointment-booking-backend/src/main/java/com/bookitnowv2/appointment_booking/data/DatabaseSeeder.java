@@ -1,7 +1,7 @@
 package com.bookitnowv2.appointment_booking.data;
 
 import com.bookitnowv2.appointment_booking.elasticSearch.document.EmployeeDocument;
-import com.bookitnowv2.appointment_booking.elasticSearch.repository.ElasticEmployeeRepository;
+import com.bookitnowv2.appointment_booking.elasticSearch.repository.IElasticEmployeeRepository;
 import com.bookitnowv2.appointment_booking.entity.Appointment;
 import com.bookitnowv2.appointment_booking.entity.Company;
 import com.bookitnowv2.appointment_booking.entity.Role;
@@ -44,13 +44,13 @@ public class DatabaseSeeder implements CommandLineRunner {
     private final IRoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
 
-    private final ElasticEmployeeRepository elasticEmployeeRepository;
+    private final IElasticEmployeeRepository elasticEmployeeRepository;
     private final EmployeeMapper employeeMapper;
 
     private final String avatarDirectory;
 
     public DatabaseSeeder(IAppointmentRepository appointmentRepository, ICompanyRepository companyRepository, IRoleRepository roleRepository, IUserRepository userRepository, PasswordEncoder passwordEncoder, @Value("${avatar.directory.path}") String avatarDirectory,
-                          IServiceEntityRepository serviceRepository, IEmployeeRepository employeeRepository, ElasticEmployeeRepository elasticEmployeeRepository, EmployeeMapper employeeMapper) {
+                          IServiceEntityRepository serviceRepository, IEmployeeRepository employeeRepository, IElasticEmployeeRepository elasticEmployeeRepository, EmployeeMapper employeeMapper) {
         this.appointmentRepository = appointmentRepository;
         this.companyRepository = companyRepository;
 

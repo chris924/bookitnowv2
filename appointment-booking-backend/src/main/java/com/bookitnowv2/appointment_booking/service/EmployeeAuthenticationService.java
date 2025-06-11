@@ -1,8 +1,7 @@
 package com.bookitnowv2.appointment_booking.service;
 
 import com.bookitnowv2.appointment_booking.entity.*;
-import com.bookitnowv2.appointment_booking.entity.dto.employee.EmployeeResponseDTO;
-import com.bookitnowv2.appointment_booking.entity.dto.user.UserRegistrationResponseDTO;
+import com.bookitnowv2.appointment_booking.entity.dto.employee.EmployeeGetResponseDTO;
 import com.bookitnowv2.appointment_booking.mapper.EmployeeMapper;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -11,7 +10,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -41,7 +39,7 @@ public class EmployeeAuthenticationService {
     }
 
 
-    public EmployeeResponseDTO registerEmployee(String name, String username, String email, String password)
+    public EmployeeGetResponseDTO registerEmployee(String name, String username, String email, String password)
     {
 
         String encodedPassword = passwordEncoder.encode(password);

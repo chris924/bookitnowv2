@@ -1,5 +1,7 @@
 package com.bookitnowv2.appointment_booking.service;
 
+import com.bookitnowv2.appointment_booking.elasticSearch.document.CompanyDocument;
+import com.bookitnowv2.appointment_booking.elasticSearch.repository.IElasticCompanyRepository;
 import com.bookitnowv2.appointment_booking.entity.Company;
 import com.bookitnowv2.appointment_booking.entity.dto.company.CompanyGetResponseDTO;
 import com.bookitnowv2.appointment_booking.entity.dto.company.CompanyRegistrationResponseDTO;
@@ -21,9 +23,11 @@ public class CompanyService {
     private final IServiceEntityRepository serviceRepository;
     private final IEmployeeRepository employeeRepository;
     private final CompanyMapper companyMapper;
+    private final IElasticCompanyRepository elasticCompanyRepository;
 
     @Autowired
     CompanyService(IAppointmentRepository appointmentRepository, ICompanyRepository companyRepository, IUserRepository userRepository, IServiceEntityRepository serviceRepository, IEmployeeRepository employeeRepository,
+                   IElasticCompanyRepository elasticCompanyRepository,
                    CompanyMapper companyMapper)
     {
         this.appointmentRepository = appointmentRepository;
@@ -32,6 +36,14 @@ public class CompanyService {
         this.serviceRepository = serviceRepository;
         this.employeeRepository = employeeRepository;
         this.companyMapper = companyMapper;
+        this.elasticCompanyRepository = elasticCompanyRepository;
+    }
+
+    public Company saveCompany(Company company)
+    {
+        CompanyDocument companyDocument = companyMapper.toDocument(company);
+        elasticCompanyRepository.save(companyDocument);
+        return companyRepository.save(company);
     }
 
     public List<CompanyGetResponseDTO> getCompanies()

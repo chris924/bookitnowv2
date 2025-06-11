@@ -1,6 +1,6 @@
 package com.bookitnowv2.appointment_booking.controller;
 
-import com.bookitnowv2.appointment_booking.entity.dto.employee.EmployeeResponseDTO;
+import com.bookitnowv2.appointment_booking.entity.dto.employee.EmployeeGetResponseDTO;
 import com.bookitnowv2.appointment_booking.service.EmployeeService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,7 +23,7 @@ public class EmployeeController {
     @GetMapping("/most-rated")
     public ResponseEntity<?> getMostRatedEmployees()
     {
-        List<EmployeeResponseDTO> topEmployees =  employeeService.getMostRatedEmployees();
+        List<EmployeeGetResponseDTO> topEmployees =  employeeService.getMostRatedEmployees();
 
         return ResponseEntity.status(HttpStatus.OK).body(topEmployees);
     }

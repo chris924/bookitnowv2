@@ -1,10 +1,9 @@
 package com.bookitnowv2.appointment_booking.service;
 
 import com.bookitnowv2.appointment_booking.elasticSearch.document.EmployeeDocument;
-import com.bookitnowv2.appointment_booking.elasticSearch.repository.ElasticEmployeeRepository;
-import com.bookitnowv2.appointment_booking.entity.Company;
+import com.bookitnowv2.appointment_booking.elasticSearch.repository.IElasticEmployeeRepository;
 import com.bookitnowv2.appointment_booking.entity.Employee;
-import com.bookitnowv2.appointment_booking.entity.dto.employee.EmployeeResponseDTO;
+import com.bookitnowv2.appointment_booking.entity.dto.employee.EmployeeGetResponseDTO;
 import com.bookitnowv2.appointment_booking.exception.EmployeeNotFoundException;
 import com.bookitnowv2.appointment_booking.mapper.EmployeeMapper;
 import com.bookitnowv2.appointment_booking.repository.*;
@@ -22,13 +21,13 @@ public class EmployeeService {
     private final IUserRepository userRepository;
     private final IServiceEntityRepository serviceRepository;
     private final IEmployeeRepository employeeRepository;
-    private final ElasticEmployeeRepository elasticEmployeeRepository;
+    private final IElasticEmployeeRepository elasticEmployeeRepository;
     private final EmployeeMapper employeeMapper;
 
 
     @Autowired
     EmployeeService(IAppointmentRepository appointmentRepository, ICompanyRepository companyRepository, IUserRepository userRepository, IServiceEntityRepository serviceRepository, IEmployeeRepository employeeRepository,
-                    EmployeeMapper employeeMapper, ElasticEmployeeRepository elasticEmployeeRepository)
+                    EmployeeMapper employeeMapper, IElasticEmployeeRepository elasticEmployeeRepository)
     {
         this.appointmentRepository = appointmentRepository;
         this.companyRepository = companyRepository;
@@ -51,7 +50,7 @@ public class EmployeeService {
         return employeeRepository.getEmployeeByEmail(email).orElseThrow(()-> new EmployeeNotFoundException(email));
     }
 
-    public List<EmployeeResponseDTO> getMostRatedEmployees()
+    public List<EmployeeGetResponseDTO> getMostRatedEmployees()
     {
         List<Employee> employees = employeeRepository.findTopRatedEmployees(PageRequest.of(0, 20));
 
@@ -59,7 +58,7 @@ public class EmployeeService {
                .stream().map(employeeMapper::toGetDTO).toList();
     }
 
-    public List<EmployeeResponseDTO> searchByName(String employeeName)
+    public List<EmployeeGetResponseDTO> searchByName(String employeeName)
     {
        return elasticEmployeeRepository.findByName(employeeName).stream().map(employeeMapper::toGetDTO).toList();
     }

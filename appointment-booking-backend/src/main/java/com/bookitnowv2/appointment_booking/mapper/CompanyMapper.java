@@ -1,5 +1,6 @@
 package com.bookitnowv2.appointment_booking.mapper;
 
+import com.bookitnowv2.appointment_booking.elasticSearch.document.CompanyDocument;
 import com.bookitnowv2.appointment_booking.entity.Company;
 import com.bookitnowv2.appointment_booking.entity.dto.company.CompanyGetResponseDTO;
 import org.springframework.stereotype.Component;
@@ -18,5 +19,12 @@ public class CompanyMapper {
                 company.getDescription(),
                 company.getEmail()
         );
+    }
+
+    public CompanyDocument toDocument(Company company)
+    {
+        return new CompanyDocument(
+                company.getId(),
+                company.getCompanyName());
     }
 }
