@@ -7,12 +7,17 @@ import { useMutation } from "@tanstack/react-query";
 import { loginUser } from "@/api/user";
 import { useNavigate } from "react-router-dom";
 import { useAuthStore } from "@/stores/AuthStore";
+import GuestRegister from "./GuestRegisterForm";
+import GuestRegisterForm from "./GuestRegisterForm";
 
 export default function GuestLogin()
 {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
+  const [view, setView] = useState<"login" | "register">("login");
+  
 
   const navigate = useNavigate();
 
@@ -32,43 +37,72 @@ export default function GuestLogin()
     mutate({ email, password });
   };
 
-    return(
-        <Dialog>
+   return (
+    <Dialog>
       <DialogTrigger asChild>
-        <Button variant="outline" 
-          className="text-base md:text-3xl md:h-12 lg:text-3xl px-4 py-2 md:px-6 md:py-3 rounded-3xl">
-            Belépés</Button>
+        <Button
+          variant="outline"
+          className="text-base md:text-3xl md:h-12 lg:text-3xl px-4 py-2 md:px-6 md:py-3 rounded-3xl"
+        >
+          Belépés
+        </Button>
       </DialogTrigger>
+
       <DialogContent className="sm:max-w-[425px] p-6 md:p-8">
-        <DialogHeader>
-          <DialogTitle className="text-center">Bejelentkezés</DialogTitle>
-        </DialogHeader>
-        <div className="grid gap-4 py-4">
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label className="text-right">
-              E-mail
-            </Label>
-            <Input id="email" value={email} className="col-span-3" onChange={(e) => setEmail(e.target.value)}/>
-          </div>
-          <Label className="text-right">
-              Elfelejtett jelszó
-          </Label>
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label className="text-right">
-              Jelszó
-            </Label>
-            <Input id="password" type="password" value={password} className="col-span-3" onChange={(e) => setPassword(e.target.value)} />
-          </div>
-        </div>
-        <DialogFooter>            
-          <Button type="submit" className="bg-blue-400" onClick={(e) => handleSubmit(e)}>Belépés</Button>
-        </DialogFooter>
-        <Separator />
-        <DialogDescription className="text-center">
-          Ha még nem regisztráltál              
-        </DialogDescription>
-        <Button type="submit">Regisztráció</Button>
+        {view === "login" ? (
+          <>
+            <DialogHeader>
+              <DialogTitle className="text-center">Bejelentkezés</DialogTitle>
+            </DialogHeader>
+            <div className="grid gap-4 py-4">
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label className="text-right">E-mail</Label>
+                <Input
+                  id="email"
+                  value={email}
+                  className="col-span-3"
+                  onChange={(e) => setEmail(e.target.value)}
+                />
+              </div>
+              <Label className="text-right">Elfelejtett jelszó</Label>
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label className="text-right">Jelszó</Label>
+                <Input
+                  id="password"
+                  type="password"
+                  value={password}
+                  className="col-span-3"
+                  onChange={(e) => setPassword(e.target.value)}
+                />
+              </div>
+            </div>
+            <DialogFooter>
+              <Button
+                type="submit"
+                className="bg-blue-400"
+                onClick={(e) => handleSubmit(e)}
+              >
+                Belépés
+              </Button>
+            </DialogFooter>
+            <Separator />
+            <DialogDescription className="text-center">
+              Ha még nem regisztráltál
+            </DialogDescription>
+            <Button variant="secondary" onClick={() => setView("register")}>
+              Regisztráció
+            </Button>
+          </>
+        ) : (
+          <>
+            <GuestRegisterForm />
+
+            <Button variant="ghost" onClick={() => setView("login")}>
+              Vissza a bejelentkezéshez
+            </Button>
+          </>
+        )}
       </DialogContent>
     </Dialog>
-    )
+  );
 }
