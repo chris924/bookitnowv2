@@ -9,33 +9,18 @@ import { useNavigate } from "react-router-dom";
 import { useAuthStore } from "@/stores/AuthStore";
 import GuestRegister from "./GuestRegisterForm";
 import GuestRegisterForm from "./GuestRegisterForm";
+import GuestLoginForm from "./GuestLoginForm";
 
 export default function GuestLogin()
 {
 
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+ 
 
   const [view, setView] = useState<"login" | "register">("login");
   
 
-  const navigate = useNavigate();
-
-  const {mutate, isPending, isError, error} = useMutation({
-
-    mutationFn: loginUser,
-    onSuccess: async (data) => {
-      console.log('Logged in:', data);
-      await useAuthStore.getState().checkAuth();
-      navigate("/");
-    }
-  })
-
-
-  const handleSubmit = (e: any) => {
-    e.preventDefault();
-    mutate({ email, password });
-  };
+  
+  
 
    return (
     <Dialog>
@@ -50,49 +35,7 @@ export default function GuestLogin()
 
       <DialogContent className="sm:max-w-[425px] p-6 md:p-8">
         {view === "login" ? (
-          <>
-            <DialogHeader>
-              <DialogTitle className="text-center">Bejelentkezés</DialogTitle>
-            </DialogHeader>
-            <div className="grid gap-4 py-4">
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label className="text-right">E-mail</Label>
-                <Input
-                  id="email"
-                  value={email}
-                  className="col-span-3"
-                  onChange={(e) => setEmail(e.target.value)}
-                />
-              </div>
-              <Label className="text-right">Elfelejtett jelszó</Label>
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label className="text-right">Jelszó</Label>
-                <Input
-                  id="password"
-                  type="password"
-                  value={password}
-                  className="col-span-3"
-                  onChange={(e) => setPassword(e.target.value)}
-                />
-              </div>
-            </div>
-            <DialogFooter>
-              <Button
-                type="submit"
-                className="bg-blue-400"
-                onClick={(e) => handleSubmit(e)}
-              >
-                Belépés
-              </Button>
-            </DialogFooter>
-            <Separator />
-            <DialogDescription className="text-center">
-              Ha még nem regisztráltál
-            </DialogDescription>
-            <Button variant="secondary" onClick={() => setView("register")}>
-              Regisztráció
-            </Button>
-          </>
+         <GuestLoginForm setView={setView}/>
         ) : (
           <>
             <GuestRegisterForm />
