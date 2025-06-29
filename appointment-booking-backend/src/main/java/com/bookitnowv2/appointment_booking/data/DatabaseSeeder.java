@@ -118,9 +118,9 @@ public class DatabaseSeeder implements CommandLineRunner {
         companyRoles.add(roleRepository.findByAuthority("COMPANY").orElseThrow(() -> new RuntimeException("COMPANY role not found")));
 
 
-      Company company1 = createCompany("Car Detailing", "cardetailing@gmail.com", "password", "We work with cars with passion", "Car detailing", "We detail and customize your car!", companyRoles);
-      Company company2 = createCompany("IT Solutions", "itsolutions@gmail.com", "password", "Providing cutting-edge IT solutions", "IT Services", "Customized IT solutions for your business", companyRoles);
-      Company company3 = createCompany("Home Cleaning", "homecleaning@gmail.com", "password", "Your trusted partner in home cleaning", "Home Cleaning", "We make your home shine!", companyRoles);
+      Company company1 = createCompany("Car Detailing", "cardetailing@gmail.com", "password", "We work with cars with passion", "Car detailing", "We detail and customize your car!", companyRoles, "Budapest");
+      Company company2 = createCompany("IT Solutions", "itsolutions@gmail.com", "password", "Providing cutting-edge IT solutions", "IT Services", "Customized IT solutions for your business", companyRoles, "Pécs");
+      Company company3 = createCompany("Home Cleaning", "homecleaning@gmail.com", "password", "Your trusted partner in home cleaning", "Home Cleaning", "We make your home shine!", companyRoles, "Szolnok");
 
 
       createAppointment(company1, 1);
@@ -200,7 +200,7 @@ public class DatabaseSeeder implements CommandLineRunner {
 
 
 
-    private Company createCompany(String companyName, String email, String password, String description, String serviceName, String serviceDescription, Set<Role> roles) {
+    private Company createCompany(String companyName, String email, String password, String description, String serviceName, String serviceDescription, Set<Role> roles, String place) {
 
         Company company = new Company();
         company.setCompanyName(companyName);
@@ -211,6 +211,7 @@ public class DatabaseSeeder implements CommandLineRunner {
         company.setCreatedAt(new Timestamp(System.currentTimeMillis()));
         company.setServiceName(serviceName);
         company.setServiceDescription(serviceDescription);
+        company.setPlace(place);
 
         companyRepository.save(company);
 

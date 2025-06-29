@@ -20,12 +20,21 @@ public class EmployeeMapper {
         );
     }
 
-    public EmployeeDocument toDocument(Employee employee) {
-        return new EmployeeDocument(
-                employee.getId(),
+    public EmployeeGetResponseDTO toGetDTO(EmployeeDocument employee)
+    {
+
+        return new EmployeeGetResponseDTO(
                 employee.getName(),
-                employee.getCompany().getCompanyName()
+                employee.getName(),
+                employee.getAvatarUrl(),
+                employee.getCompany(),
+                employee.getRating()
         );
+    }
+
+
+    public EmployeeDocument toDocument(Employee employee) {
+       return new EmployeeDocument(employee.getId(), employee.getName(), employee.getCompany().getCompanyName(), employee.getCompany().getPlace(), employee.getAvatarUrl(), employee.getRating());
     }
 
 }

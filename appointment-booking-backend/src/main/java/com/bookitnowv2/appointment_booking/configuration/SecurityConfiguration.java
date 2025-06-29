@@ -65,7 +65,8 @@ public class SecurityConfiguration {
                     auth.requestMatchers("/uploads/avatars/**").permitAll();
                     auth.requestMatchers("/auth/**").permitAll();
                     auth.requestMatchers("/admin/**").hasRole("ADMIN");
-                    auth.requestMatchers("/employees/most-rated").permitAll();
+                    auth.requestMatchers("/employees/most-rated").permitAll(); //TODO: ON ANOTHER CONTROLLER?
+                    auth.requestMatchers("/employees/search-employee").permitAll(); //TODO: ON ANOTHER CONTROLLER?
                     auth.requestMatchers("/user/**").hasAnyRole("ADMIN", "USER");
                     auth.requestMatchers("/company/**").hasAnyRole("ADMIN", "COMPANY");
                     auth.requestMatchers("/appointment/**").hasAnyRole("ADMIN", "USER", "COMPANY");

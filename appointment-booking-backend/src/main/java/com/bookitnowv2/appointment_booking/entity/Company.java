@@ -39,6 +39,8 @@ public class Company implements UserDetails {
 
     private String serviceDescription;
 
+    private String place;
+
     @Column(name = "avatar_url")
     private String avatarUrl;
 

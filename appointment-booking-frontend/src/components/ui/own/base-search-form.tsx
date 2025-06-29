@@ -21,7 +21,7 @@ import {
   } from "../form"
 
 
-import { z } from "zod"
+import { input, z } from "zod"
 import { toast } from "sonner"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Check, ChevronsUpDown } from "lucide-react"
@@ -45,11 +45,12 @@ interface SearchFormPropInterface<T extends BaseItemInterface>
     type: string;
     options: T[];
     onSelect: (selected: T)  => void;
+    onChange: (input: string) => void;
 }
 
 
  
-export default function BaseSearchForm<T extends BaseItemInterface>({ title, type, options, onSelect }: SearchFormPropInterface<T>) {
+export default function BaseSearchForm<T extends BaseItemInterface>({ title, type, options, onSelect, onChange }: SearchFormPropInterface<T>) {
 
   const FormSchema = z.object({
     type: z.string({
@@ -125,6 +126,7 @@ export default function BaseSearchForm<T extends BaseItemInterface>({ title, typ
                               key={option.value}
                               onSelect={() => {
                                 form.setValue("type", option.value);
+                                 onChange(option.value);
                                 setOpen(false);
                               }}
                               className="py-2 md:text-2xl"

@@ -3,13 +3,15 @@ import { z } from "zod"
 import { toast } from "sonner"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import defaultImage from "@/assets/default.jpg"
 import SpecialistSelectorForm from "../../../components/ui/own/specialist-selector(not-used)"
 import BaseSearchForm from "../../../components/ui/own/base-search-form"
+import { EmployeeSearchCriteria, EmployeeSearchPayload, getSearchEmployeeCritera } from "@/api/employee"
 
+ 
 
- let specialists = [
+ /*let specialists = [
   {
     label: "John Doe",
     value: "john-doe",
@@ -67,11 +69,37 @@ let places = [
     label: "Szeged",
     value: "szeged",
   },
-] 
+] */
 
 
  
 export default function SearchForm() {
+
+   const [specialistName, setSpecialistName] = useState("");
+  const [specialistCompany, setSpecialistCompany] = useState("");
+  const [specialistPlace, setSpecialistPlace] = useState("");
+
+  const [responseSpecialists, setResponseSpecialists] = useState<EmployeeSearchCriteria[]>([]);
+
+  useEffect(() => {
+
+    const fetchSearchResults = async () => {
+
+  const payload: EmployeeSearchPayload = {
+      name: specialistName,
+      company: specialistCompany,
+      place: specialistPlace,
+    };
+    console.log("PAYLOAD: ", payload)
+
+    const response = await getSearchEmployeeCritera(payload);
+    console.log(response)
+    setResponseSpecialists(response);
+    }
+    
+    fetchSearchResults();
+
+  }, [specialistName, specialistCompany, specialistPlace])
 
   const FormSchema = z.object({
     specialist: z.string({
@@ -92,9 +120,9 @@ export default function SearchForm() {
   return (
     <>
     <div className="space-y-5">
-    <BaseSearchForm title={"Szakember"} type="specialist" options={specialists} onSelect={() => console.log("test")} />
-    <BaseSearchForm title={"Üzlet"} type="company" options={companies} onSelect={() => console.log("test")} />
-    <BaseSearchForm title={"Hely"} type="place" options={places} onSelect={() => console.log("test")} />
+    <BaseSearchForm title={"Szakember"} type="specialist" options={responseSpecialists} onSelect={() => console.log("test")} onChange={(specialistName) => setSpecialistName(specialistName)} />
+    <BaseSearchForm title={"Üzlet"} type="company" options={responseSpecialists} onSelect={() => console.log("test")} onChange={(specialistCompany) => setSpecialistCompany(specialistCompany)} />
+    <BaseSearchForm title={"Hely"} type="place" options={responseSpecialists} onSelect={() => console.log("test")} onChange={(specialistPlace) => setSpecialistPlace(specialistPlace)} />
     </div>
     
     </>

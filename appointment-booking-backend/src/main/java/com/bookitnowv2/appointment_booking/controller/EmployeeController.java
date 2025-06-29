@@ -1,13 +1,18 @@
 package com.bookitnowv2.appointment_booking.controller;
 
 import com.bookitnowv2.appointment_booking.elasticSearch.repository.IElasticEmployeeRepository;
+import com.bookitnowv2.appointment_booking.elasticSearch.service.ElasticEmployeeService;
 import com.bookitnowv2.appointment_booking.entity.dto.employee.EmployeeGetResponseDTO;
+import com.bookitnowv2.appointment_booking.entity.dto.employee.EmployeeSearchRequestDTO;
 import com.bookitnowv2.appointment_booking.service.EmployeeService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
+
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -15,12 +20,12 @@ import java.util.List;
 public class EmployeeController {
 
     private final EmployeeService employeeService;
-    private final IElasticEmployeeRepository elasticEmployeeRepository;
+    private final ElasticEmployeeService elasticEmployeeService;
 
-    public EmployeeController(EmployeeService employeeService, IElasticEmployeeRepository elasticEmployeeRepository)
+    public EmployeeController(EmployeeService employeeService, ElasticEmployeeService elasticEmployeeService)
     {
         this.employeeService = employeeService;
-        this.elasticEmployeeRepository = elasticEmployeeRepository;
+        this.elasticEmployeeService = elasticEmployeeService;
     }
 
     @GetMapping("/most-rated")
@@ -31,10 +36,20 @@ public class EmployeeController {
         return ResponseEntity.status(HttpStatus.OK).body(topEmployees);
     }
 
-   /* @GetMapping("/search-employee")
-    public ResponseEntity<?> getSearchEmployee()
-    {
-        elasticEmployeeRepository.findByName()
-    }*/
+    @PostMapping("/search-employee")
+    public ResponseEntity<List<EmployeeGetResponseDTO>> getSearchEmployee(@Valid @RequestBody EmployeeSearchRequestDTO employeeSearchRequestDTO, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            throw new RuntimeException("Bad body for criteria search!");
+        }
+
+        List<EmployeeGetResponseDTO> employeeResult;
+        try {
+            employeeResult = elasticEmployeeService.searchByCriteria(employeeSearchRequestDTO);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        return ResponseEntity.ok(employeeResult);
+    }
 
 }
