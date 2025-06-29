@@ -2,6 +2,7 @@ package com.bookitnowv2.appointment_booking.service;
 
 import com.bookitnowv2.appointment_booking.elasticSearch.document.EmployeeDocument;
 import com.bookitnowv2.appointment_booking.elasticSearch.repository.IElasticEmployeeRepository;
+import com.bookitnowv2.appointment_booking.elasticSearch.service.ElasticEmployeeService;
 import com.bookitnowv2.appointment_booking.entity.Employee;
 import com.bookitnowv2.appointment_booking.entity.dto.employee.EmployeeGetResponseDTO;
 import com.bookitnowv2.appointment_booking.exception.EmployeeNotFoundException;
@@ -21,27 +22,26 @@ public class EmployeeService {
     private final IUserRepository userRepository;
     private final IServiceEntityRepository serviceRepository;
     private final IEmployeeRepository employeeRepository;
-    private final IElasticEmployeeRepository elasticEmployeeRepository;
+    private final ElasticEmployeeService elasticEmployeeService;
     private final EmployeeMapper employeeMapper;
 
 
     @Autowired
     EmployeeService(IAppointmentRepository appointmentRepository, ICompanyRepository companyRepository, IUserRepository userRepository, IServiceEntityRepository serviceRepository, IEmployeeRepository employeeRepository,
-                    EmployeeMapper employeeMapper, IElasticEmployeeRepository elasticEmployeeRepository)
+                    EmployeeMapper employeeMapper, ElasticEmployeeService elasticEmployeeService)
     {
         this.appointmentRepository = appointmentRepository;
         this.companyRepository = companyRepository;
         this.userRepository = userRepository;
         this.serviceRepository = serviceRepository;
         this.employeeRepository = employeeRepository;
-        this.elasticEmployeeRepository = elasticEmployeeRepository;
         this.employeeMapper = employeeMapper;
+        this.elasticEmployeeService = elasticEmployeeService;
     }
 
     public Employee saveEmployee(Employee employee)
     {
-        EmployeeDocument document = employeeMapper.toDocument(employee);
-        elasticEmployeeRepository.save(document);
+        elasticEmployeeService.saveEmployee(employee);
         return employeeRepository.save(employee);
     }
 
@@ -52,16 +52,11 @@ public class EmployeeService {
 
     public List<EmployeeGetResponseDTO> getMostRatedEmployees()
     {
-        List<Employee> employees = employeeRepository.findTopRatedEmployees(PageRequest.of(0, 20));
-
        return employeeRepository.findTopRatedEmployees(PageRequest.of(0, 20))
                .stream().map(employeeMapper::toGetDTO).toList();
     }
 
-    public List<EmployeeGetResponseDTO> searchByName(String employeeName)
-    {
-       return elasticEmployeeRepository.findByName(employeeName).stream().map(employeeMapper::toGetDTO).toList();
-    }
+
 
 
 }

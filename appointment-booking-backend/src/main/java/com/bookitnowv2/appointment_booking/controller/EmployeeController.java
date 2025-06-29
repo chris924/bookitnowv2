@@ -1,5 +1,6 @@
 package com.bookitnowv2.appointment_booking.controller;
 
+import com.bookitnowv2.appointment_booking.elasticSearch.repository.IElasticEmployeeRepository;
 import com.bookitnowv2.appointment_booking.entity.dto.employee.EmployeeGetResponseDTO;
 import com.bookitnowv2.appointment_booking.service.EmployeeService;
 import org.springframework.http.HttpStatus;
@@ -14,10 +15,12 @@ import java.util.List;
 public class EmployeeController {
 
     private final EmployeeService employeeService;
+    private final IElasticEmployeeRepository elasticEmployeeRepository;
 
-    public EmployeeController(EmployeeService employeeService)
+    public EmployeeController(EmployeeService employeeService, IElasticEmployeeRepository elasticEmployeeRepository)
     {
         this.employeeService = employeeService;
+        this.elasticEmployeeRepository = elasticEmployeeRepository;
     }
 
     @GetMapping("/most-rated")
@@ -27,5 +30,11 @@ public class EmployeeController {
 
         return ResponseEntity.status(HttpStatus.OK).body(topEmployees);
     }
+
+   /* @GetMapping("/search-employee")
+    public ResponseEntity<?> getSearchEmployee()
+    {
+        elasticEmployeeRepository.findByName()
+    }*/
 
 }

@@ -3,6 +3,7 @@ package com.bookitnowv2.appointment_booking.service;
 import com.bookitnowv2.appointment_booking.elasticSearch.document.UserDocument;
 import com.bookitnowv2.appointment_booking.elasticSearch.repository.IElasticEmployeeRepository;
 import com.bookitnowv2.appointment_booking.elasticSearch.repository.IElasticUserRepository;
+import com.bookitnowv2.appointment_booking.elasticSearch.service.ElasticUserService;
 import com.bookitnowv2.appointment_booking.entity.User;
 import com.bookitnowv2.appointment_booking.exception.UserNotFoundException;
 import com.bookitnowv2.appointment_booking.mapper.UserMapper;
@@ -15,18 +16,12 @@ public class UserService {
 
     private final IUserRepository userRepository;
 
-    private final PasswordEncoder passwordEncoder;
+    private final ElasticUserService elasticUserService;
 
-    private final UserMapper userMapper;
-
-    private final IElasticUserRepository elasticUserRepository;
-
-    UserService(IUserRepository userRepository, PasswordEncoder passwordEncoder, UserMapper userMapper, IElasticUserRepository elasticUserRepository)
+    UserService(IUserRepository userRepository, ElasticUserService elasticUserService)
     {
         this.userRepository = userRepository;
-        this.passwordEncoder = passwordEncoder;
-        this.userMapper = userMapper;
-        this.elasticUserRepository = elasticUserRepository;
+        this.elasticUserService = elasticUserService;
     }
 
     public User getUserByEmail(String email)
@@ -46,8 +41,7 @@ public class UserService {
 
     public User saveUser(User user)
     {
-        UserDocument userDocument = userMapper.toDocument(user);
-        elasticUserRepository.save(userDocument);
+        elasticUserService.saveUser(user);
         return userRepository.save(user);
     }
 
