@@ -41,6 +41,8 @@ public class Company implements UserDetails {
 
     private String place;
 
+    private Double rating;
+
     @Column(name = "avatar_url")
     private String avatarUrl;
 

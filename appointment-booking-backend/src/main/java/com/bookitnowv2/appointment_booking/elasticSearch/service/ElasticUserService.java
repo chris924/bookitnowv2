@@ -1,5 +1,6 @@
 package com.bookitnowv2.appointment_booking.elasticSearch.service;
 
+import com.bookitnowv2.appointment_booking.elasticSearch.document.UserDocument;
 import com.bookitnowv2.appointment_booking.elasticSearch.repository.IElasticUserRepository;
 import com.bookitnowv2.appointment_booking.entity.User;
 import com.bookitnowv2.appointment_booking.mapper.UserMapper;
@@ -20,6 +21,11 @@ public class ElasticUserService {
     public void saveUser(User user)
     {
         elasticUserRepository.save(userMapper.toDocument(user));
+    }
+
+    public UserDocument getUserDocument(User user)
+    {
+        return elasticUserRepository.findById(user.getId());
     }
 
 }

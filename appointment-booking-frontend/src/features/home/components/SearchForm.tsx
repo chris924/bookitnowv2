@@ -9,70 +9,7 @@ import SpecialistSelectorForm from "../../../components/ui/own/specialist-select
 import BaseSearchForm from "../../../components/ui/own/base-search-form"
 import { CompanyDTO, EmployeeSearchOptionsResponseDTO, EmployeeSearchPayload, getSearchEmployeeCritera, PlaceDTO, SpecialistDTO } from "@/api/employee"
 
- 
 
- /*let specialists = [
-  {
-    label: "John Doe",
-    value: "john-doe",
-    image: defaultImage,
-    company: "TechCorp",
-    rating: 4.7,
-  },
-  {
-    label: "Anna Smith",
-    value: "anna-smith",
-    image:  defaultImage,
-    company: "HealthPlus",
-    rating: 4.9,
-  },
-  {
-    label: "Marco Müller",
-    value: "marco-muller",
-    image:  defaultImage,
-    company: "GreenCare",
-    rating: 4.6,
-  },
-]
-
-let companies = [
-  {
-    label: "AA",
-    value: "aa",
-    image: defaultImage,
-    rating: 4.7,
-  },
-  {
-    label: "BB",
-    value: "bb",
-    image:  defaultImage,
-    rating: 4.9,
-  },
-  {
-    label: "CC",
-    value: "cc",
-    image:  defaultImage,
-    rating: 4.6,
-  },
-] 
-
-let places = [
-  {
-    label: "Pécs",
-    value: "pecs",
-  },
-  {
-    label: "Budapest",
-    value: "budapest",
-  },
-  {
-    label: "Szeged",
-    value: "szeged",
-  },
-] */
-
-
- 
 export default function SearchForm() {
 
    const [specialistName, setSpecialistName] = useState("");

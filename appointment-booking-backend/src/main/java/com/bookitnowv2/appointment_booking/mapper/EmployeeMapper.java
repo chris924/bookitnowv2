@@ -23,25 +23,27 @@ public class EmployeeMapper {
                 employee.getName(),
                 employee.getAvatarUrl(),
                 employee.getCompany().getCompanyName(),
+                employee.getCompany().getPlace(),
                 employee.getRating()
         );
     }
 
-    public EmployeeGetResponseDTO toGetDTO(EmployeeDocument employee)
+    public EmployeeGetResponseDTO toGetDTO(EmployeeDocument employeeDoc)
     {
 
         return new EmployeeGetResponseDTO(
-                employee.getName(),
-                employee.getName(),
-                employee.getAvatarUrl(),
-                employee.getCompany(),
-                employee.getRating()
+                employeeDoc.getName(),
+                employeeDoc.getName(),
+                employeeDoc.getAvatarUrl(),
+                employeeDoc.getCompany(),
+                employeeDoc.getPlace(),
+                employeeDoc.getRating()
         );
     }
 
     public CompanyDTO addCompanyDTO(EmployeeDocument employeeDocument)
     {
-        return new CompanyDTO(employeeDocument.getCompany(), employeeDocument.getCompany(), "", 0.0);
+        return new CompanyDTO(employeeDocument.getCompany(), employeeDocument.getCompany(), employeeDocument.getCompanyAvatarUrl(), employeeDocument.getCompanyRating());
 
 
     }
@@ -59,7 +61,15 @@ public class EmployeeMapper {
 
 
     public EmployeeDocument toDocument(Employee employee) {
-       return new EmployeeDocument(employee.getId(), employee.getName(), employee.getCompany().getCompanyName(), employee.getCompany().getPlace(), employee.getAvatarUrl(), employee.getRating());
+       return new EmployeeDocument(employee.getId(),
+               employee.getName(),
+               employee.getCompany().getCompanyName(),
+               employee.getCompany().getAvatarUrl(),
+               employee.getCompany().getRating(),
+               employee.getCompany().getPlace(),
+               employee.getAvatarUrl(),
+               employee.getRating());
+
     }
 
 }

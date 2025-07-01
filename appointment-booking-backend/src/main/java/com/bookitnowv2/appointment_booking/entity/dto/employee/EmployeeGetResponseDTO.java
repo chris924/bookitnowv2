@@ -9,6 +9,7 @@ public class EmployeeGetResponseDTO {
     public String value;
     public String image;
     public String company;
+    public String place;
     public Double rating;
 
 }

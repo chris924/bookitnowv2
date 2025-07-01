@@ -40,26 +40,36 @@ public class ElasticEmployeeService {
     public EmployeeSearchOptionsResponseDTO searchByCriteria(EmployeeSearchRequestDTO dto) throws IOException {
         SearchResponse<EmployeeDocument> response;
 
-        if ((dto.getCompany() == null || dto.getCompany().isBlank()) &&
-                (dto.getName() == null || dto.getName().isBlank()) &&
-                (dto.getPlace() == null || dto.getPlace().isBlank())) {
+        try{
+            if ((dto.getCompany() == null || dto.getCompany().isBlank()) &&
+                    (dto.getName() == null || dto.getName().isBlank()) &&
+                    (dto.getPlace() == null || dto.getPlace().isBlank())) {
 
-            response = elasticsearchClient.search(s -> s
-                            .index("employees").query(q -> q.matchAll(m -> m)),
-                    EmployeeDocument.class
-            );
+                response = elasticsearchClient.search(s -> s
+                                .index("employees").query(q -> q.matchAll(m -> m)),
+                        EmployeeDocument.class
+                );
 
-        } else {
-            var boolQuery = getBuilder(dto);
+            } else {
+                var boolQuery = getBuilder(dto);
 
-            response = elasticsearchClient.search(s -> s
-                            .index("employees")
-                            .query(q -> q.bool(boolQuery.build())),
-                    EmployeeDocument.class
-            );
+                response = elasticsearchClient.search(s -> s
+                                .index("employees")
+                                .query(q -> q.bool(boolQuery.build())),
+                        EmployeeDocument.class
+                );
+            }
+        }catch (Exception e)
+        {
+            throw new RuntimeException(e);
         }
 
+
+
         EmployeeSearchOptionsResponseDTO result = new EmployeeSearchOptionsResponseDTO();
+        result.setCompanies(new ArrayList<>());
+        result.setPlaces(new ArrayList<>());
+        result.setSpecialists(new ArrayList<>());
 
         for (Hit<EmployeeDocument> hit : response.hits().hits()) {
             EmployeeDocument hitEmployee = hit.source();
