@@ -9,13 +9,30 @@ export interface TopRatedEmp {
   rating: number;
 }
 
-export interface EmployeeSearchCriteria {
+export interface SpecialistDTO {
   label: string;
   value: string;
-  name: string;
+  image: string;
   company: string;
-  place: string;
   rating: number;
+}
+
+export interface CompanyDTO {
+  label: string;
+  value: string;
+  image: string;
+  rating: number;
+}
+
+export interface PlaceDTO {
+  label: string;
+  value: string;
+}
+
+export interface EmployeeSearchOptionsResponseDTO {
+  specialists: SpecialistDTO[];
+  companies: CompanyDTO[];
+  places: PlaceDTO[];
 }
 
 export interface EmployeeSearchPayload {
@@ -30,7 +47,7 @@ export const getMostRatedEmployees = async (): Promise<TopRatedEmp[]> => {
   return response.data;
 };
 
-export const getSearchEmployeeCritera = async (employeeSearchPayload: EmployeeSearchPayload): Promise<EmployeeSearchCriteria[]> => {
+export const getSearchEmployeeCritera = async (employeeSearchPayload: EmployeeSearchPayload): Promise<EmployeeSearchOptionsResponseDTO> => {
   const response = await api.post('/employees/search-employee', employeeSearchPayload)
   return response.data
 }

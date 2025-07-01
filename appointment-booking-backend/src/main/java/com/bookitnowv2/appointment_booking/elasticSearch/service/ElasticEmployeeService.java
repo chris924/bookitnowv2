@@ -9,6 +9,7 @@ import com.bookitnowv2.appointment_booking.elasticSearch.document.EmployeeDocume
 import com.bookitnowv2.appointment_booking.elasticSearch.repository.IElasticEmployeeRepository;
 import com.bookitnowv2.appointment_booking.entity.Employee;
 import com.bookitnowv2.appointment_booking.entity.dto.employee.EmployeeGetResponseDTO;
+import com.bookitnowv2.appointment_booking.entity.dto.employee.EmployeeSearchOptionsResponseDTO;
 import com.bookitnowv2.appointment_booking.entity.dto.employee.EmployeeSearchRequestDTO;
 import com.bookitnowv2.appointment_booking.mapper.EmployeeMapper;
 import org.jetbrains.annotations.NotNull;
@@ -36,7 +37,7 @@ public class ElasticEmployeeService {
         elasticEmployeeRepository.save(employeeMapper.toDocument(employee));
     }
 
-    public List<EmployeeGetResponseDTO> searchByCriteria(EmployeeSearchRequestDTO dto) throws IOException {
+    public EmployeeSearchOptionsResponseDTO searchByCriteria(EmployeeSearchRequestDTO dto) throws IOException {
         SearchResponse<EmployeeDocument> response;
 
         if ((dto.getCompany() == null || dto.getCompany().isBlank()) &&
@@ -58,12 +59,14 @@ public class ElasticEmployeeService {
             );
         }
 
-        List<EmployeeGetResponseDTO> result = new ArrayList<>();
+        EmployeeSearchOptionsResponseDTO result = new EmployeeSearchOptionsResponseDTO();
 
         for (Hit<EmployeeDocument> hit : response.hits().hits()) {
             EmployeeDocument hitEmployee = hit.source();
             if (hitEmployee != null) {
-                result.add(employeeMapper.toGetDTO(hitEmployee));
+                result.companies.add(employeeMapper.addCompanyDTO(hitEmployee));
+                result.places.add(employeeMapper.addPlaceDTO(hitEmployee));
+                result.specialists.add(employeeMapper.addSpecialistDTO(hitEmployee));
             }
         }
 

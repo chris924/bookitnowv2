@@ -3,6 +3,7 @@ package com.bookitnowv2.appointment_booking.controller;
 import com.bookitnowv2.appointment_booking.elasticSearch.repository.IElasticEmployeeRepository;
 import com.bookitnowv2.appointment_booking.elasticSearch.service.ElasticEmployeeService;
 import com.bookitnowv2.appointment_booking.entity.dto.employee.EmployeeGetResponseDTO;
+import com.bookitnowv2.appointment_booking.entity.dto.employee.EmployeeSearchOptionsResponseDTO;
 import com.bookitnowv2.appointment_booking.entity.dto.employee.EmployeeSearchRequestDTO;
 import com.bookitnowv2.appointment_booking.service.EmployeeService;
 import jakarta.validation.Valid;
@@ -37,12 +38,12 @@ public class EmployeeController {
     }
 
     @PostMapping("/search-employee")
-    public ResponseEntity<List<EmployeeGetResponseDTO>> getSearchEmployee(@Valid @RequestBody EmployeeSearchRequestDTO employeeSearchRequestDTO, BindingResult bindingResult) {
+    public ResponseEntity<EmployeeSearchOptionsResponseDTO> getSearchEmployee(@Valid @RequestBody EmployeeSearchRequestDTO employeeSearchRequestDTO, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             throw new RuntimeException("Bad body for criteria search!");
         }
 
-        List<EmployeeGetResponseDTO> employeeResult;
+        EmployeeSearchOptionsResponseDTO employeeResult;
         try {
             employeeResult = elasticEmployeeService.searchByCriteria(employeeSearchRequestDTO);
         } catch (IOException e) {
