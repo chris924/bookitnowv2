@@ -11,7 +11,8 @@ public class UserMapper {
     {
         return new UserDocument(
                 user.getId(),
-                user.getName());
+                user.getName(),
+                user.getAvatarUrl());
     }
 
 }

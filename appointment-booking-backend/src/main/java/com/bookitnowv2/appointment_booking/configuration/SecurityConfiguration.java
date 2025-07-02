@@ -62,7 +62,7 @@ public class SecurityConfiguration {
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> {
-                    auth.requestMatchers("/uploads/avatars/**").permitAll();
+                    auth.requestMatchers("/avatar/**").permitAll();
                     auth.requestMatchers("/auth/**").permitAll();
                     auth.requestMatchers("/admin/**").hasRole("ADMIN");
                     auth.requestMatchers("/employees/most-rated").permitAll(); //TODO: ON ANOTHER CONTROLLER?
