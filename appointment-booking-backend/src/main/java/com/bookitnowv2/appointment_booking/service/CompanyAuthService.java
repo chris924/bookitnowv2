@@ -1,21 +1,20 @@
 package com.bookitnowv2.appointment_booking.service;
 
 import com.bookitnowv2.appointment_booking.repository.ICompanyRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
 public class CompanyAuthService implements UserDetailsService {
 
-    @Autowired
-    private PasswordEncoder encoder;
+    private final ICompanyRepository companyRepository;
 
-    @Autowired
-    private ICompanyRepository companyRepository;
+    public CompanyAuthService(ICompanyRepository companyRepository)
+    {
+       this.companyRepository = companyRepository;
+    }
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
@@ -25,7 +24,4 @@ public class CompanyAuthService implements UserDetailsService {
 
     }
 
-    {
-
-    }
 }

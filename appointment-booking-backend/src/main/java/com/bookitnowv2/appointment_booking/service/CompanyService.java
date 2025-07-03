@@ -1,14 +1,10 @@
 package com.bookitnowv2.appointment_booking.service;
 
-import com.bookitnowv2.appointment_booking.elasticSearch.document.CompanyDocument;
-import com.bookitnowv2.appointment_booking.elasticSearch.repository.IElasticCompanyRepository;
 import com.bookitnowv2.appointment_booking.elasticSearch.service.ElasticCompanyService;
 import com.bookitnowv2.appointment_booking.entity.Company;
 import com.bookitnowv2.appointment_booking.entity.dto.company.CompanyGetResponseDTO;
-import com.bookitnowv2.appointment_booking.entity.dto.company.CompanyRegistrationResponseDTO;
 import com.bookitnowv2.appointment_booking.entity.dto.company.CompanyUpdateDTO;
 import com.bookitnowv2.appointment_booking.exception.CompanyNotFoundException;
-import com.bookitnowv2.appointment_booking.mapper.AppointmentMapper;
 import com.bookitnowv2.appointment_booking.mapper.CompanyMapper;
 import com.bookitnowv2.appointment_booking.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,8 +19,8 @@ public class CompanyService {
     private final CompanyMapper companyMapper;
     private final ElasticCompanyService elasticCompanyService;
 
-    @Autowired
-    CompanyService(ICompanyRepository companyRepository,
+
+    public CompanyService(ICompanyRepository companyRepository,
                    ElasticCompanyService elasticCompanyService,
                    CompanyMapper companyMapper)
     {

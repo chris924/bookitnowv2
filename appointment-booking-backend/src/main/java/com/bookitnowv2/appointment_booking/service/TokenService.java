@@ -1,7 +1,6 @@
 package com.bookitnowv2.appointment_booking.service;
 
-import org.antlr.v4.runtime.Token;
-import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth2.jwt.*;

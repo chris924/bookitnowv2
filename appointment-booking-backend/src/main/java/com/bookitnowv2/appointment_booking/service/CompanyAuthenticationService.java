@@ -7,8 +7,6 @@ import com.bookitnowv2.appointment_booking.entity.dto.company.CompanyLoginRespon
 import com.bookitnowv2.appointment_booking.entity.dto.company.CompanyRegistrationResponseDTO;
 import com.bookitnowv2.appointment_booking.repository.ICompanyRepository;
 import com.bookitnowv2.appointment_booking.repository.IRoleRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -28,23 +26,20 @@ public class CompanyAuthenticationService {
     private final CompanyService companyService;
     private final AuthenticationManager authenticationManager;
     private final TokenService tokenService;
+    private final ICompanyRepository companyRepository;
+    private final IRoleRepository roleRepository;
+    private final PasswordEncoder passwordEncoder;
 
     public CompanyAuthenticationService(CompanyService companyService, AuthenticationManager authenticationManager,
-                                        TokenService tokenService)
+                                        TokenService tokenService, ICompanyRepository companyRepository, IRoleRepository roleRepository, PasswordEncoder passwordEncoder)
     {
         this.companyService = companyService;
         this.authenticationManager = authenticationManager;
         this.tokenService = tokenService;
+        this.companyRepository = companyRepository;
+        this.roleRepository = roleRepository;
+        this.passwordEncoder = passwordEncoder;
     }
-
-    @Autowired
-    private ICompanyRepository companyRepository;
-
-    @Autowired
-    private IRoleRepository roleRepository;
-
-    @Autowired
-    private PasswordEncoder passwordEncoder;
 
 
     public CompanyRegistrationResponseDTO registerCompany(String companyName, String password, String email, String appServiceName, String appServiceDescription, String description)

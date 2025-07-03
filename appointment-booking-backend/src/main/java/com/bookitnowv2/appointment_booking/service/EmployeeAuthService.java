@@ -10,12 +10,10 @@ import org.springframework.stereotype.Service;
 @Service
 public class EmployeeAuthService implements UserDetailsService {
 
-    private final PasswordEncoder passwordEncoder;
     private final IEmployeeRepository employeeRepository;
 
-    public EmployeeAuthService(PasswordEncoder passwordEncoder, IEmployeeRepository employeeRepository)
+    public EmployeeAuthService(IEmployeeRepository employeeRepository)
     {
-        this.passwordEncoder = passwordEncoder;
         this.employeeRepository = employeeRepository;
     }
 

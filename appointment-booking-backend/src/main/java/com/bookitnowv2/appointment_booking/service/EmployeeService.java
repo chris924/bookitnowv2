@@ -1,7 +1,5 @@
 package com.bookitnowv2.appointment_booking.service;
 
-import com.bookitnowv2.appointment_booking.elasticSearch.document.EmployeeDocument;
-import com.bookitnowv2.appointment_booking.elasticSearch.repository.IElasticEmployeeRepository;
 import com.bookitnowv2.appointment_booking.elasticSearch.service.ElasticEmployeeService;
 import com.bookitnowv2.appointment_booking.entity.Employee;
 import com.bookitnowv2.appointment_booking.entity.dto.employee.EmployeeGetResponseDTO;
@@ -17,23 +15,17 @@ import java.util.List;
 @Service
 public class EmployeeService {
 
-    private final IAppointmentRepository appointmentRepository;
-    private final ICompanyRepository companyRepository;
-    private final IUserRepository userRepository;
-    private final IServiceEntityRepository serviceRepository;
+
     private final IEmployeeRepository employeeRepository;
     private final ElasticEmployeeService elasticEmployeeService;
     private final EmployeeMapper employeeMapper;
 
 
     @Autowired
-    EmployeeService(IAppointmentRepository appointmentRepository, ICompanyRepository companyRepository, IUserRepository userRepository, IServiceEntityRepository serviceRepository, IEmployeeRepository employeeRepository,
+    EmployeeService( IEmployeeRepository employeeRepository,
                     EmployeeMapper employeeMapper, ElasticEmployeeService elasticEmployeeService)
     {
-        this.appointmentRepository = appointmentRepository;
-        this.companyRepository = companyRepository;
-        this.userRepository = userRepository;
-        this.serviceRepository = serviceRepository;
+
         this.employeeRepository = employeeRepository;
         this.employeeMapper = employeeMapper;
         this.elasticEmployeeService = elasticEmployeeService;

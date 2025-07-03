@@ -5,7 +5,6 @@ import com.bookitnowv2.appointment_booking.entity.dto.user.UserLoginDTO;
 import com.bookitnowv2.appointment_booking.entity.dto.user.UserLoginResponseDTO;
 import com.bookitnowv2.appointment_booking.entity.dto.user.UserRegistrationDTO;
 import com.bookitnowv2.appointment_booking.entity.dto.user.UserRegistrationResponseDTO;
-import com.bookitnowv2.appointment_booking.service.UserAuthService;
 import com.bookitnowv2.appointment_booking.service.UserAuthenticationService;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
@@ -18,11 +17,10 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-
 import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
+
 
 @RestController
 @RequestMapping("/auth/user")

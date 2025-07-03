@@ -3,7 +3,6 @@ package com.bookitnowv2.appointment_booking.controller;
 import com.bookitnowv2.appointment_booking.elasticSearch.document.UserDocument;
 import com.bookitnowv2.appointment_booking.elasticSearch.service.ElasticUserService;
 import com.bookitnowv2.appointment_booking.entity.User;
-import com.bookitnowv2.appointment_booking.service.UserAuthService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -13,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;

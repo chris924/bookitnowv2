@@ -1,6 +1,6 @@
 package com.bookitnowv2.appointment_booking.controller;
 
-import com.bookitnowv2.appointment_booking.elasticSearch.repository.IElasticEmployeeRepository;
+
 import com.bookitnowv2.appointment_booking.elasticSearch.service.ElasticEmployeeService;
 import com.bookitnowv2.appointment_booking.entity.dto.employee.EmployeeGetResponseDTO;
 import com.bookitnowv2.appointment_booking.entity.dto.employee.EmployeeSearchOptionsResponseDTO;
@@ -9,7 +9,6 @@ import com.bookitnowv2.appointment_booking.service.EmployeeService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 

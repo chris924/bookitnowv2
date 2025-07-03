@@ -1,6 +1,5 @@
 package com.bookitnowv2.appointment_booking.controller;
 
-import jakarta.annotation.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;

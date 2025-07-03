@@ -1,14 +1,9 @@
 package com.bookitnowv2.appointment_booking.service;
 
-import com.bookitnowv2.appointment_booking.elasticSearch.document.UserDocument;
-import com.bookitnowv2.appointment_booking.elasticSearch.repository.IElasticEmployeeRepository;
-import com.bookitnowv2.appointment_booking.elasticSearch.repository.IElasticUserRepository;
 import com.bookitnowv2.appointment_booking.elasticSearch.service.ElasticUserService;
 import com.bookitnowv2.appointment_booking.entity.User;
 import com.bookitnowv2.appointment_booking.exception.UserNotFoundException;
-import com.bookitnowv2.appointment_booking.mapper.UserMapper;
 import com.bookitnowv2.appointment_booking.repository.IUserRepository;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service

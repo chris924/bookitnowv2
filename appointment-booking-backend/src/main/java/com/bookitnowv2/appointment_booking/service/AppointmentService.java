@@ -19,18 +19,15 @@ public class AppointmentService {
     private final ICompanyRepository companyRepository;
     private final IUserRepository userRepository;
     private final IServiceEntityRepository serviceRepository;
-    private final IEmployeeRepository employeeRepository;
     private final AppointmentMapper appointmentMapper;
 
     @Autowired
-    AppointmentService(IAppointmentRepository appointmentRepository, ICompanyRepository companyRepository, IUserRepository userRepository, IServiceEntityRepository serviceRepository, IEmployeeRepository employeeRepository,
-                       AppointmentMapper appointmentMapper)
+    AppointmentService(IAppointmentRepository appointmentRepository, ICompanyRepository companyRepository, IUserRepository userRepository, IServiceEntityRepository serviceRepository, AppointmentMapper appointmentMapper)
     {
         this.appointmentRepository = appointmentRepository;
         this.companyRepository = companyRepository;
         this.userRepository = userRepository;
         this.serviceRepository = serviceRepository;
-        this.employeeRepository = employeeRepository;
         this.appointmentMapper = appointmentMapper;
     }
 
