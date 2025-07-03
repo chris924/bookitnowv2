@@ -19,10 +19,6 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.sql.Timestamp;
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
@@ -46,11 +42,10 @@ public class DatabaseSeeder implements CommandLineRunner {
 
     private final IElasticEmployeeRepository elasticEmployeeRepository;
     private final EmployeeMapper employeeMapper;
+    private final String serverAddress;
 
-    private final String avatarDirectory;
-
-    public DatabaseSeeder(IAppointmentRepository appointmentRepository, ICompanyRepository companyRepository, IRoleRepository roleRepository, IUserRepository userRepository, PasswordEncoder passwordEncoder, @Value("${avatar.directory.path}") String avatarDirectory,
-                          IServiceEntityRepository serviceRepository, IEmployeeRepository employeeRepository, IElasticEmployeeRepository elasticEmployeeRepository, EmployeeMapper employeeMapper) {
+    public DatabaseSeeder(IAppointmentRepository appointmentRepository, ICompanyRepository companyRepository, IRoleRepository roleRepository, IUserRepository userRepository, PasswordEncoder passwordEncoder,
+                          IServiceEntityRepository serviceRepository, IEmployeeRepository employeeRepository, IElasticEmployeeRepository elasticEmployeeRepository, EmployeeMapper employeeMapper, @Value("${server.ip.address}") String serverAddress) {
         this.appointmentRepository = appointmentRepository;
         this.companyRepository = companyRepository;
 
@@ -59,9 +54,9 @@ public class DatabaseSeeder implements CommandLineRunner {
         this.employeeRepository = employeeRepository;
         this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
-        this.avatarDirectory = avatarDirectory;
         this.elasticEmployeeRepository = elasticEmployeeRepository;
         this.employeeMapper = employeeMapper;
+        this.serverAddress = serverAddress;
     }
 
     @Override
@@ -79,7 +74,6 @@ public class DatabaseSeeder implements CommandLineRunner {
         companyRepository.deleteAll();
         roleRepository.deleteAll();
         elasticEmployeeRepository.deleteAll();
-        deleteAvatarDirectoryContents();
 
         createRolesIfNotExists();
         createAdmin();
@@ -109,44 +103,42 @@ public class DatabaseSeeder implements CommandLineRunner {
         Set<Role> userRoles = new HashSet<>();
         userRoles.add(roleRepository.findByAuthority("USER").orElseThrow(() -> new RuntimeException("USER role not found")));
 
-       User user1 = createUser("John Doe", "john.doe", "john.doe@email.com", "password123", new Timestamp(System.currentTimeMillis()), new ArrayList<>(), userRoles);
-       User user2 = createUser("Alice Smith", "alice.smith", "alice.smith@email.com", "securePass", new Timestamp(System.currentTimeMillis()), new ArrayList<>(), userRoles);
-       User user3 = createUser("Bob Johnson", "bob.johnson", "bob.johnson@email.com", "qwerty", new Timestamp(System.currentTimeMillis()), new ArrayList<>(), userRoles);
+        createUser("John Doe", "john.doe", "john.doe@email.com", "password123", new Timestamp(System.currentTimeMillis()), new ArrayList<>(), userRoles);
+        createUser("Alice Smith", "alice.smith", "alice.smith@email.com", "securePass", new Timestamp(System.currentTimeMillis()), new ArrayList<>(), userRoles);
+        createUser("Bob Johnson", "bob.johnson", "bob.johnson@email.com", "qwerty", new Timestamp(System.currentTimeMillis()), new ArrayList<>(), userRoles);
 
 
         Set<Role> companyRoles = new HashSet<>();
         companyRoles.add(roleRepository.findByAuthority("COMPANY").orElseThrow(() -> new RuntimeException("COMPANY role not found")));
 
 
-      Company company1 = createCompany("Car Detailing", "cardetailing@gmail.com", "password", "We work with cars with passion", "Car detailing", "We detail and customize your car!", companyRoles, "Budapest");
-      Company company2 = createCompany("IT Solutions", "itsolutions@gmail.com", "password", "Providing cutting-edge IT solutions", "IT Services", "Customized IT solutions for your business", companyRoles, "Pécs");
-      Company company3 = createCompany("Home Cleaning", "homecleaning@gmail.com", "password", "Your trusted partner in home cleaning", "Home Cleaning", "We make your home shine!", companyRoles, "Szolnok");
+        Company company1 = createCompany("Car Detailing", "cardetailing@gmail.com", "password", "We work with cars with passion", "Car detailing", "We detail and customize your car!", companyRoles, "Budapest");
+        Company company2 = createCompany("IT Solutions", "itsolutions@gmail.com", "password", "Providing cutting-edge IT solutions", "IT Services", "Customized IT solutions for your business", companyRoles, "Pécs");
+        Company company3 = createCompany("Home Cleaning", "homecleaning@gmail.com", "password", "Your trusted partner in home cleaning", "Home Cleaning", "We make your home shine!", companyRoles, "Szolnok");
 
 
-      createAppointment(company1, 1);
+        createAppointment(company1, 1);
         createAppointment(company1, 2);
-      createAppointment(company2, 1);
+        createAppointment(company2, 1);
         createAppointment(company2, 2);
-      createAppointment(company3, 1);
+        createAppointment(company3, 1);
         createAppointment(company3, 2);
 
         Set<Role> employeeRoles = new HashSet<>();
         employeeRoles.add(roleRepository.findByAuthority("EMPLOYEE").orElseThrow(() -> new RuntimeException("EMPLOYEE role not found")));
 
 
-        Employee employee1 = createEmployee("John David", "jdavid", "jdavid@gmail.com", "jdavidpass", new Timestamp(System.currentTimeMillis()), employeeRoles, company1, 4.5, "http://localhost:8080/avatar/employee/default-avatar.jpg");
+        Employee employee1 = createEmployee("John David", "jdavid", "jdavid@gmail.com", "jdavidpass", new Timestamp(System.currentTimeMillis()), employeeRoles, company1, 4.5, serverAddress + "/avatar/employee/default-avatar.jpg");
 
         ServiceEntity service1 = createService("Shave", "Shaving", (long) 15.0, employee1, company1);
 
         Set<ServiceEntity> serviceSet = new HashSet<>();
         serviceSet.add(service1);
-
         employee1.setServices(serviceSet);
     }
 
 
-    @NotNull
-    private User createUser(String name, String username, String email, String password, Timestamp createdAt, List<Appointment> appointments, Set<Role> roles) {
+    private void createUser(String name, String username, String email, String password, Timestamp createdAt, List<Appointment> appointments, Set<Role> roles) {
 
         User user = new User();
         user.setName(name);
@@ -159,12 +151,10 @@ public class DatabaseSeeder implements CommandLineRunner {
 
         userRepository.save(user);
 
-        return user;
     }
 
     @NotNull
-    private Employee createEmployee(String name, String username, String email, String password, Timestamp createdAt, Set<Role> roles, Company company, Double rating, String avatarUrl)
-    {
+    private Employee createEmployee(String name, String username, String email, String password, Timestamp createdAt, Set<Role> roles, Company company, Double rating, String avatarUrl) {
         Employee employee = new Employee();
         employee.setName(name);
         employee.setUsername(username);
@@ -174,7 +164,8 @@ public class DatabaseSeeder implements CommandLineRunner {
         employee.setServices(new HashSet<>());
         employee.setCompany(company);
         employee.setRating(rating);
-        employee.setAvatarUrl(avatarUrl); // TODO: Refactor localhost here?
+        employee.setCreatedAt(createdAt);
+        employee.setAvatarUrl(avatarUrl);
 
         employeeRepository.save(employee);
 
@@ -185,8 +176,7 @@ public class DatabaseSeeder implements CommandLineRunner {
         return employee;
     }
 
-    private ServiceEntity createService(String name, String description, Long price, Employee employee, Company company)
-    {
+    private ServiceEntity createService(String name, String description, Long price, Employee employee, Company company) {
         ServiceEntity service = new ServiceEntity();
         service.setName(name);
         service.setDescription(description);
@@ -198,7 +188,6 @@ public class DatabaseSeeder implements CommandLineRunner {
 
         return service;
     }
-
 
 
     private Company createCompany(String companyName, String email, String password, String description, String serviceName, String serviceDescription, Set<Role> roles, String place) {
@@ -241,7 +230,6 @@ public class DatabaseSeeder implements CommandLineRunner {
     }
 
 
-
     private void createRolesIfNotExists() {
         if (roleRepository.findByAuthority("COMPANY").isEmpty()) {
             Role companyRole = new Role("COMPANY");
@@ -265,19 +253,5 @@ public class DatabaseSeeder implements CommandLineRunner {
         }
     }
 
-    private void deleteAvatarDirectoryContents() {
-        try {
-            Path avatarDirectoryPath = Paths.get(avatarDirectory);
-            Files.list(avatarDirectoryPath)
-                    .forEach(file -> {
-                        try {
-                            Files.delete(file);
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                    });
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
 }
+

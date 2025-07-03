@@ -22,7 +22,7 @@ export const useAuthStore = create<UserAuthState>((set) => ({
  
   checkAuth: async () => {
     try {
-      const res = await axios.get("http://localhost:8080/auth/user/me", {
+      const res = await axios.get("http://localhost:8080/auth-info", {
         withCredentials: true,
       })
       if (res.status === 200) {

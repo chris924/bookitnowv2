@@ -34,6 +34,8 @@ public class Employee implements UserDetails {
 
     private Double rating;
 
+    private Timestamp createdAt;
+
     @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
     private Set<ServiceEntity> services;

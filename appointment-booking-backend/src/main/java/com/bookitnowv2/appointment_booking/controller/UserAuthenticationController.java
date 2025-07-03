@@ -1,7 +1,7 @@
 package com.bookitnowv2.appointment_booking.controller;
 
 import com.bookitnowv2.appointment_booking.entity.User;
-import com.bookitnowv2.appointment_booking.entity.dto.user.UserLoginDTO;
+import com.bookitnowv2.appointment_booking.entity.dto.LoginDTO;
 import com.bookitnowv2.appointment_booking.entity.dto.user.UserLoginResponseDTO;
 import com.bookitnowv2.appointment_booking.entity.dto.user.UserRegistrationDTO;
 import com.bookitnowv2.appointment_booking.entity.dto.user.UserRegistrationResponseDTO;
@@ -35,7 +35,7 @@ public class UserAuthenticationController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> loginUser(@Valid @RequestBody UserLoginDTO body, @NotNull BindingResult bindingResult, HttpServletResponse servletResponse) {
+    public ResponseEntity<?> loginUser(@Valid @RequestBody LoginDTO body, @NotNull BindingResult bindingResult, HttpServletResponse servletResponse) {
         if (bindingResult.hasErrors()) {
             throw new BadCredentialsException("Invalid user login request body!");
         }
@@ -50,7 +50,7 @@ public class UserAuthenticationController {
         ResponseCookie cookie = ResponseCookie.from("jwt", token)
                 .httpOnly(true)
                 // ! ONLY FOR LOCALHOST TESTING !
-                .secure(false)
+                .secure(false) //TODO: Change in the future
                 // ! ONLY FOR LOCALHOST TESTING !
                 .sameSite("Strict")
                 .path("/")
@@ -74,24 +74,6 @@ public class UserAuthenticationController {
 
         return ResponseEntity.ok(response);
 
-    }
-
-    @GetMapping("/me")
-    public ResponseEntity<?> checkUserAuth(Authentication authentication)
-    {
-        if (authentication == null || !authentication.isAuthenticated()) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User Not authenticated!");
-        }
-
-        User foundUser = (User) authentication.getPrincipal();
-
-        Map<String, Object> userInfo = new HashMap<>();
-
-        userInfo.put("id", foundUser.getId());
-        userInfo.put("name", foundUser.getName());
-        userInfo.put("email", foundUser.getEmail());
-
-        return ResponseEntity.ok(userInfo);
     }
 
 }
