@@ -29,11 +29,11 @@ public class EmployeeController {
     }
 
     @GetMapping("/most-rated")
-    public ResponseEntity<?> getMostRatedEmployees()
+    public ResponseEntity<List<EmployeeGetResponseDTO>> getMostRatedEmployees()
     {
         List<EmployeeGetResponseDTO> topEmployees =  employeeService.getMostRatedEmployees();
 
-        return ResponseEntity.status(HttpStatus.OK).body(topEmployees);
+        return ResponseEntity.ok(topEmployees);
     }
 
     @PostMapping("/search-employee")

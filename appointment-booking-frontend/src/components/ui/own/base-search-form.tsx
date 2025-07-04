@@ -75,7 +75,7 @@ export default function BaseSearchForm<T extends BaseItemInterface>({ title, typ
           control={form.control}
           name="type"
           render={({ field }) => {
-            const selected = options.find((s : BaseItemInterface) => s.value === field.value);
+            const selected = options.find((s : BaseItemInterface) => s.value === field.value); //TODO: Remove filtering logic from frontend, move it to backend
 
             return (
               <FormItem className="flex flex-col">

@@ -12,8 +12,4 @@ import lombok.Setter;
 public class CompanyLoginResponseDTO {
 
     private String email;
-
-    private String jwt;
-
-
 }
