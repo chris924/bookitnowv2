@@ -44,13 +44,14 @@ interface SearchFormPropInterface<T extends BaseItemInterface>
     title: string;
     type: string;
     options: T[];
-    onSelect: (selected: T)  => void;
+    selected?: T;
+    onSelect: (selected: T | undefined)  => void;
     onChange: (input: string) => void;
 }
 
 
  
-export default function BaseSearchForm<T extends BaseItemInterface>({ title, type, options, onSelect, onChange }: SearchFormPropInterface<T>) {
+export default function BaseSearchForm<T extends BaseItemInterface>({ title, type, options, selected, onSelect, onChange }: SearchFormPropInterface<T>) {
 
   const FormSchema = z.object({
     type: z.string({
@@ -75,12 +76,13 @@ export default function BaseSearchForm<T extends BaseItemInterface>({ title, typ
           control={form.control}
           name="type"
           render={({ field }) => {
-            const selected = options.find((s : BaseItemInterface) => s.value === field.value); //TODO: Remove filtering logic from frontend, move it to backend
-
             return (
               <FormItem className="flex flex-col">
                 <FormLabel>{title}</FormLabel>
-                <Popover open={open} onOpenChange={setOpen}>
+                <Popover open={open} onOpenChange={(nextOpen) => {
+                    setOpen(nextOpen);
+                    onChange("");                    
+                  }}>
                   <PopoverTrigger asChild>
                     <FormControl>
                       <Button
@@ -112,21 +114,30 @@ export default function BaseSearchForm<T extends BaseItemInterface>({ title, typ
                     </FormControl>
                   </PopoverTrigger>
                   <PopoverContent className="w-[300px] md:w-[500px] p-0">
+                    
                     <Command>
                       <input type="text" className="outline-double w-full p-2" placeholder={title + " Keresés"} onChange={(e) =>onChange(e.target.value)}>
                       </input>
                       <CommandList>
                         <CommandEmpty>{"Nem található "+ title}</CommandEmpty>
                         <CommandGroup className="">
-                          {options.map((option: BaseItemInterface) => (
+                          {options.map((option) => (
                             <CommandItem
                               value={option.label}
                               key={option.value}
-                              onSelect={() => {
-                                form.setValue("type", option.value);
-                                 onChange(option.value);
+                             onSelect={() => {
+                                if (option.value === selected?.value) {
+                                  form.setValue("type", "");
+                                  onSelect(undefined); // deselect
+                                  onChange("");
+                                } else {
+                                  form.setValue("type", option.value);
+                                  onSelect(option);
+                                  onChange(option.value);
+                                }
                                 setOpen(false);
                               }}
+                              
                               className="py-2 md:text-2xl"
                             >
                               <div className="flex items-center gap-3 w-full">

@@ -84,24 +84,47 @@ public class ElasticEmployeeService {
     private static BoolQuery.@NotNull Builder getBuilder(EmployeeSearchRequestDTO dto) {
         BoolQuery.Builder boolQuery = new BoolQuery.Builder();
 
-        if (dto.getName() != null && !dto.getName().isBlank()) {
+        boolean hasName = dto.getName() != null && !dto.getName().isBlank();
+        boolean hasCompany = dto.getCompany() != null && !dto.getCompany().isBlank();
+        boolean hasPlace = dto.getPlace() != null && !dto.getPlace().isBlank();
+
+        if (hasName) {
             boolQuery.must(q -> q.match(m -> m
                     .field("name")
                     .query(dto.getName())
                     .fuzziness("AUTO")));
         }
 
-        if (dto.getCompany() != null && !dto.getCompany().isBlank()) {
-            boolQuery.should(q -> q.prefix(p -> p
-                    .field("company")
-                    .value(dto.getCompany())));
+        // 2. Company logic
+        if (hasCompany) {
+            if (!hasName && !hasPlace) {
+                // only company is filled 
+                boolQuery.must(q -> q.match(m -> m
+                        .field("company")
+                        .query(dto.getCompany())
+                        .fuzziness("AUTO")
+                ));
+            } else {
+                // combine with other fields
+                boolQuery.should(q -> q.term(t -> t.field("company").value(dto.getCompany())));
+            }
         }
 
-        if (dto.getPlace() != null && !dto.getPlace().isBlank()) {
-            boolQuery.should(q -> q.prefix(p -> p
-                    .field("place")
-                    .value(dto.getPlace())));
+        // 3. Place logic
+        if (hasPlace) {
+            if (!hasName && !hasCompany) {
+                // only place is filled — must restrict
+                boolQuery.must(q -> q.match(m -> m
+                        .field("place")
+                        .query(dto.getPlace())
+                        .fuzziness("AUTO")
+                ));
+            } else {
+                // combine with others
+                boolQuery.should(q -> q.term(t -> t.field("place").value(dto.getPlace())));
+            }
         }
+
         return boolQuery;
     }
 }
