@@ -113,10 +113,8 @@ export default function BaseSearchForm<T extends BaseItemInterface>({ title, typ
                   </PopoverTrigger>
                   <PopoverContent className="w-[300px] md:w-[500px] p-0">
                     <Command>
-                      <CommandInput
-                        placeholder={title}
-                        className="h-9"
-                      />
+                      <input type="text" className="outline-double w-full p-2" placeholder={title + " Keresés"} onChange={(e) =>onChange(e.target.value)}>
+                      </input>
                       <CommandList>
                         <CommandEmpty>{"Nem található "+ title}</CommandEmpty>
                         <CommandGroup className="">

@@ -92,13 +92,13 @@ public class ElasticEmployeeService {
         }
 
         if (dto.getCompany() != null && !dto.getCompany().isBlank()) {
-            boolQuery.must(q -> q.prefix(p -> p
+            boolQuery.should(q -> q.prefix(p -> p
                     .field("company")
                     .value(dto.getCompany())));
         }
 
         if (dto.getPlace() != null && !dto.getPlace().isBlank()) {
-            boolQuery.must(q -> q.prefix(p -> p
+            boolQuery.should(q -> q.prefix(p -> p
                     .field("place")
                     .value(dto.getPlace())));
         }
