@@ -9,6 +9,9 @@ import com.bookitnowv2.appointment_booking.elasticSearch.repository.IElasticEmpl
 import com.bookitnowv2.appointment_booking.entity.Employee;
 import com.bookitnowv2.appointment_booking.entity.dto.employee.EmployeeSearchOptionsResponseDTO;
 import com.bookitnowv2.appointment_booking.entity.dto.employee.EmployeeSearchRequestDTO;
+import com.bookitnowv2.appointment_booking.entity.dto.employee.SearchOptionDetails.CompanyDTO;
+import com.bookitnowv2.appointment_booking.entity.dto.employee.SearchOptionDetails.PlaceDTO;
+import com.bookitnowv2.appointment_booking.entity.dto.employee.SearchOptionDetails.SpecialistDTO;
 import com.bookitnowv2.appointment_booking.mapper.EmployeeMapper;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
@@ -72,9 +75,21 @@ public class ElasticEmployeeService {
         for (Hit<EmployeeDocument> hit : response.hits().hits()) {
             EmployeeDocument hitEmployee = hit.source();
             if (hitEmployee != null) {
-                result.companies.add(employeeMapper.addCompanyDTO(hitEmployee));
-                result.places.add(employeeMapper.addPlaceDTO(hitEmployee));
-                result.specialists.add(employeeMapper.addSpecialistDTO(hitEmployee));
+                CompanyDTO companyDTO = employeeMapper.addCompanyDTO(hitEmployee);
+                PlaceDTO placeDTO = employeeMapper.addPlaceDTO(hitEmployee);
+                SpecialistDTO specialistDTO = employeeMapper.addSpecialistDTO(hitEmployee);
+                if(!result.companies.contains(companyDTO))
+                {
+                    result.companies.add(companyDTO);
+                }
+                if(!result.places.contains(placeDTO))
+                {
+                    result.places.add(placeDTO);
+                }
+                if(!result.specialists.contains(specialistDTO))
+                {
+                    result.specialists.add(specialistDTO);
+                }
             }
         }
 
@@ -89,40 +104,32 @@ public class ElasticEmployeeService {
         boolean hasPlace = dto.getPlace() != null && !dto.getPlace().isBlank();
 
         if (hasName) {
-            boolQuery.must(q -> q.match(m -> m
+            boolQuery.must(q -> q.matchPhrasePrefix(m -> m
                     .field("name")
-                    .query(dto.getName())
-                    .fuzziness("AUTO")));
+                    .query(dto.getName())));
         }
 
         // 2. Company logic
         if (hasCompany) {
-            if (!hasName && !hasPlace) {
+
                 // only company is filled 
-                boolQuery.must(q -> q.match(m -> m
+                boolQuery.must(q -> q.matchPhrasePrefix(m -> m
                         .field("company")
-                        .query(dto.getCompany())
-                        .fuzziness("AUTO")
-                ));
-            } else {
-                // combine with other fields
-                boolQuery.should(q -> q.term(t -> t.field("company").value(dto.getCompany())));
-            }
+                        .query(dto.getCompany())));
+
         }
 
         // 3. Place logic
         if (hasPlace) {
-            if (!hasName && !hasCompany) {
+
                 // only place is filled — must restrict
-                boolQuery.must(q -> q.match(m -> m
+                boolQuery.must(q -> q.matchPhrasePrefix(m -> m
                         .field("place")
-                        .query(dto.getPlace())
-                        .fuzziness("AUTO")
-                ));
-            } else {
+                        .query(dto.getPlace())));
+
                 // combine with others
                 boolQuery.should(q -> q.term(t -> t.field("place").value(dto.getPlace())));
-            }
+
         }
 
         return boolQuery;

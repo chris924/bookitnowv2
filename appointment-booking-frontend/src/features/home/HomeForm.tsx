@@ -73,37 +73,32 @@ export default function HomeForm()
       }, [])
 
 
-    return(
-        <>
-        <div className="text-3xl md:text-6xl text-center mt-24">
-        <p>Foglalj időpontot profikhoz,</p>
-       
+   return (
+  <div className="flex flex-col items-center text-center px-4">
+    <div className="text-3xl md:text-6xl mt-24">
+      <p>Foglalj időpontot profikhoz,</p>
+    </div>
 
-        </div>
-        <div className="text-3xl md:text-6xl text-center pt-3.5 pb-20 ">
-        <p>még ma!</p>
-        </div>
-          
-        <div className="flex justify-center">
-        <SearchForm/>   
-        </div>
+    <div className="text-3xl md:text-6xl pt-3.5 pb-20">
+      <p>még ma!</p>
+    </div>
 
-        <div className="flex justify-center m-10 text-xl md:text-4xl">
-            Kiemelt Szakemberek
-        </div>
+    <div className="w-full">
+      <SearchForm />
+    </div>
+    
 
-        <div className="flex justify-center">    
-        <FeaturedSpecialist specialists={specialists}/>
-        </div>
+    <div className="mt-20 mb-10 text-xl md:text-4xl">
+      Kiemelt Szakemberek
+    </div>
 
-        <div className="flex justify-center m-10 text-xl md:text-4xl">
-            Legjobbra értékelt Szakemberek
-        </div>
+    <FeaturedSpecialist specialists={specialists} />
 
-        <div className="flex justify-center">
-          {topRatedEmployees && <MostRatedSpecialist specialists={topRatedEmployees}/> }    
-        </div>
+    <div className="mt-20 mb-10 text-xl md:text-4xl">
+      Legjobbra értékelt Szakemberek
+    </div>
 
-        </>
-    )
+    {topRatedEmployees && <MostRatedSpecialist specialists={topRatedEmployees} />}
+  </div>
+);
 }

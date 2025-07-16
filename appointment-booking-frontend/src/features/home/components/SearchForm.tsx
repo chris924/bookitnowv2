@@ -8,6 +8,7 @@ import defaultImage from "@/assets/default.jpg"
 import SpecialistSelectorForm from "../../../components/ui/own/specialist-selector(not-used)"
 import BaseSearchForm, { BaseItemInterface } from "../../../components/ui/own/base-search-form"
 import { CompanyDTO, EmployeeSearchOptionsResponseDTO, EmployeeSearchPayload, getSearchEmployeeCritera, PlaceDTO, SpecialistDTO } from "@/api/employee"
+import SpecialistGrid from "./SpecialistGrid"
 
 
 export default function SearchForm() {
@@ -24,10 +25,14 @@ export default function SearchForm() {
   const [selectedPlace, setSelectedPlace] = useState<BaseItemInterface | undefined>();
   const [selectedCompany, setSelectedCompany] = useState<CompanyDTO | undefined>();
 
+  const [isLoading, setIsLoading] = useState(true);
+
+   const [gridResultSpecialists, setGridResultSpecialists] = useState<SpecialistDTO[]>([]);
+
   useEffect(() => {
   const handler = setTimeout(() => {
     const fetchSearchResults = async () => {
-      
+      setIsLoading(true);
 
       const payload: EmployeeSearchPayload = {
       name: specialistName,
@@ -36,12 +41,24 @@ export default function SearchForm() {
     };
 
     console.log("PAYLOAD: ", payload)
-
+    try{
     const response: EmployeeSearchOptionsResponseDTO  = await getSearchEmployeeCritera(payload);
     console.log(response)
     setResponseSpecialists(response.specialists);
     setResponsePlaces(response.places);
     setResponseCompanies(response.companies);
+
+      if(selectedSpecialist || selectedCompany || selectedPlace)
+        setGridResultSpecialists(response.specialists);
+      else
+        setGridResultSpecialists([]);
+
+    }
+    finally
+    {
+      setIsLoading(false);
+    }
+    
     }
     
     fetchSearchResults();
@@ -53,33 +70,56 @@ export default function SearchForm() {
       clearTimeout(handler);
     };
 
-  }, [specialistName, specialistCompany, specialistPlace])
+  }, [specialistName, specialistCompany, specialistPlace, selectedSpecialist])
 
-  const FormSchema = z.object({
-    specialist: z.string({
-      required_error: "Please select a specialist.",
-    }),
-  })
-
-  const form = useForm<z.infer<typeof FormSchema>>({
-    resolver: zodResolver(FormSchema),
-  })
- 
-  function onSubmit(data: z.infer<typeof FormSchema>) {
-    toast("Submitted succesfully!")
-  }
-  
-  const [open, setOpen] = useState(false);
 
   return (
-    <>
-    <div className="space-y-5">
-    <BaseSearchForm title={"Szakember"} type="specialist" options={responseSpecialists} onSelect={(selectedSpec) => setSelectedSpecialist(selectedSpec)} onChange={(specialistName) => setSpecialistName(specialistName)} selected={selectedSpecialist} />
-    <BaseSearchForm title={"Üzlet"} type="company" options={responseCompanies} onSelect={(selectedComp) => setSelectedCompany(selectedComp)} onChange={(specialistCompany) => setSpecialistCompany(specialistCompany)} selected={selectedCompany} />
-    <BaseSearchForm title={"Hely"} type="place" options={responsePlaces} onSelect={(selectedPlace) => setSelectedPlace(selectedPlace)} onChange={(specialistPlace) => setSpecialistPlace(specialistPlace)} selected={selectedPlace} />
-    </div>
-    
-    </>
-  )
+    <div className="w-full flex flex-col justify-center items-center"> 
 
+      <div className="max-w-5xl">
+        <section className="space-y-5">
+          <BaseSearchForm
+            title="Szakember"
+            type="specialist"
+            options={responseSpecialists}
+            onSelect={setSelectedSpecialist}
+            onChange={setSpecialistName}
+            selected={selectedSpecialist}
+
+          />
+          <BaseSearchForm
+            title="Üzlet"
+            type="company"
+            options={responseCompanies}
+            onSelect={setSelectedCompany}
+            onChange={setSpecialistCompany}
+            selected={selectedCompany}
+          />
+          <BaseSearchForm
+            title="Hely"
+            type="place"
+            options={responsePlaces}
+            onSelect={setSelectedPlace}
+            onChange={setSpecialistPlace}
+            selected={selectedPlace}
+          />
+        </section>
+      </div>
+
+      {/* Grid Container (full width, but content centered) */}
+      {(gridResultSpecialists) && (
+
+          <div className="w-full mt-4 flex flex-grow justify-center">
+            <section className="p-5 rounded-lg">
+              {isLoading ? (
+              <div className="text-center text-gray-500">Keresés folyamatban...</div>
+            ) : (
+              <SpecialistGrid specialists={gridResultSpecialists} />
+            )}
+            </section>
+          </div>
+        
+      )}
+    </div>
+  );
 }

@@ -81,7 +81,13 @@ export default function BaseSearchForm<T extends BaseItemInterface>({ title, typ
                 <FormLabel>{title}</FormLabel>
                 <Popover open={open} onOpenChange={(nextOpen) => {
                     setOpen(nextOpen);
-                    onChange("");                    
+                    if(selected)
+                    {                
+                    onChange("");
+                    onSelect(undefined);
+                    form.setValue("type", ""); 
+                    }
+                                       
                   }}>
                   <PopoverTrigger asChild>
                     <FormControl>
@@ -114,7 +120,6 @@ export default function BaseSearchForm<T extends BaseItemInterface>({ title, typ
                     </FormControl>
                   </PopoverTrigger>
                   <PopoverContent className="w-[300px] md:w-[500px] p-0">
-                    
                     <Command>
                       <input type="text" className="outline-double w-full p-2" placeholder={title + " Keresés"} onChange={(e) =>onChange(e.target.value)}>
                       </input>
@@ -133,6 +138,7 @@ export default function BaseSearchForm<T extends BaseItemInterface>({ title, typ
                                 } else {
                                   form.setValue("type", option.value);
                                   onSelect(option);
+                                  console.log("ONSELECT: " , option);
                                   onChange(option.value);
                                 }
                                 setOpen(false);
@@ -175,7 +181,7 @@ export default function BaseSearchForm<T extends BaseItemInterface>({ title, typ
                         </CommandGroup>
                       </CommandList>
                     </Command>
-                  </PopoverContent>
+                  </PopoverContent>            
                 </Popover>
                 <FormMessage />
               </FormItem>
