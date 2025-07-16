@@ -60,8 +60,16 @@ export default function SearchForm() {
     }
     
     }
+
+    if(specialistCompany === "" && specialistName === "" && specialistPlace === "")
+    {
+      setResponseCompanies([]);
+      setResponsePlaces([]);
+      setResponseSpecialists([]);
+    }
     
-    fetchSearchResults();
+    if(specialistCompany !== "" || specialistName !== "" || specialistPlace !== "")
+      fetchSearchResults();
 
 
     }, 300)
@@ -70,7 +78,7 @@ export default function SearchForm() {
       clearTimeout(handler);
     };
 
-  }, [specialistName, specialistCompany, specialistPlace, selectedSpecialist])
+  }, [specialistName, specialistCompany, specialistPlace])
 
 
   return (
@@ -107,7 +115,7 @@ export default function SearchForm() {
       </div>
 
       {/* Grid Container (full width, but content centered) */}
-      {(gridResultSpecialists) && (
+      {(gridResultSpecialists) && (selectedCompany || selectedPlace || selectedSpecialist) && (
 
           <div className="w-full mt-4 flex flex-grow justify-center">
             <section className="p-5 rounded-lg">
