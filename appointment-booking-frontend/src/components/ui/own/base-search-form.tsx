@@ -77,7 +77,7 @@ export default function BaseSearchForm<T extends BaseItemInterface>({ title, opt
                 
                 <Popover open={open} onOpenChange={(nextOpen) => {
                     setOpen(nextOpen);
-                    if(selected)
+                    if(!selected)
                     {                
                  //   onChange("");
                  //   onSelect(undefined);
@@ -129,6 +129,7 @@ export default function BaseSearchForm<T extends BaseItemInterface>({ title, opt
                              onSelect={() => {
                                 if (option.value === selected?.value) {
                                   form.setValue("type", "");
+                                  console.log("ONDESELECT: " , option);
                                   onSelect(undefined); // deselect
                                   onChange("");
                                 } else {

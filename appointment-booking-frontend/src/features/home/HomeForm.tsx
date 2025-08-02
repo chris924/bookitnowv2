@@ -63,7 +63,7 @@ export default function HomeForm()
          try {
             const response = await getMostRatedEmployees();
             setTopRatedEmployees(response);
-            console.log("RESPONSE:", response)
+          //  console.log("RESPONSE:", response)
           } catch (error) {
             console.error('Failed to fetch top-rated employees:', error);
           }
