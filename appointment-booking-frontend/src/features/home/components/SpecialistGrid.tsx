@@ -1,22 +1,11 @@
-import { SpecialistDTO } from "@/api/employee";
 import {
   Card,
-  CardAction,
   CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
 } from "@/components/ui/card"
+import { searchResultPropInterface, SpecialistDTO } from "@/lib/specialist-types";
 
 
-export interface SpecialistGridInterface
-{
-    specialists: SpecialistDTO[];
-}
-
-
-export default function SpecialistGrid({specialists} : SpecialistGridInterface)
+export default function SpecialistGrid({specialists} : searchResultPropInterface)
 {
 
 if (specialists.length === 0) {
@@ -45,10 +34,8 @@ return(
 
 )}
 
-
 </div>
    
-
 )
 
 }

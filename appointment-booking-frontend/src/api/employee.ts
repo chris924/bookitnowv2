@@ -1,3 +1,4 @@
+import { SpecialistDTO, CompanyDTO, PlaceDTO } from '@/lib/specialist-types';
 import api from './axios';
 
 
@@ -9,25 +10,7 @@ export interface TopRatedEmp {
   rating: number;
 }
 
-export interface SpecialistDTO {
-  label: string;
-  value: string;
-  image: string;
-  company: string;
-  rating: number;
-}
 
-export interface CompanyDTO {
-  label: string;
-  value: string;
-  image: string;
-  rating: number;
-}
-
-export interface PlaceDTO {
-  label: string;
-  value: string;
-}
 
 export interface EmployeeSearchOptionsResponseDTO {
   specialists: SpecialistDTO[];

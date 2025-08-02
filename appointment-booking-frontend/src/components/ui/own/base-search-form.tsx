@@ -1,7 +1,6 @@
 import {  Command,
     CommandEmpty,
     CommandGroup,
-    CommandInput,
     CommandItem,
     CommandList } from "../command"
 
@@ -21,23 +20,15 @@ import {
   } from "../form"
 
 
-import { input, z } from "zod"
-import { toast } from "sonner"
+import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Check, ChevronsUpDown } from "lucide-react"
 import { useForm } from "react-hook-form"
 import { Button } from "../button"
 import { cn } from "@/lib/utils"
 import { useState } from "react"
+import { BaseItemInterface } from "@/lib/specialist-types"
 
-export interface BaseItemInterface
-{
-    label: string,
-    value: string,
-    image?: string,
-    company?: string,
-    rating?: number
-}
 
 interface SearchFormPropInterface<T extends BaseItemInterface>
 {
@@ -47,11 +38,12 @@ interface SearchFormPropInterface<T extends BaseItemInterface>
     selected?: T;
     onSelect: (selected: T | undefined)  => void;
     onChange: (input: string) => void;
+    isLoading: boolean;
 }
 
 
  
-export default function BaseSearchForm<T extends BaseItemInterface>({ title, type, options, selected, onSelect, onChange }: SearchFormPropInterface<T>) {
+export default function BaseSearchForm<T extends BaseItemInterface>({ title, options, selected, onSelect, onChange }: SearchFormPropInterface<T>) {
 
   const FormSchema = z.object({
     type: z.string({
@@ -63,15 +55,18 @@ export default function BaseSearchForm<T extends BaseItemInterface>({ title, typ
     resolver: zodResolver(FormSchema),
   })
  
-  function onSubmit(data: z.infer<typeof FormSchema>) {
-    toast("Submitted succesfully!")
-  }
-  
+
   const [open, setOpen] = useState(false);
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+      <form onClick={() => {
+  if (selected) {
+    onChange("");
+    onSelect(undefined);
+    form.setValue("type", "");
+  }
+}} className="space-y-6">
       <FormField
           control={form.control}
           name="type"
@@ -79,13 +74,14 @@ export default function BaseSearchForm<T extends BaseItemInterface>({ title, typ
             return (
               <FormItem className="flex flex-col">
                 <FormLabel>{title}</FormLabel>
+                
                 <Popover open={open} onOpenChange={(nextOpen) => {
                     setOpen(nextOpen);
                     if(selected)
                     {                
-                    onChange("");
-                    onSelect(undefined);
-                    form.setValue("type", ""); 
+                 //   onChange("");
+                 //   onSelect(undefined);
+                 //   form.setValue("type", ""); 
                     }
                                        
                   }}>

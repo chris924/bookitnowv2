@@ -2,12 +2,7 @@ import Autoplay from "embla-carousel-autoplay"
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "../../../components/ui/carousel"
 import React from "react"
 import { Card, CardContent } from "../../../components/ui/card"
-import { BaseItemInterface } from "@/components/ui/own/base-search-form";
-
-interface searchResultPropInterface
-{
-  specialists: BaseItemInterface[]
-}
+import {searchResultPropInterface, SpecialistDTO} from "../../../lib/specialist-types"
 
 
 export default function FeaturedSpecialist({specialists}: searchResultPropInterface)
@@ -28,7 +23,7 @@ export default function FeaturedSpecialist({specialists}: searchResultPropInterf
       onMouseLeave={plugin.current.reset}
     >
       <CarouselContent>
-       {specialists.map((result : BaseItemInterface, index : number) => (
+       {specialists.map((result : SpecialistDTO, index : number) => (
                   <CarouselItem key={index} className="md:basis-1/2 lg:basis-1/3 ">
                   <div className="p-1 flex justify-center flex-col">
                     <Card className=" border-amber-300 border-2">

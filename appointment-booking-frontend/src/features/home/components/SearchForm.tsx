@@ -1,15 +1,9 @@
 
-import { z } from "zod"
-import { toast } from "sonner"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { useForm } from "react-hook-form"
 import { useEffect, useState } from "react"
-import defaultImage from "@/assets/default.jpg"
-import SpecialistSelectorForm from "../../../components/ui/own/specialist-selector(not-used)"
-import BaseSearchForm, { BaseItemInterface } from "../../../components/ui/own/base-search-form"
-import { CompanyDTO, EmployeeSearchOptionsResponseDTO, EmployeeSearchPayload, getSearchEmployeeCritera, PlaceDTO, SpecialistDTO } from "@/api/employee"
+import BaseSearchForm from "../../../components/ui/own/base-search-form"
+import {  EmployeeSearchOptionsResponseDTO, EmployeeSearchPayload, getSearchEmployeeCritera} from "@/api/employee"
 import SpecialistGrid from "./SpecialistGrid"
-
+import { SpecialistDTO, CompanyDTO, PlaceDTO } from '@/lib/specialist-types';
 
 export default function SearchForm() {
 
@@ -21,8 +15,8 @@ export default function SearchForm() {
   const [responsePlaces, setResponsePlaces] = useState<PlaceDTO[]>([]);
   const [responseCompanies, setResponseCompanies] = useState<CompanyDTO[]>([]);
 
-  const [selectedSpecialist, setSelectedSpecialist] = useState<BaseItemInterface | undefined>();
-  const [selectedPlace, setSelectedPlace] = useState<BaseItemInterface | undefined>();
+  const [selectedSpecialist, setSelectedSpecialist] = useState<SpecialistDTO | undefined>();
+  const [selectedPlace, setSelectedPlace] = useState<PlaceDTO | undefined>();
   const [selectedCompany, setSelectedCompany] = useState<CompanyDTO | undefined>();
 
   const [isLoading, setIsLoading] = useState(true);
@@ -85,15 +79,17 @@ export default function SearchForm() {
             onSelect={setSelectedSpecialist}
             onChange={setSpecialistName}
             selected={selectedSpecialist}
+            isLoading={isLoading}
 
           />
-          <BaseSearchForm
+          <BaseSearchForm<CompanyDTO>
             title="Üzlet"
             type="company"
             options={responseCompanies}
             onSelect={setSelectedCompany}
             onChange={setSpecialistCompany}
             selected={selectedCompany}
+            isLoading={isLoading}
           />
           <BaseSearchForm
             title="Hely"
@@ -102,11 +98,11 @@ export default function SearchForm() {
             onSelect={setSelectedPlace}
             onChange={setSpecialistPlace}
             selected={selectedPlace}
+            isLoading={isLoading}
           />
         </section>
       </div>
 
-      {/* Grid Container (full width, but content centered) */}
       {(gridResultSpecialists) && (
 
           <div className="w-full mt-4 flex flex-grow justify-center">
