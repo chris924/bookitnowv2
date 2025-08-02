@@ -62,7 +62,7 @@ export default function SearchForm() {
       setResponseSpecialists([]);
     }
     
-    if(specialistCompany !== "" || specialistName !== "" || specialistPlace !== "")
+   // if(specialistCompany !== "" || specialistName !== "" || specialistPlace !== "")
       fetchSearchResults();
 
 

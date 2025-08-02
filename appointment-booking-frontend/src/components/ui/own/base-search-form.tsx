@@ -79,9 +79,9 @@ export default function BaseSearchForm<T extends BaseItemInterface>({ title, opt
                     setOpen(nextOpen);
                     if(!selected)
                     {                
-                 //   onChange("");
-                 //   onSelect(undefined);
-                 //   form.setValue("type", ""); 
+                    onChange("");
+                    onSelect(undefined);
+                    form.setValue("type", ""); 
                     }
                                        
                   }}>
