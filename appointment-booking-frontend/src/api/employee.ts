@@ -1,10 +1,9 @@
-import { SpecialistDTO, CompanyDTO, PlaceDTO } from '@/lib/specialist-types';
+import { SpecialistDTO, CompanyDTO, PlaceDTO, SpecialistPageDTO, BaseItemInterface } from '@/lib/specialist-types';
 import api from './axios';
 
 
-export interface TopRatedEmp {
-  label: string;
-  value: string;
+export interface TopRatedEmp extends BaseItemInterface {
+
   image: string;
   company: string;
   rating: number;
@@ -34,3 +33,9 @@ export const getSearchEmployeeCritera = async (employeeSearchPayload: EmployeeSe
   const response = await api.post('/employees/search-employee', employeeSearchPayload)
   return response.data
 }
+
+export const getSpecificEmployeeContent = async (employeeSlug: string): Promise<SpecialistPageDTO> => {
+  
+  const response = await api.get(`/employees/employee/${employeeSlug}`);
+  return response.data;
+ }

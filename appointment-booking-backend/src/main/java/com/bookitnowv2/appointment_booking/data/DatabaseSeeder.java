@@ -132,7 +132,7 @@ public class DatabaseSeeder implements CommandLineRunner {
         Employee employee2 = createEmployee("John Mike", "dds", "dds@gmail.com", "jdavidpass", new Timestamp(System.currentTimeMillis()), employeeRoles, company1, 4.5, serverAddress + "/avatar/employee/default-avatar.jpg");
         Employee employee3 = createEmployee("John XD", "sad", "edwdwd@gmail.com", "jdavidpass", new Timestamp(System.currentTimeMillis()), employeeRoles, company1, 4.5, serverAddress + "/avatar/employee/default-avatar.jpg");
 
-        ServiceEntity service1 = createService("Shave", "Shaving", (long) 15.0, employee1, company1);
+        ServiceEntity service1 = createService("Shave", "Shaving",  15, employee1, company1, 30);
 
         List<ServiceEntity> serviceList = new ArrayList<>();
         serviceList.add(service1);
@@ -180,13 +180,14 @@ public class DatabaseSeeder implements CommandLineRunner {
         return employee;
     }
 
-    private ServiceEntity createService(String name, String description, Long price, Employee employee, Company company) {
+    private ServiceEntity createService(String name, String description, Integer price, Employee employee, Company company, Integer duration) {
         ServiceEntity service = new ServiceEntity();
         service.setName(name);
         service.setDescription(description);
         service.setPrice(price);
         service.setEmployee(employee);
         service.setCompany(company);
+        service.setDuration(duration);
 
         serviceRepository.save(service);
 

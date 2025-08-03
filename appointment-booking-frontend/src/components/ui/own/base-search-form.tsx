@@ -125,7 +125,7 @@ export default function BaseSearchForm<T extends BaseItemInterface>({ title, opt
                           {options.map((option) => (
                             <CommandItem
                               value={option.label}
-                              key={option.value}
+                              key={option.id}
                              onSelect={() => {
                                 if (option.value === selected?.value) {
                                   form.setValue("type", "");

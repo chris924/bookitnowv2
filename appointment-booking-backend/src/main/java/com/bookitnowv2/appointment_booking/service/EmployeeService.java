@@ -42,9 +42,12 @@ public class EmployeeService {
         return employeeRepository.getEmployeeByEmail(email).orElseThrow(()-> new EmployeeNotFoundException(email));
     }
 
-    public Employee getEmployeeById(Integer id)
-    {
-        return employeeRepository.getEmployeeById(id).orElseThrow(() -> new EmployeeNotFoundException(id.toString()));
+    public Employee getEmployeeById(Integer id) {
+        System.out.println("Searching for ID: " + id); // Debug log
+        boolean exists = employeeRepository.existsById(id);
+        System.out.println("Exists in DB: " + exists); // Debug log
+        return employeeRepository.findById(id)
+                .orElseThrow(() -> new EmployeeNotFoundException(id.toString()));
     }
 
     public List<EmployeeGetResponseDTO> getMostRatedEmployees()

@@ -25,7 +25,9 @@ public class ServiceEntity {
 
     private String description;
 
-    private Long price;
+    private Integer price;
+
+    private Integer duration;
 
     @ManyToOne
     @JoinColumn(name = "employee_id")

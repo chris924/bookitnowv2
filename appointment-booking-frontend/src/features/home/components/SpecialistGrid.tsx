@@ -3,19 +3,30 @@ import {
   CardContent,
 } from "@/components/ui/card"
 import { searchResultPropInterface, SpecialistDTO } from "@/lib/specialist-types";
+import { createSlug } from "@/lib/utils";
+import { useNavigate } from "react-router-dom";
 
 
 export default function SpecialistGrid({specialists} : searchResultPropInterface)
 {
 
+  const navigate = useNavigate();
+
 if (specialists.length === 0) {
     return;
+  }
+
+  async function handleSpecialistClick(specialist: SpecialistDTO)
+  {
+    // Navigate to the specialist's page using the slug
+    const slug = await createSlug(specialist.label, specialist.id);
+    navigate(`/employee/${slug}`);
   }
 
 return(
 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-x-10">
 {specialists.map((specialist: SpecialistDTO) => (
-   <Card className="">
+   <Card className="" onClick={() => handleSpecialistClick(specialist)} key={specialist.label}>
                          <CardContent className="flex flex-col aspect-square items-center justify-center p-6 space-y-8">
                            <img
                              src={specialist.image}

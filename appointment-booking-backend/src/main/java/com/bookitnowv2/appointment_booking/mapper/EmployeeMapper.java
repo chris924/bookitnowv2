@@ -17,10 +17,18 @@ import java.util.List;
 @Component
 public class EmployeeMapper {
 
+    private final ServiceMapper serviceMapper;
+
+    public EmployeeMapper(ServiceMapper serviceMapper)
+    {
+        this.serviceMapper = serviceMapper;
+    }
+
     public EmployeeGetResponseDTO toGetDTO(Employee employee)
     {
 
         return new EmployeeGetResponseDTO(
+                employee.getId(),
                 employee.getName(),
                 employee.getName(),
                 employee.getAvatarUrl(),
@@ -34,6 +42,7 @@ public class EmployeeMapper {
     {
 
         return new EmployeeGetResponseDTO(
+                employeeDoc.getId(),
                 employeeDoc.getName(),
                 employeeDoc.getName(),
                 employeeDoc.getAvatarUrl(),
@@ -57,7 +66,7 @@ public class EmployeeMapper {
 
     public SpecialistDTO addSpecialistDTO(EmployeeDocument employeeDocument)
     {
-        return new SpecialistDTO(employeeDocument.getName(), employeeDocument.getName(), employeeDocument.getAvatarUrl(), employeeDocument.getCompany(), employeeDocument.getRating());
+        return new SpecialistDTO(employeeDocument.getId(), employeeDocument.getName(), employeeDocument.getName(), employeeDocument.getAvatarUrl(), employeeDocument.getCompany(), employeeDocument.getRating());
     }
 
 
@@ -76,8 +85,8 @@ public class EmployeeMapper {
 
     public EmployeePageResponseDTO toPageResponseDTO(Employee employee)
     {
-        List<ServiceEntity> employeeServices = (List<ServiceEntity>) employee.getServices();
-        return new EmployeePageResponseDTO(toGetDTO(employee), (List<ServiceEntity>) employee.getServices());
+        List<ServiceEntity> services = employee.getServices();
+        return new EmployeePageResponseDTO(toGetDTO(employee), services.stream().map(serviceMapper::toGetDTO).toList());
     }
 
 }

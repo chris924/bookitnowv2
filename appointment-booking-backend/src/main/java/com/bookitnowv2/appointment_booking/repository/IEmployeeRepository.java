@@ -12,7 +12,6 @@ import java.util.Optional;
 
 public interface IEmployeeRepository extends JpaRepository<Employee, Integer> {
     Optional<Employee> getEmployeeByEmail(String email);
-    Optional<Employee> getEmployeeById(Integer id);
     @Query("SELECT e FROM Employee e ORDER BY e.rating DESC")
     List<Employee> findTopRatedEmployees(Pageable pageable);
 }

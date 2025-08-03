@@ -2,6 +2,7 @@
 //Base Interface for the Specialists,Companies,Place objects
 export interface BaseItemInterface
 {
+    id: number,
     label: string,
     value: string,
     image?: string,
@@ -9,24 +10,32 @@ export interface BaseItemInterface
     rating?: number
 }
 // Specialist DTO, this comes from the backend
-export interface SpecialistDTO {
-  label: string;
-  value: string;
+export interface SpecialistDTO extends BaseItemInterface {
   image: string;
   company: string;
   rating: number;
 }
 // Company DTO, this comes from the backend
-export interface CompanyDTO {
-  label: string;
-  value: string;
+export interface CompanyDTO extends BaseItemInterface {
   image: string;
   rating: number;
 }
 // Place DTO, this comes from the backend
-export interface PlaceDTO {
-  label: string;
-  value: string;
+export interface PlaceDTO extends BaseItemInterface {
+
+}
+
+export interface SpecialistServiceDTO {
+  id: number;
+  name: string;
+  description: string;
+  price: number;
+  duration: number; // in minutes
+ // image?: string;
+}
+
+export interface SpecialistPageDTO extends SpecialistDTO {
+  services: SpecialistServiceDTO[];
 }
 
 

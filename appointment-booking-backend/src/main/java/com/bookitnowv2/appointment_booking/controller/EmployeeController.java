@@ -41,9 +41,8 @@ public class EmployeeController {
         return ResponseEntity.ok(topEmployees);
     }
 
-    @GetMapping("/specialist/{id}")
-    public ResponseEntity<EmployeePageResponseDTO> getEmployeePage(@PathVariable String employeeSlug)
-    {
+    @GetMapping("/employee/{employeeSlug}")
+    public ResponseEntity<EmployeePageResponseDTO> getEmployeePage(@PathVariable String employeeSlug) {
         Integer employeeId = employeeService.getEmployeeIdFromSlug(employeeSlug);
         Employee foundEmployee = employeeService.getEmployeeById(employeeId);
         return ResponseEntity.ok(employeeMapper.toPageResponseDTO(foundEmployee));
