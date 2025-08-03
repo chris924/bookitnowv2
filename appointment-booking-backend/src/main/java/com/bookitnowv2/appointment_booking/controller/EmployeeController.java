@@ -2,9 +2,12 @@ package com.bookitnowv2.appointment_booking.controller;
 
 
 import com.bookitnowv2.appointment_booking.elasticSearch.service.ElasticEmployeeService;
+import com.bookitnowv2.appointment_booking.entity.Employee;
 import com.bookitnowv2.appointment_booking.entity.dto.employee.EmployeeGetResponseDTO;
+import com.bookitnowv2.appointment_booking.entity.dto.employee.EmployeePageResponseDTO;
 import com.bookitnowv2.appointment_booking.entity.dto.employee.EmployeeSearchOptionsResponseDTO;
 import com.bookitnowv2.appointment_booking.entity.dto.employee.EmployeeSearchRequestDTO;
+import com.bookitnowv2.appointment_booking.mapper.EmployeeMapper;
 import com.bookitnowv2.appointment_booking.service.EmployeeService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -21,11 +24,13 @@ public class EmployeeController {
 
     private final EmployeeService employeeService;
     private final ElasticEmployeeService elasticEmployeeService;
+    private final EmployeeMapper employeeMapper;
 
-    public EmployeeController(EmployeeService employeeService, ElasticEmployeeService elasticEmployeeService)
+    public EmployeeController(EmployeeService employeeService, ElasticEmployeeService elasticEmployeeService, EmployeeMapper employeeMapper)
     {
         this.employeeService = employeeService;
         this.elasticEmployeeService = elasticEmployeeService;
+        this.employeeMapper = employeeMapper;
     }
 
     @GetMapping("/most-rated")
@@ -34,6 +39,14 @@ public class EmployeeController {
         List<EmployeeGetResponseDTO> topEmployees =  employeeService.getMostRatedEmployees();
 
         return ResponseEntity.ok(topEmployees);
+    }
+
+    @GetMapping("/specialist/{id}")
+    public ResponseEntity<EmployeePageResponseDTO> getEmployeePage(@PathVariable String employeeSlug)
+    {
+        Integer employeeId = employeeService.getEmployeeIdFromSlug(employeeSlug);
+        Employee foundEmployee = employeeService.getEmployeeById(employeeId);
+        return ResponseEntity.ok(employeeMapper.toPageResponseDTO(foundEmployee));
     }
 
     @PostMapping("/search-employee")

@@ -38,7 +38,7 @@ public class Employee implements UserDetails {
 
     @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
-    private Set<ServiceEntity> services;
+    private List<ServiceEntity> services;
 
     @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference

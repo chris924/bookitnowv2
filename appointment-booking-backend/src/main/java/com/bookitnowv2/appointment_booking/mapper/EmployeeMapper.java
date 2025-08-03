@@ -2,7 +2,9 @@ package com.bookitnowv2.appointment_booking.mapper;
 
 import com.bookitnowv2.appointment_booking.elasticSearch.document.EmployeeDocument;
 import com.bookitnowv2.appointment_booking.entity.Employee;
+import com.bookitnowv2.appointment_booking.entity.ServiceEntity;
 import com.bookitnowv2.appointment_booking.entity.dto.employee.EmployeeGetResponseDTO;
+import com.bookitnowv2.appointment_booking.entity.dto.employee.EmployeePageResponseDTO;
 import com.bookitnowv2.appointment_booking.entity.dto.employee.EmployeeSearchOptionsResponseDTO;
 import com.bookitnowv2.appointment_booking.entity.dto.employee.SearchOptionDetails.CompanyDTO;
 import com.bookitnowv2.appointment_booking.entity.dto.employee.SearchOptionDetails.PlaceDTO;
@@ -70,6 +72,12 @@ public class EmployeeMapper {
                employee.getAvatarUrl(),
                employee.getRating());
 
+    }
+
+    public EmployeePageResponseDTO toPageResponseDTO(Employee employee)
+    {
+        List<ServiceEntity> employeeServices = (List<ServiceEntity>) employee.getServices();
+        return new EmployeePageResponseDTO(toGetDTO(employee), (List<ServiceEntity>) employee.getServices());
     }
 
 }

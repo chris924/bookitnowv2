@@ -47,7 +47,7 @@ public class EmployeeAuthenticationService {
 
         Set<Role> authorities = new HashSet<>();
         List<Appointment> appointments = new ArrayList<>();
-        Set<ServiceEntity> services = new HashSet<>();
+        List<ServiceEntity> services = new ArrayList<>();
 
         authorities.add(employeeRole);
         Employee newEmployee = new Employee();

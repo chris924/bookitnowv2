@@ -42,13 +42,27 @@ public class EmployeeService {
         return employeeRepository.getEmployeeByEmail(email).orElseThrow(()-> new EmployeeNotFoundException(email));
     }
 
+    public Employee getEmployeeById(Integer id)
+    {
+        return employeeRepository.getEmployeeById(id).orElseThrow(() -> new EmployeeNotFoundException(id.toString()));
+    }
+
     public List<EmployeeGetResponseDTO> getMostRatedEmployees()
     {
        return employeeRepository.findTopRatedEmployees(PageRequest.of(0, 20))
                .stream().map(employeeMapper::toGetDTO).toList();
     }
 
-
+    // For extracting the id from the incoming slugs(name-id)
+    public Integer getEmployeeIdFromSlug(String slug) {
+        try {
+            String[] parts = slug.split("-");
+            String idPart = parts[parts.length - 1];
+            return Integer.parseInt(idPart);
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Invalid slug format: " + slug);
+        }
+    }
 
 
 }

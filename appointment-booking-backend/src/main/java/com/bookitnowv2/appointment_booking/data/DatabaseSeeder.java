@@ -134,11 +134,11 @@ public class DatabaseSeeder implements CommandLineRunner {
 
         ServiceEntity service1 = createService("Shave", "Shaving", (long) 15.0, employee1, company1);
 
-        Set<ServiceEntity> serviceSet = new HashSet<>();
-        serviceSet.add(service1);
-        employee1.setServices(serviceSet);
-        employee2.setServices(serviceSet);
-        employee3.setServices(serviceSet);
+        List<ServiceEntity> serviceList = new ArrayList<>();
+        serviceList.add(service1);
+        employee1.setServices(serviceList);
+        employee2.setServices(serviceList);
+        employee3.setServices(serviceList);
     }
 
 
@@ -165,7 +165,7 @@ public class DatabaseSeeder implements CommandLineRunner {
         employee.setEmail(email);
         employee.setPassword(passwordEncoder.encode(password));
         employee.setAuthorities(roles);
-        employee.setServices(new HashSet<>());
+        employee.setServices(new ArrayList<>());
         employee.setCompany(company);
         employee.setRating(rating);
         employee.setCreatedAt(createdAt);
