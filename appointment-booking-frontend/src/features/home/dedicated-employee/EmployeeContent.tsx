@@ -3,6 +3,7 @@ import { useEffect, useState } from "react"
 import { useParams } from "react-router-dom";
 import EmployeeServices from "./components/EmployeeServices";
 import { SpecialistPageDTO } from "@/lib/specialist-types";
+import EmployeeServicesTable from "./components/EmployeeServices";
 
 
 export default function EmployeeContent()
@@ -41,9 +42,8 @@ export default function EmployeeContent()
 
     return(
         <>
-        <div>TEST</div>
 
-        {employeeData &&  <EmployeeServices employeeServices={employeeData.employeeServices}/>}
+        {employeeData &&  <EmployeeServicesTable employeeServices={employeeData.employeeServices}/>}
         </>
     )
 }
