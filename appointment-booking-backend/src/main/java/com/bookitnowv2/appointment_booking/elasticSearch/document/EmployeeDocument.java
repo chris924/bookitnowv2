@@ -25,5 +25,6 @@ public class EmployeeDocument {
     private Double companyRating;
     private String place;
     private String avatarUrl;
+    private String about;
     private Double rating;
 }

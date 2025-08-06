@@ -32,6 +32,8 @@ public class Employee implements UserDetails {
 
     private String password;
 
+    private String about;
+
     private Double rating;
 
     private Timestamp createdAt;

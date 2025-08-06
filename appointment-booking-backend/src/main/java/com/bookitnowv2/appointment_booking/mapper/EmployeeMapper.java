@@ -34,6 +34,7 @@ public class EmployeeMapper {
                 employee.getAvatarUrl(),
                 employee.getCompany().getCompanyName(),
                 employee.getCompany().getPlace(),
+                employee.getAbout(),
                 employee.getRating()
         );
     }
@@ -48,6 +49,7 @@ public class EmployeeMapper {
                 employeeDoc.getAvatarUrl(),
                 employeeDoc.getCompany(),
                 employeeDoc.getPlace(),
+                employeeDoc.getAbout(),
                 employeeDoc.getRating()
         );
     }
@@ -79,6 +81,7 @@ public class EmployeeMapper {
                employee.getCompany().getRating(),
                employee.getCompany().getPlace(),
                employee.getAvatarUrl(),
+               employee.getAbout(), 
                employee.getRating());
 
     }

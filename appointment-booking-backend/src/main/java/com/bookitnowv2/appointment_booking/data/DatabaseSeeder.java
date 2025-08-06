@@ -128,9 +128,9 @@ public class DatabaseSeeder implements CommandLineRunner {
         employeeRoles.add(roleRepository.findByAuthority("EMPLOYEE").orElseThrow(() -> new RuntimeException("EMPLOYEE role not found")));
 
 
-        Employee employee1 = createEmployee("John David", "jdavid", "jdavid@gmail.com", "jdavidpass", new Timestamp(System.currentTimeMillis()), employeeRoles, company1, 4.5, serverAddress + "/avatar/employee/default-avatar.jpg");
-        Employee employee2 = createEmployee("John Mike", "dds", "dds@gmail.com", "jdavidpass", new Timestamp(System.currentTimeMillis()), employeeRoles, company1, 4.5, serverAddress + "/avatar/employee/default-avatar.jpg");
-        Employee employee3 = createEmployee("John XD", "sad", "edwdwd@gmail.com", "jdavidpass", new Timestamp(System.currentTimeMillis()), employeeRoles, company1, 4.5, serverAddress + "/avatar/employee/default-avatar.jpg");
+        Employee employee1 = createEmployee("John David", "jdavid", "jdavid@gmail.com", "jdavidpass", new Timestamp(System.currentTimeMillis()), employeeRoles, company1, 4.5, serverAddress + "/avatar/employee/default-avatar.jpg", "This is the about section. This is the about section. This is the about section.");
+        Employee employee2 = createEmployee("John Mike", "dds", "dds@gmail.com", "jdavidpass", new Timestamp(System.currentTimeMillis()), employeeRoles, company1, 4.5, serverAddress + "/avatar/employee/default-avatar.jpg", "This is the about section. This is the about section. This is the about section.");
+        Employee employee3 = createEmployee("John XD", "sad", "edwdwd@gmail.com", "jdavidpass", new Timestamp(System.currentTimeMillis()), employeeRoles, company1, 4.5, serverAddress + "/avatar/employee/default-avatar.jpg", "This is the about section. This is the about section. This is the about section.");
 
         ServiceEntity service1 = createService("Shave", "Shaving",  15, employee1, company1, 30);
 
@@ -158,7 +158,7 @@ public class DatabaseSeeder implements CommandLineRunner {
     }
 
     @NotNull
-    private Employee createEmployee(String name, String username, String email, String password, Timestamp createdAt, Set<Role> roles, Company company, Double rating, String avatarUrl) {
+    private Employee createEmployee(String name, String username, String email, String password, Timestamp createdAt, Set<Role> roles, Company company, Double rating, String avatarUrl, String about) {
         Employee employee = new Employee();
         employee.setName(name);
         employee.setUsername(username);
@@ -170,6 +170,7 @@ public class DatabaseSeeder implements CommandLineRunner {
         employee.setRating(rating);
         employee.setCreatedAt(createdAt);
         employee.setAvatarUrl(avatarUrl);
+        employee.setAbout(about);
 
         employeeRepository.save(employee);
 

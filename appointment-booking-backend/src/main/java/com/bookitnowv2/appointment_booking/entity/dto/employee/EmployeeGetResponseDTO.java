@@ -11,6 +11,7 @@ public class EmployeeGetResponseDTO {
     public String image;
     public String company;
     public String place;
+    public String about;
     public Double rating;
 
 }

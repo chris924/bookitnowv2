@@ -1,9 +1,9 @@
 import { getSpecificEmployeeContent } from "@/api/employee"
 import { useEffect, useState } from "react"
 import { useParams } from "react-router-dom";
-import EmployeeServices from "./components/EmployeeServices";
 import { SpecialistPageDTO } from "@/lib/specialist-types";
 import EmployeeServicesTable from "./components/EmployeeServices";
+import EmployeeDetails from "./components/EmployeeDetails";
 
 
 export default function EmployeeContent()
@@ -42,7 +42,7 @@ export default function EmployeeContent()
 
     return(
         <>
-
+        {employeeData && <EmployeeDetails employeeData={employeeData.employeeGetResponseDTO} />}
         {employeeData &&  <EmployeeServicesTable employeeServices={employeeData.employeeServices}/>}
         </>
     )

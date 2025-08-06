@@ -10,7 +10,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { SpecialistPageDTO, SpecialistServiceDTO } from "@/lib/specialist-types"
+import { SpecialistServiceDTO } from "@/lib/specialist-types"
 
 type SpecialistServicesData = {
     employeeServices: SpecialistServiceDTO[];
@@ -20,7 +20,8 @@ export default function EmployeeServicesTable({employeeServices} : SpecialistSer
 {
 
     return(
-    <Table className="w-auto">
+        <div className="w-full flex justify-center lg:justify-start pt-12">
+             <Table className="w-auto lg:ml-12">
       <TableCaption>Szolgáltatások listája</TableCaption>
       <TableHeader>
         <TableRow>
@@ -41,6 +42,8 @@ export default function EmployeeServicesTable({employeeServices} : SpecialistSer
       <TableFooter>
       </TableFooter>
     </Table>
+        </div>
+   
         
     )
 }

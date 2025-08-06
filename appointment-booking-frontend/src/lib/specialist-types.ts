@@ -1,6 +1,6 @@
 
 //Base Interface for the Specialists,Companies,Place objects
-export interface BaseItemInterface
+export interface BaseItemInterface  //TODO: Refactor BaseItemInterface, so only id label value remains
 {
     id: number,
     label: string,
@@ -13,6 +13,7 @@ export interface BaseItemInterface
 export interface SpecialistDTO extends BaseItemInterface {
   image: string;
   company: string;
+  about: string;
   rating: number;
 }
 // Company DTO, this comes from the backend
@@ -35,7 +36,7 @@ export interface SpecialistServiceDTO {
 }
 
 export interface SpecialistPageDTO extends SpecialistDTO {
-  employeeData: SpecialistDTO;
+  employeeGetResponseDTO: SpecialistDTO;
   employeeServices: SpecialistServiceDTO[];
 }
 
