@@ -11,7 +11,7 @@ import java.util.List;
 @AllArgsConstructor
 @Getter
 @Setter
-public class EmployeePageResponseDTO {
+public class EmployeePageResponseDTO   {
     EmployeeGetResponseDTO employeeGetResponseDTO;
     List<ServiceGetResponseDTO> employeeServices;
 }

@@ -1,11 +1,15 @@
 import { getSpecificEmployeeContent } from "@/api/employee"
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import { useParams } from "react-router-dom";
+import EmployeeServices from "./components/EmployeeServices";
+import { SpecialistPageDTO } from "@/lib/specialist-types";
 
 
 export default function EmployeeContent()
 {
      const { slug } = useParams();
+
+     const [employeeData, setEmployeeData] = useState<SpecialistPageDTO | undefined>();
 
 
     useEffect( () => {
@@ -21,11 +25,13 @@ export default function EmployeeContent()
 
                 const employeeContent = await getSpecificEmployeeContent(slug);
                 console.log("Employee Content:", employeeContent);
+                setEmployeeData(employeeContent);
+                
             }catch (error) {
                 console.error("Error fetching employee content:", error);
             }
 
-
+            console.log("Employee data:", employeeData);
         }
        
         fetchEmployeeConntent();
@@ -34,6 +40,10 @@ export default function EmployeeContent()
 
 
     return(
+        <>
         <div>TEST</div>
+
+        {employeeData &&  <EmployeeServices employeeServices={employeeData.employeeServices}/>}
+        </>
     )
 }

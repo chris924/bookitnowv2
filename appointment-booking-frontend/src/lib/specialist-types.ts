@@ -35,7 +35,8 @@ export interface SpecialistServiceDTO {
 }
 
 export interface SpecialistPageDTO extends SpecialistDTO {
-  services: SpecialistServiceDTO[];
+  employeeData: SpecialistDTO;
+  employeeServices: SpecialistServiceDTO[];
 }
 
 
