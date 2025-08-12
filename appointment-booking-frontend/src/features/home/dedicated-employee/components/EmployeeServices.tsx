@@ -20,8 +20,8 @@ export default function EmployeeServicesTable({employeeServices} : SpecialistSer
 {
 
     return(
-        <div className="w-full flex justify-center lg:justify-start pt-12">
-             <Table className="w-auto lg:ml-12">
+        <div className="w-full flex flex-col justify-center lg:justify-start pt-12">
+             <Table className="w-auto ">
       <TableCaption>Szolgáltatások listája</TableCaption>
       <TableHeader>
         <TableRow>
