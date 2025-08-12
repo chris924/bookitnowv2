@@ -25,17 +25,17 @@ export default function EmployeeServicesTable({employeeServices} : SpecialistSer
       <TableCaption>Szolgáltatások listája</TableCaption>
       <TableHeader>
         <TableRow>
-          <TableHead className="w-[100px] lg:text-3xl whitespace-normal break-words max-w-[150px] lg:max-w-[400px] text-wrap">Szolgáltatás</TableHead>
-          <TableHead className="w-[100px] lg:text-3xl  whitespace-normal break-words max-w-[100px] lg:max-w-[300px] text-wrap">Összeg</TableHead>
-          <TableHead className=" whitespace-normal lg:text-3xl break-words max-w-[150px] lg:max-w[400px] text-wrap">Foglalás</TableHead>
+          <TableHead className="w-[100px] lg:text-2xl whitespace-normal break-words max-w-[150px] lg:max-w-[400px] text-wrap">Szolgáltatás</TableHead>
+          <TableHead className="w-[100px] lg:text-2xl  whitespace-normal break-words max-w-[100px] lg:max-w-[300px] text-wrap">Összeg</TableHead>
+          <TableHead className=" whitespace-normal lg:text-2xl break-words max-w-[150px] lg:max-w[400px] text-wrap">Foglalás</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
         {employeeServices.map((service) => (
           <TableRow key={service.id}>
-            <TableCell className=" lg:w-[250px] font-medium lg:text-3xl whitespace-normal break-words max-w-[150px] lg:max-w-[400px] text-wrap">{service.name} <br></br> <p className="lg:text-xl">{service.duration} perc</p></TableCell>
-            <TableCell className=" lg:w-[200px] whitespace-normal lg:text-3xl break-words max-w-[80px] lg:max-w-[300px] text-wrap">{service.price}</TableCell>
-            <TableCell className="whitespace-normal lg:text-3xl break-words max-w-[100px] lg:max-w-[400px] text-wrap">{<Button className="w-[75px] lg:w-[150px]">Időpontok</Button>}</TableCell>
+            <TableCell className=" lg:w-[250px] font-medium lg:text-xl whitespace-normal break-words max-w-[150px] lg:max-w-[400px] text-wrap">{service.name} <br></br> <p className="lg:text-lg">{service.duration} perc</p></TableCell>
+            <TableCell className=" lg:w-[200px] whitespace-normal lg:text-xl break-words max-w-[80px] lg:max-w-[300px] text-wrap">{service.price}</TableCell>
+            <TableCell className="whitespace-normal lg:text-xl break-words max-w-[100px] lg:max-w-[400px] text-wrap">{<Button className="w-[75px] lg:w-[150px]">Időpontok</Button>}</TableCell>
           </TableRow>
         ))}
       </TableBody>
