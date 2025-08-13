@@ -4,6 +4,7 @@ import { useParams } from "react-router-dom";
 import { SpecialistPageDTO } from "@/lib/specialist-types";
 import EmployeeServicesTable from "./components/EmployeeServices";
 import EmployeeDetails from "./components/EmployeeDetails";
+import EmployeeBookingTable from "./components/EmployeeBookingTable";
 
 
 export default function EmployeeContent()
@@ -43,7 +44,15 @@ export default function EmployeeContent()
     return(
         <>
         {employeeData && <EmployeeDetails employeeData={employeeData.employeeGetResponseDTO} />}
-        {employeeData &&  <EmployeeServicesTable employeeServices={employeeData.employeeServices}/>}
+        <div className="flex flex-col lg:flex-row lg:w-full">
+         {employeeData &&  <EmployeeServicesTable employeeServices={employeeData.employeeServices}/>}
+         {employeeData && (
+            <div className="lg:flex-1">
+            <EmployeeBookingTable />
+            </div>
+        )}
+        </div>
+       
         </>
     )
 }
