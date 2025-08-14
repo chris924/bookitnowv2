@@ -46,6 +46,10 @@ public class Employee implements UserDetails {
     @JsonManagedReference
     private List<Appointment> appointments;
 
+    @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private List<EmployeeWorkingHours> workingHours;
+
     @ManyToOne
     @JoinColumn(name = "company_id")
     @JsonBackReference

@@ -1,11 +1,13 @@
 package com.bookitnowv2.appointment_booking.entity;
 
 
+import com.bookitnowv2.appointment_booking.utils.AppointmentStatus;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 @Data
 @AllArgsConstructor
@@ -40,7 +42,11 @@ public class Appointment {
     @JsonBackReference
     private ServiceEntity service;
 
-    private Timestamp dateAndTime;
+    private LocalDateTime startTime;
+    private LocalDateTime endTime;
+
+    @Enumerated(EnumType.STRING)
+    private AppointmentStatus appointmentStatus;
 
 }
 
