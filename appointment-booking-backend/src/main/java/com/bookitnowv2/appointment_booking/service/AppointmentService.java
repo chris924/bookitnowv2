@@ -2,13 +2,19 @@ package com.bookitnowv2.appointment_booking.service;
 
 import com.bookitnowv2.appointment_booking.entity.*;
 import com.bookitnowv2.appointment_booking.entity.dto.appointment.AppointmentGetResponseDTO;
+import com.bookitnowv2.appointment_booking.entity.dto.appointment.AppointmentSlotResponseDTO;
 import com.bookitnowv2.appointment_booking.mapper.AppointmentMapper;
 import com.bookitnowv2.appointment_booking.repository.*;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cglib.core.Local;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
+import java.time.DayOfWeek;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -102,9 +108,29 @@ public class AppointmentService {
         newAppointment.setService(foundService);
         newAppointment.setCompany(foundCompany);
         newAppointment.setEmployee(foundEmployee);
-        newAppointment.setDateAndTime(timestamp);
+
 
         return newAppointment;
+    }
+
+    public List<AppointmentSlotResponseDTO> getAppointmentSlotsFromService(ServiceEntity serviceEntity)
+    {
+        List<AppointmentSlotResponseDTO> appointmentSlotResponseDTOList = new ArrayList<>();
+
+        Employee employee = serviceEntity.getEmployee();
+        List<EmployeeWorkingHours> employeeWorkingHours = employee.getWorkingHours();
+        List<Appointment> existingAppointments = employee.getAppointments();
+
+        LocalDateTime currentDate = LocalDateTime.now();
+        Integer dayOfMonth = currentDate.getDayOfMonth();
+        DayOfWeek dayOfWeek = currentDate.getDayOfWeek();
+
+        for(int x = 0; x < 60; x++)
+        {
+            employeeWorkingHours.stream().filter(workingHour -> workingHour.getDayOfWeek() == dayOfWeek);
+        }
+
+
     }
 
 

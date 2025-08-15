@@ -3,12 +3,14 @@ package com.bookitnowv2.appointment_booking.controller;
 
 import com.bookitnowv2.appointment_booking.elasticSearch.service.ElasticEmployeeService;
 import com.bookitnowv2.appointment_booking.entity.Employee;
+import com.bookitnowv2.appointment_booking.entity.ServiceEntity;
 import com.bookitnowv2.appointment_booking.entity.dto.employee.EmployeeGetResponseDTO;
 import com.bookitnowv2.appointment_booking.entity.dto.employee.EmployeePageResponseDTO;
 import com.bookitnowv2.appointment_booking.entity.dto.employee.EmployeeSearchOptionsResponseDTO;
 import com.bookitnowv2.appointment_booking.entity.dto.employee.EmployeeSearchRequestDTO;
 import com.bookitnowv2.appointment_booking.mapper.EmployeeMapper;
 import com.bookitnowv2.appointment_booking.service.EmployeeService;
+import com.bookitnowv2.appointment_booking.service.ServiceEntityService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,13 +25,15 @@ import java.util.List;
 public class EmployeeController {
 
     private final EmployeeService employeeService;
+    private final ServiceEntityService serviceEntityService;
     private final ElasticEmployeeService elasticEmployeeService;
     private final EmployeeMapper employeeMapper;
 
-    public EmployeeController(EmployeeService employeeService, ElasticEmployeeService elasticEmployeeService, EmployeeMapper employeeMapper)
+    public EmployeeController(EmployeeService employeeService, ElasticEmployeeService elasticEmployeeService, ServiceEntityService serviceEntityService, EmployeeMapper employeeMapper)
     {
         this.employeeService = employeeService;
         this.elasticEmployeeService = elasticEmployeeService;
+        this.serviceEntityService = serviceEntityService;
         this.employeeMapper = employeeMapper;
     }
 
@@ -63,5 +67,7 @@ public class EmployeeController {
 
         return ResponseEntity.ok(employeeResult);
     }
+
+
 
 }

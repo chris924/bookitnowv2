@@ -22,6 +22,7 @@ import org.springframework.stereotype.Component;
 import java.sql.Timestamp;
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -36,6 +37,7 @@ public class DatabaseSeeder implements CommandLineRunner {
 
     private final ICompanyRepository companyRepository;
     private final IAppointmentRepository appointmentRepository;
+    private final IEmployeeWorkingHoursRepository employeeWorkingHoursRepository;
 
     private final IRoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
@@ -45,7 +47,7 @@ public class DatabaseSeeder implements CommandLineRunner {
     private final String serverAddress;
 
     public DatabaseSeeder(IAppointmentRepository appointmentRepository, ICompanyRepository companyRepository, IRoleRepository roleRepository, IUserRepository userRepository, PasswordEncoder passwordEncoder,
-                          IServiceEntityRepository serviceRepository, IEmployeeRepository employeeRepository, IElasticEmployeeRepository elasticEmployeeRepository, EmployeeMapper employeeMapper, @Value("${server.ip.address}") String serverAddress) {
+                          IServiceEntityRepository serviceRepository, IEmployeeRepository employeeRepository, IElasticEmployeeRepository elasticEmployeeRepository, IEmployeeWorkingHoursRepository employeeWorkingHoursRepository, EmployeeMapper employeeMapper, @Value("${server.ip.address}") String serverAddress) {
         this.appointmentRepository = appointmentRepository;
         this.companyRepository = companyRepository;
 
@@ -55,6 +57,7 @@ public class DatabaseSeeder implements CommandLineRunner {
         this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
         this.elasticEmployeeRepository = elasticEmployeeRepository;
+        this.employeeWorkingHoursRepository = employeeWorkingHoursRepository;
         this.employeeMapper = employeeMapper;
         this.serverAddress = serverAddress;
     }
@@ -73,6 +76,7 @@ public class DatabaseSeeder implements CommandLineRunner {
         employeeRepository.deleteAll();
         companyRepository.deleteAll();
         roleRepository.deleteAll();
+        employeeWorkingHoursRepository.deleteAll();
         elasticEmployeeRepository.deleteAll();
 
         createRolesIfNotExists();
@@ -132,11 +136,21 @@ public class DatabaseSeeder implements CommandLineRunner {
         Employee employee2 = createEmployee("John Mike", "dds", "dds@gmail.com", "jdavidpass", new Timestamp(System.currentTimeMillis()), employeeRoles, company1, 4.5, serverAddress + "/avatar/employee/default-avatar.jpg", "This is the about section. This is the about section. This is the about section.");
         Employee employee3 = createEmployee("John XD", "sad", "edwdwd@gmail.com", "jdavidpass", new Timestamp(System.currentTimeMillis()), employeeRoles, company1, 4.5, serverAddress + "/avatar/employee/default-avatar.jpg", "This is the about section. This is the about section. This is the about section.");
 
+        List<EmployeeWorkingHours> employee1WorkingHoursList = new ArrayList<>();
+
+        EmployeeWorkingHours employee1WorkingHours = createEmployeeWorkingHours(employee1, LocalTime.of(8, 0), LocalTime.of(16, 0), DayOfWeek.MONDAY);
+
+        employee1WorkingHoursList.add(employee1WorkingHours);
+
+
         ServiceEntity service1 = createService("Shave", "Shaving",  15, employee1, company1, 30);
 
         List<ServiceEntity> serviceList = new ArrayList<>();
         serviceList.add(service1);
+
         employee1.setServices(serviceList);
+        employee1.setWorkingHours(employee1WorkingHoursList);
+
         employee2.setServices(serviceList);
         employee3.setServices(serviceList);
     }
@@ -224,15 +238,28 @@ public class DatabaseSeeder implements CommandLineRunner {
             nextDay8AM = nextDay8AM.plusDays(2); // Move to Monday
         }
 
-        Timestamp timestamp = Timestamp.valueOf(nextDay8AM);
-
         Appointment appointment = new Appointment();
 
         appointment.setCompany(company);
-        appointment.setDateAndTime(timestamp);
+
 
         appointmentRepository.save(appointment);
         companyRepository.save(company);
+    }
+
+    private EmployeeWorkingHours createEmployeeWorkingHours(Employee employee, LocalTime startTime, LocalTime endTime, DayOfWeek dayOfWeek)
+    {
+        EmployeeWorkingHours employeeWorkingHours = new EmployeeWorkingHours();
+
+        employeeWorkingHours.setEmployee(employee);
+        employeeWorkingHours.setStartTime(startTime);
+        employeeWorkingHours.setEndTime(endTime);
+        employeeWorkingHours.setDayOfWeek(dayOfWeek);
+
+        employeeWorkingHoursRepository.save(employeeWorkingHours);
+
+        return employeeWorkingHours;
+
     }
 
 

@@ -23,8 +23,7 @@ public class AppointmentMapper {
                 user.getEmail(),
                 employee.getId(),
                 employee.getName(),
-                company.getId(),
-                appointment.getDateAndTime()
+                company.getId()
         );
     }
 

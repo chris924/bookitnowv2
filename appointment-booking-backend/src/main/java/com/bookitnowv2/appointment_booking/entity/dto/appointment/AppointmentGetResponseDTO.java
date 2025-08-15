@@ -31,5 +31,4 @@ public class AppointmentGetResponseDTO {
 
     private Integer companyId;
 
-    private Timestamp dateAndTime;
 }

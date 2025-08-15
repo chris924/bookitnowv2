@@ -19,15 +19,15 @@ export default function EmployeeBookingTable()
 
     const calendar = useCalendarApp({
     views: [createViewDay(), createViewWeek(), createViewMonthGrid(), createViewMonthAgenda()],
-    events: [
-      {
-        id: '1',
-        title: 'Event 1',
-        start: '2023-12-16',
-        end: '2023-12-16',
-      },
-    ],
-    plugins: [eventsService]
+   events: [
+  {
+    id: '1',
+    title: 'Event 1',
+    start: '2025-08-16 16:00', 
+    end: '2025-08-16 16:30',   
+    },
+  ],
+  plugins: [eventsService]
   })
  
   useEffect(() => {
