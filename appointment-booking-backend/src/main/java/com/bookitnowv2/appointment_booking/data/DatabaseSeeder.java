@@ -136,7 +136,7 @@ public class DatabaseSeeder implements CommandLineRunner {
 
         List<EmployeeWorkingHours> employee1WorkingHoursList = new ArrayList<>();
 
-        EmployeeWorkingHours employee1WorkingHours = createEmployeeWorkingHours(employee1, LocalTime.of(8, 0), LocalTime.of(16, 0), LocalDate.now());
+        EmployeeWorkingHours employee1WorkingHours = createEmployeeWorkingHours(employee1, LocalTime.of(12, 0), LocalTime.of(16, 0), LocalDate.now());
 
         employee1WorkingHoursList.add(employee1WorkingHours);
 

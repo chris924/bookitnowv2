@@ -1,24 +1,26 @@
 package com.bookitnowv2.appointment_booking.entity.dto.appointment;
 
+import co.elastic.clients.util.DateTime;
 import com.bookitnowv2.appointment_booking.utils.AppointmentStatus;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class AppointmentSlotResponseDTO {
 
-    private Integer id;
-    private LocalDate date;
-    private LocalTime start;
-    private LocalTime end;
-    private String status;
+    private List<SlotResponseDTO> slotResponseDTO;
+
+    private LocalTime firstHour;
+    private LocalTime lastHour;
+    private LocalDate firstDate;
+    private LocalDate lastDate;
 
 
 }

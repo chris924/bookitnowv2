@@ -16,7 +16,7 @@ import { SpecialistServiceDTO } from "@/lib/specialist-types"
 
 type SpecialistServicesData = {
     employeeServices: SpecialistServiceDTO[];
-    setSlots: (slots: AppointmentSlotResponseDTO[]) => void;
+    setSlots: (slots: AppointmentSlotResponseDTO) => void;
 }
 
 export default function EmployeeServicesTable({employeeServices, setSlots} : SpecialistServicesData)

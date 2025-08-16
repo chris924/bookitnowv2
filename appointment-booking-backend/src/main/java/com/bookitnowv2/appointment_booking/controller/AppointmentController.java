@@ -26,11 +26,11 @@ public class AppointmentController {
     }
 
     @GetMapping("/employee/{serviceId}")
-    public ResponseEntity<List<AppointmentSlotResponseDTO>> getMonthlyAppointments(@PathVariable Integer serviceId)
+    public ResponseEntity<AppointmentSlotResponseDTO> getMonthlyAppointments(@PathVariable Integer serviceId)
     {
         ServiceEntity service = serviceEntityService.getServiceEntityById(serviceId);
 
-        List<AppointmentSlotResponseDTO> appointmentSlots = appointmentService.getAppointmentSlotsFromService(service);
+        AppointmentSlotResponseDTO appointmentSlots = appointmentService.getAppointmentSlotsFromService(service);
 
         return ResponseEntity.ok(appointmentSlots);
 

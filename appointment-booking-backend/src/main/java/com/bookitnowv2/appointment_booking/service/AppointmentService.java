@@ -3,6 +3,7 @@ package com.bookitnowv2.appointment_booking.service;
 import com.bookitnowv2.appointment_booking.entity.*;
 import com.bookitnowv2.appointment_booking.entity.dto.appointment.AppointmentGetResponseDTO;
 import com.bookitnowv2.appointment_booking.entity.dto.appointment.AppointmentSlotResponseDTO;
+import com.bookitnowv2.appointment_booking.entity.dto.appointment.SlotResponseDTO;
 import com.bookitnowv2.appointment_booking.mapper.AppointmentMapper;
 import com.bookitnowv2.appointment_booking.repository.*;
 import org.jetbrains.annotations.NotNull;
@@ -108,19 +109,38 @@ public class AppointmentService {
         return newAppointment;
     }
 
-    public List<AppointmentSlotResponseDTO> getAppointmentSlotsFromService(ServiceEntity serviceEntity)
+    public AppointmentSlotResponseDTO getAppointmentSlotsFromService(ServiceEntity serviceEntity)
     {
-        List<AppointmentSlotResponseDTO> appointmentSlotResponseDTOList = new ArrayList<>();
+        AppointmentSlotResponseDTO appointmentSlotResponseDTO =  new AppointmentSlotResponseDTO();
+
+        List<SlotResponseDTO> slotResponseDTOList = new ArrayList<>();
+
+        appointmentSlotResponseDTO.setSlotResponseDTO(slotResponseDTOList);
 
         Employee employee = serviceEntity.getEmployee();
         List<EmployeeWorkingHours> employeeWorkingHours = employee.getWorkingHours();
         List<Appointment> existingAppointments = employee.getAppointments();
 
+
+
+        LocalTime smallestStart = null;
+        LocalTime largestEnd = null;
+        LocalDate firstDate = null;
+        LocalDate lastDate = null;
+
         for(EmployeeWorkingHours x : employeeWorkingHours)
         {
+
+
            LocalTime dayStartTime = x.getStartTime();
            LocalTime dayEndTime = x.getEndTime();
            LocalDate workingHourDate = x.getDate();
+
+            if (smallestStart == null || dayStartTime.isBefore(smallestStart)) smallestStart = dayStartTime;
+            if (largestEnd == null || dayEndTime.isAfter(largestEnd)) largestEnd = dayEndTime;
+            if (firstDate == null || workingHourDate.isBefore(firstDate)) firstDate = workingHourDate;
+            if (lastDate == null || workingHourDate.isAfter(lastDate)) lastDate = workingHourDate;
+
            Duration serviceDuration = serviceEntity.getDuration();
 
             LocalTime current = dayStartTime;
@@ -136,7 +156,7 @@ public class AppointmentService {
                         .filter(i -> slotStart.isBefore(i.getEndTime()) && slotEnd.isAfter(i.getStartTime()))
                         .min(Comparator.comparing(Appointment::getStartTime));
 
-                AppointmentSlotResponseDTO slotResponseDTO = new AppointmentSlotResponseDTO();
+                SlotResponseDTO slotResponseDTO = new SlotResponseDTO();
                 slotResponseDTO.setDate(workingHourDate);
 
                 if (conflict.isPresent()) {
@@ -156,12 +176,16 @@ public class AppointmentService {
                     current = slotEnd;
                 }
 
-                appointmentSlotResponseDTOList.add(slotResponseDTO);
+                slotResponseDTOList.add(slotResponseDTO);
             }
 
         };
 
-        return appointmentSlotResponseDTOList;
+        appointmentSlotResponseDTO.setFirstHour(smallestStart);
+        appointmentSlotResponseDTO.setLastHour(largestEnd);
+        appointmentSlotResponseDTO.setFirstDate(firstDate);
+        appointmentSlotResponseDTO.setLastDate(lastDate);
+        return appointmentSlotResponseDTO;
     }
 
 

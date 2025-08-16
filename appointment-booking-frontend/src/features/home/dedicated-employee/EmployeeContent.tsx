@@ -14,7 +14,7 @@ export default function EmployeeContent()
      const { slug } = useParams();
 
      const [employeeData, setEmployeeData] = useState<SpecialistPageDTO | undefined>();
-     const [appointmentSlots, setAppointmentSlots] = useState<AppointmentSlotResponseDTO[]>([]);
+     const [appointmentSlots, setAppointmentSlots] = useState<AppointmentSlotResponseDTO | undefined>();
 
 
     useEffect( () => {
