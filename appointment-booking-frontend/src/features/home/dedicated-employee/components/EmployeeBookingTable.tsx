@@ -9,31 +9,46 @@ import { createEventsServicePlugin } from '@schedule-x/events-service'
  
 import '@schedule-x/theme-default/dist/index.css'
 import { useEffect, useState } from 'react'
+import { AppointmentSlotResponseDTO } from '@/lib/appointment-types'
+
+type EmployeeBookingTable = {
+
+  appointmentSlots: AppointmentSlotResponseDTO[];
+
+}
 
 
+function toScheduleXEvent(slot: AppointmentSlotResponseDTO, index: number) {
+  const startTime = slot.start.slice(0, 5); // 'HH:mm'
+  const endTime = slot.end.slice(0, 5);
 
-export default function EmployeeBookingTable()
+  return {
+    id: String(index),
+    title: slot.status,
+    start: `${slot.date} ${startTime}`,
+    end: `${slot.date} ${endTime}`
+  };
+}
+
+export default function EmployeeBookingTable({appointmentSlots }: EmployeeBookingTable)
 {
 
     const eventsService = useState(() => createEventsServicePlugin())[0]
 
     const calendar = useCalendarApp({
     views: [createViewDay(), createViewWeek(), createViewMonthGrid(), createViewMonthAgenda()],
-   events: [
-  {
-    id: '1',
-    title: 'Event 1',
-    start: '2025-08-16 16:00', 
-    end: '2025-08-16 16:30',   
-    },
-  ],
-  plugins: [eventsService]
+    plugins: [eventsService]
   })
  
   useEffect(() => {
-    // get all events
+
+    if(appointmentSlots.length > 0){
+      const events = appointmentSlots.map(toScheduleXEvent);
+      eventsService.set(events);
+    }
+
     eventsService.getAll()
-  }, [])
+  }, [appointmentSlots, eventsService])
 
     return(
 

@@ -20,9 +20,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.sql.Timestamp;
-import java.time.DayOfWeek;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
+import java.time.*;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -138,12 +136,12 @@ public class DatabaseSeeder implements CommandLineRunner {
 
         List<EmployeeWorkingHours> employee1WorkingHoursList = new ArrayList<>();
 
-        EmployeeWorkingHours employee1WorkingHours = createEmployeeWorkingHours(employee1, LocalTime.of(8, 0), LocalTime.of(16, 0), DayOfWeek.MONDAY);
+        EmployeeWorkingHours employee1WorkingHours = createEmployeeWorkingHours(employee1, LocalTime.of(8, 0), LocalTime.of(16, 0), LocalDate.now());
 
         employee1WorkingHoursList.add(employee1WorkingHours);
 
 
-        ServiceEntity service1 = createService("Shave", "Shaving",  15, employee1, company1, 30);
+        ServiceEntity service1 = createService("Shave", "Shaving",  15, employee1, company1, Duration.ofMinutes(30));
 
         List<ServiceEntity> serviceList = new ArrayList<>();
         serviceList.add(service1);
@@ -195,7 +193,7 @@ public class DatabaseSeeder implements CommandLineRunner {
         return employee;
     }
 
-    private ServiceEntity createService(String name, String description, Integer price, Employee employee, Company company, Integer duration) {
+    private ServiceEntity createService(String name, String description, Integer price, Employee employee, Company company, Duration duration) {
         ServiceEntity service = new ServiceEntity();
         service.setName(name);
         service.setDescription(description);
@@ -247,14 +245,14 @@ public class DatabaseSeeder implements CommandLineRunner {
         companyRepository.save(company);
     }
 
-    private EmployeeWorkingHours createEmployeeWorkingHours(Employee employee, LocalTime startTime, LocalTime endTime, DayOfWeek dayOfWeek)
+    private EmployeeWorkingHours createEmployeeWorkingHours(Employee employee, LocalTime startTime, LocalTime endTime, LocalDate date)
     {
         EmployeeWorkingHours employeeWorkingHours = new EmployeeWorkingHours();
 
         employeeWorkingHours.setEmployee(employee);
         employeeWorkingHours.setStartTime(startTime);
         employeeWorkingHours.setEndTime(endTime);
-        employeeWorkingHours.setDayOfWeek(dayOfWeek);
+        employeeWorkingHours.setDate(date);
 
         employeeWorkingHoursRepository.save(employeeWorkingHours);
 

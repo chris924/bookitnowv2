@@ -7,16 +7,11 @@ import com.bookitnowv2.appointment_booking.mapper.AppointmentMapper;
 import com.bookitnowv2.appointment_booking.repository.*;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cglib.core.Local;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
-import java.time.DayOfWeek;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import java.time.*;
+import java.util.*;
 
 @Service
 public class AppointmentService {
@@ -121,16 +116,52 @@ public class AppointmentService {
         List<EmployeeWorkingHours> employeeWorkingHours = employee.getWorkingHours();
         List<Appointment> existingAppointments = employee.getAppointments();
 
-        LocalDateTime currentDate = LocalDateTime.now();
-        Integer dayOfMonth = currentDate.getDayOfMonth();
-        DayOfWeek dayOfWeek = currentDate.getDayOfWeek();
-
-        for(int x = 0; x < 60; x++)
+        for(EmployeeWorkingHours x : employeeWorkingHours)
         {
-            employeeWorkingHours.stream().filter(workingHour -> workingHour.getDayOfWeek() == dayOfWeek);
-        }
+           LocalTime dayStartTime = x.getStartTime();
+           LocalTime dayEndTime = x.getEndTime();
+           LocalDate workingHourDate = x.getDate();
+           Duration serviceDuration = serviceEntity.getDuration();
 
+            LocalTime current = dayStartTime;
 
+            List<Appointment> currentExistingAppointments= existingAppointments.stream().filter(z -> z.getDate().equals(workingHourDate)).toList();
+
+            while (!current.plus(serviceDuration).isAfter(dayEndTime)) {
+                LocalTime slotStart = current;
+                LocalTime slotEnd = current.plus(serviceDuration);
+
+                // Find if there's a conflict
+                Optional<Appointment> conflict = currentExistingAppointments.stream()
+                        .filter(i -> slotStart.isBefore(i.getEndTime()) && slotEnd.isAfter(i.getStartTime()))
+                        .min(Comparator.comparing(Appointment::getStartTime));
+
+                AppointmentSlotResponseDTO slotResponseDTO = new AppointmentSlotResponseDTO();
+                slotResponseDTO.setDate(workingHourDate);
+
+                if (conflict.isPresent()) {
+                    Appointment appt = conflict.get();
+                    slotResponseDTO.setStart(appt.getStartTime());
+                    slotResponseDTO.setEnd(appt.getEndTime());
+                    slotResponseDTO.setStatus("BOOKED");
+
+                    // jump to after the booked appointment
+                    current = appt.getEndTime();
+                } else {
+                    slotResponseDTO.setStart(slotStart);
+                    slotResponseDTO.setEnd(slotEnd);
+                    slotResponseDTO.setStatus("FREE");
+
+                    // move to next slot
+                    current = slotEnd;
+                }
+
+                appointmentSlotResponseDTOList.add(slotResponseDTO);
+            }
+
+        };
+
+        return appointmentSlotResponseDTOList;
     }
 
 

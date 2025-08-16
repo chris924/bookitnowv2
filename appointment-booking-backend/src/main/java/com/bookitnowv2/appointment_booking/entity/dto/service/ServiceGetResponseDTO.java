@@ -2,6 +2,8 @@ package com.bookitnowv2.appointment_booking.entity.dto.service;
 
 import lombok.AllArgsConstructor;
 
+import java.time.Duration;
+
 @AllArgsConstructor
 public class ServiceGetResponseDTO {
 
@@ -9,6 +11,6 @@ public class ServiceGetResponseDTO {
     public String name;
     public String description;
     public Integer price;
-    public Integer duration;
+    public Duration duration;
 
 }

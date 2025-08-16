@@ -1,4 +1,5 @@
 
+import { getMonthlyAppointments } from "@/api/appointments";
 import { Button } from "@/components/ui/button";
 import {
   Table,
@@ -10,14 +11,25 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
+import { AppointmentSlotResponseDTO } from "@/lib/appointment-types";
 import { SpecialistServiceDTO } from "@/lib/specialist-types"
 
 type SpecialistServicesData = {
     employeeServices: SpecialistServiceDTO[];
+    setSlots: (slots: AppointmentSlotResponseDTO[]) => void;
 }
 
-export default function EmployeeServicesTable({employeeServices} : SpecialistServicesData)
+export default function EmployeeServicesTable({employeeServices, setSlots} : SpecialistServicesData)
 {
+
+async function handleBookingClick(serviceId: number) {
+  console.log(`Booking clicked for service ID: ${serviceId}`);
+  const response = await getMonthlyAppointments(serviceId);
+  console.log(response);
+
+  setSlots(response);
+
+}
 
     return(
         <div className="flex flex-col justify-center lg:justify-start pt-12">
@@ -35,7 +47,7 @@ export default function EmployeeServicesTable({employeeServices} : SpecialistSer
           <TableRow key={service.id}>
             <TableCell className=" lg:w-[250px] font-medium lg:text-xl whitespace-normal break-words max-w-[150px] lg:max-w-[400px] text-wrap">{service.name} <br></br> <p className="lg:text-lg">{service.duration} perc</p></TableCell>
             <TableCell className=" lg:w-[200px] whitespace-normal lg:text-xl break-words max-w-[80px] lg:max-w-[300px] text-wrap">{service.price}</TableCell>
-            <TableCell className="whitespace-normal lg:text-xl break-words max-w-[100px] lg:max-w-[400px] text-wrap">{<Button className="w-[75px] lg:w-[150px]">Időpontok</Button>}</TableCell>
+            <TableCell className="whitespace-normal lg:text-xl break-words max-w-[100px] lg:max-w-[400px] text-wrap">{<Button className="w-[75px] lg:w-[150px]" onClick={() => handleBookingClick(service.id)}>Időpontok</Button>}</TableCell>
           </TableRow>
         ))}
       </TableBody>

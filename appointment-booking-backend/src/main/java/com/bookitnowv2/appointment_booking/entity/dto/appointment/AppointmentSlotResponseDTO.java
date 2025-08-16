@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 @Data
@@ -13,6 +15,7 @@ import java.time.LocalTime;
 public class AppointmentSlotResponseDTO {
 
     private Integer id;
+    private LocalDate date;
     private LocalTime start;
     private LocalTime end;
     private String status;

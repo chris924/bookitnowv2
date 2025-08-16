@@ -68,6 +68,7 @@ public class SecurityConfiguration {
                     auth.requestMatchers("/employees/most-rated").permitAll(); //TODO: ON ANOTHER CONTROLLER?
                     auth.requestMatchers("/employees/search-employee").permitAll(); //TODO: ON ANOTHER CONTROLLER?
                     auth.requestMatchers("/employees/employee/{employeeSlug}").permitAll(); //TODO: ON ANOTHER CONTROLLER?
+                    auth.requestMatchers("/appointments/employee/{serviceId}").permitAll(); //TODO: ON ANOTHER CONTROLLER?
                     auth.requestMatchers("/user/**").hasAnyRole("ADMIN", "USER");
                     auth.requestMatchers("/company/**").hasAnyRole("ADMIN", "COMPANY");
                     auth.requestMatchers("/appointment/**").hasAnyRole("ADMIN", "USER", "COMPANY");

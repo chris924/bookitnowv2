@@ -40,8 +40,3 @@ export const getSpecificEmployeeContent = async (employeeSlug: string): Promise<
   return response.data;
  }
 
- export const getMonthlyAppointments = async (serviceId: number): Promise<any> =>
-  {
-  const response = await api.get(`/employees/employee/${serviceId}/appointments/monthly`);
-  return response.data;
-}
