@@ -11,6 +11,6 @@ public class ServiceGetResponseDTO {
     public String name;
     public String description;
     public Integer price;
-    public Duration duration;
+    public long duration;
 
 }

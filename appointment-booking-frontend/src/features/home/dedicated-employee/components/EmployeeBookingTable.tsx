@@ -17,9 +17,10 @@ function toFullCalendarEvent(slot: SlotResponseDTO, index: number): EventInput {
 
   return {
     id: String(index),
-    title: slot.status,
+    title: "",
     start: `${slot.date}T${startTime}`,
     end: `${slot.date}T${endTime}`,
+    color: slot.status == "FREE" ? 'green' : 'grey'
   };
 }
 
