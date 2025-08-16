@@ -40,6 +40,10 @@ export default function EmployeeBookingTable({ appointmentSlots }: EmployeeBooki
         plugins={[timeGridPlugin, dayGridPlugin, interactionPlugin]}
         initialView="timeGridWeek"
         initialDate={appointmentSlots?.firstDate || new Date().toISOString().split('T')[0]} // default to today if no date
+        visibleRange={{
+          start: new Date().toISOString().split("T")[0], // today
+          end: appointmentSlots?.lastDate || new Date().toISOString().split("T")[0],
+        }}
         validRange={{
           start: appointmentSlots?.firstDate || new Date().toISOString().split('T')[0],
           end: appointmentSlots?.lastDate || new Date().toISOString().split('T')[0],
@@ -48,6 +52,25 @@ export default function EmployeeBookingTable({ appointmentSlots }: EmployeeBooki
         slotMinTime={appointmentSlots?.firstHour ? appointmentSlots?.firstHour : "8:00"}   // start hour
         slotMaxTime={appointmentSlots?.lastHour ? appointmentSlots?.lastHour : "16:00"} // end hour
         height="auto"
+        allDaySlot={false}
+        slotDuration="00:20:00"
+        firstDay={appointmentSlots?.firstDate ? new Date(appointmentSlots.firstDate).getDay() : 0}  // 0=Sun ... 6=Sat
+         slotLabelFormat={{
+          hour: "numeric",
+          minute: "2-digit",
+          hour12: false 
+        }}
+        
+        
+
+        eventClick={(info) => {
+    // prevent navigation if the event has a url
+    info.jsEvent.preventDefault();
+
+    console.log("Event clicked:", info.event);
+
+    alert(`Clicked event: ${info.event.title}`);
+  }}
       />
     </div>
   );

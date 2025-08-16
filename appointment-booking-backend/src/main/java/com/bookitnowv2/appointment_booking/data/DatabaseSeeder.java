@@ -13,6 +13,7 @@ import com.bookitnowv2.appointment_booking.repository.IRoleRepository;
 import com.bookitnowv2.appointment_booking.repository.IUserRepository;
 import com.bookitnowv2.appointment_booking.entity.*;
 import com.bookitnowv2.appointment_booking.repository.*;
+import com.bookitnowv2.appointment_booking.utils.AppointmentStatus;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
@@ -105,7 +106,7 @@ public class DatabaseSeeder implements CommandLineRunner {
         Set<Role> userRoles = new HashSet<>();
         userRoles.add(roleRepository.findByAuthority("USER").orElseThrow(() -> new RuntimeException("USER role not found")));
 
-        createUser("John Doe", "john.doe", "john.doe@email.com", "password123", new Timestamp(System.currentTimeMillis()), new ArrayList<>(), userRoles);
+        User user1 = createUser("John Doe", "john.doe", "john.doe@email.com", "password123", new Timestamp(System.currentTimeMillis()), new ArrayList<>(), userRoles);
         createUser("Alice Smith", "alice.smith", "alice.smith@email.com", "securePass", new Timestamp(System.currentTimeMillis()), new ArrayList<>(), userRoles);
         createUser("Bob Johnson", "bob.johnson", "bob.johnson@email.com", "qwerty", new Timestamp(System.currentTimeMillis()), new ArrayList<>(), userRoles);
 
@@ -119,12 +120,8 @@ public class DatabaseSeeder implements CommandLineRunner {
         Company company3 = createCompany("Home Cleaning", "homecleaning@gmail.com", "password", "Your trusted partner in home cleaning", "Home Cleaning", "We make your home shine!", companyRoles, "Szolnok");
 
 
-        createAppointment(company1, 1);
-        createAppointment(company1, 2);
-        createAppointment(company2, 1);
-        createAppointment(company2, 2);
-        createAppointment(company3, 1);
-        createAppointment(company3, 2);
+
+
 
         Set<Role> employeeRoles = new HashSet<>();
         employeeRoles.add(roleRepository.findByAuthority("EMPLOYEE").orElseThrow(() -> new RuntimeException("EMPLOYEE role not found")));
@@ -151,10 +148,13 @@ public class DatabaseSeeder implements CommandLineRunner {
 
         employee2.setServices(serviceList);
         employee3.setServices(serviceList);
+
+
+        createAppointment(company1, employee1, service1, LocalDate.now(), user1, LocalTime.of(13, 25), LocalTime.of(14, 10), AppointmentStatus.BOOKED);
     }
 
 
-    private void createUser(String name, String username, String email, String password, Timestamp createdAt, List<Appointment> appointments, Set<Role> roles) {
+    private User createUser(String name, String username, String email, String password, Timestamp createdAt, List<Appointment> appointments, Set<Role> roles) {
 
         User user = new User();
         user.setName(name);
@@ -167,6 +167,7 @@ public class DatabaseSeeder implements CommandLineRunner {
 
         userRepository.save(user);
 
+        return user;
     }
 
     @NotNull
@@ -226,23 +227,22 @@ public class DatabaseSeeder implements CommandLineRunner {
         return company;
     }
 
-    private void createAppointment(Company company, Integer plusDay) {
-        LocalDateTime currentDateTime = LocalDateTime.now();
-        LocalDateTime nextDay8AM = currentDateTime.plusDays(plusDay).withHour(8).withMinute(0).withSecond(0).withNano(0);
-
-
-        DayOfWeek dayOfWeek = nextDay8AM.getDayOfWeek();
-        if (dayOfWeek == DayOfWeek.SATURDAY || dayOfWeek == DayOfWeek.SUNDAY) {
-            nextDay8AM = nextDay8AM.plusDays(2); // Move to Monday
-        }
+    private void createAppointment(Company company, Employee employee, ServiceEntity serviceEntity, LocalDate date, User user, LocalTime startTime, LocalTime endTime, AppointmentStatus status) {
 
         Appointment appointment = new Appointment();
 
         appointment.setCompany(company);
+        appointment.setEmployee(employee);
+        appointment.setService(serviceEntity);
+        appointment.setUser(user);
+        appointment.setDate(date);
+        appointment.setStartTime(startTime);
+        appointment.setEndTime(endTime);
 
+        appointment.setAppointmentStatus(status);
 
         appointmentRepository.save(appointment);
-        companyRepository.save(company);
+    //    companyRepository.save(company);
     }
 
     private EmployeeWorkingHours createEmployeeWorkingHours(Employee employee, LocalTime startTime, LocalTime endTime, LocalDate date)
