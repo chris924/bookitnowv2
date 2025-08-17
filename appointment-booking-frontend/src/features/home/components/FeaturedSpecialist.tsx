@@ -26,7 +26,7 @@ export default function FeaturedSpecialist({specialists}: searchResultPropInterf
        {specialists.map((result : SpecialistDTO, index : number) => (
                   <CarouselItem key={index} className="md:basis-1/2 lg:basis-1/3 ">
                   <div className="p-1 flex justify-center flex-col">
-                    <Card className=" border-amber-300 border-2">
+                    <Card className=" border-amber-300 border-2 cursor-pointer">
                       <CardContent className="flex flex-col aspect-square items-center justify-center p-6 space-y-8">
                         <img
                           src={result.image}

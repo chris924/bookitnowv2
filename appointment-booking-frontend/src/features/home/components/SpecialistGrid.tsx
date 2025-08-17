@@ -26,7 +26,7 @@ if (specialists.length === 0) {
 return(
 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-x-10">
 {specialists.map((specialist: SpecialistDTO) => (
-   <Card className="" onClick={() => handleSpecialistClick(specialist)} key={specialist.label}>
+   <Card className="cursor-pointer" onClick={() => handleSpecialistClick(specialist)} key={specialist.label}>
                          <CardContent className="flex flex-col aspect-square items-center justify-center p-6 space-y-8">
                            <img
                              src={specialist.image}

@@ -3,13 +3,27 @@ import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious
 import React from "react"
 import { Card, CardContent } from "../../../components/ui/card"
 import { searchResultPropInterface, SpecialistDTO } from "@/lib/specialist-types"
+import { createSlug } from "@/lib/utils"
+import { useNavigate } from "react-router-dom"
 
 
 export default function MostRatedSpecialist({specialists}: searchResultPropInterface)
 {
+    const navigate = useNavigate();
+
     const plugin = React.useRef(
         Autoplay({ delay: 3000, stopOnInteraction: false })
       )
+
+        //TODO: Refactor employee clicks, so it's only at one place?
+      async function handleMostRatedSpecialistClick(specialist : SpecialistDTO)
+      {
+        
+         const slug = await createSlug(specialist.label, specialist.id);
+            navigate(`/employee/${slug}`);
+
+      }
+
     return(
 
         <Carousel
@@ -26,7 +40,7 @@ export default function MostRatedSpecialist({specialists}: searchResultPropInter
        {specialists.map((result : SpecialistDTO, index : number) => (
                   <CarouselItem key={index} className="md:basis-1/2 lg:basis-1/4 ">
                   <div className="p-1 flex justify-center flex-col">
-                    <Card className="">
+                    <Card className="cursor-pointer" onClick={() => handleMostRatedSpecialistClick(result)}>
                       <CardContent className="flex flex-col aspect-square items-center justify-center p-6 space-y-8">
                         <img
                           src={result.image}
