@@ -19,9 +19,6 @@ export default function GuestLogin()
   const [view, setView] = useState<"login" | "register">("login");
   
 
-  
-  
-
    return (
     <Dialog>
       <DialogTrigger asChild>

@@ -4,8 +4,11 @@ import { EventInput } from '@fullcalendar/core/index.js';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin from '@fullcalendar/interaction'; // for click/select
+import { useAuthStore } from '@/stores/AuthStore';
 
 import { AppointmentSlotResponseDTO, SlotResponseDTO } from '@/lib/appointment-types';
+import GuestLoginForm from '@/components/ui/own/GuestLoginForm';
+import GuestLogin from '@/components/ui/own/GuestLogin';
 
 type EmployeeBookingTableProps = {
   appointmentSlots?: AppointmentSlotResponseDTO;
@@ -20,12 +23,18 @@ function toFullCalendarEvent(slot: SlotResponseDTO, index: number): EventInput {
     title: "",
     start: `${slot.date}T${startTime}`,
     end: `${slot.date}T${endTime}`,
-    color: slot.status == "FREE" ? 'green' : 'grey'
+    color: slot.status == "FREE" ? 'green' : 'grey',
+    className: slot.status == "FREE" ? "cursor-pointer" : ""
   };
 }
 
 export default function EmployeeBookingTable({ appointmentSlots }: EmployeeBookingTableProps) {
   const [events, setEvents] = useState<EventInput[]>([]);
+  const [showLoginForm, setShowLoginForm] = useState(false);
+
+  const {isAuthenticated} = useAuthStore();
+
+  const [view, setView] = useState<"login" | "register">("login");
 
   useEffect(() => {
     if (appointmentSlots && appointmentSlots.slotResponseDTO.length > 0) {
@@ -35,6 +44,8 @@ export default function EmployeeBookingTable({ appointmentSlots }: EmployeeBooki
   }, [appointmentSlots]);
 
   return (
+    <>
+     
     <div>
       <FullCalendar
         plugins={[timeGridPlugin, dayGridPlugin, interactionPlugin]}
@@ -60,18 +71,30 @@ export default function EmployeeBookingTable({ appointmentSlots }: EmployeeBooki
           minute: "2-digit",
           hour12: false 
         }}
-        
-        
-
         eventClick={(info) => {
-    // prevent navigation if the event has a url
-    info.jsEvent.preventDefault();
+        // prevent navigation if the event has a url
+        info.jsEvent.preventDefault();
 
-    console.log("Event clicked:", info.event);
-
-    alert(`Clicked event: ${info.event.title}`);
+        console.log("Event clicked:", info.event);
+        
+        if(isAuthenticated)
+        {
+          console.log("auth true");
+          setShowLoginForm(false);
+        }
+        else
+        {
+          console.log("auth false");
+          setShowLoginForm(true);
+        }
   }}
-      />
+      /> 
+      <div> 
+    {showLoginForm && <GuestLogin />} 
     </div>
-  );
+      
+    </div>
+   
+    </>
+  ); // TODO: Refactor GuestLoginForm component so its reusable!!!
 }
