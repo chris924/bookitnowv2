@@ -90,11 +90,11 @@ export default function EmployeeBookingTable({ appointmentSlots }: EmployeeBooki
   }}
       /> 
       <div> 
-    {showLoginForm && <GuestLogin />} 
+    {showLoginForm && <GuestLogin open={showLoginForm} onOpenChange={setShowLoginForm} />} 
     </div>
       
     </div>
    
     </>
-  ); // TODO: Refactor GuestLoginForm component so its reusable!!!
+  ); 
 }
