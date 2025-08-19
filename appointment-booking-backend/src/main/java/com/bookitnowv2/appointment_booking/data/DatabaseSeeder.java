@@ -13,6 +13,7 @@ import com.bookitnowv2.appointment_booking.repository.IRoleRepository;
 import com.bookitnowv2.appointment_booking.repository.IUserRepository;
 import com.bookitnowv2.appointment_booking.entity.*;
 import com.bookitnowv2.appointment_booking.repository.*;
+import com.bookitnowv2.appointment_booking.service.AppointmentService;
 import com.bookitnowv2.appointment_booking.utils.AppointmentStatus;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Value;
@@ -38,6 +39,8 @@ public class DatabaseSeeder implements CommandLineRunner {
     private final IAppointmentRepository appointmentRepository;
     private final IEmployeeWorkingHoursRepository employeeWorkingHoursRepository;
 
+    private final AppointmentService appointmentService;
+
     private final IRoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
 
@@ -46,7 +49,7 @@ public class DatabaseSeeder implements CommandLineRunner {
     private final String serverAddress;
 
     public DatabaseSeeder(IAppointmentRepository appointmentRepository, ICompanyRepository companyRepository, IRoleRepository roleRepository, IUserRepository userRepository, PasswordEncoder passwordEncoder,
-                          IServiceEntityRepository serviceRepository, IEmployeeRepository employeeRepository, IElasticEmployeeRepository elasticEmployeeRepository, IEmployeeWorkingHoursRepository employeeWorkingHoursRepository, EmployeeMapper employeeMapper, @Value("${server.ip.address}") String serverAddress) {
+                          IServiceEntityRepository serviceRepository, IEmployeeRepository employeeRepository, IElasticEmployeeRepository elasticEmployeeRepository, IEmployeeWorkingHoursRepository employeeWorkingHoursRepository, EmployeeMapper employeeMapper, @Value("${server.ip.address}") String serverAddress, AppointmentService appointmentService) {
         this.appointmentRepository = appointmentRepository;
         this.companyRepository = companyRepository;
 
@@ -59,6 +62,8 @@ public class DatabaseSeeder implements CommandLineRunner {
         this.employeeWorkingHoursRepository = employeeWorkingHoursRepository;
         this.employeeMapper = employeeMapper;
         this.serverAddress = serverAddress;
+
+        this.appointmentService = appointmentService;
     }
 
     @Override
@@ -151,6 +156,7 @@ public class DatabaseSeeder implements CommandLineRunner {
 
 
         createAppointment(company1, employee1, service1, LocalDate.now(), user1, LocalTime.of(13, 25), LocalTime.of(14, 10), AppointmentStatus.BOOKED);
+        appointmentService.createFreeAppointmentSlotsFromService(service1);
     }
 
 
@@ -242,7 +248,8 @@ public class DatabaseSeeder implements CommandLineRunner {
         appointment.setAppointmentStatus(status);
 
         appointmentRepository.save(appointment);
-    //    companyRepository.save(company);
+        employee.getAppointments().add(appointment);
+    //   companyRepository.save(company);
     }
 
     private EmployeeWorkingHours createEmployeeWorkingHours(Employee employee, LocalTime startTime, LocalTime endTime, LocalDate date)

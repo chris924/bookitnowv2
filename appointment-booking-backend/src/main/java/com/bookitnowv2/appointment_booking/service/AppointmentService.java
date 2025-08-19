@@ -6,6 +6,7 @@ import com.bookitnowv2.appointment_booking.entity.dto.appointment.AppointmentSlo
 import com.bookitnowv2.appointment_booking.entity.dto.appointment.SlotResponseDTO;
 import com.bookitnowv2.appointment_booking.mapper.AppointmentMapper;
 import com.bookitnowv2.appointment_booking.repository.*;
+import com.bookitnowv2.appointment_booking.utils.AppointmentStatus;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -122,15 +123,13 @@ public class AppointmentService {
         List<Appointment> existingAppointments = employee.getAppointments();
 
 
-
         LocalTime smallestStart = null;
         LocalTime largestEnd = null;
         LocalDate firstDate = null;
         LocalDate lastDate = null;
 
-        for(EmployeeWorkingHours x : employeeWorkingHours)
+        for(Appointment x : existingAppointments)
         {
-
 
            LocalTime dayStartTime = x.getStartTime();
            LocalTime dayEndTime = x.getEndTime();
@@ -141,7 +140,56 @@ public class AppointmentService {
             if (firstDate == null || workingHourDate.isBefore(firstDate)) firstDate = workingHourDate;
             if (lastDate == null || workingHourDate.isAfter(lastDate)) lastDate = workingHourDate;
 
-           Duration serviceDuration = serviceEntity.getDuration();
+            SlotResponseDTO slotResponseDTO = new SlotResponseDTO();
+
+            slotResponseDTO.setId(x.getId());
+            slotResponseDTO.setStart(dayStartTime);
+            slotResponseDTO.setEnd(dayEndTime);
+            slotResponseDTO.setDate(workingHourDate);
+            switch (x.getAppointmentStatus()) {
+                case FREE -> slotResponseDTO.setStatus("FREE");
+                case BOOKED -> slotResponseDTO.setStatus("BOOKED");
+                case CANCELLED -> slotResponseDTO.setStatus("CANCELLED");
+            }
+
+            slotResponseDTOList.add(slotResponseDTO);
+
+
+        };
+
+        appointmentSlotResponseDTO.setFirstHour(smallestStart);
+        appointmentSlotResponseDTO.setLastHour(largestEnd);
+        appointmentSlotResponseDTO.setFirstDate(firstDate);
+        appointmentSlotResponseDTO.setLastDate(lastDate);
+        return appointmentSlotResponseDTO;
+    }
+
+    public void createFreeAppointmentSlotsFromService(ServiceEntity serviceEntity)
+    {
+
+        Employee employee = serviceEntity.getEmployee();
+        List<EmployeeWorkingHours> employeeWorkingHours = employee.getWorkingHours();
+        List<Appointment> existingAppointments = employee.getAppointments();
+
+        LocalTime smallestStart = null;
+        LocalTime largestEnd = null;
+        LocalDate firstDate = null;
+        LocalDate lastDate = null;
+
+        for(EmployeeWorkingHours x : employeeWorkingHours)
+        {
+
+
+            LocalTime dayStartTime = x.getStartTime();
+            LocalTime dayEndTime = x.getEndTime();
+            LocalDate workingHourDate = x.getDate();
+
+            if (smallestStart == null || dayStartTime.isBefore(smallestStart)) smallestStart = dayStartTime;
+            if (largestEnd == null || dayEndTime.isAfter(largestEnd)) largestEnd = dayEndTime;
+            if (firstDate == null || workingHourDate.isBefore(firstDate)) firstDate = workingHourDate;
+            if (lastDate == null || workingHourDate.isAfter(lastDate)) lastDate = workingHourDate;
+
+            Duration serviceDuration = serviceEntity.getDuration();
 
             LocalTime current = dayStartTime;
 
@@ -159,35 +207,31 @@ public class AppointmentService {
                 SlotResponseDTO slotResponseDTO = new SlotResponseDTO();
                 slotResponseDTO.setDate(workingHourDate);
 
+                Appointment newAppointment =  new Appointment();
+
+                newAppointment.setDate(x.getDate());
+                newAppointment.setEmployee(x.getEmployee());
+                newAppointment.setCompany(x.getEmployee().getCompany());
+
                 if (conflict.isPresent()) {
                     Appointment appt = conflict.get();
-                    slotResponseDTO.setStart(appt.getStartTime());
-                    slotResponseDTO.setEnd(appt.getEndTime());
-                    slotResponseDTO.setStatus("BOOKED");
 
-                    // jump to after the booked appointment
                     current = appt.getEndTime();
                 } else {
-                    slotResponseDTO.setStart(slotStart);
-                    slotResponseDTO.setEnd(slotEnd);
-                    slotResponseDTO.setStatus("FREE");
+                    newAppointment.setStartTime(slotStart);
+                    newAppointment.setEndTime(slotEnd);
+                    newAppointment.setAppointmentStatus(AppointmentStatus.FREE);
+
+                    appointmentRepository.save(newAppointment);
 
                     // move to next slot
                     current = slotEnd;
                 }
 
-                slotResponseDTOList.add(slotResponseDTO);
+
             }
 
         };
 
-        appointmentSlotResponseDTO.setFirstHour(smallestStart);
-        appointmentSlotResponseDTO.setLastHour(largestEnd);
-        appointmentSlotResponseDTO.setFirstDate(firstDate);
-        appointmentSlotResponseDTO.setLastDate(lastDate);
-        return appointmentSlotResponseDTO;
     }
-
-
-
 }
