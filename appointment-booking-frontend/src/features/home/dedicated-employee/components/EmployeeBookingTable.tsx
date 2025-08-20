@@ -10,6 +10,8 @@ import { AppointmentSlotResponseDTO, SlotResponseDTO } from '@/lib/appointment-t
 import GuestLoginForm from '@/components/ui/own/GuestLoginForm';
 import GuestLogin from '@/components/ui/own/GuestLogin';
 import { addUserToAppointment } from '@/api/appointments';
+import ApproveBookingForm from '@/components/ui/own/ApproveBookingForm';
+import { EventImpl } from '@fullcalendar/core/internal';
 
 type EmployeeBookingTableProps = {
   appointmentSlots?: AppointmentSlotResponseDTO;
@@ -32,6 +34,8 @@ function toFullCalendarEvent(slot: SlotResponseDTO, index: number): EventInput {
 export default function EmployeeBookingTable({ appointmentSlots }: EmployeeBookingTableProps) {
   const [events, setEvents] = useState<EventInput[]>([]);
   const [showLoginForm, setShowLoginForm] = useState(false);
+  const [showApproveBooking, setShowApproveBooking] = useState(false);
+  const [clickedAppointment, setClickedAppointment] = useState<EventImpl>();
 
   const {isAuthenticated} = useAuthStore();
 
@@ -83,22 +87,26 @@ export default function EmployeeBookingTable({ appointmentSlots }: EmployeeBooki
         info.jsEvent.preventDefault();
 
         console.log("Event clicked:", info.event);
+        setClickedAppointment(info.event);
         
         if(isAuthenticated)
         {
           console.log("auth true");
           setShowLoginForm(false);
-          handleAppointmentBooking(info.event.id);
+          setShowApproveBooking(true);
+     //     handleAppointmentBooking(info.event.id);
         }
         else
         {
           console.log("auth false");
           setShowLoginForm(true);
+          setShowApproveBooking(false);
         }
   }}
       /> 
       <div> 
-    {showLoginForm && <GuestLogin open={showLoginForm} onOpenChange={setShowLoginForm} />} 
+    {showLoginForm ? <GuestLogin open={showLoginForm} onOpenChange={setShowLoginForm} /> :
+                       clickedAppointment && <ApproveBookingForm open={showApproveBooking} onOpenChange={setShowApproveBooking} slotInfo={clickedAppointment}/>} 
     </div>
       
     </div>
