@@ -9,6 +9,7 @@ import { useAuthStore } from '@/stores/AuthStore';
 import { AppointmentSlotResponseDTO, SlotResponseDTO } from '@/lib/appointment-types';
 import GuestLoginForm from '@/components/ui/own/GuestLoginForm';
 import GuestLogin from '@/components/ui/own/GuestLogin';
+import { addUserToAppointment } from '@/api/appointments';
 
 type EmployeeBookingTableProps = {
   appointmentSlots?: AppointmentSlotResponseDTO;
@@ -19,7 +20,7 @@ function toFullCalendarEvent(slot: SlotResponseDTO, index: number): EventInput {
   const endTime = slot.end.slice(0, 5);
 
   return {
-    id: String(index),
+    id: String(slot.id),
     title: "",
     start: `${slot.date}T${startTime}`,
     end: `${slot.date}T${endTime}`,
@@ -35,6 +36,12 @@ export default function EmployeeBookingTable({ appointmentSlots }: EmployeeBooki
   const {isAuthenticated} = useAuthStore();
 
   const [view, setView] = useState<"login" | "register">("login");
+
+  function handleAppointmentBooking(id: string)
+  {
+    const data = addUserToAppointment(parseInt(id));
+    console.log(data);
+  }
 
   useEffect(() => {
     if (appointmentSlots && appointmentSlots.slotResponseDTO.length > 0) {
@@ -81,6 +88,7 @@ export default function EmployeeBookingTable({ appointmentSlots }: EmployeeBooki
         {
           console.log("auth true");
           setShowLoginForm(false);
+          handleAppointmentBooking(info.event.id);
         }
         else
         {

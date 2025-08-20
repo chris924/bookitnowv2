@@ -68,20 +68,32 @@ public class AppointmentService {
         appointmentRepository.deleteById(id);
     }
 
-    public void addUserToAppointment(Integer appointmentId, Integer userId)
+    public Appointment getAppointmentById(Integer appointmentId)
     {
-        Appointment foundAppointment = appointmentRepository.findById(appointmentId).orElseThrow(() -> new RuntimeException("Error: Appointment not found by Id!"));
-        User foundUser = userRepository.findById(userId).orElseThrow(() -> new RuntimeException(("Error: User not found by Id!")));
+        return appointmentRepository.findById(appointmentId).orElseThrow(() -> new RuntimeException("Error: Appointment not found by id."));
+    }
 
-        List<Appointment> userAppointments = foundUser.getAppointments();
 
-        if(foundAppointment.getUser() != null) throw new RuntimeException("Error: Appointment already has an User!");
-        if(!userAppointments.contains(foundAppointment)) throw new RuntimeException("Error: Appointment already added to the User!");
+    public void addUserToAppointment(Appointment appointment, User user)
+    {
+        if(appointment.getAppointmentStatus() != AppointmentStatus.FREE || appointment.getUser() != null)
+        {
+            throw new RuntimeException("Error: Appointment is not free.");
+        }
 
-        foundAppointment.setUser(foundUser);
-        foundUser.getAppointments().add(foundAppointment);
-        appointmentRepository.save(foundAppointment);
-        userRepository.save(foundUser);
+        List<Appointment> userAppointments =  user.getAppointments();
+
+        for (Appointment app : userAppointments) {
+            if (appointment.getStartTime().isBefore(app.getEndTime()) &&
+                    appointment.getEndTime().isAfter(app.getStartTime())) {
+                throw new RuntimeException("Error: Appointment overlapping with already booked appointment.");
+            }
+        }
+
+        appointment.setUser(user);
+        user.getAppointments().add(appointment);
+        appointmentRepository.save(appointment);
+        userRepository.save(user);
     }
 
     public void deleteUserFromAppointment(Integer id)
