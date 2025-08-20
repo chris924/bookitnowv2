@@ -6,7 +6,7 @@ import GuestLoginForm from "./GuestLoginForm";
 
 interface GuestLoginProps {
   open?: boolean;
-  onOpenChange?: (open: boolean) => void;
+  onOpenChange: (open: boolean) => void;
 }
 
 export default function GuestLogin({ open, onOpenChange }: GuestLoginProps) {
@@ -16,7 +16,7 @@ export default function GuestLogin({ open, onOpenChange }: GuestLoginProps) {
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[425px] p-6 md:p-8">
         {view === "login" ? (
-          <GuestLoginForm setView={setView} />
+          <GuestLoginForm setView={setView} onOpenChange={onOpenChange} />
         ) : (
           <>
             <GuestRegisterForm />

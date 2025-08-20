@@ -11,9 +11,10 @@ import { useState } from "react";
 
 type GuestLoginFormProps = {
   setView: React.Dispatch<React.SetStateAction<"login" | "register">>;
+  onOpenChange: (open: boolean) => void;
 };
 
-export default function GuestLoginForm({setView}: GuestLoginFormProps)
+export default function GuestLoginForm({setView, onOpenChange}: GuestLoginFormProps)
 {
 
 
@@ -28,7 +29,8 @@ const navigate = useNavigate();
     onSuccess: async (data) => {
       console.log('Logged in:', data);
       await useAuthStore.getState().checkAuth();
-      navigate("/");
+      onOpenChange(false);
+    //  navigate("/");
     }
   })
 
