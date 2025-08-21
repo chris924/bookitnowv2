@@ -4,6 +4,7 @@ import com.bookitnowv2.appointment_booking.entity.*;
 import com.bookitnowv2.appointment_booking.entity.dto.appointment.AppointmentGetResponseDTO;
 import com.bookitnowv2.appointment_booking.entity.dto.appointment.AppointmentSlotResponseDTO;
 import com.bookitnowv2.appointment_booking.entity.dto.appointment.SlotResponseDTO;
+import com.bookitnowv2.appointment_booking.exception.appointment.AppointmentNotFreeException;
 import com.bookitnowv2.appointment_booking.mapper.AppointmentMapper;
 import com.bookitnowv2.appointment_booking.repository.*;
 import com.bookitnowv2.appointment_booking.utils.AppointmentStatus;
@@ -78,7 +79,7 @@ public class AppointmentService {
     {
         if(appointment.getAppointmentStatus() != AppointmentStatus.FREE || appointment.getUser() != null)
         {
-            throw new RuntimeException("Error: Appointment is not free.");
+            throw new AppointmentNotFreeException("Az időpont már foglalt.");
         }
 
         List<Appointment> userAppointments =  user.getAppointments();

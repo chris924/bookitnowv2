@@ -1,5 +1,7 @@
 package com.bookitnowv2.appointment_booking.exception;
 
+import com.bookitnowv2.appointment_booking.entity.dto.error.ErrorResponseDTO;
+import com.bookitnowv2.appointment_booking.exception.appointment.AppointmentNotFreeException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -15,6 +17,17 @@ public class GlobalExceptionHandler {
                 .body("Something went wrong: " + ex.getMessage());
     }
 
+    //APPOINTMENT
+    @ExceptionHandler(AppointmentNotFreeException.class)
+    public ResponseEntity<ErrorResponseDTO> handleAppointmentNotFree(AppointmentNotFreeException ex)
+    {
+        ErrorResponseDTO errorResponseDTO = new ErrorResponseDTO(ex.getCode(), ex.getMessage(), HttpStatus.BAD_REQUEST.value());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponseDTO);
+    }
+
+
+
+    //TODO: Refactor these exceptions aswell
     @ExceptionHandler(UserNotFoundException.class)
     public ResponseEntity<String> handleUserNotFound(UserNotFoundException ex) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());

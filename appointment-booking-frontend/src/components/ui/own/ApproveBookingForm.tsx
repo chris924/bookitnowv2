@@ -12,6 +12,8 @@ import { Label } from "@/components/ui/label"
 import { EventImpl } from "@fullcalendar/core/internal"
 import { addUserToAppointment } from "@/api/appointments"
 import { useState } from "react"
+import { APIError } from "@/api/axios"
+import { er } from "node_modules/@fullcalendar/core/internal-common"
 
 type ApproveBookingFormProps = {
     open? : boolean;
@@ -28,20 +30,23 @@ export default function ApproveBookingForm({open, onOpenChange, slotInfo}: Appro
   
 async function handleAppointmentBooking(id: string)
   {
-    setClickedOnBook(true);
-    const data = await addUserToAppointment(parseInt(id));
-    console.log(data);
-    setBookingResponse(data);
-
-    if(data)
-    {
+    try {
+      setClickedOnBook(true);
+      const data = await addUserToAppointment(parseInt(id));
+      console.log(data);
       setSuccessfullBooking(true);
-    }
-    else
-    {
+    } catch (error) {
+      const err = error as APIError;
       setSuccessfullBooking(false);
+      if(err.response?.data)
+      {
+        setBookingResponse(err.response.data.message)
+      }
+      else
+      {
+        setBookingResponse("Ismeretlen hiba!");
+      }
     }
-
 
   }
 
