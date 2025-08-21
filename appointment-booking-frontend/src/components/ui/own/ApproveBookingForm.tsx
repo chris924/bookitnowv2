@@ -10,6 +10,8 @@ import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
 import { Label } from "@/components/ui/label"
 import { EventImpl } from "@fullcalendar/core/internal"
+import { addUserToAppointment } from "@/api/appointments"
+import { useState } from "react"
 
 type ApproveBookingFormProps = {
     open? : boolean;
@@ -20,9 +22,31 @@ type ApproveBookingFormProps = {
 
 export default function ApproveBookingForm({open, onOpenChange, slotInfo}: ApproveBookingFormProps)
 {
+  const [successfullBooking, setSuccessfullBooking] = useState(false);
+  const [clickedOnBook, setClickedOnBook] = useState(false);
+  const [bookingResponse, setBookingResponse] = useState("");
+  
+async function handleAppointmentBooking(id: string)
+  {
+    setClickedOnBook(true);
+    const data = await addUserToAppointment(parseInt(id));
+    console.log(data);
+    setBookingResponse(data);
 
+    if(data)
+    {
+      setSuccessfullBooking(true);
+    }
+    else
+    {
+      setSuccessfullBooking(false);
+    }
+
+
+  }
 
     return(
+      <>
         <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[425px] p-6 md:p-8">
          <DialogHeader>
@@ -40,12 +64,33 @@ export default function ApproveBookingForm({open, onOpenChange, slotInfo}: Appro
               <Button
                 type="submit"
                 className="bg-blue-400"
+                onClick={() => handleAppointmentBooking(slotInfo.id)}
               >
                 Foglalás
               </Button>
             </DialogFooter>
 
+            {clickedOnBook && (
+              successfullBooking ? (
+                <>
+                  <Separator />
+                  <DialogDescription className="text-center">
+                    Sikeres Foglalás!
+                  </DialogDescription>
+                </>
+              ) : (
+                <>
+                  <Separator />
+                  <DialogDescription className="text-center">
+                    Sikertelen Foglalás: {bookingResponse}
+                  </DialogDescription>
+                </>
+              )
+            )}
+
       </DialogContent>
     </Dialog>
+
+    </>
     )
 }

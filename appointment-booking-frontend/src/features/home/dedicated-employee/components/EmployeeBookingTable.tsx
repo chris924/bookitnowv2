@@ -41,11 +41,7 @@ export default function EmployeeBookingTable({ appointmentSlots }: EmployeeBooki
 
   const [view, setView] = useState<"login" | "register">("login");
 
-  function handleAppointmentBooking(id: string)
-  {
-    const data = addUserToAppointment(parseInt(id));
-    console.log(data);
-  }
+  
 
   useEffect(() => {
     if (appointmentSlots && appointmentSlots.slotResponseDTO.length > 0) {
@@ -105,7 +101,7 @@ export default function EmployeeBookingTable({ appointmentSlots }: EmployeeBooki
   }}
       /> 
       <div> 
-    {showLoginForm ? <GuestLogin open={showLoginForm} onOpenChange={setShowLoginForm} /> :
+    {showLoginForm ? <GuestLogin open={showLoginForm} onOpenChange={setShowLoginForm} showOtherState={setShowApproveBooking}/> :
                        clickedAppointment && <ApproveBookingForm open={showApproveBooking} onOpenChange={setShowApproveBooking} slotInfo={clickedAppointment}/>} 
     </div>
       

@@ -91,6 +91,7 @@ public class AppointmentService {
         }
 
         appointment.setUser(user);
+        appointment.setAppointmentStatus(AppointmentStatus.BOOKED);
         user.getAppointments().add(appointment);
         appointmentRepository.save(appointment);
         userRepository.save(user);
