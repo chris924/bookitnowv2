@@ -9,80 +9,45 @@ import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
 import { EventImpl } from "@fullcalendar/core/internal"
 import { addUserToAppointment } from "@/api/appointments"
-import { useEffect, useState } from "react"
-import { APIError } from "@/api/axios"
-import Loader from "./Loader"
-import { showResultToast } from "./ResultSoonerForm"
+import { useState } from "react"
+import { toast } from "sonner"
 
 type ApproveBookingFormProps = {
-    open? : boolean;
-    onOpenChange: (open: boolean) => void;
-    slotInfo: EventImpl;
+  open?: boolean
+  onOpenChange: (open: boolean) => void
+  slotInfo: EventImpl
 }
 
+export default function ApproveBookingForm({
+  open,
+  onOpenChange,
+  slotInfo,
+}: ApproveBookingFormProps) {
+  const [isLoading, setIsLoading] = useState(false)
 
-export default function ApproveBookingForm({open, onOpenChange, slotInfo}: ApproveBookingFormProps)
-{
-  const [successfullBooking, setSuccessfullBooking] = useState(false);
-  const [clickedOnBook, setClickedOnBook] = useState(false);
-  const [bookingResponse, setBookingResponse] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
-
-  useEffect(() => {
-  if (!open) {
-    setClickedOnBook(false)
-    setSuccessfullBooking(false)
-  }
-}, [open])
-  
-async function handleAppointmentBooking(id: string)
-  {
+  async function handleAppointmentBooking(id: string) {
     try {
-      setIsLoading(true);     
-      setClickedOnBook(true);
-      await new Promise((resolve) => setTimeout(resolve, 6000));
-      const data = await addUserToAppointment(parseInt(id));
-      console.log(data);
-      setSuccessfullBooking(true);
-    } catch (error) {
-      const err = error as APIError;
-      setSuccessfullBooking(false);
-      if(err.response?.data)
-      {
-        setBookingResponse(err.response.data.message)
-      }
-      else
-      {
-        setBookingResponse("Ismeretlen hiba!");
-      }
-    }
-    finally
-    {
-      
-      setIsLoading(false);
-      showResultToast("TEEEST");
-    }
+      setIsLoading(true)
+      await new Promise((resolve) => setTimeout(resolve, 2000)) // simulate delay
+      const data = await addUserToAppointment(parseInt(id))
+      console.log(data)
 
+      toast.success("Sikeres foglalás 🎉", {
+        description: slotInfo.start?.toLocaleString(),
+      })
+
+      onOpenChange(false) // close dialog on success
+    } catch (err) {
+      toast.error("Hiba történt ❌", {
+        description: "Nem sikerült lefoglalni az időpontot",
+      })
+    } finally {
+      setIsLoading(false)
+    }
   }
 
-return (
-  <Dialog
-    open={open}
-    onOpenChange={(isOpen) => {
-      onOpenChange(isOpen)
-      if (!isOpen) {
-        setClickedOnBook(false)       // reset when closing
-        setSuccessfullBooking(false)  // optional reset
-      }
-    }}
-  >
-    {isLoading ? (
-      <DialogContent>
-        <Loader />
-      </DialogContent>
-    ) : clickedOnBook ? (
-      <p></p>
-    ) : (
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[425px] p-6 md:p-8">
         <DialogHeader>
           <DialogTitle className="text-center">
@@ -91,31 +56,27 @@ return (
         </DialogHeader>
 
         <div className="grid gap-4 py-4">
-          <Label className="text-right">
-            Dátum: {slotInfo.start?.toDateString()}
-          </Label>
-          <Label className="text-right">
-            Időpont kezdete: {slotInfo.start?.getHours()}:
+          <Label>Dátum: {slotInfo.start?.toDateString()}</Label>
+          <Label>
+            Kezdés: {slotInfo.start?.getHours()}:
             {slotInfo.start?.getMinutes().toString().padStart(2, "0")}
           </Label>
-          <Label className="text-right">
-            Időpont vége: {slotInfo.end?.getHours()}:
+          <Label>
+            Vége: {slotInfo.end?.getHours()}:
             {slotInfo.end?.getMinutes().toString().padStart(2, "0")}
           </Label>
         </div>
 
         <DialogFooter>
           <Button
-            type="submit"
             className="bg-blue-400"
+            disabled={isLoading}
             onClick={() => handleAppointmentBooking(slotInfo.id)}
           >
-            Foglalás
+            {isLoading ? "Foglalsz..." : "Foglalás"}
           </Button>
         </DialogFooter>
       </DialogContent>
-    )}
-  </Dialog>
-)
-
+    </Dialog>
+  )
 }
