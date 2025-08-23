@@ -19,6 +19,7 @@ export default function HomeContent()
           image: defaultImage,
           company: "TechCorp",
           rating: 4.7,
+          about: "TEST",
         },
         {
           id: 2,
@@ -27,6 +28,7 @@ export default function HomeContent()
           image:  defaultImage,
           company: "HealthPlus",
           rating: 4.9,
+          about: "TEST",
         },
         {
           id: 3,
@@ -35,6 +37,7 @@ export default function HomeContent()
           image:  defaultImage,
           company: "GreenCare",
           rating: 4.6,
+          about: "TEST",
         },
         {
           id: 4,
@@ -43,6 +46,7 @@ export default function HomeContent()
             image: defaultImage,
             company: "TechCorp",
             rating: 4.7,
+            about: "TEST",
           },
           {
             id: 5,
@@ -51,6 +55,7 @@ export default function HomeContent()
             image:  defaultImage,
             company: "HealthPlus",
             rating: 4.9,
+            about: "TEST",
           },
           {
             id: 6,
@@ -59,6 +64,7 @@ export default function HomeContent()
             image:  defaultImage,
             company: "GreenCare",
             rating: 4.6,
+            about: "TEST",
           }
       ]
       

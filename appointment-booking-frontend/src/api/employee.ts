@@ -7,6 +7,7 @@ export interface TopRatedEmp extends BaseItemInterface {
   image: string;
   company: string;
   rating: number;
+  about: string;
 }
 
 
