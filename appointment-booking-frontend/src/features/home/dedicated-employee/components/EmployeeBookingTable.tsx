@@ -25,7 +25,7 @@ function toFullCalendarEvent(slot: SlotResponseDTO, index: number): EventInput {
     start: `${slot.date}T${startTime}`,
     end: `${slot.date}T${endTime}`,
     color: slot.status == "FREE" ? 'green' : 'grey',
-    className: slot.status == "FREE" ? "cursor-pointer" : ""
+    className: slot.status == "FREE" ? "cursor-pointer" : "",
   };
 }
 
@@ -83,14 +83,14 @@ export default function EmployeeBookingTable({ appointmentSlots }: EmployeeBooki
         console.log("Event clicked:", info.event);
         setClickedAppointment(info.event);
         
-        if(isAuthenticated)
+        if(isAuthenticated && info.event.backgroundColor == "green")
         {
           console.log("auth true");
           setShowLoginForm(false);
           setShowApproveBooking(true);
      //     handleAppointmentBooking(info.event.id);
         }
-        else
+        else if(info.event.backgroundColor == "green")
         {
           console.log("auth false");
           setShowLoginForm(true);
@@ -100,7 +100,7 @@ export default function EmployeeBookingTable({ appointmentSlots }: EmployeeBooki
       /> 
       <div> 
     {showLoginForm ? <GuestLogin open={showLoginForm} onOpenChange={setShowLoginForm} showOtherState={setShowApproveBooking}/> :
-                       clickedAppointment && <ApproveBookingForm open={showApproveBooking} onOpenChange={setShowApproveBooking} slotInfo={clickedAppointment}/>} 
+                       clickedAppointment && <ApproveBookingForm open={showApproveBooking} onOpenChange={setShowApproveBooking} slotInfo={clickedAppointment} />} 
     </div>
       
     </div>

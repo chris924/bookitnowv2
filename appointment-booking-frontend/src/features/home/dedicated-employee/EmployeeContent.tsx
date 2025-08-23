@@ -5,7 +5,6 @@ import { SpecialistPageDTO } from "@/lib/specialist-types";
 import EmployeeServicesTable from "./components/EmployeeServices";
 import EmployeeDetails from "./components/EmployeeDetails";
 import EmployeeBookingTable from "./components/EmployeeBookingTable";
-import { set } from "react-hook-form";
 import { AppointmentSlotResponseDTO } from "@/lib/appointment-types";
 
 
@@ -49,7 +48,7 @@ export default function EmployeeContent()
         {employeeData && <EmployeeDetails employeeData={employeeData.employeeGetResponseDTO} />}
         <div className="flex flex-col lg:flex-row lg:w-full">
          {employeeData &&  <EmployeeServicesTable employeeServices={employeeData.employeeServices} setSlots={setAppointmentSlots}/>}
-         {employeeData && (
+         {appointmentSlots &&  (
             <div className="lg:flex-1">
             <EmployeeBookingTable appointmentSlots={appointmentSlots} />
             </div>

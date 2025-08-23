@@ -25,7 +25,7 @@ export default function Navbar()
   <div className="text-m md:text-4xl font-semibold">Appointment</div>
   <div className="flex items-center gap-x-1.5 md:gap-x-4">
     {isAuthenticated ? <DropdownUser /> : <Button className="" onClick={() => setOpenLogin(true)}>Belépés</Button>}
-      <GuestLogin  open={openLogin} onOpenChange={setOpenLogin}/>
+      <GuestLogin  open={openLogin} onOpenChange={setOpenLogin} />
     <ModeToggle/>
   </div>
   

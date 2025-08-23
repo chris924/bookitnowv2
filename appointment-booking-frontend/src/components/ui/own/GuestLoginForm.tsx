@@ -12,7 +12,7 @@ import { useState } from "react";
 type GuestLoginFormProps = {
   setView: React.Dispatch<React.SetStateAction<"login" | "register">>;
   onOpenChange: (open: boolean) => void;
-  showOtherState: (open: boolean) => void;
+  showOtherState?: (open: boolean) => void;
 };
 
 export default function GuestLoginForm({setView, onOpenChange, showOtherState}: GuestLoginFormProps)
@@ -31,7 +31,7 @@ const navigate = useNavigate();
       console.log('Logged in:', data);
       await useAuthStore.getState().checkAuth();
       onOpenChange(false);
-      showOtherState(true);
+      showOtherState!(true);
     //  navigate("/");
     }
   })

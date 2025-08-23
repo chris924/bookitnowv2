@@ -11,6 +11,8 @@ import { EventImpl } from "@fullcalendar/core/internal"
 import { addUserToAppointment } from "@/api/appointments"
 import { useState } from "react"
 import { toast } from "sonner"
+import { APIError } from "@/api/axios"
+import Loader from "./Loader"
 
 type ApproveBookingFormProps = {
   open?: boolean
@@ -28,7 +30,7 @@ export default function ApproveBookingForm({
   async function handleAppointmentBooking(id: string) {
     try {
       setIsLoading(true)
-      await new Promise((resolve) => setTimeout(resolve, 2000)) // simulate delay
+    //  await new Promise((resolve) => setTimeout(resolve, 2000)) // simulate delay
       const data = await addUserToAppointment(parseInt(id))
       console.log(data)
 
@@ -37,16 +39,17 @@ export default function ApproveBookingForm({
       })
 
       onOpenChange(false) // close dialog on success
-    } catch (err) {
+    } catch (error) {
+      const err = error as APIError
       toast.error("Hiba történt ❌", {
-        description: "Nem sikerült lefoglalni az időpontot",
+        description: err.response?.data.message,
       })
     } finally {
       setIsLoading(false)
     }
   }
 
-  return (
+ return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[425px] p-6 md:p-8">
         <DialogHeader>
@@ -69,11 +72,12 @@ export default function ApproveBookingForm({
 
         <DialogFooter>
           <Button
-            className="bg-blue-400"
+            className="bg-blue-400 flex items-center gap-2"
             disabled={isLoading}
             onClick={() => handleAppointmentBooking(slotInfo.id)}
           >
-            {isLoading ? "Foglalsz..." : "Foglalás"}
+            {isLoading && <Loader/>}
+            {isLoading ? "Foglalás..." : "Foglalás"}
           </Button>
         </DialogFooter>
       </DialogContent>

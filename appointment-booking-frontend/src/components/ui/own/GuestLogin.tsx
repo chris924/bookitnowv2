@@ -7,7 +7,7 @@ import GuestLoginForm from "./GuestLoginForm";
 interface GuestLoginProps {
   open?: boolean;
   onOpenChange: (open: boolean) => void;
-  showOtherState: (open: boolean) => void;
+  showOtherState?: (open: boolean) => void;
 }
 
 export default function GuestLogin({ open, onOpenChange, showOtherState  }: GuestLoginProps) {
