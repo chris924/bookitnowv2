@@ -2,15 +2,15 @@ package com.bookitnowv2.appointment_booking.controller;
 
 import com.bookitnowv2.appointment_booking.elasticSearch.document.UserDocument;
 import com.bookitnowv2.appointment_booking.elasticSearch.service.ElasticUserService;
+import com.bookitnowv2.appointment_booking.entity.Employee;
 import com.bookitnowv2.appointment_booking.entity.User;
+import com.bookitnowv2.appointment_booking.service.UserService;
+import com.bookitnowv2.appointment_booking.utils.SlugExtractor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -25,12 +25,26 @@ public class UserController {
 
 
     private final Path basePath;
+    private final UserService userService;
     private final ElasticUserService elasticUserService;
+    private final SlugExtractor slugExtractor;
 
-    public UserController(@Value("${avatar.user.directory.path}") String basePath, ElasticUserService elasticUserService)
+    public UserController(@Value("${avatar.user.directory.path}") String basePath, ElasticUserService elasticUserService, SlugExtractor slugExtractor, UserService userService)
     {
         this.basePath = Paths.get(basePath);
         this.elasticUserService = elasticUserService;
+        this.userService = userService;
+        this.slugExtractor = slugExtractor;
+    }
+
+    //TODO: FINISH USERDATAFROMID FUNCTION
+    @GetMapping("/user/{userSlug}")
+    public ResponseEntity<?> getUserDataFromId(@PathVariable String userSlug)
+    {
+        Integer userId = slugExtractor.getIdFromSlug(userSlug);
+        User foundUser = userService.getUserById(userId);
+     //  return ResponseEntity.ok(employeeMapper.toPageResponseDTO(foundEmployee));
+        return null;
     }
 
     @PostMapping("/user/upload-avatar")
