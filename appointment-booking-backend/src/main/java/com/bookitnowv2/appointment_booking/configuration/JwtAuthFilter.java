@@ -10,6 +10,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.jwt.Jwt;
@@ -17,6 +19,7 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
+import java.util.List;
 
 //This component is responsible, to check if the JWT token is valid from the cookie
 @Component
@@ -61,38 +64,34 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
             String id = decodedJwt.getSubject();
 
-            String type = decodedJwt.getClaim("roles");
+            List<String> types = decodedJwt.getClaim("roles");
 
-            if("USER".equals(type))
-            {
-                User foundUser = userService.getUserById(Integer.parseInt(id));
+            if (tokenService.isTokenValid(decodedJwt)) {
+                for (String roleType : types) {
+                    UserDetails userDetails = null;
 
-                UserDetails userDetails = userAuthService.loadUserByUsername(foundUser.getEmail());
+                    if ("USER".equals(roleType)) {
+                        User foundUser = userService.getUserById(Integer.parseInt(id));
+                        userDetails = userAuthService.loadUserByUsername(foundUser.getEmail());
+                    }
+                    else if ("COMPANY".equals(roleType)) {
+                        CompanyGetResponseDTO foundCompany = companyService.getCompanyById(Integer.parseInt(id));
+                        userDetails = companyAuthService.loadUserByUsername(foundCompany.email);
+                    }
 
-                if (tokenService.isTokenValid(decodedJwt)) {
-                    UsernamePasswordAuthenticationToken authToken =
-                            new UsernamePasswordAuthenticationToken(
-                                    userDetails, null, userDetails.getAuthorities());
 
-                    authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                    SecurityContextHolder.getContext().setAuthentication(authToken);
+                    if (userDetails != null) {
+                        UsernamePasswordAuthenticationToken authToken =
+                                new UsernamePasswordAuthenticationToken(
+                                        userDetails, null, userDetails.getAuthorities());
+
+                        authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                        SecurityContextHolder.getContext().setAuthentication(authToken);
+                        break;
+                    }
                 }
             }
-            else if("COMPANY".equals(type))
-            {
-                CompanyGetResponseDTO foundCompany = companyService.getCompanyById(Integer.parseInt(id));
 
-                UserDetails userDetails = companyAuthService.loadUserByUsername(foundCompany.email);
-
-                if (tokenService.isTokenValid(decodedJwt)) {
-                    UsernamePasswordAuthenticationToken authToken =
-                            new UsernamePasswordAuthenticationToken(
-                                    userDetails, null, userDetails.getAuthorities());
-
-                    authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                    SecurityContextHolder.getContext().setAuthentication(authToken);
-                }
-            }
         }
 
         filterChain.doFilter(request, response);

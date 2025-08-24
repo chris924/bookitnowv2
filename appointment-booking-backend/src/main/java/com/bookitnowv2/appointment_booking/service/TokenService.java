@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
@@ -28,9 +29,9 @@ public class TokenService {
         Duration validityDuration = Duration.ofMinutes(30);
         Instant expirationTime = now.plus(validityDuration);
 
-        String scope = auth.getAuthorities().stream()
+        List<String> scope = auth.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
-                .collect(Collectors.joining(" "));
+                .toList();
 
         JwtClaimsSet claims = JwtClaimsSet.builder()
                 .issuer("self")

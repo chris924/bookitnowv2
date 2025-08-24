@@ -22,7 +22,7 @@ import java.nio.file.StandardCopyOption;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/user/")
+@RequestMapping("/user")
 public class UserController {
 
 
