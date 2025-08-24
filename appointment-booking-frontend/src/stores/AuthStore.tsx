@@ -2,7 +2,7 @@ import { create } from "zustand"
 import axios from "axios"
 import api from "@/api/axios"
 
-interface User {
+export interface User {
   id: string
   email: string
   name: string
@@ -25,6 +25,7 @@ export const useAuthStore = create<UserAuthState>((set) => ({
     try {
       const res = await api.get("/auth/auth-info");
       if (res.status === 200) {
+        console.log("RESDATA:", res.data)
         set({ isAuthenticated: true, user: res.data, loading: false })
       }
     } catch {

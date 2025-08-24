@@ -24,11 +24,11 @@ public class AuthInfoController {
 
         return switch (principal) {
             case User userPrincipal ->
-                    ResponseEntity.ok(new AuthInfoResponseDTO(userPrincipal.getName(), userPrincipal.getEmail(), "USER"));
+                    ResponseEntity.ok(new AuthInfoResponseDTO(userPrincipal.getId(), userPrincipal.getName(), userPrincipal.getEmail(), "USER"));
             case Company companyPrincipal ->
-                    ResponseEntity.ok(new AuthInfoResponseDTO(companyPrincipal.getCompanyName(), companyPrincipal.getEmail(), "COMPANY"));
+                    ResponseEntity.ok(new AuthInfoResponseDTO(companyPrincipal.getId(), companyPrincipal.getCompanyName(), companyPrincipal.getEmail(), "COMPANY"));
             case Employee employeePrincipal ->
-                    ResponseEntity.ok(new AuthInfoResponseDTO(employeePrincipal.getName(), employeePrincipal.getEmail(), "EMPLOYEE"));
+                    ResponseEntity.ok(new AuthInfoResponseDTO(employeePrincipal.getId(), employeePrincipal.getName(), employeePrincipal.getEmail(), "EMPLOYEE"));
             case null, default -> ResponseEntity.notFound().build();
         };
 

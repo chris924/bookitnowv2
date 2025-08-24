@@ -4,6 +4,8 @@ import com.bookitnowv2.appointment_booking.elasticSearch.document.UserDocument;
 import com.bookitnowv2.appointment_booking.elasticSearch.service.ElasticUserService;
 import com.bookitnowv2.appointment_booking.entity.Employee;
 import com.bookitnowv2.appointment_booking.entity.User;
+import com.bookitnowv2.appointment_booking.entity.dto.user.UserDataResponseDTO;
+import com.bookitnowv2.appointment_booking.mapper.UserMapper;
 import com.bookitnowv2.appointment_booking.service.UserService;
 import com.bookitnowv2.appointment_booking.utils.SlugExtractor;
 import org.springframework.beans.factory.annotation.Value;
@@ -28,23 +30,25 @@ public class UserController {
     private final UserService userService;
     private final ElasticUserService elasticUserService;
     private final SlugExtractor slugExtractor;
+    private final UserMapper userMapper;
 
-    public UserController(@Value("${avatar.user.directory.path}") String basePath, ElasticUserService elasticUserService, SlugExtractor slugExtractor, UserService userService)
+    public UserController(@Value("${avatar.user.directory.path}") String basePath, ElasticUserService elasticUserService, SlugExtractor slugExtractor, UserService userService, UserMapper userMapper)
     {
         this.basePath = Paths.get(basePath);
         this.elasticUserService = elasticUserService;
         this.userService = userService;
         this.slugExtractor = slugExtractor;
+        this.userMapper = userMapper;
     }
 
-    //TODO: FINISH USERDATAFROMID FUNCTION
-    @GetMapping("/user/{userSlug}")
-    public ResponseEntity<?> getUserDataFromId(@PathVariable String userSlug)
+
+    @GetMapping("/{userSlug}")
+    public ResponseEntity<UserDataResponseDTO> getUserDataFromId(@PathVariable String userSlug)
     {
         Integer userId = slugExtractor.getIdFromSlug(userSlug);
         User foundUser = userService.getUserById(userId);
-     //  return ResponseEntity.ok(employeeMapper.toPageResponseDTO(foundEmployee));
-        return null;
+        return ResponseEntity.ok(userMapper.toUserDataResponseDTO(foundUser));
+
     }
 
     @PostMapping("/user/upload-avatar")

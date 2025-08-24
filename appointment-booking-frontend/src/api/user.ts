@@ -23,3 +23,8 @@ export const loginUser = async ({ email, password }: loginUserInterface) => {
 export const registerUser = async ({name, username, email, password} : registerUserInterface) => {
   const {data} = await api.post('/auth/user/register', {name, username, email, password});
 }
+
+export const getUserData = async(userSlug: String) => {
+  const response = await api.get(`/user/${userSlug}`);
+  return response.data;
+}
