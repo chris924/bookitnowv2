@@ -19,6 +19,7 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
+import java.util.Collection;
 import java.util.List;
 
 //This component is responsible, to check if the JWT token is valid from the cookie
@@ -42,56 +43,61 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     }
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, @NotNull HttpServletResponse response, @NotNull FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(HttpServletRequest request,
+                                    @NotNull HttpServletResponse response,
+                                    @NotNull FilterChain filterChain) throws ServletException, IOException {
 
         String jwt = null;
 
-        if(request.getCookies() != null){
-            for (Cookie cookie : request.getCookies())
-            {
-                if("jwt".equals(cookie.getName()))
-                {
+        if (request.getCookies() != null) {
+            for (Cookie cookie : request.getCookies()) {
+                if ("jwt".equals(cookie.getName())) {
                     jwt = cookie.getValue();
                     break;
                 }
             }
         }
 
-        if (jwt != null && SecurityContextHolder.getContext().getAuthentication() == null)
-        {
+        if (jwt != null && SecurityContextHolder.getContext().getAuthentication() == null) {
 
             Jwt decodedJwt = tokenService.decodeJwt(jwt);
 
             String id = decodedJwt.getSubject();
-
-            List<String> types = decodedJwt.getClaim("roles");
+            List<String> roles = decodedJwt.getClaim("roles");
 
             if (tokenService.isTokenValid(decodedJwt)) {
-                for (String roleType : types) {
-                    UserDetails userDetails = null;
+                UserDetails userDetails = null;
 
-                    if ("USER".equals(roleType)) {
-                        User foundUser = userService.getUserById(Integer.parseInt(id));
-                        userDetails = userAuthService.loadUserByUsername(foundUser.getEmail());
-                    }
-                    else if ("COMPANY".equals(roleType)) {
-                        CompanyGetResponseDTO foundCompany = companyService.getCompanyById(Integer.parseInt(id));
-                        userDetails = companyAuthService.loadUserByUsername(foundCompany.email);
-                    }
+                // Pick correct userDetails source based on role
+                if (roles.contains("USER")) {
+                    User foundUser = userService.getUserById(Integer.parseInt(id));
+                    userDetails = userAuthService.loadUserByUsername(foundUser.getEmail());
+                } else if (roles.contains("COMPANY")) {
+                    CompanyGetResponseDTO foundCompany = companyService.getCompanyById(Integer.parseInt(id));
+                    userDetails = companyAuthService.loadUserByUsername(foundCompany.email);
+                }
 
+                if (userDetails != null) {
+                    // Ensure all authorities are prefixed with ROLE_, because without it, the spring security will not recognize the roles from SecurityConfiguration
+                    Collection<? extends GrantedAuthority> authorities =
+                            userDetails.getAuthorities().stream()
+                                    .map(a -> {
+                                        String role = a.getAuthority();
+                                        if (!role.startsWith("ROLE_")) {
+                                            return new SimpleGrantedAuthority("ROLE_" + role);
+                                        }
+                                        return a;
+                                    })
+                                    .toList();
 
-                    if (userDetails != null) {
-                        UsernamePasswordAuthenticationToken authToken =
-                                new UsernamePasswordAuthenticationToken(
-                                        userDetails, null, userDetails.getAuthorities());
+                    UsernamePasswordAuthenticationToken authToken =
+                            new UsernamePasswordAuthenticationToken(
+                                    userDetails, null, authorities);
 
-                        authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                        SecurityContextHolder.getContext().setAuthentication(authToken);
-                        break;
-                    }
+                    authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                    SecurityContextHolder.getContext().setAuthentication(authToken);
                 }
             }
-
         }
 
         filterChain.doFilter(request, response);
