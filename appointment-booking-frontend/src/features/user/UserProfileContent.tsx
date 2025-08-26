@@ -1,8 +1,9 @@
 import { getSpecificEmployeeContent } from "@/api/employee";
 import { getUserData } from "@/api/user";
-import { UserDataResponseDTO } from "@/lib/user-types";
+import { UserDataResponseDTO } from "@/lib/profile-types";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import UserDetailsForm from "./components/UserDetailsForm";
 
 
 export default function UserProfileContent()
@@ -39,6 +40,6 @@ export default function UserProfileContent()
 
 
     return(
-        <div>User Content</div>
+       userData &&  <UserDetailsForm userData={userData}/>
     )
 }
