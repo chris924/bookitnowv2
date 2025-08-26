@@ -9,12 +9,13 @@ export interface BaseProfileDTO  {
 }
 
 export interface UserDataResponseDTO extends BaseProfileDTO {
+    type: "user";
     name: string;
     username: string;
 }
 
 export interface CompanyDataResponseDTO extends BaseProfileDTO {
-
+    type: "company";
     companyName: string;
     place: string;
     serviceName: string;
@@ -24,6 +25,7 @@ export interface CompanyDataResponseDTO extends BaseProfileDTO {
 }
 
 export interface EmployeeDataResponseDTO extends BaseProfileDTO {
+    type: "employee";
     name: string;
     username: string;
     rating: number;
