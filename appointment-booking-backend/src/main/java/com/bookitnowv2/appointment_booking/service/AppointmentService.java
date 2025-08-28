@@ -149,6 +149,9 @@ public class AppointmentService {
            LocalTime dayEndTime = x.getEndTime();
            LocalDate workingHourDate = x.getDate();
 
+           if(workingHourDate.isBefore(LocalDate.now())) // TODO: TEMPORARY FIX FOR NOT SHOWING OLDER APPOINTMENTS?
+               continue;
+
             if (smallestStart == null || dayStartTime.isBefore(smallestStart)) smallestStart = dayStartTime;
             if (largestEnd == null || dayEndTime.isAfter(largestEnd)) largestEnd = dayEndTime;
             if (firstDate == null || workingHourDate.isBefore(firstDate)) firstDate = workingHourDate;
