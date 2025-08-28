@@ -16,7 +16,16 @@ import { Input } from "@/components/ui/input"
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
 import { Avatar, AvatarImage, AvatarFallback } from "@radix-ui/react-avatar"
 import { UserDataResponseDTO } from "@/lib/profile-types"
-import { useState } from "react"
+import { useRef, useState } from "react"
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover"
+
+
+import defaultAvatar from "@/assets/default.jpg"
+import { PopoverArrow } from "@radix-ui/react-popover"
 
 
 export type UserDetailsFormProps = {
@@ -27,7 +36,17 @@ export type UserDetailsFormProps = {
 
 export default function UserDetailsForm({userData}: UserDetailsFormProps)
 {
-  const [modifyUserData, setModifyUserData] = useState(true);
+  const [enableModifyUserData, setEnableModifyUserData] = useState(false);
+  const [showHint, setShowHint] = useState(false);
+  
+   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      const file = e.target.files[0];
+      console.log("Selected:", file);
+    }
+  };
 
 
   const formSchema = z.object({
@@ -42,6 +61,10 @@ export default function UserDetailsForm({userData}: UserDetailsFormProps)
     message: "Username must be at least 2 characters.",
   }),
 
+  avatar: z.string().min(2, {
+    message: "Username must be at least 2 characters.",
+  }),
+
 })
 
  const form = useForm<z.infer<typeof formSchema>>({
@@ -50,6 +73,7 @@ export default function UserDetailsForm({userData}: UserDetailsFormProps)
       name: "",
       username: "",
       email: "",
+      avatar: ""
     },
   })
 
@@ -62,16 +86,48 @@ export default function UserDetailsForm({userData}: UserDetailsFormProps)
 
     console.log(values)
   }
+
+  function handleCancel()
+  {
+    setEnableModifyUserData(false);
+    setShowHint(false);
+    form.reset();
+  }
+
+  function handleModifyClick()
+  {
+    setEnableModifyUserData(true);
+    setShowHint(true);
+
+    setTimeout(() => setShowHint(false), 2000);
+  }
  
   return (
     <div className="max-w-2xl mx-auto space-y-8">
       {/* Profile Card */}
       <Card>
         <CardHeader className="flex flex-row items-center gap-4">
-          <Avatar className="w-16 h-16">
+          <Popover open={showHint}>
+             <PopoverContent side="left" sideOffset={5}>
+              <p className="text-xs">Kattints a képre a profilkép módosításhoz!</p>
+              <PopoverArrow className="fill-background" />
+            </PopoverContent>
+             <PopoverTrigger asChild>
+          <Avatar className="w-16 h-16 cursor-pointer" onClick={() => fileInputRef.current?.click()}>
             <AvatarImage src={userData.avatarUrl} alt="profile" />
-            <AvatarFallback>SC</AvatarFallback>
+             <AvatarFallback>
+              <img src={defaultAvatar} alt="default avatar" className="w-full h-full object-cover" />
+            </AvatarFallback>
           </Avatar>
+          </PopoverTrigger>
+          </Popover>
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/*"
+              className="hidden"
+              onChange={handleFileChange}
+            />
           <div>
             <CardTitle className="text-xl">{userData.name}</CardTitle>
             <p className="text-sm text-muted-foreground">Felhasználó</p>
@@ -84,7 +140,8 @@ export default function UserDetailsForm({userData}: UserDetailsFormProps)
 
       {/* Edit Form */}
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">  
+        {enableModifyUserData ?  <Button type="button" onClick={() => handleCancel()}>Vissza</Button> : <Button type="button" onClick={() => handleModifyClick()}>Adatok módosítása</Button> }
         <FormField
             control={form.control}
             name="name"
@@ -93,15 +150,13 @@ export default function UserDetailsForm({userData}: UserDetailsFormProps)
               <FormItem>
                 <FormLabel>Név</FormLabel>
                 <FormControl>
-                  <Input placeholder={userData.name} {...field} disabled={modifyUserData}/>
+                  <Input placeholder={userData.name} {...field} disabled={!enableModifyUserData}/>
                 </FormControl>
                 <FormDescription>Ez a teljes neved.</FormDescription>
                 <FormMessage />
               </FormItem>
             )}
           />
-
-
 
           <FormField
             control={form.control}
@@ -111,31 +166,17 @@ export default function UserDetailsForm({userData}: UserDetailsFormProps)
               <FormItem>
                 <FormLabel>Felhasználónév</FormLabel>
                 <FormControl>
-                  <Input placeholder={userData.username} {...field} disabled={modifyUserData} />
+                  <Input placeholder={userData.username} {...field} disabled={!enableModifyUserData} />
                 </FormControl>
-                <FormDescription>Ez a felhasználó neved.</FormDescription>
+                <FormDescription>Ez a felhasználóneved.</FormDescription>
                 <FormMessage />
               </FormItem>
             )}
           />
 
-          <FormField
-            control={form.control}
-            name="email"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Email</FormLabel>
-                <FormControl>
-                  <Input placeholder={userData.email} {...field} disabled={modifyUserData} />
-                </FormControl>
-                <FormDescription>A Felhasználóval való kapcsolat fenntartásához</FormDescription>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <Button type="submit">Save Changes</Button>
-          <Button type="button" onClick={() => setModifyUserData(prev => !prev)}>Adatok módosítása</Button>
+           
+          <Button type="submit">Mentés</Button>
+          
         </form>
       </Form>
     </div>
