@@ -39,4 +39,24 @@ public class AvatarController {
         return ResponseEntity.ok().contentType(MediaType.IMAGE_JPEG).body(resource);
     }
 
+    @GetMapping("/user/{filename}")
+    public ResponseEntity<?> getUserAvatar(@PathVariable String filename)
+    {
+        Path avatarPath = avatarBasePath.resolve("useravatars").resolve(filename);
+        UrlResource resource;
+        try {
+            resource = new UrlResource(avatarPath.toUri());
+
+            if(!resource.exists() || !resource.isReadable())
+            {
+                return ResponseEntity.notFound().build();
+            }
+
+        } catch (MalformedURLException e) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        return ResponseEntity.ok().contentType(MediaType.IMAGE_JPEG).body(resource);
+    }
+
 }

@@ -28,3 +28,10 @@ export const getUserData = async(userSlug: String) => {
   const response = await api.get(`/user/${userSlug}`);
   return response.data;
 }
+
+export const uploadUserAvatar = async(file: File) => {
+  const formData = new FormData();
+  formData.append("avatar", file);
+
+  return await api.post('/user/upload-avatar', formData, {headers: {"Content-Type": "multipart/form-data"}})
+}

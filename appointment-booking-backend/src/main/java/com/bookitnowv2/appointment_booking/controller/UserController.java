@@ -1,11 +1,13 @@
 package com.bookitnowv2.appointment_booking.controller;
 
 import com.bookitnowv2.appointment_booking.elasticSearch.document.UserDocument;
+import com.bookitnowv2.appointment_booking.elasticSearch.repository.IElasticUserRepository;
 import com.bookitnowv2.appointment_booking.elasticSearch.service.ElasticUserService;
 import com.bookitnowv2.appointment_booking.entity.Employee;
 import com.bookitnowv2.appointment_booking.entity.User;
 import com.bookitnowv2.appointment_booking.entity.dto.user.UserDataResponseDTO;
 import com.bookitnowv2.appointment_booking.mapper.UserMapper;
+import com.bookitnowv2.appointment_booking.repository.IUserRepository;
 import com.bookitnowv2.appointment_booking.service.UserService;
 import com.bookitnowv2.appointment_booking.utils.SlugExtractor;
 import org.springframework.beans.factory.annotation.Value;
@@ -28,15 +30,20 @@ public class UserController {
 
     private final Path basePath;
     private final UserService userService;
+    private final IUserRepository userRepository;
     private final ElasticUserService elasticUserService;
+    private final IElasticUserRepository elasticUserRepository;
     private final SlugExtractor slugExtractor;
     private final UserMapper userMapper;
 
-    public UserController(@Value("${avatar.user.directory.path}") String basePath, ElasticUserService elasticUserService, SlugExtractor slugExtractor, UserService userService, UserMapper userMapper)
+    public UserController(@Value("${avatar.user.directory.path}") String basePath, ElasticUserService elasticUserService, SlugExtractor slugExtractor, UserService userService, UserMapper userMapper,
+                          IUserRepository userRepository, IElasticUserRepository elasticUserRepository)
     {
         this.basePath = Paths.get(basePath);
         this.elasticUserService = elasticUserService;
+        this.elasticUserRepository = elasticUserRepository;
         this.userService = userService;
+        this.userRepository = userRepository;
         this.slugExtractor = slugExtractor;
         this.userMapper = userMapper;
     }
@@ -51,8 +58,8 @@ public class UserController {
 
     }
 
-    @PostMapping("/user/upload-avatar")
-    public ResponseEntity<String> uploadUserAvatar(@RequestParam("file") MultipartFile file)
+    @PostMapping("/upload-avatar")
+    public ResponseEntity<?> uploadUserAvatar(@RequestParam("avatar") MultipartFile file)
     {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User currentUser = (User) auth.getPrincipal();
@@ -72,6 +79,9 @@ public class UserController {
 
             currentUser.setAvatarUrl(publicUrl);
             userDocument.setAvatarUrl(publicUrl);
+
+            userRepository.save(currentUser);
+            elasticUserRepository.save(userDocument);
 
             return ResponseEntity.ok(publicUrl);
 

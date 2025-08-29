@@ -2,11 +2,13 @@ package com.bookitnowv2.appointment_booking.data;
 
 import com.bookitnowv2.appointment_booking.elasticSearch.document.EmployeeDocument;
 import com.bookitnowv2.appointment_booking.elasticSearch.repository.IElasticEmployeeRepository;
+import com.bookitnowv2.appointment_booking.elasticSearch.repository.IElasticUserRepository;
 import com.bookitnowv2.appointment_booking.entity.Appointment;
 import com.bookitnowv2.appointment_booking.entity.Company;
 import com.bookitnowv2.appointment_booking.entity.Role;
 import com.bookitnowv2.appointment_booking.entity.User;
 import com.bookitnowv2.appointment_booking.mapper.EmployeeMapper;
+import com.bookitnowv2.appointment_booking.mapper.UserMapper;
 import com.bookitnowv2.appointment_booking.repository.IAppointmentRepository;
 import com.bookitnowv2.appointment_booking.repository.ICompanyRepository;
 import com.bookitnowv2.appointment_booking.repository.IRoleRepository;
@@ -45,11 +47,14 @@ public class DatabaseSeeder implements CommandLineRunner {
     private final PasswordEncoder passwordEncoder;
 
     private final IElasticEmployeeRepository elasticEmployeeRepository;
+    private final IElasticUserRepository elasticUserRepository;
     private final EmployeeMapper employeeMapper;
+    private final UserMapper userMapper;
     private final String serverAddress;
 
     public DatabaseSeeder(IAppointmentRepository appointmentRepository, ICompanyRepository companyRepository, IRoleRepository roleRepository, IUserRepository userRepository, PasswordEncoder passwordEncoder,
-                          IServiceEntityRepository serviceRepository, IEmployeeRepository employeeRepository, IElasticEmployeeRepository elasticEmployeeRepository, IEmployeeWorkingHoursRepository employeeWorkingHoursRepository, EmployeeMapper employeeMapper, @Value("${server.ip.address}") String serverAddress, AppointmentService appointmentService) {
+                          IServiceEntityRepository serviceRepository, IEmployeeRepository employeeRepository, IElasticEmployeeRepository elasticEmployeeRepository, IEmployeeWorkingHoursRepository employeeWorkingHoursRepository, EmployeeMapper employeeMapper, @Value("${server.ip.address}") String serverAddress, AppointmentService appointmentService,
+                          IElasticUserRepository elasticUserRepository, UserMapper userMapper) {
         this.appointmentRepository = appointmentRepository;
         this.companyRepository = companyRepository;
 
@@ -59,8 +64,10 @@ public class DatabaseSeeder implements CommandLineRunner {
         this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
         this.elasticEmployeeRepository = elasticEmployeeRepository;
+        this.elasticUserRepository = elasticUserRepository;
         this.employeeWorkingHoursRepository = employeeWorkingHoursRepository;
         this.employeeMapper = employeeMapper;
+        this.userMapper = userMapper;
         this.serverAddress = serverAddress;
 
         this.appointmentService = appointmentService;
@@ -172,6 +179,7 @@ public class DatabaseSeeder implements CommandLineRunner {
         user.setAppointments(appointments);
 
         userRepository.save(user);
+        elasticUserRepository.save(userMapper.toDocument(user));
 
         return user;
     }

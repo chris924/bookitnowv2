@@ -26,6 +26,7 @@ import {
 
 import defaultAvatar from "@/assets/default.jpg"
 import { PopoverArrow } from "@radix-ui/react-popover"
+import { uploadUserAvatar } from "@/api/user"
 
 
 export type UserDetailsFormProps = {
@@ -45,6 +46,7 @@ export default function UserDetailsForm({userData}: UserDetailsFormProps)
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
       console.log("Selected:", file);
+      uploadUserAvatar(file);
     }
   };
 
@@ -82,10 +84,7 @@ export default function UserDetailsForm({userData}: UserDetailsFormProps)
     console.log(values)
   }
 
-  function onClick(values: z.infer<typeof formSchema>) {
-
-    console.log(values)
-  }
+  
 
   function handleCancel()
   {

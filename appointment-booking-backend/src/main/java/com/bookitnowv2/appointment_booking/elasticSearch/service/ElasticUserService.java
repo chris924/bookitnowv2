@@ -25,7 +25,7 @@ public class ElasticUserService {
 
     public UserDocument getUserDocument(User user)
     {
-        return elasticUserRepository.findById(user.getId());
+        return elasticUserRepository.findById(user.getId()).orElseThrow(() -> new RuntimeException("User not found in elastic repository!"));
     }
 
 }

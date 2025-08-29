@@ -5,8 +5,9 @@ import com.bookitnowv2.appointment_booking.entity.User;
 import org.springframework.data.elasticsearch.repository.ElasticsearchRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface IElasticUserRepository extends ElasticsearchRepository<UserDocument, String> {
     List<UserDocument> findByName(String name);
-    UserDocument findById(Integer id);
+    Optional<UserDocument> findById(Integer id);
 }
