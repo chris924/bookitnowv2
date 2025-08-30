@@ -8,7 +8,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.IOException;
 import java.net.MalformedURLException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -20,43 +22,59 @@ public class AvatarController {
 
 
     @GetMapping("/employee/{filename}")
-    public ResponseEntity<?> getEmployeeAvatar(@PathVariable String filename)
-    {
+    public ResponseEntity<?> getEmployeeAvatar(@PathVariable String filename) {
         Path avatarPath = avatarBasePath.resolve("employeeavatars").resolve(filename);
-        UrlResource resource;
+
         try {
-             resource = new UrlResource(avatarPath.toUri());
+            UrlResource resource = new UrlResource(avatarPath.toUri());
 
-             if(!resource.exists() || !resource.isReadable())
-             {
-                 return ResponseEntity.notFound().build();
-             }
-
-        } catch (MalformedURLException e) {
-            return ResponseEntity.badRequest().build();
-        }
-
-        return ResponseEntity.ok().contentType(MediaType.IMAGE_JPEG).body(resource);
-    }
-
-    @GetMapping("/user/{filename}")
-    public ResponseEntity<?> getUserAvatar(@PathVariable String filename)
-    {
-        Path avatarPath = avatarBasePath.resolve("useravatars").resolve(filename);
-        UrlResource resource;
-        try {
-            resource = new UrlResource(avatarPath.toUri());
-
-            if(!resource.exists() || !resource.isReadable())
-            {
+            if (!resource.exists() || !resource.isReadable()) {
                 return ResponseEntity.notFound().build();
             }
 
+            // Detect MIME type from file
+            String mimeType = Files.probeContentType(avatarPath);
+            if (mimeType == null) {
+                mimeType = MediaType.APPLICATION_OCTET_STREAM_VALUE; // fallback
+            }
+
+            return ResponseEntity.ok()
+                    .contentType(MediaType.parseMediaType(mimeType))
+                    .body(resource);
+
         } catch (MalformedURLException e) {
             return ResponseEntity.badRequest().build();
+        } catch (IOException e) {
+            return ResponseEntity.internalServerError().build();
         }
+    }
 
-        return ResponseEntity.ok().contentType(MediaType.IMAGE_JPEG).body(resource);
+    @GetMapping("/user/{filename}")
+    public ResponseEntity<?> getUserAvatar(@PathVariable String filename) {
+        Path avatarPath = avatarBasePath.resolve("useravatars").resolve(filename);
+
+        try {
+            UrlResource resource = new UrlResource(avatarPath.toUri());
+
+            if (!resource.exists() || !resource.isReadable()) {
+                return ResponseEntity.notFound().build();
+            }
+
+            // Detect MIME type from file
+            String mimeType = Files.probeContentType(avatarPath);
+            if (mimeType == null) {
+                mimeType = MediaType.APPLICATION_OCTET_STREAM_VALUE; // fallback
+            }
+
+            return ResponseEntity.ok()
+                    .contentType(MediaType.parseMediaType(mimeType))
+                    .body(resource);
+
+        } catch (MalformedURLException e) {
+            return ResponseEntity.badRequest().build();
+        } catch (IOException e) {
+            return ResponseEntity.internalServerError().build();
+        }
     }
 
 }

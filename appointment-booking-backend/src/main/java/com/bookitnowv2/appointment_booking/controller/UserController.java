@@ -11,6 +11,7 @@ import com.bookitnowv2.appointment_booking.repository.IUserRepository;
 import com.bookitnowv2.appointment_booking.service.UserService;
 import com.bookitnowv2.appointment_booking.utils.SlugExtractor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -37,8 +38,7 @@ public class UserController {
     private final UserMapper userMapper;
 
     public UserController(@Value("${avatar.user.directory.path}") String basePath, ElasticUserService elasticUserService, SlugExtractor slugExtractor, UserService userService, UserMapper userMapper,
-                          IUserRepository userRepository, IElasticUserRepository elasticUserRepository)
-    {
+                          IUserRepository userRepository, IElasticUserRepository elasticUserRepository) {
         this.basePath = Paths.get(basePath);
         this.elasticUserService = elasticUserService;
         this.elasticUserRepository = elasticUserRepository;
@@ -50,8 +50,7 @@ public class UserController {
 
 
     @GetMapping("/{userSlug}")
-    public ResponseEntity<UserDataResponseDTO> getUserDataFromId(@PathVariable String userSlug)
-    {
+    public ResponseEntity<UserDataResponseDTO> getUserDataFromId(@PathVariable String userSlug) {
         Integer userId = slugExtractor.getIdFromSlug(userSlug);
         User foundUser = userService.getUserById(userId);
         return ResponseEntity.ok(userMapper.toUserDataResponseDTO(foundUser));
@@ -59,44 +58,54 @@ public class UserController {
     }
 
     @PostMapping("/upload-avatar")
-    public ResponseEntity<?> uploadUserAvatar(@RequestParam("avatar") MultipartFile file)
-    {
+    public ResponseEntity<?> uploadUserAvatar(@RequestParam("avatar") MultipartFile file) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User currentUser = (User) auth.getPrincipal();
         UserDocument userDocument = elasticUserService.getUserDocument(currentUser);
 
-        String ext = getFileExtension(file.getOriginalFilename());
-        String filename = UUID.randomUUID() + "." + ext;
-
         try {
-
-            Path targetPath = basePath.resolve(filename);
+            // Ensure avatars directory exists
             Files.createDirectories(basePath);
 
+            // Detect file extension safely
+            String originalFilename = file.getOriginalFilename();
+            String ext = getFileExtension(originalFilename);
+            if (ext == null) {
+                // fallback if user uploads without extension
+                ext = "png";
+            }
+
+            // Generate unique filename
+            String filename = UUID.randomUUID() + "." + ext;
+            Path targetPath = basePath.resolve(filename);
+
+            // Save the uploaded file
             Files.copy(file.getInputStream(), targetPath, StandardCopyOption.REPLACE_EXISTING);
 
-            String publicUrl = "/avatars/useravatars/" + filename;
+            // Build public URL
+            String publicUrl = "http://localhost:8080/avatar/user/" + filename; //TODO: Refactor so the url is in properties
 
+            // Update DB + Elastic
             currentUser.setAvatarUrl(publicUrl);
             userDocument.setAvatarUrl(publicUrl);
-
             userRepository.save(currentUser);
             elasticUserRepository.save(userDocument);
 
             return ResponseEntity.ok(publicUrl);
 
-
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Could not upload avatar: " + e.getMessage());
         }
-
     }
 
 
     private String getFileExtension(String filename) {
-        if (filename == null) return "jpg";
+        if (filename == null) return null;
         int dotIndex = filename.lastIndexOf('.');
-        return (dotIndex > 0) ? filename.substring(dotIndex + 1) : "jpg";
+        if (dotIndex == -1 || dotIndex == filename.length() - 1) {
+            return null; // no extension
+        }
+        return filename.substring(dotIndex + 1).toLowerCase();
     }
-
 }
