@@ -1,10 +1,13 @@
 package com.bookitnowv2.appointment_booking.exception;
 
-public class RoleNotFoundException extends RuntimeException {
+import lombok.Getter;
 
-    public RoleNotFoundException(String ex)
+@Getter
+public class RoleNotFoundException extends RuntimeException {
+    private final String code = "ROLE_NOT_FOUND";
+    public RoleNotFoundException(String message)
     {
-        super("Role not found: " + ex);
+        super(message);
     }
 
 }

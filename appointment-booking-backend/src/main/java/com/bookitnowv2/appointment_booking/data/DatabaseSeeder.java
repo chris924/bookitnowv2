@@ -53,7 +53,7 @@ public class DatabaseSeeder implements CommandLineRunner {
     private final String serverAddress;
 
     public DatabaseSeeder(IAppointmentRepository appointmentRepository, ICompanyRepository companyRepository, IRoleRepository roleRepository, IUserRepository userRepository, PasswordEncoder passwordEncoder,
-                          IServiceEntityRepository serviceRepository, IEmployeeRepository employeeRepository, IElasticEmployeeRepository elasticEmployeeRepository, IEmployeeWorkingHoursRepository employeeWorkingHoursRepository, EmployeeMapper employeeMapper, @Value("${server.ip.address}") String serverAddress, AppointmentService appointmentService,
+                          IServiceEntityRepository serviceRepository, IEmployeeRepository employeeRepository, IElasticEmployeeRepository elasticEmployeeRepository, IEmployeeWorkingHoursRepository employeeWorkingHoursRepository, EmployeeMapper employeeMapper, @Value("${frontend.ip.address}") String serverAddress, AppointmentService appointmentService,
                           IElasticUserRepository elasticUserRepository, UserMapper userMapper) {
         this.appointmentRepository = appointmentRepository;
         this.companyRepository = companyRepository;

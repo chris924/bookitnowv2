@@ -29,6 +29,10 @@ import { PopoverArrow } from "@radix-ui/react-popover"
 import { changeUserDetails, getUserData, uploadUserAvatar, userDetailsChangeDTO } from "@/api/user"
 import { APIError } from "@/api/axios"
 import { toast } from "sonner"
+import { useMutation } from "@tanstack/react-query"
+import { showToast } from "@/components/ui/own/ShowToast"
+import { handleAPIError } from "@/lib/utils"
+import Loader from "@/components/ui/own/Loader"
 
 
 export type UserDetailsFormProps = {
@@ -45,36 +49,34 @@ export default function UserDetailsForm({userData, fetchUserContent, setUserData
   
    const fileInputRef = useRef<HTMLInputElement>(null);
 
+   const avatarChangeMutation = useMutation({
+    mutationFn: (file: File) => uploadUserAvatar(file),
+    onSuccess: (response) => {
+      if(response)
+      {
+        setUserData({...userData, avatarUrl: response.data})
+        showToast.success("Sikeres profilkép módosítás!");
+      }
+    },
+    onError: handleAPIError
+
+   })
+
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
-      try {
         const file = e.target.files[0];
-        const avatarResponse = await uploadUserAvatar(file);
-
-        if (avatarResponse) {
-            setUserData({
-        ...userData!,
-        avatarUrl: avatarResponse.data,
-      });
-        }
-
-        
-      } catch (error) {
-        const err = error as APIError;
-        toast.error("Hiba történt ❌", {
-        description: err.response?.data.message,
-      })
-      }   
+        avatarChangeMutation.mutate(file);
     }
+
   };
 
 
   const formSchema = z.object({
   username: z.string().min(2, {
-    message: "Username must be at least 2 characters.",
+    message: "A felhasználónévnek legalább 2 karakter hosszúnak kell lennie.",
   }),
   name: z.string().min(2, {
-    message: "Username must be at least 2 characters.",
+    message: "A névnek legalább 2 karakter hosszúnak kell lennie.",
   })
 })
 
@@ -86,19 +88,25 @@ export default function UserDetailsForm({userData, fetchUserContent, setUserData
     },
   })
 
+  const changeUserDetailsMutation = useMutation({
+    mutationFn: (dto: userDetailsChangeDTO) => changeUserDetails(dto),
+    onSuccess: (data) => {
+      setUserData(data.data);
+      showToast.success("Adatok sikeresen frissítve!");
+      setEnableModifyUserData(false);
+    },
+    onError: handleAPIError,
+  })
+
 async function onSubmit(values: z.infer<typeof formSchema>) {
 
-    console.log("Clicked on Submit")
-    const dto: userDetailsChangeDTO = {
-      name: values.name,
-      username: values.username
-    }
-    const response = await changeUserDetails(dto);
-    const data: UserDataResponseDTO = response.data;
-    setUserData(data);
-    console.log("new user data:", data);
+  const dto: userDetailsChangeDTO = {
+     name: values.name,
+    username: values.username
   }
+  changeUserDetailsMutation.mutate(dto);
 
+  }
   
 
   function handleCancel()
@@ -117,6 +125,8 @@ async function onSubmit(values: z.infer<typeof formSchema>) {
   }
  
   return (
+    <>
+    {changeUserDetailsMutation.isPending || avatarChangeMutation.isPending  ? <Loader/> : ""}
     <div className="max-w-2xl mx-auto space-y-8">
       {/* Profile Card */}
       <Card>
@@ -189,11 +199,12 @@ async function onSubmit(values: z.infer<typeof formSchema>) {
           />
 
            
-          <Button type="submit" disabled={false}>Mentés</Button>
+          <Button type="submit" className="bg-green-200" disabled={!enableModifyUserData}>Mentés</Button>
           
         </form>
       </Form>
     </div>
+    </>
   )
 
 }

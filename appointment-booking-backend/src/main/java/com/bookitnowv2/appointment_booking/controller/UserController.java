@@ -1,5 +1,6 @@
 package com.bookitnowv2.appointment_booking.controller;
 
+import com.bookitnowv2.appointment_booking.configuration.SecurityUtils;
 import com.bookitnowv2.appointment_booking.elasticSearch.document.UserDocument;
 import com.bookitnowv2.appointment_booking.elasticSearch.repository.IElasticUserRepository;
 import com.bookitnowv2.appointment_booking.elasticSearch.service.ElasticUserService;
@@ -32,16 +33,25 @@ public class UserController {
 
 
     private final Path basePath;
+    private final String frontendAddress;
     private final UserService userService;
-    private final IUserRepository userRepository;
     private final ElasticUserService elasticUserService;
     private final IElasticUserRepository elasticUserRepository;
+    private final IUserRepository userRepository;
     private final SlugExtractor slugExtractor;
     private final UserMapper userMapper;
 
-    public UserController(@Value("${avatar.user.directory.path}") String basePath, ElasticUserService elasticUserService, SlugExtractor slugExtractor, UserService userService, UserMapper userMapper,
-                          IUserRepository userRepository, IElasticUserRepository elasticUserRepository) {
+    public UserController(@Value("${avatar.user.directory.path}") String basePath,
+                          @Value("${frontend.ip.address}") String frontendAddress,
+                          ElasticUserService elasticUserService,
+                          SlugExtractor slugExtractor,
+                          UserService userService,
+                          UserMapper userMapper,
+                          IUserRepository userRepository,
+                          IElasticUserRepository elasticUserRepository) {
+
         this.basePath = Paths.get(basePath);
+        this.frontendAddress = frontendAddress;
         this.elasticUserService = elasticUserService;
         this.elasticUserRepository = elasticUserRepository;
         this.userService = userService;
@@ -62,7 +72,8 @@ public class UserController {
     @PostMapping("/change-user-details")
     public ResponseEntity<UserDataResponseDTO> changeUserDetails(@Valid @RequestBody UserDetailsChangeDTO userDetailsChangeDTO)
     {
-        User currentUser = getCurrentUser();
+        User currentUser = SecurityUtils.getCurrentUser();
+
         boolean changedData = false;
         if(!userDetailsChangeDTO.getName().isEmpty())
         {
@@ -85,8 +96,8 @@ public class UserController {
 
     @PostMapping("/upload-avatar")
     public ResponseEntity<?> uploadUserAvatar(@RequestParam("avatar") MultipartFile file) {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        User currentUser = (User) auth.getPrincipal();
+
+        User currentUser = SecurityUtils.getCurrentUser();
         UserDocument userDocument = elasticUserService.getUserDocument(currentUser);
 
         try {
@@ -109,7 +120,7 @@ public class UserController {
             Files.copy(file.getInputStream(), targetPath, StandardCopyOption.REPLACE_EXISTING);
 
             // Build public URL
-            String publicUrl = "http://localhost:8080/avatar/user/" + filename; //TODO: Refactor so the url is in properties
+            String publicUrl =  frontendAddress +  "/avatar/user/" + filename;
 
             // Update DB + Elastic
             currentUser.setAvatarUrl(publicUrl);
@@ -135,9 +146,5 @@ public class UserController {
         return filename.substring(dotIndex + 1).toLowerCase();
     }
 
-    private User getCurrentUser()
-    {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        return (User) auth.getPrincipal();
-    }
+
 }

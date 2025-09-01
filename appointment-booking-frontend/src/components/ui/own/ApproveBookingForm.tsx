@@ -10,9 +10,9 @@ import { Label } from "@/components/ui/label"
 import { EventImpl } from "@fullcalendar/core/internal"
 import { addUserToAppointment } from "@/api/appointments"
 import { useState } from "react"
-import { toast } from "sonner"
-import { APIError } from "@/api/axios"
 import Loader from "./Loader"
+import { showToast } from "./ShowToast"
+import { handleAPIError} from "@/lib/utils"
 
 type ApproveBookingFormProps = {
   open?: boolean
@@ -34,16 +34,21 @@ export default function ApproveBookingForm({
       const data = await addUserToAppointment(parseInt(id))
       console.log(data)
 
-      toast.success("Sikeres foglalás 🎉", {
-        description: slotInfo.start?.toLocaleString(),
-      })
+        if(slotInfo.start)
+        {
+           showToast.success(slotInfo.start?.toLocaleString());
+        }
+        else
+        {
+          showToast.success("");
+          showToast.error("Nem található kezdő időpont a foglaláshoz!");
+        }
+
+       
 
       onOpenChange(false) // close dialog on success
     } catch (error) {
-      const err = error as APIError
-      toast.error("Hiba történt ❌", {
-        description: err.response?.data.message,
-      })
+      handleAPIError(error);
     } finally {
       setIsLoading(false)
     }

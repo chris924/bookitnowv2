@@ -8,14 +8,15 @@ import { loginUser } from "@/api/user";
 import { useAuthStore } from "@/stores/AuthStore";
 import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
+import { showToast } from "./ShowToast";
 
 type GuestLoginFormProps = {
   setView: React.Dispatch<React.SetStateAction<"login" | "register">>;
   onOpenChange: (open: boolean) => void;
-  showOtherState?: (open: boolean) => void;
+  showApproveBooking?: (open: boolean) => void;
 };
 
-export default function GuestLoginForm({setView, onOpenChange, showOtherState}: GuestLoginFormProps)
+export default function GuestLoginForm({setView, onOpenChange, showApproveBooking}: GuestLoginFormProps)
 {
 
 
@@ -29,9 +30,13 @@ const navigate = useNavigate();
     mutationFn: loginUser,
     onSuccess: async (data) => {
       console.log('Logged in:', data);
+      showToast.success("Sikeres bejelentkezés!");
       await useAuthStore.getState().checkAuth();
       onOpenChange(false);
-      showOtherState!(true);
+
+      if(showApproveBooking)  // This is responsible for showing the ApproveBookingForm after a successful login
+        showApproveBooking(true);
+      
     //  navigate("/");
     }
   })

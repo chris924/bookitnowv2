@@ -99,7 +99,7 @@ export default function EmployeeBookingTable({ appointmentSlots }: EmployeeBooki
   }}
       /> 
       <div> 
-    {showLoginForm ? <GuestLogin open={showLoginForm} onOpenChange={setShowLoginForm} showOtherState={setShowApproveBooking}/> :
+    {showLoginForm ? <GuestLogin open={showLoginForm} onOpenChange={setShowLoginForm} showApproveBooking={setShowApproveBooking}/> :
                        clickedAppointment && <ApproveBookingForm open={showApproveBooking} onOpenChange={setShowApproveBooking} slotInfo={clickedAppointment} />} 
     </div>
       
