@@ -14,6 +14,12 @@ interface registerUserInterface
   password: string;
 }
 
+export interface userDetailsChangeDTO
+{
+  name: string;
+  username: string;
+}
+
 
 export const loginUser = async ({ email, password }: loginUserInterface) => {
   const { data } = await api.post('/auth/user/login', { email, password });
@@ -34,4 +40,8 @@ export const uploadUserAvatar = async(file: File) => {
   formData.append("avatar", file);
 
   return await api.post('/user/upload-avatar', formData, {headers: {"Content-Type": "multipart/form-data"}})
+}
+
+export const changeUserDetails = async(userDetails: userDetailsChangeDTO) => {
+    return await api.post('/user/change-user-details', userDetails)
 }

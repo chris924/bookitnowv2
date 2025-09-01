@@ -26,27 +26,45 @@ import {
 
 import defaultAvatar from "@/assets/default.jpg"
 import { PopoverArrow } from "@radix-ui/react-popover"
-import { uploadUserAvatar } from "@/api/user"
+import { changeUserDetails, getUserData, uploadUserAvatar, userDetailsChangeDTO } from "@/api/user"
+import { APIError } from "@/api/axios"
+import { toast } from "sonner"
 
 
 export type UserDetailsFormProps = {
 
   userData: UserDataResponseDTO;
-
+  fetchUserContent: () => void;
+  setUserData: (userData: UserDataResponseDTO) => void;
 }
 
-export default function UserDetailsForm({userData}: UserDetailsFormProps)
+export default function UserDetailsForm({userData, fetchUserContent, setUserData}: UserDetailsFormProps)
 {
   const [enableModifyUserData, setEnableModifyUserData] = useState(false);
   const [showHint, setShowHint] = useState(false);
   
    const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
-      const file = e.target.files[0];
-      console.log("Selected:", file);
-      uploadUserAvatar(file);
+      try {
+        const file = e.target.files[0];
+        const avatarResponse = await uploadUserAvatar(file);
+
+        if (avatarResponse) {
+            setUserData({
+        ...userData!,
+        avatarUrl: avatarResponse.data,
+      });
+        }
+
+        
+      } catch (error) {
+        const err = error as APIError;
+        toast.error("Hiba történt ❌", {
+        description: err.response?.data.message,
+      })
+      }   
     }
   };
 
@@ -57,31 +75,28 @@ export default function UserDetailsForm({userData}: UserDetailsFormProps)
   }),
   name: z.string().min(2, {
     message: "Username must be at least 2 characters.",
-  }),
-
-  email: z.string().min(2, {
-    message: "Username must be at least 2 characters.",
-  }),
-
-  avatar: z.string().min(2, {
-    message: "Username must be at least 2 characters.",
-  }),
-
+  })
 })
 
  const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      name: "",
-      username: "",
-      email: "",
-      avatar: ""
+      name: userData.name,
+      username: userData.username
     },
   })
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
+async function onSubmit(values: z.infer<typeof formSchema>) {
 
-    console.log(values)
+    console.log("Clicked on Submit")
+    const dto: userDetailsChangeDTO = {
+      name: values.name,
+      username: values.username
+    }
+    const response = await changeUserDetails(dto);
+    const data: UserDataResponseDTO = response.data;
+    setUserData(data);
+    console.log("new user data:", data);
   }
 
   
@@ -174,7 +189,7 @@ export default function UserDetailsForm({userData}: UserDetailsFormProps)
           />
 
            
-          <Button type="submit">Mentés</Button>
+          <Button type="submit" disabled={false}>Mentés</Button>
           
         </form>
       </Form>

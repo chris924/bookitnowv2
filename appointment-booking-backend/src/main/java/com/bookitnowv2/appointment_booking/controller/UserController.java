@@ -6,10 +6,12 @@ import com.bookitnowv2.appointment_booking.elasticSearch.service.ElasticUserServ
 import com.bookitnowv2.appointment_booking.entity.Employee;
 import com.bookitnowv2.appointment_booking.entity.User;
 import com.bookitnowv2.appointment_booking.entity.dto.user.UserDataResponseDTO;
+import com.bookitnowv2.appointment_booking.entity.dto.user.UserDetailsChangeDTO;
 import com.bookitnowv2.appointment_booking.mapper.UserMapper;
 import com.bookitnowv2.appointment_booking.repository.IUserRepository;
 import com.bookitnowv2.appointment_booking.service.UserService;
 import com.bookitnowv2.appointment_booking.utils.SlugExtractor;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -56,6 +58,30 @@ public class UserController {
         return ResponseEntity.ok(userMapper.toUserDataResponseDTO(foundUser));
 
     }
+
+    @PostMapping("/change-user-details")
+    public ResponseEntity<UserDataResponseDTO> changeUserDetails(@Valid @RequestBody UserDetailsChangeDTO userDetailsChangeDTO)
+    {
+        User currentUser = getCurrentUser();
+        boolean changedData = false;
+        if(!userDetailsChangeDTO.getName().isEmpty())
+        {
+            currentUser.setName(userDetailsChangeDTO.getName());
+            changedData = true;
+        }
+        if(!userDetailsChangeDTO.getUsername().isEmpty())
+        {
+            currentUser.setUsername(userDetailsChangeDTO.getUsername());
+            changedData = true;
+        }
+        if(changedData)
+        {
+            userRepository.save(currentUser);
+            elasticUserRepository.save(userMapper.toDocument(currentUser));
+        }
+        return ResponseEntity.ok(userMapper.toUserDataResponseDTO(currentUser));
+    }
+
 
     @PostMapping("/upload-avatar")
     public ResponseEntity<?> uploadUserAvatar(@RequestParam("avatar") MultipartFile file) {
@@ -107,5 +133,11 @@ public class UserController {
             return null; // no extension
         }
         return filename.substring(dotIndex + 1).toLowerCase();
+    }
+
+    private User getCurrentUser()
+    {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        return (User) auth.getPrincipal();
     }
 }
