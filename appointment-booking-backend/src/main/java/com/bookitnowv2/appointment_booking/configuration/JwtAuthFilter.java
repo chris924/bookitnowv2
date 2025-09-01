@@ -58,46 +58,61 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             }
         }
 
-        if (jwt != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+        try {
+            if (jwt != null && SecurityContextHolder.getContext().getAuthentication() == null) {
 
-            Jwt decodedJwt = tokenService.decodeJwt(jwt);
+                Jwt decodedJwt = tokenService.decodeJwt(jwt);
 
-            String id = decodedJwt.getSubject();
-            List<String> roles = decodedJwt.getClaim("roles");
+                String id = decodedJwt.getSubject();
+                List<String> roles = decodedJwt.getClaim("roles");
 
-            if (tokenService.isTokenValid(decodedJwt)) {
-                UserDetails userDetails = null;
+                if (tokenService.isTokenValid(decodedJwt)) {
+                    UserDetails userDetails = null;
 
-                // Pick correct userDetails source based on role
-                if (roles.contains("USER")) {
-                    User foundUser = userService.getUserById(Integer.parseInt(id));
-                    userDetails = userAuthService.loadUserByUsername(foundUser.getEmail());
-                } else if (roles.contains("COMPANY")) {
-                    CompanyGetResponseDTO foundCompany = companyService.getCompanyById(Integer.parseInt(id));
-                    userDetails = companyAuthService.loadUserByUsername(foundCompany.email);
+                    // Pick correct userDetails source based on role
+                    if (roles.contains("USER")) {
+                        User foundUser = userService.getUserById(Integer.parseInt(id));
+                        userDetails = userAuthService.loadUserByUsername(foundUser.getEmail());
+                    } else if (roles.contains("COMPANY")) {
+                        CompanyGetResponseDTO foundCompany = companyService.getCompanyById(Integer.parseInt(id));
+                        userDetails = companyAuthService.loadUserByUsername(foundCompany.email);
+                    }
+
+                    if (userDetails != null) {
+                        // Ensure all authorities are prefixed with ROLE_, because without it, the spring security will not recognize the roles from SecurityConfiguration
+                        Collection<? extends GrantedAuthority> authorities =
+                                userDetails.getAuthorities().stream()
+                                        .map(a -> {
+                                            String role = a.getAuthority();
+                                            if (!role.startsWith("ROLE_")) {
+                                                return new SimpleGrantedAuthority("ROLE_" + role);
+                                            }
+                                            return a;
+                                        })
+                                        .toList();
+
+                        UsernamePasswordAuthenticationToken authToken =
+                                new UsernamePasswordAuthenticationToken(
+                                        userDetails, null, authorities);
+
+                        authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                        SecurityContextHolder.getContext().setAuthentication(authToken);
+                    }
                 }
 
-                if (userDetails != null) {
-                    // Ensure all authorities are prefixed with ROLE_, because without it, the spring security will not recognize the roles from SecurityConfiguration
-                    Collection<? extends GrantedAuthority> authorities =
-                            userDetails.getAuthorities().stream()
-                                    .map(a -> {
-                                        String role = a.getAuthority();
-                                        if (!role.startsWith("ROLE_")) {
-                                            return new SimpleGrantedAuthority("ROLE_" + role);
-                                        }
-                                        return a;
-                                    })
-                                    .toList();
 
-                    UsernamePasswordAuthenticationToken authToken =
-                            new UsernamePasswordAuthenticationToken(
-                                    userDetails, null, authorities);
 
-                    authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                    SecurityContextHolder.getContext().setAuthentication(authToken);
-                }
             }
+
+        } catch (Exception e) {
+            // invalid JWT, remove cookie
+            Cookie cookie = new Cookie("jwt", null);
+            cookie.setHttpOnly(true);
+            cookie.setSecure(false); //TODO: Set to Secure later
+            cookie.setPath("/");
+            cookie.setMaxAge(0);
+            response.addCookie(cookie);
+
         }
 
         filterChain.doFilter(request, response);

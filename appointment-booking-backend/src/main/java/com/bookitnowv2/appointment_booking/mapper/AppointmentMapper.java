@@ -5,25 +5,42 @@ import com.bookitnowv2.appointment_booking.entity.Company;
 import com.bookitnowv2.appointment_booking.entity.Employee;
 import com.bookitnowv2.appointment_booking.entity.User;
 import com.bookitnowv2.appointment_booking.entity.dto.appointment.AppointmentGetResponseDTO;
+import com.bookitnowv2.appointment_booking.entity.dto.appointment.SlotResponseDTO;
+import com.bookitnowv2.appointment_booking.utils.AppointmentStatus;
 import org.springframework.stereotype.Component;
 
 @Component
 public class AppointmentMapper {
 
-    public AppointmentGetResponseDTO toGetDTO(Appointment appointment)
+    public static AppointmentGetResponseDTO toGetDTO(Appointment appointment)
     {
         User user = appointment.getUser();
         Employee employee = appointment.getService().getEmployee();
         Company company = appointment.getService().getCompany();
 
         return new AppointmentGetResponseDTO(
-                appointment.getId(),
+                toSlotResponseDTO(appointment),
                 user.getId(),
-                user.getUsername(),
-                user.getEmail(),
                 employee.getId(),
                 employee.getName(),
                 company.getId()
+        );
+    }
+
+    public static SlotResponseDTO toSlotResponseDTO(Appointment appointment)
+    {
+        String appointmentStatus = switch (appointment.getAppointmentStatus()) {
+            case BOOKED -> "Booked";
+            case CANCELLED -> "Cancelled";
+            case FREE -> "Free";
+        };
+
+        return new SlotResponseDTO(
+                appointment.getId(),
+                appointment.getDate(),
+                appointment.getStartTime(),
+                appointment.getEndTime(),
+                appointmentStatus
         );
     }
 

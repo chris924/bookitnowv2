@@ -46,7 +46,7 @@ public class AppointmentService {
 
     public List<AppointmentGetResponseDTO> getAppointments()
     {
-        return appointmentRepository.findAll().stream().map(appointmentMapper::toGetDTO).toList();
+        return appointmentRepository.findAll().stream().map((AppointmentMapper::toGetDTO)).toList();
     }
 
     public void deleteAppointmentById(Integer id)

@@ -15,6 +15,7 @@ export default function DropdownUser({user}: {user: UserDataResponseDTO} )
 
   async function handleDropDownClick(clickType: string)
   {
+    const userSlug = await createSlug(user.name, parseInt(user.id.toString()));
     if(clickType == "exit")
     {
       await logout();
@@ -22,8 +23,12 @@ export default function DropdownUser({user}: {user: UserDataResponseDTO} )
     if(clickType == "account")
     {
       console.log("USER IS:", user);
-      const userSlug = await createSlug(user.name, parseInt(user.id.toString()));
+      
       navigate(`/user/${userSlug}`)
+    }
+    if(clickType == "appointments")
+    {
+      navigate(`/user/${userSlug}/booked-appointments`);
     }
   }
 
@@ -40,7 +45,7 @@ export default function DropdownUser({user}: {user: UserDataResponseDTO} )
         <DropdownMenuContent>
           <DropdownMenuSeparator />
           <DropdownMenuItem className="cursor-pointer text-2xl" onClick={() => handleDropDownClick("account")}>Fiókom</DropdownMenuItem>
-          <DropdownMenuItem className="cursor-pointer text-2xl">Időpontjaim</DropdownMenuItem>
+          <DropdownMenuItem className="cursor-pointer text-2xl" onClick={() => handleDropDownClick("appointments")}>Időpontjaim</DropdownMenuItem>
           <DropdownMenuItem className="cursor-pointer text-2xl text-red-600" onClick={() => handleDropDownClick("exit")}>Kijelentkezés</DropdownMenuItem>
         </DropdownMenuContent>
   </DropdownMenu>

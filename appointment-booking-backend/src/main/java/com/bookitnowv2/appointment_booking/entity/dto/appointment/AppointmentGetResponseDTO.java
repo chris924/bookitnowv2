@@ -14,16 +14,10 @@ import java.sql.Timestamp;
 @Setter
 public class AppointmentGetResponseDTO {
 
-    private Integer appointmentId;
+    private SlotResponseDTO slotResponseDTO;
 
     @Nullable
     private Integer userId;
-
-    @Nullable
-    private String userName;
-
-    @Nullable
-    private String userEmail;
 
     private Integer employeeId;
 

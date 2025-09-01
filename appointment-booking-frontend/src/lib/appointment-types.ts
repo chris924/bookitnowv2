@@ -17,3 +17,12 @@ export interface SlotResponseDTO{
     end: string;
     status: string;
 }
+
+export interface AppointmentGetResponseDTO{
+    slotResponseDTO: SlotResponseDTO
+    userId: number;
+    username: string;
+    employeeId: number;
+    employeeName: string;
+    companyId: number;
+}

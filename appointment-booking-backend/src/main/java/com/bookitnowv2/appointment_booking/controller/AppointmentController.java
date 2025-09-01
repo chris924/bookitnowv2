@@ -1,9 +1,12 @@
 package com.bookitnowv2.appointment_booking.controller;
 
+import com.bookitnowv2.appointment_booking.configuration.SecurityUtils;
 import com.bookitnowv2.appointment_booking.entity.Appointment;
 import com.bookitnowv2.appointment_booking.entity.ServiceEntity;
 import com.bookitnowv2.appointment_booking.entity.User;
+import com.bookitnowv2.appointment_booking.entity.dto.appointment.AppointmentGetResponseDTO;
 import com.bookitnowv2.appointment_booking.entity.dto.appointment.AppointmentSlotResponseDTO;
+import com.bookitnowv2.appointment_booking.mapper.AppointmentMapper;
 import com.bookitnowv2.appointment_booking.service.AppointmentService;
 import com.bookitnowv2.appointment_booking.service.ServiceEntityService;
 import com.bookitnowv2.appointment_booking.service.UserService;
@@ -28,6 +31,7 @@ public class AppointmentController {
     private final ServiceEntityService serviceEntityService;
     private final AppointmentService appointmentService;
     private final UserService userService;
+
 
     public AppointmentController(ServiceEntityService serviceEntityService, AppointmentService appointmentService, UserService userService) {
         this.serviceEntityService = serviceEntityService;
@@ -56,6 +60,18 @@ public class AppointmentController {
         appointmentService.addUserToAppointment(foundAppointment, foundUser);
 
         return ResponseEntity.ok("User added to appointment.");
+    }
+
+
+    @GetMapping("/user/{userSlug}/booked-appointments")
+    public ResponseEntity<List<AppointmentGetResponseDTO>> getUserBookedAppointments()
+    {
+        User foundUser = SecurityUtils.getCurrentUser();
+
+        List<Appointment> appointments = foundUser.getAppointments();
+
+        return ResponseEntity.ok(appointments.stream().map((AppointmentMapper::toGetDTO)).toList()) ;
+
     }
 
 
