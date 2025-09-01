@@ -30,14 +30,14 @@ public class Appointment {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @ManyToOne
+    /*@ManyToOne
     @JoinColumn(name = "employee_id")
     private Employee employee;
 
     @ManyToOne
     @JoinColumn(name = "company_id")
     @JsonBackReference
-    private Company company;
+    private Company company;*/
 
     @ManyToOne
     @JoinColumn(name = "service_id")

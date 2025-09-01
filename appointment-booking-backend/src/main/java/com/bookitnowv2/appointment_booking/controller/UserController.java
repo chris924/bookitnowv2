@@ -38,13 +38,11 @@ public class UserController {
     private final ElasticUserService elasticUserService;
     private final IElasticUserRepository elasticUserRepository;
     private final IUserRepository userRepository;
-    private final SlugExtractor slugExtractor;
     private final UserMapper userMapper;
 
     public UserController(@Value("${avatar.user.directory.path}") String basePath,
                           @Value("${frontend.ip.address}") String frontendAddress,
                           ElasticUserService elasticUserService,
-                          SlugExtractor slugExtractor,
                           UserService userService,
                           UserMapper userMapper,
                           IUserRepository userRepository,
@@ -56,14 +54,13 @@ public class UserController {
         this.elasticUserRepository = elasticUserRepository;
         this.userService = userService;
         this.userRepository = userRepository;
-        this.slugExtractor = slugExtractor;
         this.userMapper = userMapper;
     }
 
 
     @GetMapping("/{userSlug}")
     public ResponseEntity<UserDataResponseDTO> getUserDataFromId(@PathVariable String userSlug) {
-        Integer userId = slugExtractor.getIdFromSlug(userSlug);
+        Integer userId = SlugExtractor.getIdFromSlug(userSlug);
         User foundUser = userService.getUserById(userId);
         return ResponseEntity.ok(userMapper.toUserDataResponseDTO(foundUser));
 

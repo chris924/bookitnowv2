@@ -44,18 +44,6 @@ public class AppointmentService {
         return appointmentRepository.save(newAppointment);
     }
 
-    public List<AppointmentGetResponseDTO> getAppointmentsByCompanyId(Integer companyId)
-    {
-        Company foundCompany = companyRepository.findById(companyId)
-                .orElseThrow(() -> new RuntimeException("Error: Company not found by Id!"));
-
-        Set<Appointment> appointmentSet = foundCompany.getAppointments();
-
-        return appointmentSet.stream()
-                .map(appointmentMapper::toGetDTO)
-                .toList();
-    }
-
     public List<AppointmentGetResponseDTO> getAppointments()
     {
         return appointmentRepository.findAll().stream().map(appointmentMapper::toGetDTO).toList();
@@ -117,8 +105,6 @@ public class AppointmentService {
 
         Appointment newAppointment = new Appointment();
         newAppointment.setService(foundService);
-        newAppointment.setCompany(foundCompany);
-        newAppointment.setEmployee(foundEmployee);
 
 
         return newAppointment;
@@ -134,8 +120,8 @@ public class AppointmentService {
 
         Employee employee = serviceEntity.getEmployee();
         List<EmployeeWorkingHours> employeeWorkingHours = employee.getWorkingHours();
-        List<Appointment> existingAppointments = employee.getAppointments();
 
+        List<Appointment> existingAppointments = appointmentRepository.findByService_IdAndDateGreaterThanEqual(serviceEntity.getId(), LocalDate.now());
 
         LocalTime smallestStart = null;
         LocalTime largestEnd = null;
@@ -148,9 +134,6 @@ public class AppointmentService {
            LocalTime dayStartTime = x.getStartTime();
            LocalTime dayEndTime = x.getEndTime();
            LocalDate workingHourDate = x.getDate();
-
-           if(workingHourDate.isBefore(LocalDate.now())) // TODO: TEMPORARY FIX FOR NOT SHOWING OLDER APPOINTMENTS?
-               continue;
 
             if (smallestStart == null || dayStartTime.isBefore(smallestStart)) smallestStart = dayStartTime;
             if (largestEnd == null || dayEndTime.isAfter(largestEnd)) largestEnd = dayEndTime;
@@ -181,7 +164,7 @@ public class AppointmentService {
         return appointmentSlotResponseDTO;
     }
 
-    public void createFreeAppointmentSlotsFromService(ServiceEntity serviceEntity)
+    public void createFreeAppointmentSlotsFromService(ServiceEntity serviceEntity) // This will be called to create free appointments
     {
 
         Employee employee = serviceEntity.getEmployee();
@@ -227,8 +210,7 @@ public class AppointmentService {
                 Appointment newAppointment =  new Appointment();
 
                 newAppointment.setDate(x.getDate());
-                newAppointment.setEmployee(x.getEmployee());
-                newAppointment.setCompany(x.getEmployee().getCompany());
+                newAppointment.setService(serviceEntity);
 
                 if (conflict.isPresent()) {
                     Appointment appt = conflict.get();

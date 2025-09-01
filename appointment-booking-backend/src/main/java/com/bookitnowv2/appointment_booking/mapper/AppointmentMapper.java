@@ -13,8 +13,8 @@ public class AppointmentMapper {
     public AppointmentGetResponseDTO toGetDTO(Appointment appointment)
     {
         User user = appointment.getUser();
-        Employee employee = appointment.getEmployee();
-        Company company = appointment.getCompany();
+        Employee employee = appointment.getService().getEmployee();
+        Company company = appointment.getService().getCompany();
 
         return new AppointmentGetResponseDTO(
                 appointment.getId(),

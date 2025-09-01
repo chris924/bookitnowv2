@@ -162,7 +162,7 @@ public class DatabaseSeeder implements CommandLineRunner {
         employee3.setServices(serviceList);
 
 
-        createAppointment(company1, employee1, service1, LocalDate.now(), user1, LocalTime.of(13, 25), LocalTime.of(14, 10), AppointmentStatus.BOOKED);
+        createAppointment( service1, LocalDate.now(), user1, LocalTime.of(13, 25), LocalTime.of(14, 10), AppointmentStatus.BOOKED);
         appointmentService.createFreeAppointmentSlotsFromService(service1);
     }
 
@@ -241,12 +241,10 @@ public class DatabaseSeeder implements CommandLineRunner {
         return company;
     }
 
-    private void createAppointment(Company company, Employee employee, ServiceEntity serviceEntity, LocalDate date, User user, LocalTime startTime, LocalTime endTime, AppointmentStatus status) {
+    private void createAppointment( ServiceEntity serviceEntity, LocalDate date, User user, LocalTime startTime, LocalTime endTime, AppointmentStatus status) {
 
         Appointment appointment = new Appointment();
 
-        appointment.setCompany(company);
-        appointment.setEmployee(employee);
         appointment.setService(serviceEntity);
         appointment.setUser(user);
         appointment.setDate(date);
@@ -256,7 +254,6 @@ public class DatabaseSeeder implements CommandLineRunner {
         appointment.setAppointmentStatus(status);
 
         appointmentRepository.save(appointment);
-        employee.getAppointments().add(appointment);
     //   companyRepository.save(company);
     }
 

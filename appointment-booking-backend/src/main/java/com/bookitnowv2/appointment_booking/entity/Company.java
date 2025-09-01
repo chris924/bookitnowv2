@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.sql.Timestamp;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -96,11 +97,6 @@ public class Company implements UserDetails {
                 '}';
     }
 
-    public Set<Appointment> getAppointments() {
-        return employees.stream()
-                .flatMap(employee -> employee.getAppointments().stream())
-                .collect(Collectors.toSet());
-    }
 
    public Set<ServiceEntity> getServices()
    {

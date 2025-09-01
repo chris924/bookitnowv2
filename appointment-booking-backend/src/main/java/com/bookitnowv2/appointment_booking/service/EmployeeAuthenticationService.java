@@ -46,7 +46,6 @@ public class EmployeeAuthenticationService {
         Role employeeRole = roleService.findByAuthority("EMPLOYEE");
 
         Set<Role> authorities = new HashSet<>();
-        List<Appointment> appointments = new ArrayList<>();
         List<ServiceEntity> services = new ArrayList<>();
 
         authorities.add(employeeRole);
@@ -55,7 +54,6 @@ public class EmployeeAuthenticationService {
         newEmployee.setUsername(username);
         newEmployee.setEmail(email);
         newEmployee.setPassword(encodedPassword);
-        newEmployee.setAppointments(appointments);
         newEmployee.setAuthorities(authorities);
         newEmployee.setServices(services);
 

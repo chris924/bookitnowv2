@@ -5,7 +5,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class SlugExtractor {
 
-    public Integer getIdFromSlug(String slug)
+    public static Integer getIdFromSlug(String slug)
     {
         try {
             String[] parts = slug.split("-");

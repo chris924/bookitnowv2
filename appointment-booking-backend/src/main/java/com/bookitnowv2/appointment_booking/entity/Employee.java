@@ -43,9 +43,16 @@ public class Employee implements UserDetails {
     @JsonManagedReference
     private List<ServiceEntity> services;
 
-    @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL, orphanRemoval = true)
+   /* @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
-    private List<Appointment> appointments = new ArrayList<>();
+    private List<Appointment> appointments = new ArrayList<>();*/
+
+    @Transient
+    public List<Appointment> getAppointments() {
+        return services.stream()
+                .flatMap(s -> s.getAppointments().stream())
+                .toList();
+    }
 
     @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL)
     @JsonManagedReference
