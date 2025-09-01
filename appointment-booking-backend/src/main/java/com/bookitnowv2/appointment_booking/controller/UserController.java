@@ -4,20 +4,15 @@ import com.bookitnowv2.appointment_booking.configuration.SecurityUtils;
 import com.bookitnowv2.appointment_booking.elasticSearch.document.UserDocument;
 import com.bookitnowv2.appointment_booking.elasticSearch.repository.IElasticUserRepository;
 import com.bookitnowv2.appointment_booking.elasticSearch.service.ElasticUserService;
-import com.bookitnowv2.appointment_booking.entity.Employee;
 import com.bookitnowv2.appointment_booking.entity.User;
 import com.bookitnowv2.appointment_booking.entity.dto.user.UserDataResponseDTO;
 import com.bookitnowv2.appointment_booking.entity.dto.user.UserDetailsChangeDTO;
 import com.bookitnowv2.appointment_booking.mapper.UserMapper;
 import com.bookitnowv2.appointment_booking.repository.IUserRepository;
-import com.bookitnowv2.appointment_booking.service.UserService;
-import com.bookitnowv2.appointment_booking.utils.SlugExtractor;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
@@ -34,17 +29,13 @@ public class UserController {
 
     private final Path basePath;
     private final String frontendAddress;
-    private final UserService userService;
     private final ElasticUserService elasticUserService;
     private final IElasticUserRepository elasticUserRepository;
     private final IUserRepository userRepository;
-    private final UserMapper userMapper;
 
     public UserController(@Value("${avatar.user.directory.path}") String basePath,
                           @Value("${frontend.ip.address}") String frontendAddress,
                           ElasticUserService elasticUserService,
-                          UserService userService,
-                          UserMapper userMapper,
                           IUserRepository userRepository,
                           IElasticUserRepository elasticUserRepository) {
 
@@ -52,17 +43,16 @@ public class UserController {
         this.frontendAddress = frontendAddress;
         this.elasticUserService = elasticUserService;
         this.elasticUserRepository = elasticUserRepository;
-        this.userService = userService;
         this.userRepository = userRepository;
-        this.userMapper = userMapper;
     }
 
 
     @GetMapping("/{userSlug}")
     public ResponseEntity<UserDataResponseDTO> getUserDataFromId(@PathVariable String userSlug) {
-        Integer userId = SlugExtractor.getIdFromSlug(userSlug);
-        User foundUser = userService.getUserById(userId);
-        return ResponseEntity.ok(userMapper.toUserDataResponseDTO(foundUser));
+       // Integer userId = SlugExtractor.getIdFromSlug(userSlug);
+      //  User foundUser = userService.getUserById(userId);
+        User currentUser = SecurityUtils.getCurrentUser();
+        return ResponseEntity.ok(UserMapper.toUserDataResponseDTO(currentUser));
 
     }
 
@@ -85,9 +75,9 @@ public class UserController {
         if(changedData)
         {
             userRepository.save(currentUser);
-            elasticUserRepository.save(userMapper.toDocument(currentUser));
+            elasticUserRepository.save(UserMapper.toDocument(currentUser));
         }
-        return ResponseEntity.ok(userMapper.toUserDataResponseDTO(currentUser));
+        return ResponseEntity.ok(UserMapper.toUserDataResponseDTO(currentUser));
     }
 
 

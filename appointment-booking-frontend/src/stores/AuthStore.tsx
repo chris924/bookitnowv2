@@ -1,46 +1,50 @@
-import { create } from "zustand"
-import axios from "axios"
-import api from "@/api/axios"
+import { create } from "zustand";
+import api from "@/api/axios";
+import axios from "axios";
+import { UserDataResponseDTO } from "@/lib/profile-types";
+import { createSlug } from "@/lib/utils";
 
-export interface User {
-  id: string
-  email: string
-  name: string
+interface UserState {
+  user: UserDataResponseDTO | null; // includes avatar, name, etc.
+  loading: boolean;
+  isAuthenticated: boolean;
+  checkAuth: () => Promise<void>;
+  updateUserAvatar: (data: string) => void;
+  updateUserObject: (data: UserDataResponseDTO) => void;
+  logout: () => Promise<void>;
 }
 
-interface UserAuthState {
-  user: User | null
-  loading: boolean
-  isAuthenticated: boolean
-  checkAuth: () => Promise<void>
-  logout: () => Promise<void>
-}
-
-export const useAuthStore = create<UserAuthState>((set) => ({
-  isAuthenticated: false,
+export const useUserStore = create<UserState>((set) => ({
   user: null,
   loading: true,
- 
+  isAuthenticated: false,
+
   checkAuth: async () => {
     try {
       const res = await api.get("/auth/auth-info");
       if (res.status === 200) {
-        console.log("RESDATA:", res.data)
-        set({ isAuthenticated: true, user: res.data, loading: false })
+        set({ user: res.data, isAuthenticated: true, loading: false });
       }
     } catch {
-      set({ isAuthenticated: false, user: null, loading: false })
+      set({ user: null, isAuthenticated: false, loading: false });
     }
   },
 
+  updateUserAvatar: (avatarUrl: string) =>
+  set((state) => ({
+    user: state.user ? { ...state.user, avatarUrl } : state.user,
+  })),
+
+  updateUserObject: (updatedUser: UserDataResponseDTO) =>
+    set((state) => ({
+      user: updatedUser
+    })),
+
   logout: async () => {
     try {
-      await axios.post("http://localhost:8080/auth/user/logout", {}, {
-        withCredentials: true, 
-      })
-    } catch {
+      await axios.post("/auth/user/logout", {}, { withCredentials: true });
     } finally {
-      set({ isAuthenticated: false, user: null, loading: false })
+      set({ user: null, isAuthenticated: false, loading: false });
     }
-  }
-}))
+  },
+}));

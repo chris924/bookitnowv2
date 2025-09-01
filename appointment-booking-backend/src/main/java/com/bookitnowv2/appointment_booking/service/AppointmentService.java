@@ -169,7 +169,7 @@ public class AppointmentService {
 
         Employee employee = serviceEntity.getEmployee();
         List<EmployeeWorkingHours> employeeWorkingHours = employee.getWorkingHours();
-        List<Appointment> existingAppointments = employee.getAppointments();
+        List<Appointment> existingAppointments = serviceEntity.getAppointments();
 
         LocalTime smallestStart = null;
         LocalTime largestEnd = null;

@@ -1,6 +1,7 @@
 package com.bookitnowv2.appointment_booking.configuration;
 
 import com.bookitnowv2.appointment_booking.entity.User;
+import com.bookitnowv2.appointment_booking.exception.UserNotFoundException;
 import com.bookitnowv2.appointment_booking.repository.IUserRepository;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -22,9 +23,15 @@ public class SecurityUtils {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if(auth != null && auth.getPrincipal() instanceof UserDetails userDetails)
         {
-            return userRepository.getUserByUsername(userDetails.getUsername()).orElseThrow(() -> new RuntimeException("Error"));
+            return userRepository.getUserByUsername(userDetails.getUsername()).orElseThrow(() -> new UserNotFoundException(""));
         }
-        throw new RuntimeException("Error");
+        throw new UserNotFoundException("");
+    }
+
+    public static UserDetails getCurrentPrincipal() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth == null || auth.getPrincipal() == null) throw new RuntimeException("No principal");
+        return (UserDetails) auth.getPrincipal();
     }
 
 

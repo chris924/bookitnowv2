@@ -1,13 +1,11 @@
-import { DialogTitle, DialogDescription } from "@radix-ui/react-dialog";
-import { Label, Separator } from "@radix-ui/react-dropdown-menu";
-import { Divide } from "lucide-react";
+import { DialogTitle } from "@radix-ui/react-dialog";
+import { Label } from "@radix-ui/react-dropdown-menu";
 import { Button } from "../button";
 import { DialogHeader, DialogFooter } from "../dialog";
 import { Input } from "../input";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { loginUser, registerUser } from "@/api/user";
-import { useAuthStore } from "@/stores/AuthStore";
+import { registerUser } from "@/api/user";
 import { useMutation } from "@tanstack/react-query";
 
 

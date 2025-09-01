@@ -153,6 +153,8 @@ public class DatabaseSeeder implements CommandLineRunner {
         ServiceEntity service1 = createService("Shave", "Shaving",  15, employee1, company1, Duration.ofMinutes(30));
 
         List<ServiceEntity> serviceList = new ArrayList<>();
+        List<Appointment> appointmentList = new ArrayList<>();
+
         serviceList.add(service1);
 
         employee1.setServices(serviceList);
@@ -162,7 +164,10 @@ public class DatabaseSeeder implements CommandLineRunner {
         employee3.setServices(serviceList);
 
 
-        createAppointment( service1, LocalDate.now(), user1, LocalTime.of(13, 25), LocalTime.of(14, 10), AppointmentStatus.BOOKED);
+        Appointment appointment1 = createAppointment( service1, LocalDate.now(), user1, LocalTime.of(13, 25), LocalTime.of(14, 10), AppointmentStatus.BOOKED);
+        appointmentList.add(appointment1);
+        service1.setAppointments(appointmentList);
+
         appointmentService.createFreeAppointmentSlotsFromService(service1);
     }
 
@@ -241,7 +246,7 @@ public class DatabaseSeeder implements CommandLineRunner {
         return company;
     }
 
-    private void createAppointment( ServiceEntity serviceEntity, LocalDate date, User user, LocalTime startTime, LocalTime endTime, AppointmentStatus status) {
+    private Appointment createAppointment( ServiceEntity serviceEntity, LocalDate date, User user, LocalTime startTime, LocalTime endTime, AppointmentStatus status) {
 
         Appointment appointment = new Appointment();
 
@@ -255,6 +260,7 @@ public class DatabaseSeeder implements CommandLineRunner {
 
         appointmentRepository.save(appointment);
     //   companyRepository.save(company);
+        return appointment;
     }
 
     private EmployeeWorkingHours createEmployeeWorkingHours(Employee employee, LocalTime startTime, LocalTime endTime, LocalDate date)

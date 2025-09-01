@@ -1,15 +1,17 @@
 import { createSlug } from "@/lib/utils";
-import { useAuthStore, User } from "@/stores/AuthStore";
 import { Avatar, AvatarImage, AvatarFallback } from "@radix-ui/react-avatar";
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuItem } from "@radix-ui/react-dropdown-menu";
 import { useNavigate } from "react-router-dom";
+import defaultAvatar from "@/assets/default.jpg"
+import { UserDataResponseDTO } from "@/lib/profile-types";
+import { useUserStore } from "@/stores/AuthStore";
 
-
-export default function DropdownUser({user}: {user: User} )
+export default function DropdownUser({user}: {user: UserDataResponseDTO} )
 {
 
-  const {logout} = useAuthStore();
+  const {logout} = useUserStore();
   const navigate = useNavigate();
+
 
   async function handleDropDownClick(clickType: string)
   {
@@ -20,7 +22,7 @@ export default function DropdownUser({user}: {user: User} )
     if(clickType == "account")
     {
       console.log("USER IS:", user);
-      const userSlug = await createSlug(user.name, parseInt(user.id));
+      const userSlug = await createSlug(user.name, parseInt(user.id.toString()));
       navigate(`/user/${userSlug}`)
     }
   }
@@ -29,8 +31,10 @@ export default function DropdownUser({user}: {user: User} )
         <DropdownMenu>
       <DropdownMenuTrigger>
         <Avatar>
-          <AvatarImage src="https://github.com/shadcn.png" className="h-20 w-20 rounded-full" />
-          <AvatarFallback>CN</AvatarFallback>
+          <AvatarImage src={user.avatarUrl} className="h-20 w-20 rounded-full" />
+          <AvatarFallback>
+            <img src={defaultAvatar} alt="default avatar" className="h-20 w-20 rounded-full" />
+          </AvatarFallback>
         </Avatar>
       </DropdownMenuTrigger>
         <DropdownMenuContent>

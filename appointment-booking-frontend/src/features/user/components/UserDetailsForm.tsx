@@ -26,35 +26,37 @@ import {
 
 import defaultAvatar from "@/assets/default.jpg"
 import { PopoverArrow } from "@radix-ui/react-popover"
-import { changeUserDetails, getUserData, uploadUserAvatar, userDetailsChangeDTO } from "@/api/user"
-import { APIError } from "@/api/axios"
-import { toast } from "sonner"
+import { changeUserDetails, uploadUserAvatar, userDetailsChangeDTO } from "@/api/user"
 import { useMutation } from "@tanstack/react-query"
 import { showToast } from "@/components/ui/own/ShowToast"
 import { handleAPIError } from "@/lib/utils"
 import Loader from "@/components/ui/own/Loader"
+import { useUserStore } from "@/stores/AuthStore"
 
 
 export type UserDetailsFormProps = {
 
   userData: UserDataResponseDTO;
-  fetchUserContent: () => void;
   setUserData: (userData: UserDataResponseDTO) => void;
 }
 
-export default function UserDetailsForm({userData, fetchUserContent, setUserData}: UserDetailsFormProps)
+export default function UserDetailsForm()
 {
   const [enableModifyUserData, setEnableModifyUserData] = useState(false);
   const [showHint, setShowHint] = useState(false);
   
    const fileInputRef = useRef<HTMLInputElement>(null);
 
+     const {user, loading } = useUserStore();
+
    const avatarChangeMutation = useMutation({
     mutationFn: (file: File) => uploadUserAvatar(file),
     onSuccess: (response) => {
       if(response)
       {
-        setUserData({...userData, avatarUrl: response.data})
+     //   setUserData({...userData, avatarUrl: response.data})
+
+        useUserStore.getState().updateUserAvatar(response.data);
         showToast.success("Sikeres profilkép módosítás!");
       }
     },
@@ -83,15 +85,16 @@ export default function UserDetailsForm({userData, fetchUserContent, setUserData
  const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      name: userData.name,
-      username: userData.username
+      name: user?.name,
+      username: user?.username
     },
   })
 
   const changeUserDetailsMutation = useMutation({
     mutationFn: (dto: userDetailsChangeDTO) => changeUserDetails(dto),
     onSuccess: (data) => {
-      setUserData(data.data);
+   //   setUserData(data.data);
+      useUserStore.getState().updateUserObject(data.data)
       showToast.success("Adatok sikeresen frissítve!");
       setEnableModifyUserData(false);
     },
@@ -138,7 +141,7 @@ async function onSubmit(values: z.infer<typeof formSchema>) {
             </PopoverContent>
              <PopoverTrigger asChild>
           <Avatar className="w-16 h-16 cursor-pointer" onClick={() => fileInputRef.current?.click()}>
-            <AvatarImage src={userData.avatarUrl} alt="profile" />
+            <AvatarImage src={user?.avatarUrl} alt="profile" />
              <AvatarFallback>
               <img src={defaultAvatar} alt="default avatar" className="w-full h-full object-cover" />
             </AvatarFallback>
@@ -153,7 +156,7 @@ async function onSubmit(values: z.infer<typeof formSchema>) {
               onChange={handleFileChange}
             />
           <div>
-            <CardTitle className="text-xl">{userData.name}</CardTitle>
+            <CardTitle className="text-xl">{user?.name}</CardTitle>
             <p className="text-sm text-muted-foreground">Felhasználó</p>
           </div>
         </CardHeader>
@@ -174,7 +177,7 @@ async function onSubmit(values: z.infer<typeof formSchema>) {
               <FormItem>
                 <FormLabel>Név</FormLabel>
                 <FormControl>
-                  <Input placeholder={userData.name} {...field} disabled={!enableModifyUserData}/>
+                  <Input placeholder={user?.name} {...field} disabled={!enableModifyUserData}/>
                 </FormControl>
                 <FormDescription>Ez a teljes neved.</FormDescription>
                 <FormMessage />
@@ -190,7 +193,7 @@ async function onSubmit(values: z.infer<typeof formSchema>) {
               <FormItem>
                 <FormLabel>Felhasználónév</FormLabel>
                 <FormControl>
-                  <Input placeholder={userData.username} {...field} disabled={!enableModifyUserData} />
+                  <Input placeholder={user?.username} {...field} disabled={!enableModifyUserData} />
                 </FormControl>
                 <FormDescription>Ez a felhasználóneved.</FormDescription>
                 <FormMessage />

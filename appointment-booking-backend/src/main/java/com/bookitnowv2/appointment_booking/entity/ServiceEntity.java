@@ -9,7 +9,9 @@ import lombok.NoArgsConstructor;
 
 import java.time.Duration;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Data
@@ -44,7 +46,7 @@ public class ServiceEntity {
 
     @OneToMany(mappedBy = "service", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
-    private Set<Appointment> appointments = new HashSet<>();
+    private List<Appointment> appointments = new ArrayList<>();
 
 
 }

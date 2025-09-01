@@ -4,10 +4,10 @@ import lombok.Getter;
 
 @Getter
 public class UserNotFoundException extends RuntimeException {
+    private static final String title = "A felhasználó nem található";
     private final String code = "USER_NOT_FOUND";
 
-    public UserNotFoundException(String message)
-    {
-        super(message);
+    public UserNotFoundException(String message) {
+        super(title + ": " + message);
     }
 }

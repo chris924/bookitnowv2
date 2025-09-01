@@ -11,6 +11,7 @@ import java.sql.Timestamp;
 @Setter
 public class UserDataResponseDTO {
 
+    private Integer id;
     private String name;
     private String username;
     private String email;

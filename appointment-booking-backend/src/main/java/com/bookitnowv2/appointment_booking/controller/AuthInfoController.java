@@ -1,11 +1,15 @@
 package com.bookitnowv2.appointment_booking.controller;
 
+import com.bookitnowv2.appointment_booking.configuration.SecurityUtils;
 import com.bookitnowv2.appointment_booking.entity.Company;
 import com.bookitnowv2.appointment_booking.entity.Employee;
 import com.bookitnowv2.appointment_booking.entity.User;
 import com.bookitnowv2.appointment_booking.entity.dto.AuthInfoResponseDTO;
+import com.bookitnowv2.appointment_booking.mapper.EmployeeMapper;
+import com.bookitnowv2.appointment_booking.mapper.UserMapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -14,21 +18,21 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/auth")
 public class AuthInfoController {
 
+    private UserMapper userMapper;
+    private SecurityUtils securityUtils;
+
     @GetMapping("/auth-info")
-    public ResponseEntity<AuthInfoResponseDTO> checkAuth(Authentication authentication)
+    public ResponseEntity<?> checkAuth(Authentication authentication)
     {
-        if(authentication == null || !authentication.isAuthenticated())
-            return ResponseEntity.notFound().build();
+        UserDetails userDetails = SecurityUtils.getCurrentPrincipal();
 
-        Object principal = authentication.getPrincipal();
-
-        return switch (principal) {
+        return switch (userDetails) {
             case User userPrincipal ->
-                    ResponseEntity.ok(new AuthInfoResponseDTO(userPrincipal.getId(), userPrincipal.getName(), userPrincipal.getEmail(), "USER"));
+                    ResponseEntity.ok(UserMapper.toUserDataResponseDTO(userPrincipal));
             case Company companyPrincipal ->
-                    ResponseEntity.ok(new AuthInfoResponseDTO(companyPrincipal.getId(), companyPrincipal.getCompanyName(), companyPrincipal.getEmail(), "COMPANY"));
+                    ResponseEntity.ok(new AuthInfoResponseDTO(companyPrincipal.getId(), companyPrincipal.getCompanyName(), companyPrincipal.getEmail(), "COMPANY", companyPrincipal.getAvatarUrl())); //TODO REFACTOR THIS ASWELL LATER
             case Employee employeePrincipal ->
-                    ResponseEntity.ok(new AuthInfoResponseDTO(employeePrincipal.getId(), employeePrincipal.getName(), employeePrincipal.getEmail(), "EMPLOYEE"));
+                    ResponseEntity.ok(new AuthInfoResponseDTO(employeePrincipal.getId(), employeePrincipal.getName(), employeePrincipal.getEmail(), "EMPLOYEE", employeePrincipal.getAvatarUrl())); //TODO REFACTOR THIS ASWELL LATER
             case null, default -> ResponseEntity.notFound().build();
         };
 

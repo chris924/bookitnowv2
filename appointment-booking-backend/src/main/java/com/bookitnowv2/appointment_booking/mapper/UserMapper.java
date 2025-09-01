@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class UserMapper {
 
-    public UserDocument toDocument(User user)
+    public static UserDocument toDocument(User user)
     {
         return new UserDocument(
                 user.getId(),
@@ -16,9 +16,9 @@ public class UserMapper {
                 user.getAvatarUrl());
     }
 
-    public UserDataResponseDTO toUserDataResponseDTO(User user)
+    public static UserDataResponseDTO toUserDataResponseDTO(User user)
     {
-        return new UserDataResponseDTO(user.getName(), user.getUsername(), user.getEmail(), user.getAvatarUrl(), user.getCreatedAt());
+        return new UserDataResponseDTO(user.getId(), user.getName(), user.getUsername(), user.getEmail(), user.getAvatarUrl(), user.getCreatedAt());
     }
 
 }

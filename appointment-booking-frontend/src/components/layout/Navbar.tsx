@@ -1,4 +1,4 @@
-import { useAuthStore } from "@/stores/AuthStore";
+import { useUserStore } from "@/stores/AuthStore";
 import { useEffect, useState } from "react";
 import GuestLogin from "../ui/own/GuestLogin";
 import DropdownUser from "../../features/home/components/UserDropdown";
@@ -11,11 +11,14 @@ import Loader from "../ui/own/Loader";
 export default function Navbar()
 {
   
-  const { checkAuth, isAuthenticated, user, loading } = useAuthStore();
+  const { checkAuth, isAuthenticated, user, loading } = useUserStore();
+  
   const [openLogin, setOpenLogin] = useState(false);
+  
+  
 
   useEffect(() => {
-    checkAuth()
+    checkAuth();    
   }, [])
 
     return (

@@ -44,9 +44,8 @@ return (
     {isLoading ? <Loader/> : ""}
     {userData && (
     <UserDetailsForm
-      userData={userData}
-      fetchUserContent={fetchUserContent}
-      setUserData={setUserData} 
+     // userData={userData}
+   //   setUserData={setUserData} 
     />
   )}
   </>
