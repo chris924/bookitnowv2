@@ -10,6 +10,11 @@ import { AppointmentSlotResponseDTO, SlotResponseDTO } from '@/lib/appointment-t
 import GuestLogin from '@/components/ui/own/GuestLogin';
 import ApproveBookingForm from '@/components/ui/own/ApproveBookingForm';
 import { EventImpl } from '@fullcalendar/core/internal';
+import ApproveDialogForm from '@/components/ui/own/ApproveDialogForm';
+import { addUserToAppointment } from '@/api/appointments';
+import { createSlug, handleAPIError } from '@/lib/utils';
+import { useNavigate } from 'react-router-dom';
+import { toast } from 'sonner';
 
 type EmployeeBookingTableProps = {
   appointmentSlots?: AppointmentSlotResponseDTO;
@@ -24,7 +29,7 @@ function toFullCalendarEvent(slot: SlotResponseDTO, index: number): EventInput {
     title: "",
     start: `${slot.date}T${startTime}`,
     end: `${slot.date}T${endTime}`,
-    color: slot.status == "FREE" || "CANCELLED" ? 'green' : 'grey',
+    color: (slot.status === "FREE" || slot.status === "CANCELLED") ? "green" : "grey",
     className: slot.status == "FREE" ? "cursor-pointer" : "",
   };
 }
@@ -39,7 +44,9 @@ export default function EmployeeBookingTable({ appointmentSlots }: EmployeeBooki
 
   const [view, setView] = useState<"login" | "register">("login");
 
-  
+  const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
+  const {user} = useUserStore();
 
   useEffect(() => {
     if (appointmentSlots && appointmentSlots.slotResponseDTO.length > 0) {
@@ -47,6 +54,31 @@ export default function EmployeeBookingTable({ appointmentSlots }: EmployeeBooki
       setEvents(fcEvents);
     }
   }, [appointmentSlots]);
+
+  async function handleOnButtonClick(id: string)
+  {
+    try {
+      setIsLoading(true)
+      const data = await addUserToAppointment(parseInt(id))
+      console.log(data)
+
+      setShowApproveBooking(false); // close dialog on success
+      if(user)
+      {
+      const userSlug = await createSlug(user?.name, user?.id);
+      toast.success("Siker ✅", {
+        description: "Foglalás kész!",
+        onAutoClose: () => navigate(`/user/${userSlug}/booked-appointments`),
+        duration: 1000
+      });
+      }
+      
+    } catch (error) {
+      handleAPIError(error);
+    } finally {
+      setIsLoading(false)
+    }
+  }
 
   return (
     <>
@@ -96,11 +128,12 @@ export default function EmployeeBookingTable({ appointmentSlots }: EmployeeBooki
           setShowLoginForm(true);
           setShowApproveBooking(false);
         }
-  }}
-      /> 
+  }}// clickedAppointment && <ApproveBookingForm open={showApproveBooking} onOpenChange={setShowApproveBooking} slotInfo={clickedAppointment} />}
+      />  
       <div> 
     {showLoginForm ? <GuestLogin open={showLoginForm} onOpenChange={setShowLoginForm} showApproveBooking={setShowApproveBooking}/> :
-                       clickedAppointment && <ApproveBookingForm open={showApproveBooking} onOpenChange={setShowApproveBooking} slotInfo={clickedAppointment} />} 
+                        clickedAppointment && <ApproveDialogForm title='Biztosan lefoglalja az időpontot?' open={showApproveBooking} isLoading={isLoading}
+                         description={`Dátum: ${clickedAppointment.start?.toDateString()} Kezdés: ${clickedAppointment.start?.getHours()}:${clickedAppointment.start?.getMinutes().toString().padStart(2, "0")}`} onOpenChange={setShowApproveBooking} onButtonClick={handleOnButtonClick} value={clickedAppointment.id}/>}
     </div>
       
     </div>
