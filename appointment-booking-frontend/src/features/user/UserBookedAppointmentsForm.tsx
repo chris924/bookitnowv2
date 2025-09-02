@@ -11,6 +11,14 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 import { Button } from "@/components/ui/button";
+import { useEffect, useState } from "react";
+import ApproveDialogForm from "@/components/ui/own/ApproveDialogForm";
+import { AppointmentGetResponseDTO } from "@/lib/appointment-types";
+
+function getAppointmentStart(slot: { date: string; start: string }) {
+    return new Date(`${slot.date}T${slot.start}`);
+    }
+
 
 export default function UserBookedAppointmentsForm()
 {
@@ -22,11 +30,9 @@ export default function UserBookedAppointmentsForm()
 
     const {data: appointments, isLoading, error} = UserAppointmentsQuery(slug);
     const cancelMutation = useCancelAppointment();
+    const [showApproveForm, setShowApproveForm] = useState(false);
+    const [cancelAppointmentData, setCancelAppointmentData] = useState<AppointmentGetResponseDTO>();
     
-    function getAppointmentStart(slot: { date: string; start: string }) {
-    return new Date(`${slot.date}T${slot.start}`);
-    }
-
     const now = new Date();
 
     const upcomingAppointments = appointments?.filter(
@@ -37,18 +43,32 @@ export default function UserBookedAppointmentsForm()
     (a) => getAppointmentStart(a.slotResponseDTO) < now || a.slotResponseDTO.status === "Cancelled"
     );
 
-    function handleCancelAppointmentClick(appointmentId: number) {
+    //handleCancelAppointmentClick(appointment.slotResponseDTO.id)
+    function handleCancelAppointmentClick(appointmentId: string) {
     if (!slug) return; 
 
     cancelMutation.mutate({
         userSlug: slug,
-        appointmentId,
+        appointmentId:  Number(appointmentId),
     });
 }
+
+    function clickOnCancel(appointment: AppointmentGetResponseDTO)
+    {
+        setCancelAppointmentData(appointment);
+        setShowApproveForm(true);
+    }
+
+    useEffect(() => {
+    if (cancelMutation.isSuccess || cancelMutation.isError) {
+        setShowApproveForm(false);
+    }
+    }, [cancelMutation.isSuccess, cancelMutation.isError]);
 
 
    return (
   <div className="space-y-10">
+    {showApproveForm ? <ApproveDialogForm title="Biztos lemondja a foglalást?" description="" value={cancelAppointmentData?.slotResponseDTO.id.toString()!} onButtonClick={handleCancelAppointmentClick} onOpenChange={setShowApproveForm} open={showApproveForm} isLoading={cancelMutation.isPending}/> : ""}
     {/* Upcoming */}
     <section>
       <h2 className="text-xl font-semibold mb-4">Aktív foglalások</h2>
@@ -79,7 +99,7 @@ export default function UserBookedAppointmentsForm()
                 <p>
                   {appointment.slotResponseDTO.date} • {appointment.slotResponseDTO.start}–{appointment.slotResponseDTO.end}
                 </p>
-                <Button className="text-red-600 hover:text-red-800 font-medium" onClick={() => (handleCancelAppointmentClick(appointment.slotResponseDTO.id))}>Foglalás törlése</Button>
+                <Button className="text-red-600 hover:text-red-800 font-medium" onClick={() => clickOnCancel(appointment)}>Foglalás törlése</Button>
               </CardFooter>
             </Card>
           ))}
