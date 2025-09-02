@@ -121,7 +121,7 @@ public class AppointmentService {
         Employee employee = serviceEntity.getEmployee();
         List<EmployeeWorkingHours> employeeWorkingHours = employee.getWorkingHours();
 
-        List<Appointment> existingAppointments = appointmentRepository.findByService_IdAndDateGreaterThanEqual(serviceEntity.getId(), LocalDate.now());
+        List<Appointment> existingAppointments = appointmentRepository.findUpcomingAppointments(serviceEntity.getId(), LocalDate.now(), LocalTime.now());
 
         LocalTime smallestStart = null;
         LocalTime largestEnd = null;
@@ -193,11 +193,19 @@ public class AppointmentService {
 
             LocalTime current = dayStartTime;
 
+
             List<Appointment> currentExistingAppointments= existingAppointments.stream().filter(z -> z.getDate().equals(workingHourDate)).toList();
 
             while (!current.plus(serviceDuration).isAfter(dayEndTime)) {
                 LocalTime slotStart = current;
                 LocalTime slotEnd = current.plus(serviceDuration);
+
+                // Skip past slots for today
+                if (workingHourDate.isBefore(LocalDate.now()) ||
+                        (workingHourDate.isEqual(LocalDate.now()) && slotStart.isBefore(LocalTime.now()))) {
+                    current = slotEnd;
+                    continue;
+                }
 
                 // Find if there's a conflict
                 Optional<Appointment> conflict = currentExistingAppointments.stream()

@@ -1,9 +1,6 @@
 package com.bookitnowv2.appointment_booking.mapper;
 
-import com.bookitnowv2.appointment_booking.entity.Appointment;
-import com.bookitnowv2.appointment_booking.entity.Company;
-import com.bookitnowv2.appointment_booking.entity.Employee;
-import com.bookitnowv2.appointment_booking.entity.User;
+import com.bookitnowv2.appointment_booking.entity.*;
 import com.bookitnowv2.appointment_booking.entity.dto.appointment.AppointmentGetResponseDTO;
 import com.bookitnowv2.appointment_booking.entity.dto.appointment.SlotResponseDTO;
 import com.bookitnowv2.appointment_booking.utils.AppointmentStatus;
@@ -15,15 +12,20 @@ public class AppointmentMapper {
     public static AppointmentGetResponseDTO toGetDTO(Appointment appointment)
     {
         User user = appointment.getUser();
-        Employee employee = appointment.getService().getEmployee();
-        Company company = appointment.getService().getCompany();
+        ServiceEntity serviceEntity = appointment.getService();
+        Employee employee = serviceEntity.getEmployee();
+        Company company = serviceEntity.getCompany();
 
         return new AppointmentGetResponseDTO(
                 toSlotResponseDTO(appointment),
                 user.getId(),
                 employee.getId(),
                 employee.getName(),
-                company.getId()
+                employee.getAvatarUrl(),
+                company.getId(),
+                company.getCompanyName(),
+                serviceEntity.getName(),
+                serviceEntity.getPrice()
         );
     }
 

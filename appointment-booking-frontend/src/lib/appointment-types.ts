@@ -24,5 +24,9 @@ export interface AppointmentGetResponseDTO{
     username: string;
     employeeId: number;
     employeeName: string;
+    employeeAvatarUrl: string;
     companyId: number;
+    companyName: string;
+    serviceName: string;
+    servicePrice: number;
 }

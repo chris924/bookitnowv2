@@ -23,6 +23,14 @@ public class AppointmentGetResponseDTO {
 
     private String employeeName;
 
+    private String employeeAvatarUrl;
+
     private Integer companyId;
+
+    private String companyName;
+
+    private String serviceName;
+
+    private Integer servicePrice;
 
 }

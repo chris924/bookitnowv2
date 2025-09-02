@@ -12,7 +12,10 @@ import { addUserToAppointment } from "@/api/appointments"
 import { useState } from "react"
 import Loader from "./Loader"
 import { showToast } from "./ShowToast"
-import { handleAPIError} from "@/lib/utils"
+import { createSlug, handleAPIError} from "@/lib/utils"
+import { useNavigate } from "react-router-dom"
+import { useUserStore } from "@/stores/AuthStore"
+import { toast } from "sonner"
 
 type ApproveBookingFormProps = {
   open?: boolean
@@ -25,28 +28,27 @@ export default function ApproveBookingForm({
   onOpenChange,
   slotInfo,
 }: ApproveBookingFormProps) {
-  const [isLoading, setIsLoading] = useState(false)
+  const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
+  const {user} = useUserStore();
 
   async function handleAppointmentBooking(id: string) {
     try {
       setIsLoading(true)
-    //  await new Promise((resolve) => setTimeout(resolve, 2000)) // simulate delay
       const data = await addUserToAppointment(parseInt(id))
       console.log(data)
 
-        if(slotInfo.start)
-        {
-           showToast.success(slotInfo.start?.toLocaleString());
-        }
-        else
-        {
-          showToast.success("");
-          showToast.error("Nem található kezdő időpont a foglaláshoz!");
-        }
-
-       
-
       onOpenChange(false) // close dialog on success
+      if(user)
+      {
+      const userSlug = await createSlug(user?.name, user?.id);
+      toast.success("Siker ✅", {
+        description: "Foglalás kész!",
+        onAutoClose: () => navigate(`/user/${userSlug}/booked-appointments`),
+        duration: 1000
+      });
+      }
+      
     } catch (error) {
       handleAPIError(error);
     } finally {

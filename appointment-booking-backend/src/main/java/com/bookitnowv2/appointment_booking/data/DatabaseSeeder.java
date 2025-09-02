@@ -164,7 +164,7 @@ public class DatabaseSeeder implements CommandLineRunner {
         employee3.setServices(serviceList);
 
 
-        Appointment appointment1 = createAppointment( service1, LocalDate.now(), user1, LocalTime.of(13, 25), LocalTime.of(14, 10), AppointmentStatus.BOOKED);
+        Appointment appointment1 = createAppointment( service1, LocalDate.now(), user1, LocalTime.of(9, 25), LocalTime.of(11, 10), AppointmentStatus.BOOKED);
         appointmentList.add(appointment1);
         service1.setAppointments(appointmentList);
 
