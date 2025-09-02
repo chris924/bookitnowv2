@@ -15,3 +15,7 @@ export const addUserToAppointment = async (appointmentId: number) => {
 export const getUserBookedAppointments = async (userSlug: string) => {
   return await api.get(`/appointments/user/${userSlug}/booked-appointments`);
 }
+
+export const cancelBookedAppointment = async (userSlug: string, appointmentId: number) => {
+  return await api.post(`appointments/user/${userSlug}/cancel-appointment/${appointmentId}`);
+}

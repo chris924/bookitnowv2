@@ -10,17 +10,16 @@ import com.bookitnowv2.appointment_booking.mapper.AppointmentMapper;
 import com.bookitnowv2.appointment_booking.service.AppointmentService;
 import com.bookitnowv2.appointment_booking.service.ServiceEntityService;
 import com.bookitnowv2.appointment_booking.service.UserService;
+import com.bookitnowv2.appointment_booking.utils.AppointmentStatus;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.jwt.Jwt;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -72,6 +71,21 @@ public class AppointmentController {
 
         return ResponseEntity.ok(appointments.stream().map((AppointmentMapper::toGetDTO)).toList()) ;
 
+    }
+
+    @PostMapping("/user/{userSlug}/cancel-appointment/{appointmentId}")
+    public ResponseEntity<String> cancelUserAppointment(@PathVariable Integer appointmentId) {
+        User foundUser = SecurityUtils.getCurrentUser();
+
+        Appointment foundAppointment = appointmentService.getAppointmentById(appointmentId);
+
+        if (!foundAppointment.getUser().equals(foundUser)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Nem a te foglalásod!");
+        }
+
+        appointmentService.cancelBookedAppointment(foundAppointment);
+
+        return ResponseEntity.ok("A foglalás lemondva.");
     }
 
 

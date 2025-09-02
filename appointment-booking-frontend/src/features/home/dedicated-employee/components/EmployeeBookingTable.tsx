@@ -24,7 +24,7 @@ function toFullCalendarEvent(slot: SlotResponseDTO, index: number): EventInput {
     title: "",
     start: `${slot.date}T${startTime}`,
     end: `${slot.date}T${endTime}`,
-    color: slot.status == "FREE" ? 'green' : 'grey',
+    color: slot.status == "FREE" || "CANCELLED" ? 'green' : 'grey',
     className: slot.status == "FREE" ? "cursor-pointer" : "",
   };
 }

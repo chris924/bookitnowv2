@@ -4,6 +4,7 @@ import com.bookitnowv2.appointment_booking.entity.*;
 import com.bookitnowv2.appointment_booking.entity.dto.appointment.AppointmentGetResponseDTO;
 import com.bookitnowv2.appointment_booking.entity.dto.appointment.AppointmentSlotResponseDTO;
 import com.bookitnowv2.appointment_booking.entity.dto.appointment.SlotResponseDTO;
+import com.bookitnowv2.appointment_booking.exception.appointment.AppointmentNotBookedException;
 import com.bookitnowv2.appointment_booking.exception.appointment.AppointmentNotFreeException;
 import com.bookitnowv2.appointment_booking.mapper.AppointmentMapper;
 import com.bookitnowv2.appointment_booking.repository.*;
@@ -65,7 +66,7 @@ public class AppointmentService {
 
     public void addUserToAppointment(Appointment appointment, User user)
     {
-        if(appointment.getAppointmentStatus() != AppointmentStatus.FREE || appointment.getUser() != null)
+        if(appointment.getAppointmentStatus() == AppointmentStatus.BOOKED)
         {
             throw new AppointmentNotFreeException("Az időpont már foglalt.");
         }
@@ -74,7 +75,7 @@ public class AppointmentService {
 
         for (Appointment app : userAppointments) {
             if (appointment.getStartTime().isBefore(app.getEndTime()) &&
-                    appointment.getEndTime().isAfter(app.getStartTime())) {
+                    appointment.getEndTime().isAfter(app.getStartTime()) && app.getAppointmentStatus() == AppointmentStatus.BOOKED) {
                 throw new RuntimeException("Error: Appointment overlapping with already booked appointment.");
             }
         }
@@ -108,6 +109,19 @@ public class AppointmentService {
 
 
         return newAppointment;
+    }
+
+    public void cancelBookedAppointment(Appointment appointment)
+    {
+        if(appointment.getAppointmentStatus() == AppointmentStatus.BOOKED)
+        {
+            appointment.setAppointmentStatus(AppointmentStatus.CANCELLED);
+        }
+        else
+        {
+            throw new AppointmentNotBookedException(appointment.getDate().toString());
+        }
+        appointmentRepository.save(appointment);
     }
 
     public AppointmentSlotResponseDTO getAppointmentSlotsFromService(ServiceEntity serviceEntity)
