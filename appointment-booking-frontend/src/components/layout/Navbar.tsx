@@ -6,6 +6,7 @@ import { ModeToggle } from "../ui/own/theme-toggle";
 import { Button } from "../ui/button";
 import Loader from "../ui/own/Loader";
 import { useLocation } from "react-router-dom";
+import ProviderLoginFormWrapper from "../ui/own/ProviderLoginFormWrapper";
 
 
 
@@ -15,8 +16,7 @@ export default function Navbar()
   const { checkAuth, isAuthenticated, user, loading } = useUserStore();
   
   const [openLogin, setOpenLogin] = useState(false);
-  
-  const loc = useLocation();
+  const [showProviderWrapper, setShowProviderWrapper] = useState(false);
 
   useEffect(() => {
     checkAuth();    
@@ -35,8 +35,9 @@ export default function Navbar()
   ) : (
     <Button onClick={() => setOpenLogin(true)} className="bg-green-200">Belépés</Button>
   )}
-  {!isAuthenticated && <Button variant={"secondary"}>Szolgáltatóknak</Button>}
+  {!isAuthenticated && <Button variant={"secondary"} onClick={() => setShowProviderWrapper(true)}>Szolgáltatóknak</Button>}
   <GuestLogin open={openLogin} onOpenChange={setOpenLogin} />
+  <ProviderLoginFormWrapper open={showProviderWrapper} onOpenChange={setShowProviderWrapper}/>
   <ModeToggle />
 </div>
   
