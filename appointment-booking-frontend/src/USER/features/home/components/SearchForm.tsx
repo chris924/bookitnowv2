@@ -1,9 +1,9 @@
 
 import { useEffect, useState } from "react"
-import BaseSearchForm from "../../../components/ui/own/base-search-form"
-import {  EmployeeSearchOptionsResponseDTO, EmployeeSearchPayload, getSearchEmployeeCritera} from "@/api/employee"
+import {  EmployeeSearchOptionsResponseDTO, EmployeeSearchPayload, getSearchEmployeeCritera} from "@/api/userSide/employee"
 import SpecialistGrid from "./SpecialistGrid"
 import { SpecialistDTO, CompanyDTO, PlaceDTO } from '@/lib/specialist-types';
+import BaseSearchForm from "@/components/ui/own/base-search-form";
 
 export default function SearchForm() {
 

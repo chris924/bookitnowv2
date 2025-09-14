@@ -1,4 +1,5 @@
-import EmployeeContent from "@/features/home/dedicated-employee/EmployeeContent";
+import EmployeeContent from "../features/employee/EmployeeContent";
+
 
 
 export default function DedicatedEmployeePage()

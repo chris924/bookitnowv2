@@ -26,7 +26,7 @@ import {
 
 import defaultAvatar from "@/assets/default.jpg"
 import { PopoverArrow } from "@radix-ui/react-popover"
-import { changeUserDetails, uploadUserAvatar, userDetailsChangeDTO } from "@/api/user"
+import { changeUserDetails, uploadUserAvatar, userDetailsChangeDTO } from "@/api/userSide/user"
 import { useMutation } from "@tanstack/react-query"
 import { showToast } from "@/components/ui/own/ShowToast"
 import { handleAPIError } from "@/lib/utils"

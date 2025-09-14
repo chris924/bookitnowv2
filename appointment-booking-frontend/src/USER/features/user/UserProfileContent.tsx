@@ -1,5 +1,4 @@
-import { getSpecificEmployeeContent } from "@/api/employee";
-import { getUserData } from "@/api/user";
+import { getUserData } from "@/api/userSide/user";
 import { UserDataResponseDTO } from "@/lib/profile-types";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";

@@ -1,5 +1,5 @@
 
-import { getMonthlyAppointments } from "@/api/appointments";
+import { getMonthlyAppointments } from "@/api/userSide/appointments";
 import { Button } from "@/components/ui/button";
 import {
   Table,

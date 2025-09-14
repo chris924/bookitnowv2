@@ -1,4 +1,4 @@
-import { getSpecificEmployeeContent } from "@/api/employee"
+import { getSpecificEmployeeContent } from "@/api/userSide/employee"
 import { useEffect, useState } from "react"
 import { useParams } from "react-router-dom";
 import { SpecialistPageDTO } from "@/lib/specialist-types";

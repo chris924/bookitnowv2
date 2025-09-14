@@ -1,5 +1,4 @@
-import HomeContent from "@/features/home/HomeContent";
-
+import HomeContent from "../features/home/HomeContent";
 
 
 export default function HomePage()

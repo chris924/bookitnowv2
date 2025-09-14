@@ -4,7 +4,7 @@ import { Button } from "../button";
 import { DialogHeader, DialogFooter } from "../dialog";
 import { Input } from "../input";
 import { useNavigate } from "react-router-dom";
-import { loginUser } from "@/api/user";
+import { loginUser } from "@/api/userSide/user";
 import { useUserStore } from "@/stores/AuthStore";
 import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";

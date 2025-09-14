@@ -1,5 +1,5 @@
 import { SpecialistDTO, CompanyDTO, PlaceDTO, SpecialistPageDTO, BaseItemInterface } from '@/lib/specialist-types';
-import api from './axios';
+import api from '../axios';
 
 
 export interface TopRatedEmp extends BaseItemInterface {

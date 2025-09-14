@@ -1,4 +1,5 @@
-import UserBookedAppointmentsForm from "@/features/user/UserBookedAppointmentsForm";
+import UserBookedAppointmentsForm from "../features/user/components/UserBookedAppointmentsForm";
+
 
 
 export default function UserBookedAppointmentsPage()

@@ -1,4 +1,4 @@
-import api from './axios';
+import api from '../axios';
 
 interface loginUserInterface
 {
@@ -28,6 +28,7 @@ export const loginUser = async ({ email, password }: loginUserInterface) => {
 
 export const registerUser = async ({name, username, email, password} : registerUserInterface) => {
   const {data} = await api.post('/auth/user/register', {name, username, email, password});
+  return data;
 }
 
 export const logoutUser = async() => {

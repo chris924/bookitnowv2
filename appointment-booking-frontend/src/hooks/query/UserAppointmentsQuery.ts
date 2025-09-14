@@ -1,4 +1,4 @@
-import { addUserToAppointment, cancelBookedAppointment, getUserBookedAppointments } from "@/api/appointments";
+import { addUserToAppointment, cancelBookedAppointment, getUserBookedAppointments } from "@/api/userSide/appointments";
 import { showToast } from "@/components/ui/own/ShowToast";
 import { AppointmentGetResponseDTO } from "@/lib/appointment-types";
 import { createSlug, handleAPIError } from "@/lib/utils";

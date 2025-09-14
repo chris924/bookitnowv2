@@ -4,7 +4,6 @@ import ProviderCompanyLoginForm from "./ProviderCompanyLoginForm";
 import ProviderEmployeeLoginForm from "./ProviderEmployeeLoginForm";
 import { Switch } from "@/components/ui/switch"
 import { Dialog, DialogContent } from "../dialog";
-import { boolean } from "zod";
 
 interface ProviderLoginFormWrapperProps {
     open: boolean;
@@ -25,17 +24,19 @@ export default function ProviderLoginFormWrapper({open, onOpenChange}: ProviderL
         <Switch
             checked={switchLoginForm}
             onCheckedChange={() => setSwitchLoginForm((prev) => !prev)}
-            className="flex items-center m-2"
-            title="dsdsds"
+            className="flex items-center m-3"
         />
         </div>
 
         {/* Conditional form */}
-        {switchLoginForm ? (
+        <div className="min-h-[400px]">
+         {switchLoginForm ? (
           <ProviderEmployeeLoginForm />
         ) : (
           <ProviderCompanyLoginForm />
         )}
+        </div>
+       
       </DialogContent>
     </Dialog>
   );

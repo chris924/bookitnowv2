@@ -1,4 +1,5 @@
-import api from './axios';
+import api from "../axios";
+
 
 
  export const getMonthlyAppointments = async (serviceId: number): Promise<any> =>
