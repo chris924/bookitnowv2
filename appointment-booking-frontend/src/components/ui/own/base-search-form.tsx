@@ -38,7 +38,6 @@ interface SearchFormPropInterface<T extends BaseItemInterface>
     selected?: T;
     onSelect: (selected: T | undefined)  => void;
     onChange: (input: string) => void;
-    isLoading: boolean;
 }
 
 
@@ -136,7 +135,7 @@ export default function BaseSearchForm<T extends BaseItemInterface>({ title, opt
                                   form.setValue("type", option.value);
                                   onSelect(option);
                                   console.log("ONSELECT: " , option);
-                                  onChange(option.value);
+                                  onChange(option.value); 
                                 }
                                 setOpen(false);
                               }}

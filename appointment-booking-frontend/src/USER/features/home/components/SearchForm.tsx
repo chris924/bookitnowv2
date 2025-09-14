@@ -1,129 +1,98 @@
-
-import { useEffect, useState } from "react"
-import {  EmployeeSearchOptionsResponseDTO, EmployeeSearchPayload, getSearchEmployeeCritera} from "@/api/userSide/employee"
-import SpecialistGrid from "./SpecialistGrid"
-import { SpecialistDTO, CompanyDTO, PlaceDTO } from '@/lib/specialist-types';
+import { useState, useEffect } from "react";
+import {
+  EmployeeSearchPayload
+} from "@/api/userSide/employee";
+import SpecialistGrid from "./SpecialistGrid";
+import { SpecialistDTO, CompanyDTO, PlaceDTO } from "@/lib/specialist-types";
 import BaseSearchForm from "@/components/ui/own/base-search-form";
+import { UserSearchResultsQuery } from "@/hooks/query/UserSearchResultsQuery";
+import Loader from "@/components/ui/own/Loader";
 
 export default function SearchForm() {
-
-   const [specialistName, setSpecialistName] = useState("");
+  const [specialistName, setSpecialistName] = useState("");
   const [specialistCompany, setSpecialistCompany] = useState("");
   const [specialistPlace, setSpecialistPlace] = useState("");
 
-  const [responseSpecialists, setResponseSpecialists] = useState<SpecialistDTO[]>([]);
-  const [responsePlaces, setResponsePlaces] = useState<PlaceDTO[]>([]);
-  const [responseCompanies, setResponseCompanies] = useState<CompanyDTO[]>([]);
+  const [debouncedCriteria, setDebouncedCriteria] = useState<EmployeeSearchPayload>({
+    name: "",
+    company: "",
+    place: "",
+  });
 
   const [selectedSpecialist, setSelectedSpecialist] = useState<SpecialistDTO | undefined>();
   const [selectedPlace, setSelectedPlace] = useState<PlaceDTO | undefined>();
   const [selectedCompany, setSelectedCompany] = useState<CompanyDTO | undefined>();
 
-  const [isLoading, setIsLoading] = useState(true);
-
-   const [gridResultSpecialists, setGridResultSpecialists] = useState<SpecialistDTO[]>([]);
-
+  // Debounce input criteria so we don’t fire on every keystroke
   useEffect(() => {
-  const handler = setTimeout(() => {
-    const fetchSearchResults = async () => {
-      setIsLoading(true);
+    const handler = setTimeout(() => {
+      setDebouncedCriteria({
+        name: specialistName,
+        company: specialistCompany,
+        place: specialistPlace,
+      });
+    }, 300);
 
-      const payload: EmployeeSearchPayload = {
-      name: specialistName,
-      company: specialistCompany,
-      place: specialistPlace,
-    };
-
-    console.log("PAYLOAD: ", payload)
-    try{
-    const response: EmployeeSearchOptionsResponseDTO  = await getSearchEmployeeCritera(payload);
-    console.log(response)
-    setResponseSpecialists(response.specialists);
-    setResponsePlaces(response.places);
-    setResponseCompanies(response.companies);
-
-      if(selectedSpecialist || selectedCompany || selectedPlace)
-        setGridResultSpecialists(response.specialists);
-      else
-        setGridResultSpecialists([]);
-
-    }
-    finally
-    {
-      setIsLoading(false);
-    }
-    
-    }
-
-    if(specialistCompany === "" && specialistName === "" && specialistPlace === "")
-    {
-      setResponseCompanies([]);
-      setResponsePlaces([]);
-      setResponseSpecialists([]);
-    }
-    
-   // if(specialistCompany !== "" || specialistName !== "" || specialistPlace !== "")
-      fetchSearchResults();
+    return () => clearTimeout(handler);
+  }, [specialistName, specialistCompany, specialistPlace]);
 
 
-    }, 300)
+  const searchCriteria: EmployeeSearchPayload = {
+    name: selectedSpecialist?.value ?? debouncedCriteria.name,
+    company: selectedCompany?.value ?? debouncedCriteria.company,
+    place: selectedPlace?.value ?? debouncedCriteria.place,
+  };
 
-    return () => {
-      clearTimeout(handler);
-    };
 
-  }, [specialistName, specialistCompany, specialistPlace])
+  const { data, isLoading, isFetching, error } = UserSearchResultsQuery(searchCriteria);
 
+  const specialists = data?.specialists ?? [];
+  const companies = data?.companies ?? [];
+  const places = data?.places ?? [];
+
+  const shouldShowGrid = selectedSpecialist || selectedCompany || selectedPlace;
 
   return (
-    <div className="w-full flex flex-col justify-center items-center"> 
-
+    <div className="w-full flex flex-col justify-center items-center">
       <div className="max-w-5xl">
         <section className="space-y-5">
-          <BaseSearchForm
+          <BaseSearchForm<SpecialistDTO>
             title="Szakember"
             type="specialist"
-            options={responseSpecialists}
+            options={specialists}
             onSelect={setSelectedSpecialist}
             onChange={setSpecialistName}
             selected={selectedSpecialist}
-            isLoading={isLoading}
-
           />
           <BaseSearchForm<CompanyDTO>
             title="Üzlet"
             type="company"
-            options={responseCompanies}
+            options={companies}
             onSelect={setSelectedCompany}
             onChange={setSpecialistCompany}
             selected={selectedCompany}
-            isLoading={isLoading}
           />
-          <BaseSearchForm
+          <BaseSearchForm<PlaceDTO>
             title="Hely"
             type="place"
-            options={responsePlaces}
+            options={places}
             onSelect={setSelectedPlace}
             onChange={setSpecialistPlace}
             selected={selectedPlace}
-            isLoading={isLoading}
           />
         </section>
       </div>
 
-      {/* Grid Container (full width, but content centered) */}
-      {(gridResultSpecialists) && (selectedCompany || selectedPlace || selectedSpecialist) && (
-
-          <div className="w-full mt-4 flex flex-grow justify-center">
-            <section className="p-5 rounded-lg">
-              {isLoading ? (
-              <div className="text-center text-gray-500">Keresés folyamatban...</div>
+      {shouldShowGrid && (
+        <div className="w-full mt-4 flex flex-grow justify-center">
+          <section className="p-5 rounded-lg">
+            {isFetching ? (
+              <Loader></Loader>
             ) : (
-              <SpecialistGrid specialists={gridResultSpecialists} />
+              <SpecialistGrid specialists={specialists} />
             )}
-            </section>
-          </div>
-        
+          </section>
+        </div>
       )}
     </div>
   );
