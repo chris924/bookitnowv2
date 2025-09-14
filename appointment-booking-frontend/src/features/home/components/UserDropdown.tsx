@@ -19,6 +19,7 @@ export default function DropdownUser({user}: {user: UserDataResponseDTO} )
     if(clickType == "exit")
     {
       await logout();
+      navigate("/");
     }
     if(clickType == "account")
     {

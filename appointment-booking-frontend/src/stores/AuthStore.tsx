@@ -4,6 +4,8 @@ import axios from "axios";
 import { UserDataResponseDTO } from "@/lib/profile-types";
 import { AppointmentGetResponseDTO } from "@/lib/appointment-types";
 import { getUserBookedAppointments } from "@/api/appointments";
+import { logoutUser } from "@/api/user";
+import { authInfo } from "@/api/auth-info";
 
 interface UserState {
   user: UserDataResponseDTO | null; // includes avatar, name, etc.
@@ -22,7 +24,7 @@ export const useUserStore = create<UserState>((set) => ({
 
   checkAuth: async () => {
     try {
-      const res = await api.get("/auth/auth-info");
+      const res = await authInfo();
       if (res.status === 200) {
         set({ user: res.data, isAuthenticated: true, loading: false });
       }
@@ -43,7 +45,7 @@ export const useUserStore = create<UserState>((set) => ({
 
   logout: async () => {
     try {
-      await axios.post("/auth/user/logout", {}, { withCredentials: true });
+      await logoutUser();
     } finally {
       set({ user: null, isAuthenticated: false, loading: false });
     }

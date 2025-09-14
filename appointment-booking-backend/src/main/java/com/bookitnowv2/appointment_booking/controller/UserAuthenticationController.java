@@ -1,5 +1,6 @@
 package com.bookitnowv2.appointment_booking.controller;
 
+import com.bookitnowv2.appointment_booking.configuration.SecurityUtils;
 import com.bookitnowv2.appointment_booking.entity.Company;
 import com.bookitnowv2.appointment_booking.entity.Employee;
 import com.bookitnowv2.appointment_booking.entity.User;
@@ -86,6 +87,8 @@ public class UserAuthenticationController {
     @Transactional //TODO: Add Redis blacklist JWT for more security?
     public ResponseEntity<?> logoutUser(Authentication authentication, HttpServletRequest request, HttpServletResponse response)
     {
+        User foundUser = SecurityUtils.getCurrentUser();
+
         if(authentication == null || !authentication.isAuthenticated())
             return ResponseEntity.notFound().build();
 

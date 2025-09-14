@@ -30,6 +30,10 @@ export const registerUser = async ({name, username, email, password} : registerU
   const {data} = await api.post('/auth/user/register', {name, username, email, password});
 }
 
+export const logoutUser = async() => {
+  return await api.post('/auth/user/logout');
+}
+
 export const getUserData = async(userSlug: String) => {
   const response = await api.get(`/user/${userSlug}`);
   return response.data;
