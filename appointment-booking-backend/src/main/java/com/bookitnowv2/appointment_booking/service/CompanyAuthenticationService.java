@@ -78,20 +78,10 @@ public class CompanyAuthenticationService {
 
     }
 
-    public CompanyLoginResponseDTO loginCompany(String email, String password)
+    public String loginCompany(String email, String password)
     {
-        try{
-
             Authentication auth = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(email, password));
-            String token = tokenService.generateJwt(auth, companyRepository.getCompanyByEmail(email).get().getId());
-
-            return new CompanyLoginResponseDTO(companyRepository.getCompanyByEmail(email).get().getEmail());
-
-        }catch (AuthenticationException e) {
-            return new CompanyLoginResponseDTO(null);
-        }
-
-
+            return tokenService.generateJwt(auth, companyRepository.getCompanyByEmail(email).get().getId());
     }
 
     public Integer getCompanyData(String jwt)
