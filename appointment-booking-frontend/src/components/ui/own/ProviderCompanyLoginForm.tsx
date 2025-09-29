@@ -3,12 +3,38 @@ import { Button } from "../button";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "../card";
 import { Input } from "../input";
 import { Label } from "../label";
+import { useState } from "react";
+import { useUserStore } from"@/stores/AuthStore";
+import { useMutation } from "@tanstack/react-query";
+import { showToast } from "./ShowToast";
+import { loginCompany } from "@/api/companySide/company";
 
 
 export default function ProviderCompanyLoginForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
+
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+    const {mutate, isPending, isError, error} = useMutation({
+
+    mutationFn: loginCompany,
+    onSuccess: async (data) => {
+      console.log('Logged in:', data);
+      showToast.success("Sikeres bejelentkezés!");
+      await useUserStore.getState().checkAuth();
+      
+    //  navigate("/");
+    }
+  })
+
+  const handleSubmit = (e: any) => {
+    e.preventDefault();
+    mutate({ email, password });
+  };
+
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card>
@@ -26,6 +52,7 @@ export default function ProviderCompanyLoginForm({
                   id="email"
                   type="email"
                   placeholder="m@example.com"
+                  onChange={(e) => setEmail(e.target.value)}
                   required
                 />
               </div>
@@ -39,10 +66,10 @@ export default function ProviderCompanyLoginForm({
                     Elfelejtett jelszó?
                   </a>
                 </div>
-                <Input id="password" type="password" required />
+                <Input id="password" type="password" onChange={(e) => setPassword(e.target.value)} required />
               </div>
               <div className="flex flex-col gap-3">
-                <Button type="submit" className="w-full">
+                <Button type="submit" className="w-full" onClick={(e) => handleSubmit(e)}>
                   Bejelentkezés
                 </Button>
               </div>

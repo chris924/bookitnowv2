@@ -2,6 +2,7 @@ package com.bookitnowv2.appointment_booking.controller;
 
 import com.bookitnowv2.appointment_booking.entity.dto.LoginDTO;
 import com.bookitnowv2.appointment_booking.entity.dto.company.CompanyLoginResponseDTO;
+import com.bookitnowv2.appointment_booking.service.CompanyAuthService;
 import com.bookitnowv2.appointment_booking.service.CompanyAuthenticationService;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
@@ -23,15 +24,17 @@ import java.time.Duration;
 public class CompanyAuthenticationController {
 
     private final CompanyAuthenticationService companyAuthenticationService;
-    public CompanyAuthenticationController(CompanyAuthenticationService companyAuthenticationService)
+    private final CompanyAuthService companyAuthService;
+    public CompanyAuthenticationController(CompanyAuthenticationService companyAuthenticationService, CompanyAuthService companyAuthService)
     {
         this.companyAuthenticationService = companyAuthenticationService;
+        this.companyAuthService = companyAuthService;
     }
 
     @PostMapping("/login")
-    public ResponseEntity<CompanyLoginResponseDTO> loginUser(@Valid @RequestBody LoginDTO body, @NotNull BindingResult bindingResult, HttpServletResponse servletResponse) {
+    public ResponseEntity<CompanyLoginResponseDTO> loginCompany(@Valid @RequestBody LoginDTO body, @NotNull BindingResult bindingResult, HttpServletResponse servletResponse) {
         if (bindingResult.hasErrors()) {
-            throw new BadCredentialsException("Invalid user login request body!");
+            throw new BadCredentialsException("Invalid company login request body!");
         }
         CompanyLoginResponseDTO response = new CompanyLoginResponseDTO(body.getEmail());
 

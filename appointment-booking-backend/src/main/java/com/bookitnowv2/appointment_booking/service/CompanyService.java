@@ -48,11 +48,10 @@ public class CompanyService {
 
     }
 
-    public CompanyGetResponseDTO getCompanyByEmail(String email)
+    public Company getCompanyByEmail(String email)
     {
-        Company foundCompany = companyRepository.getCompanyByEmail(email).orElseThrow(() -> new CompanyNotFoundException(email));
 
-        return companyMapper.toGetDTO(foundCompany);
+        return companyRepository.getCompanyByEmail(email).orElseThrow(() -> new CompanyNotFoundException(email));
 
     }
 

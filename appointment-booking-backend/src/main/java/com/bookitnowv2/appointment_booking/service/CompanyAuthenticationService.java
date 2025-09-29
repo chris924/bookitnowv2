@@ -7,6 +7,7 @@ import com.bookitnowv2.appointment_booking.entity.dto.company.CompanyLoginRespon
 import com.bookitnowv2.appointment_booking.entity.dto.company.CompanyRegistrationResponseDTO;
 import com.bookitnowv2.appointment_booking.repository.ICompanyRepository;
 import com.bookitnowv2.appointment_booking.repository.IRoleRepository;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -24,17 +25,17 @@ import java.util.Set;
 public class CompanyAuthenticationService {
 
     private final CompanyService companyService;
-    private final AuthenticationManager authenticationManager;
     private final TokenService tokenService;
     private final ICompanyRepository companyRepository;
     private final IRoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
-
-    public CompanyAuthenticationService(CompanyService companyService, AuthenticationManager authenticationManager,
+    private final AuthenticationManager companyAuthManager;
+    //TODO: Have only 1 Company authentication service class, not 2 separate!
+    public CompanyAuthenticationService(CompanyService companyService, @Qualifier("companyAuthManager") AuthenticationManager companyAuthManager,
                                         TokenService tokenService, ICompanyRepository companyRepository, IRoleRepository roleRepository, PasswordEncoder passwordEncoder)
     {
         this.companyService = companyService;
-        this.authenticationManager = authenticationManager;
+        this.companyAuthManager = companyAuthManager;
         this.tokenService = tokenService;
         this.companyRepository = companyRepository;
         this.roleRepository = roleRepository;
@@ -80,8 +81,10 @@ public class CompanyAuthenticationService {
 
     public String loginCompany(String email, String password)
     {
-            Authentication auth = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(email, password));
-            return tokenService.generateJwt(auth, companyRepository.getCompanyByEmail(email).get().getId());
+            Company company = companyService.getCompanyByEmail(email);
+
+            Authentication auth = companyAuthManager.authenticate(new UsernamePasswordAuthenticationToken(email, password));
+            return tokenService.generateJwt(auth, company.getId());
     }
 
     public Integer getCompanyData(String jwt)
