@@ -1,14 +1,14 @@
 import { create } from "zustand";
 import api from "@/api/axios";
 import axios from "axios";
-import { UserDataResponseDTO } from "@/lib/profile-types";
+import { CompanyDataResponseDTO, EmployeeDataResponseDTO, UserDataResponseDTO } from "@/lib/profile-types";
 import { AppointmentGetResponseDTO } from "@/lib/appointment-types";
 import { getUserBookedAppointments } from "@/api/userSide/appointments";
 import { logoutUser } from "@/api/userSide/user";
 import { authInfo } from "@/api/userSide/auth-info";
 
 interface UserState {
-  user: UserDataResponseDTO | null; // includes avatar, name, etc.
+  user: UserDataResponseDTO | CompanyDataResponseDTO | EmployeeDataResponseDTO | null; // includes avatar, name, etc.
   loading: boolean;
   isAuthenticated: boolean;
   checkAuth: () => Promise<void>;
