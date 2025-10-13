@@ -18,16 +18,13 @@ public class EmployeeService {
 
     private final IEmployeeRepository employeeRepository;
     private final ElasticEmployeeService elasticEmployeeService;
-    private final EmployeeMapper employeeMapper;
 
 
     @Autowired
-    EmployeeService( IEmployeeRepository employeeRepository,
-                    EmployeeMapper employeeMapper, ElasticEmployeeService elasticEmployeeService)
+    EmployeeService( IEmployeeRepository employeeRepository, ElasticEmployeeService elasticEmployeeService)
     {
 
         this.employeeRepository = employeeRepository;
-        this.employeeMapper = employeeMapper;
         this.elasticEmployeeService = elasticEmployeeService;
     }
 
@@ -53,7 +50,7 @@ public class EmployeeService {
     public List<EmployeeGetResponseDTO> getMostRatedEmployees()
     {
        return employeeRepository.findTopRatedEmployees(PageRequest.of(0, 20))
-               .stream().map(employeeMapper::toGetDTO).toList();
+               .stream().map(EmployeeMapper::toGetDTO).toList();
     }
 
     // For extracting the id from the incoming slugs(name-id)

@@ -20,7 +20,7 @@ export interface CompanyDataResponseDTO extends BaseProfileDTO {
     place: string;
     serviceName: string;
     serviceDescription: string;
-    employees: SpecialistDTO;
+    description: string;
     rating: number;
 }
 

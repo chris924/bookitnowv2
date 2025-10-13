@@ -5,6 +5,7 @@ import com.bookitnowv2.appointment_booking.entity.Company;
 import com.bookitnowv2.appointment_booking.entity.Employee;
 import com.bookitnowv2.appointment_booking.entity.User;
 import com.bookitnowv2.appointment_booking.entity.dto.AuthInfoResponseDTO;
+import com.bookitnowv2.appointment_booking.mapper.CompanyMapper;
 import com.bookitnowv2.appointment_booking.mapper.EmployeeMapper;
 import com.bookitnowv2.appointment_booking.mapper.UserMapper;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +20,8 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthInfoController {
 
     private UserMapper userMapper;
+    private CompanyMapper companyMapper;
+    private EmployeeMapper employeeMapper;
     private SecurityUtils securityUtils;
 
     @GetMapping("/auth-info")
@@ -30,9 +33,9 @@ public class AuthInfoController {
             case User userPrincipal ->
                     ResponseEntity.ok(UserMapper.toUserDataResponseDTO(userPrincipal));
             case Company companyPrincipal ->
-                    ResponseEntity.ok(new AuthInfoResponseDTO(companyPrincipal.getId(), companyPrincipal.getCompanyName(), companyPrincipal.getEmail(), "COMPANY", companyPrincipal.getAvatarUrl())); //TODO REFACTOR THIS ASWELL LATER
+                    ResponseEntity.ok(CompanyMapper.toGetDTO(companyPrincipal));
             case Employee employeePrincipal ->
-                    ResponseEntity.ok(new AuthInfoResponseDTO(employeePrincipal.getId(), employeePrincipal.getName(), employeePrincipal.getEmail(), "EMPLOYEE", employeePrincipal.getAvatarUrl())); //TODO REFACTOR THIS ASWELL LATER
+                    ResponseEntity.ok(EmployeeMapper.toGetDTO(employeePrincipal));
             case null, default -> ResponseEntity.notFound().build();
         };
 

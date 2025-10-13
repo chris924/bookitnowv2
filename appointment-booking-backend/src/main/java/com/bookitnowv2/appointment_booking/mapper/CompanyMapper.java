@@ -9,15 +9,18 @@ import org.springframework.stereotype.Component;
 public class CompanyMapper {
 
 
-    public CompanyGetResponseDTO toGetDTO(Company company)
+    public static CompanyGetResponseDTO toGetDTO(Company company)
     {
 
         return new CompanyGetResponseDTO(
+                "COMPANY",
                 company.getCompanyName(),
+                company.getPlace(),
                 company.getServiceName(),
                 company.getServiceDescription(),
                 company.getDescription(),
-                company.getEmail()
+                company.getEmail(),
+                company.getRating()
         );
     }
 

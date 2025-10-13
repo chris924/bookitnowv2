@@ -37,14 +37,13 @@ public class CompanyService {
 
     public List<CompanyGetResponseDTO> getCompanies()
     {
-        return companyRepository.findAll().stream().map(companyMapper::toGetDTO).toList();
+        return companyRepository.findAll().stream().map(CompanyMapper::toGetDTO).toList();
     }
 
     public CompanyGetResponseDTO getCompanyById(Integer id)
     {
         Company foundCompany = companyRepository.findById(id).orElseThrow(() -> new CompanyNotFoundException(id.toString()));
-
-        return companyMapper.toGetDTO(foundCompany);
+        return CompanyMapper.toGetDTO(foundCompany);
 
     }
 

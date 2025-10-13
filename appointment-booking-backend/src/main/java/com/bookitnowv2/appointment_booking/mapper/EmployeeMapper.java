@@ -24,10 +24,11 @@ public class EmployeeMapper {
         this.serviceMapper = serviceMapper;
     }
 
-    public EmployeeGetResponseDTO toGetDTO(Employee employee)
+    public static EmployeeGetResponseDTO toGetDTO(Employee employee)
     {
 
         return new EmployeeGetResponseDTO(
+                "EMPLOYEE",
                 employee.getId(),
                 employee.getName(),
                 employee.getName(),
@@ -43,6 +44,7 @@ public class EmployeeMapper {
     {
 
         return new EmployeeGetResponseDTO(
+                "EMPLOYEE",
                 employeeDoc.getId(),
                 employeeDoc.getName(),
                 employeeDoc.getName(),

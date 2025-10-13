@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class EmployeeGetResponseDTO {
 
+    public String type;
     public Integer id;
     public String label;
     public String value;

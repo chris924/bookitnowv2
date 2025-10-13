@@ -11,11 +11,14 @@ import lombok.Setter;
 @Setter
 public class CompanyGetResponseDTO {
 
+    public String type;
     public String companyName;
+    public String place;
     public String serviceName;
     public String serviceDescription;
     public String description;
     public String email;
+    public Double rating;
 
 
 }

@@ -10,6 +10,7 @@ import { DataTable } from "../components/dashboard/data-table"
 import { SectionCards } from "../components/dashboard/section-cards"
 export default function CompanyDashboard() {
   return (
+    <div>
     <SidebarProvider
       style={
         {
@@ -34,5 +35,6 @@ export default function CompanyDashboard() {
         </div>
       </SidebarInset>
     </SidebarProvider>
+    </div>
   )
 }
