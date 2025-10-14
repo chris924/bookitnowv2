@@ -30,6 +30,7 @@ import { NavDocuments } from "./nav-documents"
 import { NavMain } from "./nav-main"
 import { NavSecondary } from "./nav-secondary"
 import { NavUser } from "./nav-user"
+import { useUserStore } from "@/stores/AuthStore"
 
 const data = {
   user: {
@@ -149,6 +150,15 @@ const data = {
 }
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+
+const { user } = useUserStore();
+
+const dashboardUser = {
+  name: user?.email ?? "UNKNOWN",
+  email: user?.email ?? "UNKNOWN",
+  avatar: user?.avatarUrl ?? ""
+}
+
   return (
     <Sidebar collapsible="offcanvas" {...props}>
       <SidebarHeader>
@@ -172,7 +182,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <NavSecondary items={data.navSecondary} className="mt-auto" />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={data.user} />
+        <NavUser user={dashboardUser} />
       </SidebarFooter>
     </Sidebar>
   )
