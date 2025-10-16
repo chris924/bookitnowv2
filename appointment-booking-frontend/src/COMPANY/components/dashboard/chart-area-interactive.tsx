@@ -1,5 +1,3 @@
-"use client"
-
 import * as React from "react"
 import { Area, AreaChart, CartesianGrid, XAxis } from "recharts"
 
@@ -29,8 +27,11 @@ import {
   ToggleGroup,
   ToggleGroupItem,
 } from "@/components/ui/toggle-group"
+import { getTotalAppointmentsData } from "@/api/companySide/company"
 
 export const description = "An interactive area chart"
+
+
 
 const chartData = [
   { date: "2024-04-01", desktop: 222, mobile: 150 },
@@ -143,6 +144,8 @@ const chartConfig = {
 export function ChartAreaInteractive() {
   const isMobile = useIsMobile()
   const [timeRange, setTimeRange] = React.useState("90d")
+
+  
 
   React.useEffect(() => {
     if (isMobile) {

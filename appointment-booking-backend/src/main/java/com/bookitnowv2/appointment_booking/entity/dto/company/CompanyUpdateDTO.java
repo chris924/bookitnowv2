@@ -11,7 +11,7 @@ import org.jetbrains.annotations.NotNull;
 public class CompanyUpdateDTO {
 
     @NotNull
-    private Integer id;
+    private Long id;
 
     private String companyName;
     private String description;

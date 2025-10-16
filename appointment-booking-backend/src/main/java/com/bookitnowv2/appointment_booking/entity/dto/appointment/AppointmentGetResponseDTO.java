@@ -17,15 +17,15 @@ public class AppointmentGetResponseDTO {
     private SlotResponseDTO slotResponseDTO;
 
     @Nullable
-    private Integer userId;
+    private Long userId;
 
-    private Integer employeeId;
+    private Long employeeId;
 
     private String employeeName;
 
     private String employeeAvatarUrl;
 
-    private Integer companyId;
+    private Long companyId;
 
     private String companyName;
 

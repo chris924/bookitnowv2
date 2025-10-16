@@ -9,9 +9,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Data
 @AllArgsConstructor
@@ -23,7 +21,7 @@ public class Employee implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "employee_id")
-    private Integer id;
+    private Long id;
 
     private String name;
 
@@ -41,7 +39,7 @@ public class Employee implements UserDetails {
 
     @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
-    private List<ServiceEntity> services;
+    private List<ServiceEntity> services = new ArrayList<>();
 
    /* @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
@@ -49,8 +47,11 @@ public class Employee implements UserDetails {
 
     @Transient
     public List<Appointment> getAppointments() {
+        if (services == null) return List.of();
+
         return services.stream()
-                .flatMap(s -> s.getAppointments().stream())
+                .filter(Objects::nonNull)
+                .flatMap(s -> Optional.ofNullable(s.getAppointments()).orElse(List.of()).stream())
                 .toList();
     }
 

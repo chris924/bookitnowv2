@@ -6,7 +6,7 @@ import lombok.AllArgsConstructor;
 public class EmployeeGetResponseDTO {
 
     public String type;
-    public Integer id;
+    public Long id;
     public String label;
     public String value;
     public String image;

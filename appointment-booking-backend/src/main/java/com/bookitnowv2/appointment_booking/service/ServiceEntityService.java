@@ -14,7 +14,7 @@ public class ServiceEntityService {
         this.serviceEntityRepository = serviceEntityRepository;
     }
 
-    public ServiceEntity getServiceEntityById(Integer serviceId)
+    public ServiceEntity getServiceEntityById(Long serviceId)
     {
         return serviceEntityRepository.findById(serviceId).orElseThrow(() -> new RuntimeException("Service entity not found")); //TODO: REFACTOR EXCEPTION
     }

@@ -29,10 +29,12 @@ public class CompanyController {
         this.companyService = companyService;
     }
 
-    @GetMapping("/3-month-data")
-    public List<CompanyAppointmentsByDateResponseDTO> get3MonthAppointmentsData()
+    @GetMapping("/appointments-month-data")
+    public List<CompanyAppointmentsByDateResponseDTO> getMonthAppointmentsData()
     {
-        return companyService.getTotalAppointmentsByMonth(3);
+        List<CompanyAppointmentsByDateResponseDTO> test = companyService.getTotalAppointmentsByMonth(3);
+        System.out.println("TEST");
+        return test;
     }
 
 }

@@ -10,7 +10,7 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 import java.util.Optional;
 
-public interface IEmployeeRepository extends JpaRepository<Employee, Integer> {
+public interface IEmployeeRepository extends JpaRepository<Employee, Long> {
     Optional<Employee> getEmployeeByEmail(String email);
     @Query("SELECT e FROM Employee e ORDER BY e.rating DESC")
     List<Employee> findTopRatedEmployees(Pageable pageable);

@@ -8,7 +8,22 @@ import { AppSidebar } from "../components/dashboard/app-sidebar"
 import { ChartAreaInteractive } from "../components/dashboard/chart-area-interactive"
 import { DataTable } from "../components/dashboard/data-table"
 import { SectionCards } from "../components/dashboard/section-cards"
+import { useEffect } from "react"
+import { getTotalAppointmentsData } from "@/api/companySide/company"
 export default function CompanyDashboard() {
+
+  useEffect(() => {
+
+    async function test()
+    {
+      const testData = await getTotalAppointmentsData();
+      console.log(testData);
+    }
+
+test();
+
+  }, [])
+
   return (
     <div>
     <SidebarProvider

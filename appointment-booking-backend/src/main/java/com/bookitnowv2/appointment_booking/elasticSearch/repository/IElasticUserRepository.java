@@ -9,5 +9,5 @@ import java.util.Optional;
 
 public interface IElasticUserRepository extends ElasticsearchRepository<UserDocument, String> {
     List<UserDocument> findByName(String name);
-    Optional<UserDocument> findById(Integer id);
+    Optional<UserDocument> findById(Long id);
 }

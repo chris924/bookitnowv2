@@ -12,7 +12,7 @@ import java.sql.Timestamp;
 public class UserDataResponseDTO {
 
     private String type;
-    private Integer id;
+    private Long id;
     private String name;
     private String username;
     private String email;

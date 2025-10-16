@@ -6,6 +6,7 @@ import com.bookitnowv2.appointment_booking.exception.CompanyNotFoundException;
 import com.bookitnowv2.appointment_booking.exception.UserNotFoundException;
 import com.bookitnowv2.appointment_booking.repository.ICompanyRepository;
 import com.bookitnowv2.appointment_booking.repository.IUserRepository;
+import com.bookitnowv2.appointment_booking.service.CompanyAuthService;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -16,11 +17,13 @@ public class SecurityUtils {
 
     private static IUserRepository userRepository;
     private static ICompanyRepository companyRepository;
+    private static CompanyAuthService companyAuthService;
 
-    public SecurityUtils(IUserRepository userRepository)
+    public SecurityUtils(IUserRepository userRepository, CompanyAuthService companyAuthService)
     {
         SecurityUtils.userRepository = userRepository;
         SecurityUtils.companyRepository = companyRepository;
+        SecurityUtils.companyAuthService = companyAuthService;
     }
 
     public static User getCurrentUser()
@@ -33,12 +36,10 @@ public class SecurityUtils {
         throw new UserNotFoundException("");
     }
 
-    public static Company getCurrentCompany()
-    {
+    public static Company getCurrentCompany() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        if(auth != null && auth.getPrincipal() instanceof UserDetails userDetails)
-        {
-            return companyRepository.getCompanyByCompanyName(userDetails.getUsername()).orElseThrow(() -> new UserNotFoundException(""));
+        if (auth != null && auth.getPrincipal() instanceof Company company) {
+            return company;
         }
         throw new CompanyNotFoundException("A cég nem található!");
     }

@@ -11,8 +11,8 @@ import java.time.LocalTime;
 import java.util.List;
 
 @Repository
-public interface IAppointmentRepository extends JpaRepository<Appointment, Integer> {
-    List<Appointment> findByUserId(Integer userId);
+public interface IAppointmentRepository extends JpaRepository<Appointment, Long> {
+    List<Appointment> findByUserId(Long userId);
 
     @Query("""
     SELECT a FROM Appointment a
@@ -20,7 +20,7 @@ public interface IAppointmentRepository extends JpaRepository<Appointment, Integ
       AND (a.date > :today OR (a.date = :today AND a.startTime >= :now))
 """)
     List<Appointment> findUpcomingAppointments(
-            @Param("serviceId") Integer serviceId,
+            @Param("serviceId") Long serviceId,
             @Param("today") LocalDate today,
             @Param("now") LocalTime now
     );

@@ -17,7 +17,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Service
@@ -52,7 +54,7 @@ public class CompanyAuthenticationService {
             Role companyRole = roleRepository.findByAuthority("COMPANY").get();
 
             Set<Role> authorities = new HashSet<>();
-            Set<Employee> employees = new HashSet<>();
+            List<Employee> employees = new ArrayList<>();
 
             authorities.add(companyRole);
 

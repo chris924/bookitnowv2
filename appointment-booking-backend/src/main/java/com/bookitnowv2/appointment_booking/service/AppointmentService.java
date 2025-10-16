@@ -36,7 +36,7 @@ public class AppointmentService {
         this.appointmentMapper = appointmentMapper;
     }
 
-    public Appointment createAppointment(Integer serviceId, Timestamp timestamp) {
+    public Appointment createAppointment(Long serviceId, Timestamp timestamp) {
         ServiceEntity foundService = serviceRepository.findById(serviceId)
                 .orElseThrow(() -> new RuntimeException("Error: Service not found by Id!"));
 
@@ -50,7 +50,7 @@ public class AppointmentService {
         return appointmentRepository.findAll().stream().map((AppointmentMapper::toGetDTO)).toList();
     }
 
-    public void deleteAppointmentById(Integer id)
+    public void deleteAppointmentById(Long id)
     {
         Appointment foundAppointment = appointmentRepository.findById(id).orElseThrow(() -> new RuntimeException("Error: Appointment not found by Id!"));
 
@@ -58,7 +58,7 @@ public class AppointmentService {
         appointmentRepository.deleteById(id);
     }
 
-    public Appointment getAppointmentById(Integer appointmentId)
+    public Appointment getAppointmentById(Long appointmentId)
     {
         return appointmentRepository.findById(appointmentId).orElseThrow(() -> new RuntimeException("Error: Appointment not found by id."));
     }
@@ -87,7 +87,7 @@ public class AppointmentService {
         userRepository.save(user);
     }
 
-    public void deleteUserFromAppointment(Integer id)
+    public void deleteUserFromAppointment(Long id)
     {
         Appointment foundAppointment = appointmentRepository.findById(id).orElseThrow(() -> new RuntimeException("Error: Appointment not found by Id!"));
 

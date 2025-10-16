@@ -13,7 +13,7 @@ import org.springframework.data.elasticsearch.annotations.Document;
 public class UserDocument {
 
     @Id
-    private Integer id;
+    private Long id;
     private String name;
     private String avatarUrl;
 }

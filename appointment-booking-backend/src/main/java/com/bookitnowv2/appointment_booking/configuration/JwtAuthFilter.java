@@ -71,10 +71,10 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
                     // Pick correct userDetails source based on role
                     if (roles.contains("USER")) {
-                        User foundUser = userService.getUserById(Integer.parseInt(id));
+                        User foundUser = userService.getUserById(Long.parseLong(id));
                         userDetails = userAuthService.loadUserByUsername(foundUser.getEmail());
                     } else if (roles.contains("COMPANY")) {
-                        CompanyGetResponseDTO foundCompany = companyService.getCompanyById(Integer.parseInt(id));
+                        CompanyGetResponseDTO foundCompany = companyService.getCompanyById(Long.parseLong(id));
                         userDetails = companyAuthService.loadUserByUsername(foundCompany.email);
                     }
 

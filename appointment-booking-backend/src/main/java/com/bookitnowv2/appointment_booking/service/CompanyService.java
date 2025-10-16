@@ -10,15 +10,16 @@ import com.bookitnowv2.appointment_booking.entity.dto.company.CompanyUpdateDTO;
 import com.bookitnowv2.appointment_booking.exception.CompanyNotFoundException;
 import com.bookitnowv2.appointment_booking.mapper.CompanyMapper;
 import com.bookitnowv2.appointment_booking.repository.*;
+import com.bookitnowv2.appointment_booking.utils.AppointmentStatus;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
 import com.bookitnowv2.appointment_booking.configuration.SecurityUtils;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -49,11 +50,16 @@ public class CompanyService {
         return companyRepository.findAll().stream().map(CompanyMapper::toGetDTO).toList();
     }
 
-    public CompanyGetResponseDTO getCompanyById(Integer id)
+    public CompanyGetResponseDTO getCompanyById(Long id)
     {
         Company foundCompany = companyRepository.findById(id).orElseThrow(() -> new CompanyNotFoundException(id.toString()));
         return CompanyMapper.toGetDTO(foundCompany);
 
+    }
+
+    public Company getCompanyByIdTemp(Long id)
+    {
+        return companyRepository.findById(id).orElseThrow(() -> new CompanyNotFoundException(""));
     }
 
     public Company getCompanyByEmail(String email)
@@ -63,7 +69,7 @@ public class CompanyService {
 
     }
 
-    public void deleteCompanyById(Integer id)
+    public void deleteCompanyById(Long id)
     {
         Company foundCompany = companyRepository.findById(id).orElseThrow(() -> new CompanyNotFoundException(id.toString()));
 
@@ -84,24 +90,43 @@ public class CompanyService {
         return CompanyMapper.toGetDTO(foundCompany);
     }
 
+
+
+    @Transactional
     public List<CompanyAppointmentsByDateResponseDTO> getTotalAppointmentsByMonth(Integer monthCount)
     {
-       Company currentCompany = SecurityUtils.getCurrentCompany();
 
-       Set<Employee> employees = currentCompany.getEmployees();
+
+        Company authCompany = SecurityUtils.getCurrentCompany();
+        Company currentCompany = this.getCompanyByIdTemp(authCompany.getId());
 
         LocalDate currentDate = LocalDate.now();
 
         LocalDate startDate = currentDate.minusMonths(monthCount);
 
-       List<Appointment> appointments = employees.stream().flatMap(employee -> employee.getAppointments().stream().filter((appointment -> appointment.getDate().isAfter(startDate)))).toList();
+
+        List<CompanyAppointmentsByDateResponseDTO> result = companyRepository.countTotalAppointmentsByDate(currentCompany.getId(), startDate, AppointmentStatus.BOOKED);
+
+       return result;
+       /*List<Employee> employees = currentCompany.getEmployees();
+
+
+        List<Appointment> appointments = employees.stream()
+                .filter(Objects::nonNull)
+                .flatMap(employee ->
+                        Optional.ofNullable(employee.getAppointments())
+                                .orElse(List.of())
+                                .stream()
+                                .filter(a -> a != null && a.getDate() != null && a.getDate().isAfter(startDate))
+                )
+                .toList();
 
        Map<LocalDate, Long> countByDate = appointments.stream().collect(Collectors.groupingBy(Appointment::getDate, Collectors.counting()));
 
         return countByDate.entrySet().stream()
                 .map(entry -> CompanyMapper.toAppointmentsByDateResponseDTO(entry.getKey(), entry.getValue()))
                 .sorted(Comparator.comparing(CompanyAppointmentsByDateResponseDTO::getDate))
-                .toList();
+                .toList();*/
     }
 
 }

@@ -17,7 +17,7 @@ import org.springframework.data.elasticsearch.annotations.Document;
 public class EmployeeDocument {
 
     @Id
-    private Integer id;
+    private Long id;
 
     private String name;
     private String company;

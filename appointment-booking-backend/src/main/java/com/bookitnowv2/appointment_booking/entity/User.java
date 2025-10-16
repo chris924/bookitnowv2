@@ -24,7 +24,7 @@ public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id")
-    private Integer id;
+    private Long id;
 
     private String name;
 
@@ -59,11 +59,11 @@ public class User implements UserDetails {
     private Set<Role> authorities;
 
 
-    public Integer getUserId() {
+    public Long getUserId() {
         return this.id;
     }
 
-    public void setUserId(Integer id) {
+    public void setUserId(Long id) {
         this.id = id;
     }
 

@@ -7,7 +7,7 @@ import java.time.Duration;
 @AllArgsConstructor
 public class ServiceGetResponseDTO {
 
-    public Integer id;
+    public Long id;
     public String name;
     public String description;
     public Integer price;

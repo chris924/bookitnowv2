@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @EqualsAndHashCode
 public class SpecialistDTO {
-    public Integer id;
+    public Long id;
     public String label;
     public String value;
     public String image;

@@ -23,7 +23,7 @@ public class Company implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "company_id")
-    private Integer id;
+    private Long id;
 
     private String companyName;
 
@@ -49,7 +49,7 @@ public class Company implements UserDetails {
 
     @OneToMany(mappedBy = "company", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
-    private Set<Employee> employees;
+    private List<Employee> employees;
 
 
     @ManyToMany(fetch = FetchType.EAGER)
@@ -103,4 +103,5 @@ public class Company implements UserDetails {
        return employees.stream().flatMap(employee -> employee.getServices().stream())
                .collect(Collectors.toSet());
    }
+   
 }

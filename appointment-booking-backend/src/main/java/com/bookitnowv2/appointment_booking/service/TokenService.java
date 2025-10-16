@@ -23,7 +23,7 @@ public class TokenService {
         this.jwtDecoder = jwtDecoder;
     }
 
-    public String generateJwt(Authentication auth, Integer id)
+    public String generateJwt(Authentication auth, Long id)
     {
         Instant now = Instant.now();
         Duration validityDuration = Duration.ofMinutes(30);

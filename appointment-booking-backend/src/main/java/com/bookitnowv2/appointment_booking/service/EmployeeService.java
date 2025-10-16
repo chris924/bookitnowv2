@@ -39,7 +39,7 @@ public class EmployeeService {
         return employeeRepository.getEmployeeByEmail(email).orElseThrow(()-> new EmployeeNotFoundException(email));
     }
 
-    public Employee getEmployeeById(Integer id) {
+    public Employee getEmployeeById(Long id) {
         System.out.println("Searching for ID: " + id); // Debug log
         boolean exists = employeeRepository.existsById(id);
         System.out.println("Exists in DB: " + exists); // Debug log
@@ -54,11 +54,11 @@ public class EmployeeService {
     }
 
     // For extracting the id from the incoming slugs(name-id)
-    public Integer getEmployeeIdFromSlug(String slug) {
+    public Long getEmployeeIdFromSlug(String slug) {
         try {
             String[] parts = slug.split("-");
             String idPart = parts[parts.length - 1];
-            return Integer.parseInt(idPart);
+            return Long.parseLong(idPart);
         } catch (Exception e) {
             throw new IllegalArgumentException("Invalid slug format: " + slug);
         }

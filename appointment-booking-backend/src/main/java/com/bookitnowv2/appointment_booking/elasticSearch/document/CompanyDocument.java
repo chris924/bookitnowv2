@@ -10,6 +10,6 @@ import org.springframework.data.elasticsearch.annotations.Document;
 @Setter
 @Document(indexName = "companies")
 public class CompanyDocument{
-    private Integer id;
+    private Long id;
     private String name;
 }

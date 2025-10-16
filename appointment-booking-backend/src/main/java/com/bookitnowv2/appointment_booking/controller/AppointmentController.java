@@ -39,7 +39,7 @@ public class AppointmentController {
     }
 
     @GetMapping("/employee/{serviceId}")
-    public ResponseEntity<AppointmentSlotResponseDTO> getMonthlyAppointments(@PathVariable Integer serviceId) {
+    public ResponseEntity<AppointmentSlotResponseDTO> getMonthlyAppointments(@PathVariable Long serviceId) {
         ServiceEntity service = serviceEntityService.getServiceEntityById(serviceId);
 
         AppointmentSlotResponseDTO appointmentSlots = appointmentService.getAppointmentSlotsFromService(service);
@@ -49,7 +49,7 @@ public class AppointmentController {
     }
 
     @GetMapping("/employee/book-event/{appointmentId}")
-    public ResponseEntity<?> bookAppointment(@AuthenticationPrincipal UserDetails userDetails, @PathVariable Integer appointmentId)
+    public ResponseEntity<?> bookAppointment(@AuthenticationPrincipal UserDetails userDetails, @PathVariable Long appointmentId)
     {
         String foundUsername = userDetails.getUsername();
 
@@ -74,7 +74,7 @@ public class AppointmentController {
     }
 
     @PostMapping("/user/{userSlug}/cancel-appointment/{appointmentId}")
-    public ResponseEntity<String> cancelUserAppointment(@PathVariable Integer appointmentId) {
+    public ResponseEntity<String> cancelUserAppointment(@PathVariable Long appointmentId) {
         User foundUser = SecurityUtils.getCurrentUser();
 
         Appointment foundAppointment = appointmentService.getAppointmentById(appointmentId);
