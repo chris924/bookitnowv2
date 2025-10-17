@@ -12,7 +12,7 @@ import lombok.Setter;
 public class CompanyGetResponseDTO {
 
     public String type;
-    public String companyName;
+    public String name;
     public String place;
     public String serviceName;
     public String serviceDescription;

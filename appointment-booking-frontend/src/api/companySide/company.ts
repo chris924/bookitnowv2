@@ -1,5 +1,5 @@
 import api from "../axios";
-import {CompanyAppointmentsByDateResponseDTO } from '@/lib/company-types';
+import { CompanyPastAppointsmentsResponseDTO } from '@/lib/company-types';
 
 interface loginCompanyInterface
 {
@@ -12,7 +12,7 @@ export const loginCompany = async ({ email, password }: loginCompanyInterface) =
   return data;
 };
 
-export const getTotalAppointmentsData = async (): Promise<CompanyAppointmentsByDateResponseDTO> => {
+export const getTotalAppointmentsData = async (): Promise<CompanyPastAppointsmentsResponseDTO[]> => {
   const {data } = await api.get('company/appointments-month-data');
   console.log(data);
   return data;

@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Getter
 public class CompanyRegistrationResponseDTO {
 
-    private String companyName;
+    private String name;
 
     private String email;
 

@@ -1,9 +1,7 @@
 package com.bookitnowv2.appointment_booking.service;
 
 import com.bookitnowv2.appointment_booking.elasticSearch.service.ElasticCompanyService;
-import com.bookitnowv2.appointment_booking.entity.Appointment;
 import com.bookitnowv2.appointment_booking.entity.Company;
-import com.bookitnowv2.appointment_booking.entity.Employee;
 import com.bookitnowv2.appointment_booking.entity.dto.company.CompanyAppointmentsByDateResponseDTO;
 import com.bookitnowv2.appointment_booking.entity.dto.company.CompanyGetResponseDTO;
 import com.bookitnowv2.appointment_booking.entity.dto.company.CompanyUpdateDTO;
@@ -11,16 +9,12 @@ import com.bookitnowv2.appointment_booking.exception.CompanyNotFoundException;
 import com.bookitnowv2.appointment_booking.mapper.CompanyMapper;
 import com.bookitnowv2.appointment_booking.repository.*;
 import com.bookitnowv2.appointment_booking.utils.AppointmentStatus;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
 import com.bookitnowv2.appointment_booking.configuration.SecurityUtils;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 public class CompanyService {
@@ -80,7 +74,7 @@ public class CompanyService {
     {
         Company foundCompany = companyRepository.findById(updateDTO.getId()).orElseThrow(() -> new CompanyNotFoundException(updateDTO.getId().toString()));
 
-        if(updateDTO.getCompanyName() != null) foundCompany.setCompanyName(updateDTO.getCompanyName());
+        if(updateDTO.getName() != null) foundCompany.setName(updateDTO.getName());
         if(updateDTO.getServiceName() != null) foundCompany.setServiceName(updateDTO.getServiceName());
         if(updateDTO.getServiceDescription() != null) foundCompany.setServiceDescription(updateDTO.getServiceDescription());
         if(updateDTO.getDescription() != null) foundCompany.setDescription(updateDTO.getDescription());
@@ -104,29 +98,7 @@ public class CompanyService {
 
         LocalDate startDate = currentDate.minusMonths(monthCount);
 
-
-        List<CompanyAppointmentsByDateResponseDTO> result = companyRepository.countTotalAppointmentsByDate(currentCompany.getId(), startDate, AppointmentStatus.BOOKED);
-
-       return result;
-       /*List<Employee> employees = currentCompany.getEmployees();
-
-
-        List<Appointment> appointments = employees.stream()
-                .filter(Objects::nonNull)
-                .flatMap(employee ->
-                        Optional.ofNullable(employee.getAppointments())
-                                .orElse(List.of())
-                                .stream()
-                                .filter(a -> a != null && a.getDate() != null && a.getDate().isAfter(startDate))
-                )
-                .toList();
-
-       Map<LocalDate, Long> countByDate = appointments.stream().collect(Collectors.groupingBy(Appointment::getDate, Collectors.counting()));
-
-        return countByDate.entrySet().stream()
-                .map(entry -> CompanyMapper.toAppointmentsByDateResponseDTO(entry.getKey(), entry.getValue()))
-                .sorted(Comparator.comparing(CompanyAppointmentsByDateResponseDTO::getDate))
-                .toList();*/
+        return companyRepository.countTotalAppointmentsByDate(currentCompany.getId(), startDate, AppointmentStatus.BOOKED);
     }
 
 }

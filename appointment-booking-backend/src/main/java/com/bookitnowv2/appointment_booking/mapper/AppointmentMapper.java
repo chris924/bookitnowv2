@@ -3,8 +3,6 @@ package com.bookitnowv2.appointment_booking.mapper;
 import com.bookitnowv2.appointment_booking.entity.*;
 import com.bookitnowv2.appointment_booking.entity.dto.appointment.AppointmentGetResponseDTO;
 import com.bookitnowv2.appointment_booking.entity.dto.appointment.SlotResponseDTO;
-import com.bookitnowv2.appointment_booking.entity.dto.company.CompanyAppointmentsByDateResponseDTO;
-import com.bookitnowv2.appointment_booking.utils.AppointmentStatus;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -24,7 +22,7 @@ public class AppointmentMapper {
                 employee.getName(),
                 employee.getAvatarUrl(),
                 company.getId(),
-                company.getCompanyName(),
+                company.getName(),
                 serviceEntity.getName(),
                 serviceEntity.getPrice()
         );

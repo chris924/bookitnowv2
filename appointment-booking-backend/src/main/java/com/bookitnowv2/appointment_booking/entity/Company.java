@@ -25,7 +25,7 @@ public class Company implements UserDetails {
     @Column(name = "company_id")
     private Long id;
 
-    private String companyName;
+    private String name;
 
     @JsonIgnore
     private String password;
@@ -62,7 +62,7 @@ public class Company implements UserDetails {
 
     @Override
     public String getUsername() {
-        return this.companyName;
+        return this.name;
     }
 
     @Override
@@ -90,7 +90,7 @@ public class Company implements UserDetails {
     public String toString() {
         return "Company{" +
                 "id=" + id +
-                ", companyName='" + companyName + '\'' +
+                ", name='" + name + '\'' +
                 ", email='" + email + '\'' +
                 ", description='" + description + '\'' +
                 ", createdAt=" + createdAt +

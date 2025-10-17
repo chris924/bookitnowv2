@@ -3,7 +3,6 @@ package com.bookitnowv2.appointment_booking.service;
 import com.bookitnowv2.appointment_booking.entity.Company;
 import com.bookitnowv2.appointment_booking.entity.Employee;
 import com.bookitnowv2.appointment_booking.entity.Role;
-import com.bookitnowv2.appointment_booking.entity.dto.company.CompanyLoginResponseDTO;
 import com.bookitnowv2.appointment_booking.entity.dto.company.CompanyRegistrationResponseDTO;
 import com.bookitnowv2.appointment_booking.repository.ICompanyRepository;
 import com.bookitnowv2.appointment_booking.repository.IRoleRepository;
@@ -11,7 +10,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -45,7 +43,7 @@ public class CompanyAuthenticationService {
     }
 
 
-    public CompanyRegistrationResponseDTO registerCompany(String companyName, String password, String email, String appServiceName, String appServiceDescription, String description)
+    public CompanyRegistrationResponseDTO registerCompany(String name, String password, String email, String appServiceName, String appServiceDescription, String description)
     {
         try{
 
@@ -59,7 +57,7 @@ public class CompanyAuthenticationService {
             authorities.add(companyRole);
 
             Company newCompany = new Company();
-            newCompany.setCompanyName(companyName);
+            newCompany.setName(name);
             newCompany.setPassword(encodedPassword);
             newCompany.setDescription(description);
             newCompany.setEmail(email);
@@ -71,7 +69,7 @@ public class CompanyAuthenticationService {
 
            Company savedCompany = companyService.saveCompany(newCompany);
 
-           return new CompanyRegistrationResponseDTO(savedCompany.getCompanyName(), savedCompany.getEmail());
+           return new CompanyRegistrationResponseDTO(savedCompany.getName(), savedCompany.getEmail());
 
         }catch (Exception e)
         {

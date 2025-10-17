@@ -1,5 +1,5 @@
 import { useParams } from "react-router-dom";
-import { useCancelAppointment, UserAppointmentsQuery } from "@/hooks/query/UserAppointmentsQuery";
+import { useCancelAppointment, UserAppointmentsQuery } from "@/USER/hooks/query/UserAppointmentsQuery";
 import { showToast } from "@/components/ui/own/ShowToast";
 import {
   Card,

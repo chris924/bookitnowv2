@@ -3,6 +3,7 @@ import { SpecialistDTO } from "./specialist-types";
 
 export interface BaseProfileDTO  {
     id: number;
+    name: string;
     email: string;
     avatarUrl: string;
     createdAt: string;
@@ -10,13 +11,11 @@ export interface BaseProfileDTO  {
 
 export interface UserDataResponseDTO extends BaseProfileDTO {
     type: "USER";
-    name: string;
     username: string;
 }
 
 export interface CompanyDataResponseDTO extends BaseProfileDTO {
     type: "COMPANY";
-    companyName: string;
     place: string;
     serviceName: string;
     serviceDescription: string;
@@ -26,7 +25,6 @@ export interface CompanyDataResponseDTO extends BaseProfileDTO {
 
 export interface EmployeeDataResponseDTO extends BaseProfileDTO {
     type: "EMPLOYEE";
-    name: string;
     username: string;
     rating: number;
 }

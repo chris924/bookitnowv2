@@ -163,9 +163,16 @@ public class DatabaseSeeder implements CommandLineRunner {
         employee2.setServices(serviceList);
         employee3.setServices(serviceList);
 
+        LocalDate now = LocalDate.now();
+        LocalDate yesterday = now.minusDays(1);
 
         Appointment appointment1 = createAppointment( service1, LocalDate.now(), user1, LocalTime.of(9, 25), LocalTime.of(11, 10), AppointmentStatus.BOOKED);
+        Appointment appointment2 = createAppointment( service1, yesterday, user1, LocalTime.of(9, 25), LocalTime.of(11, 10), AppointmentStatus.BOOKED);
+        Appointment appointment3 = createAppointment( service1, yesterday, user1, LocalTime.of(13, 25), LocalTime.of(14, 10), AppointmentStatus.BOOKED);
+
         appointmentList.add(appointment1);
+        appointmentList.add(appointment2);
+        appointmentList.add(appointment3);
         service1.setAppointments(appointmentList);
 
         appointmentService.createFreeAppointmentSlotsFromService(service1);
@@ -228,10 +235,10 @@ public class DatabaseSeeder implements CommandLineRunner {
     }
 
 
-    private Company createCompany(String companyName, String email, String password, String description, String serviceName, String serviceDescription, Set<Role> roles, String place) {
+    private Company createCompany(String name, String email, String password, String description, String serviceName, String serviceDescription, Set<Role> roles, String place) {
 
         Company company = new Company();
-        company.setCompanyName(companyName);
+        company.setName(name);
         company.setEmail(email);
         company.setPassword(passwordEncoder.encode(password));
         company.setAuthorities(roles);

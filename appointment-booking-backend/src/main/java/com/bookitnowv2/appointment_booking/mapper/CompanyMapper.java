@@ -17,7 +17,7 @@ public class CompanyMapper {
 
         return new CompanyGetResponseDTO(
                 "COMPANY",
-                company.getCompanyName(),
+                company.getName(),
                 company.getPlace(),
                 company.getServiceName(),
                 company.getServiceDescription(),
@@ -31,7 +31,7 @@ public class CompanyMapper {
     {
         return new CompanyDocument(
                 company.getId(),
-                company.getCompanyName());
+                company.getName());
     }
 
     public static CompanyAppointmentsByDateResponseDTO toAppointmentsByDateResponseDTO(LocalDate date, Long count)

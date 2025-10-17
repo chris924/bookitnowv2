@@ -27,7 +27,7 @@ public class AppointmentGetResponseDTO {
 
     private Long companyId;
 
-    private String companyName;
+    private String name;
 
     private String serviceName;
 

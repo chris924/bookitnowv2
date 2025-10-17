@@ -10,7 +10,7 @@ import { AppointmentSlotResponseDTO, SlotResponseDTO } from '@/lib/appointment-t
 import GuestLogin from '@/components/ui/own/GuestLogin';
 import { EventImpl } from '@fullcalendar/core/internal';
 import ApproveDialogForm from '@/components/ui/own/ApproveDialogForm';
-import { useBookAppointment } from '@/hooks/query/UserAppointmentsQuery';
+import { useBookAppointment } from '@/USER/hooks/query/UserAppointmentsQuery';
 
 type EmployeeBookingTableProps = {
   appointmentSlots?: AppointmentSlotResponseDTO;

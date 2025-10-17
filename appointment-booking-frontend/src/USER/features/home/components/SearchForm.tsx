@@ -5,7 +5,7 @@ import {
 import SpecialistGrid from "./SpecialistGrid";
 import { SpecialistDTO, CompanyDTO, PlaceDTO } from "@/lib/specialist-types";
 import BaseSearchForm from "@/components/ui/own/base-search-form";
-import { UserSearchResultsQuery } from "@/hooks/query/UserSearchResultsQuery";
+import { UserSearchResultsQuery } from "@/USER/hooks/query/UserSearchResultsQuery";
 import Loader from "@/components/ui/own/Loader";
 
 export default function SearchForm() {

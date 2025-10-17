@@ -13,7 +13,7 @@ public class CompanyUpdateDTO {
     @NotNull
     private Long id;
 
-    private String companyName;
+    private String name;
     private String description;
     private String serviceName;
     private String serviceDescription;

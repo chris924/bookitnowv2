@@ -5,13 +5,11 @@ import com.bookitnowv2.appointment_booking.entity.Employee;
 import com.bookitnowv2.appointment_booking.entity.ServiceEntity;
 import com.bookitnowv2.appointment_booking.entity.dto.employee.EmployeeGetResponseDTO;
 import com.bookitnowv2.appointment_booking.entity.dto.employee.EmployeePageResponseDTO;
-import com.bookitnowv2.appointment_booking.entity.dto.employee.EmployeeSearchOptionsResponseDTO;
 import com.bookitnowv2.appointment_booking.entity.dto.employee.SearchOptionDetails.CompanyDTO;
 import com.bookitnowv2.appointment_booking.entity.dto.employee.SearchOptionDetails.PlaceDTO;
 import com.bookitnowv2.appointment_booking.entity.dto.employee.SearchOptionDetails.SpecialistDTO;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Component
@@ -33,7 +31,7 @@ public class EmployeeMapper {
                 employee.getName(),
                 employee.getName(),
                 employee.getAvatarUrl(),
-                employee.getCompany().getCompanyName(),
+                employee.getCompany().getName(),
                 employee.getCompany().getPlace(),
                 employee.getAbout(),
                 employee.getRating()
@@ -78,7 +76,7 @@ public class EmployeeMapper {
     public EmployeeDocument toDocument(Employee employee) {
        return new EmployeeDocument(employee.getId(),
                employee.getName(),
-               employee.getCompany().getCompanyName(),
+               employee.getCompany().getName(),
                employee.getCompany().getAvatarUrl(),
                employee.getCompany().getRating(),
                employee.getCompany().getPlace(),

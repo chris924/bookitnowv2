@@ -15,7 +15,7 @@ import java.util.Optional;
 @Repository
 public interface ICompanyRepository extends JpaRepository<Company, Long> {
     Optional<Company> getCompanyByEmail(String email);
-    Optional<Company> getCompanyByCompanyName(String companyName);
+    Optional<Company> getCompanyByName(String name);
 
     @Query("""
     SELECT new com.bookitnowv2.appointment_booking.entity.dto.company.CompanyAppointmentsByDateResponseDTO(a.date, COUNT(DISTINCT a.id))

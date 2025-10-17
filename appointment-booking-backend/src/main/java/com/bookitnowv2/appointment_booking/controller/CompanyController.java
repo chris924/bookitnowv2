@@ -32,9 +32,7 @@ public class CompanyController {
     @GetMapping("/appointments-month-data")
     public List<CompanyAppointmentsByDateResponseDTO> getMonthAppointmentsData()
     {
-        List<CompanyAppointmentsByDateResponseDTO> test = companyService.getTotalAppointmentsByMonth(3);
-        System.out.println("TEST");
-        return test;
+        return companyService.getTotalAppointmentsByMonth(3);
     }
 
 }
