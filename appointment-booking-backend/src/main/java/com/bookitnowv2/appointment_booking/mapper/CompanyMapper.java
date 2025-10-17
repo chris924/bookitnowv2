@@ -34,8 +34,8 @@ public class CompanyMapper {
                 company.getName());
     }
 
-    public static CompanyAppointmentsByDateResponseDTO toAppointmentsByDateResponseDTO(LocalDate date, Long count)
+    public static CompanyAppointmentsByDateResponseDTO toAppointmentsByDateResponseDTO(LocalDate date, Long count, Long income)
     {
-        return new CompanyAppointmentsByDateResponseDTO(date, count);
+        return new CompanyAppointmentsByDateResponseDTO(date, count, income);
     }
 }

@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from "react"
-import { Area, AreaChart, CartesianGrid, XAxis } from "recharts"
+import { Area, AreaChart, CartesianGrid, XAxis, YAxis } from "recharts"
 
 import { useIsMobile } from "@/hooks/use-mobile"
 import {
@@ -38,6 +38,10 @@ export const description = "An interactive area chart"
 const chartConfig = {
   count: {
     label: "Foglalás",
+    color: "var(--primary)",
+  },
+  income: {
+    label: "Bevétel",
     color: "var(--primary)",
   }
 } satisfies ChartConfig
@@ -162,6 +166,10 @@ export function ChartAreaInteractive() {
                 })
               }}
             />
+            
+           <YAxis yAxisId="left" stroke="var(--chart-count)" tick={{ fill: 'var(--chart-count)' }} tickLine={{ stroke: 'var(--chart-count)' }}  />
+            <YAxis yAxisId="right" orientation="right" stroke="var(--chart-income)" tick={{ fill: 'var(--chart-income)' }} tickLine={{ stroke: 'var(--chart-income)' }} />
+            
             <ChartTooltip
               cursor={false}
               content={
@@ -177,19 +185,26 @@ export function ChartAreaInteractive() {
               }
             />
             <Area
+            yAxisId="left"
               dataKey="count"
-              type="natural"
+              type="monotone"
               fill="url(#fillMobile)"
-              stroke="var(--color-mobile)"
-              stackId="a"
+              stroke="var(--chart-count)"
+              strokeWidth={2}
+              dot={true}
+              name="Foglalások"
             />
-            {/*<Area // TODO: Another datakey, maybe cancelled?
-              dataKey="desktop"
-              type="natural"
+
+            <Area
+            yAxisId="right"
+              dataKey="income"
+              type="monotone"
               fill="url(#fillDesktop)"
-              stroke="var(--color-desktop)"
-              stackId="a"
-            />*/}
+              stroke="var(--chart-income)"
+              strokeWidth={2}
+              dot={true}
+              name="Bevétel"
+            />
           </AreaChart>
         </ChartContainer>
       </CardContent>

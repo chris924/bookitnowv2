@@ -36,6 +36,8 @@
   --sidebar-accent-foreground: oklch(0.205 0 0);
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
+  --chart-count: hsl(220, 85%, 60%);
+  --chart-income: hsl(140, 70%, 45%);
 }
 
 .dark {
