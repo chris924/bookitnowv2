@@ -16,7 +16,7 @@ export function SectionCards() {
 
   const {data, isLoading} = CompanyTotalRevenue();
 
-  if(isLoading) return <Loader/>
+  if(isLoading || !data) return <Loader/>
 
   return (
     <div className="*:data-[slot=card]:from-primary/5 *:data-[slot=card]:to-card dark:*:data-[slot=card]:bg-card grid grid-cols-1 gap-4 px-4 *:data-[slot=card]:bg-gradient-to-t *:data-[slot=card]:shadow-xs lg:px-6 @xl/main:grid-cols-2 @5xl/main:grid-cols-4">
@@ -24,7 +24,7 @@ export function SectionCards() {
         <CardHeader>
           <CardDescription>Összes bevétel</CardDescription>
           <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
-            {data} Forint
+            {data.totalRevenue !== undefined ? data.totalRevenue.toString() : "—"} Forint
           </CardTitle>
           <CardAction>
             <Badge variant="outline">
@@ -44,9 +44,9 @@ export function SectionCards() {
       </Card>
       <Card className="@container/card">
         <CardHeader>
-          <CardDescription>New Customers</CardDescription>
+          <CardDescription>Új ügyfelek a hónapban</CardDescription>
           <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
-            1,234
+           {data.monthlyNewCustomers !== undefined ? data.monthlyNewCustomers.toString() : "-"}
           </CardTitle>
           <CardAction>
             <Badge variant="outline">
@@ -66,9 +66,9 @@ export function SectionCards() {
       </Card>
       <Card className="@container/card">
         <CardHeader>
-          <CardDescription>Active Accounts</CardDescription>
+          <CardDescription>Összes aktív foglalás</CardDescription>
           <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
-            45,678
+           {data.totalActiveAppointments !== undefined ? data.totalActiveAppointments.toString() : "-"}
           </CardTitle>
           <CardAction>
             <Badge variant="outline">
@@ -86,9 +86,9 @@ export function SectionCards() {
       </Card>
       <Card className="@container/card">
         <CardHeader>
-          <CardDescription>Growth Rate</CardDescription>
+          <CardDescription>Legjobbra értékelt munkatárs</CardDescription>
           <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
-            4.5%
+            {data.bestRatedEmployee !== undefined ? data.bestRatedEmployee : "-"}
           </CardTitle>
           <CardAction>
             <Badge variant="outline">
@@ -97,12 +97,7 @@ export function SectionCards() {
             </Badge>
           </CardAction>
         </CardHeader>
-        <CardFooter className="flex-col items-start gap-1.5 text-sm">
-          <div className="line-clamp-1 flex gap-2 font-medium">
-            Steady performance increase <IconTrendingUp className="size-4" />
-          </div>
-          <div className="text-muted-foreground">Meets growth projections</div>
-        </CardFooter>
+       
       </Card>
     </div>
   )

@@ -1,5 +1,5 @@
-import { getCompanyTotalRevenue, getTotalAppointmentsData } from "@/api/companySide/company";
-import {CompanyPastAppointsmentsResponseDTO } from "@/lib/company-types";
+import { getCompanySectionCardStatistics, getTotalAppointmentsData } from "@/api/companySide/company";
+import {CompanyPastAppointsmentsResponseDTO, CompanySectionCardsResponseDTO } from "@/lib/company-types";
 import { useQuery } from "@tanstack/react-query";
 
 
@@ -19,10 +19,10 @@ export function CompanyPastAppointmentsQuery()
 
 export function CompanyTotalRevenue()
 {
-    return useQuery<number>({
-        queryKey: ["totalRevenue"],
+    return useQuery<CompanySectionCardsResponseDTO>({
+        queryKey: ["sectionCardStatistics"],
         queryFn: async () => {
-            const data = await getCompanyTotalRevenue();
+            const data = await getCompanySectionCardStatistics();
             return data;
         },
         staleTime: 1000 * 60

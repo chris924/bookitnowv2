@@ -4,16 +4,20 @@ import com.bookitnowv2.appointment_booking.elasticSearch.service.ElasticCompanyS
 import com.bookitnowv2.appointment_booking.entity.Company;
 import com.bookitnowv2.appointment_booking.entity.dto.company.CompanyAppointmentsByDateResponseDTO;
 import com.bookitnowv2.appointment_booking.entity.dto.company.CompanyGetResponseDTO;
+import com.bookitnowv2.appointment_booking.entity.dto.company.CompanySectionCardsResponseDTO;
 import com.bookitnowv2.appointment_booking.entity.dto.company.CompanyUpdateDTO;
 import com.bookitnowv2.appointment_booking.exception.CompanyNotFoundException;
 import com.bookitnowv2.appointment_booking.mapper.CompanyMapper;
 import com.bookitnowv2.appointment_booking.repository.*;
 import com.bookitnowv2.appointment_booking.utils.AppointmentStatus;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import com.bookitnowv2.appointment_booking.configuration.SecurityUtils;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.time.Month;
 import java.util.*;
 
 @Service
@@ -102,12 +106,30 @@ public class CompanyService {
     }
 
     @Transactional
-    public Long getCompanyTotalRevenue()
+    public CompanySectionCardsResponseDTO getCompanySectionCardsData()
     {
         Company authCompany = SecurityUtils.getCurrentCompany();
         Company currentCompany = this.getCompanyByIdTemp(authCompany.getId());
+        LocalDate firstDayOfMonth = LocalDate.now().withDayOfMonth(1);
 
-        return companyRepository.getCompanyTotalRevenue(currentCompany.getId(), AppointmentStatus.BOOKED);
+        Long totalRevenue = Optional.ofNullable(
+                companyRepository.getCompanyTotalRevenue(currentCompany.getId(), AppointmentStatus.BOOKED)
+        ).orElse(0L);
+
+        Long totalActiveAppointments = Optional.ofNullable(
+                companyRepository.getCompanyTotalActiveAppointments(currentCompany.getId(), AppointmentStatus.BOOKED)
+        ).orElse(0L);
+
+        Long newCustomers = Optional.ofNullable(
+                companyRepository.getCompanyMonthlyNewCustomers(currentCompany.getId(), AppointmentStatus.BOOKED, firstDayOfMonth)
+        ).orElse(0L);
+        String bestEmployee = companyRepository
+                .getCompanyBestRatedEmployeeName(currentCompany.getId(), PageRequest.of(0, 1))
+                .stream()
+                .findFirst()
+                .orElse("—");
+
+        return new CompanySectionCardsResponseDTO(totalRevenue, totalActiveAppointments, bestEmployee, newCustomers);
     }
 
 }

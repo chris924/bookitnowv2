@@ -1,5 +1,5 @@
 import api from "../axios";
-import { CompanyPastAppointsmentsResponseDTO } from '@/lib/company-types';
+import { CompanyPastAppointsmentsResponseDTO, CompanySectionCardsResponseDTO } from '@/lib/company-types';
 
 interface loginCompanyInterface
 {
@@ -18,8 +18,7 @@ export const getTotalAppointmentsData = async (): Promise<CompanyPastAppointsmen
   return data;
 }
 
-export const getCompanyTotalRevenue = async () => {
-  const {data} = await api.get('company/total-revenue');
-  console.log("TOTAL REVENUE:", data)
+export const getCompanySectionCardStatistics = async (): Promise<CompanySectionCardsResponseDTO> => {
+  const {data} = await api.get('company/section-cards-statistics');
   return data;
 }

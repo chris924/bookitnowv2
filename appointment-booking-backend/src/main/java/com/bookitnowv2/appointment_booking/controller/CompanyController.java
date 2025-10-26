@@ -2,6 +2,7 @@ package com.bookitnowv2.appointment_booking.controller;
 
 import com.bookitnowv2.appointment_booking.entity.dto.LoginDTO;
 import com.bookitnowv2.appointment_booking.entity.dto.company.CompanyAppointmentsByDateResponseDTO;
+import com.bookitnowv2.appointment_booking.entity.dto.company.CompanySectionCardsResponseDTO;
 import com.bookitnowv2.appointment_booking.entity.dto.user.UserLoginResponseDTO;
 import com.bookitnowv2.appointment_booking.service.CompanyAuthenticationService;
 import com.bookitnowv2.appointment_booking.service.CompanyService;
@@ -35,10 +36,10 @@ public class CompanyController {
         return companyService.getTotalAppointmentsByMonth(3);
     }
 
-    @GetMapping("/total-revenue")
-    public Long getCompanyTotalRevenue()
+    @GetMapping("/section-cards-statistics")
+    public CompanySectionCardsResponseDTO getCompanyTotalRevenue()
     {
-        return companyService.getCompanyTotalRevenue();
+        return companyService.getCompanySectionCardsData();
     }
 
 }

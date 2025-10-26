@@ -3,12 +3,14 @@ package com.bookitnowv2.appointment_booking.repository;
 import com.bookitnowv2.appointment_booking.entity.Company;
 import com.bookitnowv2.appointment_booking.entity.dto.company.CompanyAppointmentsByDateResponseDTO;
 import com.bookitnowv2.appointment_booking.utils.AppointmentStatus;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -42,5 +44,38 @@ public interface ICompanyRepository extends JpaRepository<Company, Long> {
             @Param("companyId") Long companyId,
             @Param("status") AppointmentStatus status
     );
+
+
+    @Query("""
+    SELECT COUNT(a)
+    FROM Appointment a
+    WHERE a.service.company.id = :companyId
+      AND a.appointmentStatus = :status
+""")
+    Long getCompanyTotalActiveAppointments(
+            @Param("companyId") Long companyId,
+            @Param("status") AppointmentStatus status
+    );
+
+
+    @Query("""
+    SELECT e.name
+    FROM Employee e
+    WHERE e.company.id = :companyId
+    ORDER BY e.rating DESC
+""")
+    List<String> getCompanyBestRatedEmployeeName(@Param("companyId") Long companyId, Pageable pageable);
+
+
+
+
+    @Query("""
+    SELECT COUNT(a)
+    FROM Appointment a
+    WHERE a.service.company.id = :companyId
+      AND a.appointmentStatus = :status
+      AND a.user.firstBookingDate >= :startMonthDate
+""")
+    Long getCompanyMonthlyNewCustomers(@Param("companyId") Long companyId, @Param("status") AppointmentStatus status, @Param("startMonthDate") LocalDate startMonthDate);
 
 }

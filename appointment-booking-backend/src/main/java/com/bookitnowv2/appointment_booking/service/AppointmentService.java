@@ -83,6 +83,14 @@ public class AppointmentService {
         appointment.setUser(user);
         appointment.setAppointmentStatus(AppointmentStatus.BOOKED);
         user.getAppointments().add(appointment);
+
+        LocalDate userFirstBookingDate = user.getFirstBookingDate();
+        if(userFirstBookingDate == null)
+        {
+            user.setFirstBookingDate(appointment.getDate());
+        }
+
+
         appointmentRepository.save(appointment);
         userRepository.save(user);
     }
@@ -113,6 +121,8 @@ public class AppointmentService {
 
     public void cancelBookedAppointment(Appointment appointment)
     {
+        User appointmentUser = appointment.getUser();
+
         if(appointment.getAppointmentStatus() == AppointmentStatus.BOOKED)
         {
             appointment.setAppointmentStatus(AppointmentStatus.CANCELLED);
@@ -121,6 +131,12 @@ public class AppointmentService {
         {
             throw new AppointmentNotBookedException(appointment.getDate().toString());
         }
+
+        if(appointmentUser.getFirstBookingDate() == appointment.getDate())
+        {
+            appointmentUser.setFirstBookingDate(null);
+        }
+        userRepository.save(appointmentUser);
         appointmentRepository.save(appointment);
     }
 

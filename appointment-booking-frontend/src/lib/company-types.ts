@@ -5,3 +5,11 @@ export interface CompanyPastAppointsmentsResponseDTO {
     count: Number;
     income: Number;
 }
+
+export interface CompanySectionCardsResponseDTO
+{
+    totalRevenue: Number;
+    totalActiveAppointments: Number;
+    bestRatedEmployee: String;
+    monthlyNewCustomers: Number;
+}
