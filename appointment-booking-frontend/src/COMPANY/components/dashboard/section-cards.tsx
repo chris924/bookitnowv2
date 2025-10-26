@@ -9,15 +9,22 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
+import { CompanyTotalRevenue } from "@/COMPANY/hooks/query/CompanyDashboardQuerys";
+import Loader from "@/components/ui/own/Loader";
 
 export function SectionCards() {
+
+  const {data, isLoading} = CompanyTotalRevenue();
+
+  if(isLoading) return <Loader/>
+
   return (
     <div className="*:data-[slot=card]:from-primary/5 *:data-[slot=card]:to-card dark:*:data-[slot=card]:bg-card grid grid-cols-1 gap-4 px-4 *:data-[slot=card]:bg-gradient-to-t *:data-[slot=card]:shadow-xs lg:px-6 @xl/main:grid-cols-2 @5xl/main:grid-cols-4">
       <Card className="@container/card">
         <CardHeader>
-          <CardDescription>Total Revenue</CardDescription>
+          <CardDescription>Összes bevétel</CardDescription>
           <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
-            $1,250.00
+            {data} Forint
           </CardTitle>
           <CardAction>
             <Badge variant="outline">

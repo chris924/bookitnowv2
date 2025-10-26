@@ -16,4 +16,10 @@ export const getTotalAppointmentsData = async (): Promise<CompanyPastAppointsmen
   const {data } = await api.get('company/appointments-month-data');
   console.log(data);
   return data;
-} 
+}
+
+export const getCompanyTotalRevenue = async () => {
+  const {data} = await api.get('company/total-revenue');
+  console.log("TOTAL REVENUE:", data)
+  return data;
+}

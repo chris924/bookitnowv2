@@ -35,4 +35,10 @@ public class CompanyController {
         return companyService.getTotalAppointmentsByMonth(3);
     }
 
+    @GetMapping("/total-revenue")
+    public Long getCompanyTotalRevenue()
+    {
+        return companyService.getCompanyTotalRevenue();
+    }
+
 }

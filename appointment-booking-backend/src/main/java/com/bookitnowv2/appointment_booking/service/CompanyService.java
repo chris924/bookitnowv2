@@ -101,4 +101,13 @@ public class CompanyService {
         return companyRepository.countTotalAppointmentsByDate(currentCompany.getId(), startDate, AppointmentStatus.BOOKED);
     }
 
+    @Transactional
+    public Long getCompanyTotalRevenue()
+    {
+        Company authCompany = SecurityUtils.getCurrentCompany();
+        Company currentCompany = this.getCompanyByIdTemp(authCompany.getId());
+
+        return companyRepository.getCompanyTotalRevenue(currentCompany.getId(), AppointmentStatus.BOOKED);
+    }
+
 }

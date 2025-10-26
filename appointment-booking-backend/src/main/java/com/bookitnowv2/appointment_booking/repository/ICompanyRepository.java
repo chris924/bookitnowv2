@@ -30,4 +30,17 @@ public interface ICompanyRepository extends JpaRepository<Company, Long> {
             @Param("startDate") LocalDate startDate,
             @Param("appointmentStatus") AppointmentStatus appointmentStatus
             );
+
+
+    @Query("""
+    SELECT SUM(a.service.price)
+    FROM Appointment a
+    WHERE a.service.company.id = :companyId
+      AND a.appointmentStatus = :status
+""")
+    Long getCompanyTotalRevenue(
+            @Param("companyId") Long companyId,
+            @Param("status") AppointmentStatus status
+    );
+
 }

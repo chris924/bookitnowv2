@@ -1,4 +1,4 @@
-import { getTotalAppointmentsData } from "@/api/companySide/company";
+import { getCompanyTotalRevenue, getTotalAppointmentsData } from "@/api/companySide/company";
 import {CompanyPastAppointsmentsResponseDTO } from "@/lib/company-types";
 import { useQuery } from "@tanstack/react-query";
 
@@ -15,4 +15,16 @@ export function CompanyPastAppointmentsQuery()
         },
         staleTime: 1000 * 60
     });
+}
+
+export function CompanyTotalRevenue()
+{
+    return useQuery<number>({
+        queryKey: ["totalRevenue"],
+        queryFn: async () => {
+            const data = await getCompanyTotalRevenue();
+            return data;
+        },
+        staleTime: 1000 * 60
+    })
 }
