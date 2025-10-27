@@ -42,4 +42,6 @@ public class CompanyController {
         return companyService.getCompanySectionCardsData();
     }
 
+
+
 }

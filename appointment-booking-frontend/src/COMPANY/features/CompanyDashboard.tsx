@@ -2,27 +2,19 @@ import {
   SidebarInset,
   SidebarProvider,
 } from "@/components/ui/sidebar"
-import data from "../components/dashboard/data.json"
 import { SiteHeader } from "../components/dashboard/site-header"
 import { AppSidebar } from "../components/dashboard/app-sidebar"
 import { ChartAreaInteractive } from "../components/dashboard/chart-area-interactive"
 import { DataTable } from "../components/dashboard/data-table"
 import { SectionCards } from "../components/dashboard/section-cards"
-import { useEffect } from "react"
-import { getTotalAppointmentsData } from "@/api/companySide/company"
+import { EmployeeTable } from "../hooks/query/CompanyDashboardQuerys"
+import Loader from "@/components/ui/own/Loader"
 export default function CompanyDashboard() {
 
-  useEffect(() => {
+  const {data, isLoading} = EmployeeTable();
+  
+    if(isLoading || !data) return <Loader/>
 
-    async function test()
-    {
-      const testData = await getTotalAppointmentsData();
-      console.log(testData);
-    }
-
-test();
-
-  }, [])
 
   return (
     <div>

@@ -1,7 +1,10 @@
 package com.bookitnowv2.appointment_booking.service;
 
+import com.bookitnowv2.appointment_booking.configuration.SecurityUtils;
 import com.bookitnowv2.appointment_booking.elasticSearch.service.ElasticEmployeeService;
+import com.bookitnowv2.appointment_booking.entity.Company;
 import com.bookitnowv2.appointment_booking.entity.Employee;
+import com.bookitnowv2.appointment_booking.entity.dto.employee.EmployeeDataTableResponseDTO;
 import com.bookitnowv2.appointment_booking.entity.dto.employee.EmployeeGetResponseDTO;
 import com.bookitnowv2.appointment_booking.exception.EmployeeNotFoundException;
 import com.bookitnowv2.appointment_booking.mapper.EmployeeMapper;
@@ -10,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -62,6 +66,16 @@ public class EmployeeService {
         } catch (Exception e) {
             throw new IllegalArgumentException("Invalid slug format: " + slug);
         }
+    }
+
+    public List<EmployeeDataTableResponseDTO> getCompanyEmployeeTable()
+    {
+        List<EmployeeDataTableResponseDTO> employeeTable = new ArrayList<>();
+
+        Company authCompany = SecurityUtils.getCurrentCompany();
+        List<Employee> employees = employeeRepository.findByCompanyId(authCompany.getId());
+
+        return employeeRepository.findByCompanyId(authCompany.getId()).stream().map(EmployeeMapper::toDataTableResponseDTO).toList();
     }
 
 

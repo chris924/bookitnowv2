@@ -45,3 +45,12 @@ export interface searchResultPropInterface
 {
   specialists: SpecialistDTO[]
 }
+
+export interface EmployeeDataTableResponseDTO {
+  id: number;
+  name: string;
+  experience: string;
+  status: string;
+  bookedAppointments: number;
+  rating: number;
+}

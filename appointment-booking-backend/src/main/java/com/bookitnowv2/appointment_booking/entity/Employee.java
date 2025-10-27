@@ -1,5 +1,7 @@
 package com.bookitnowv2.appointment_booking.entity;
 
+import com.bookitnowv2.appointment_booking.utils.EmployeeExperience;
+import com.bookitnowv2.appointment_booking.utils.EmployeeStatus;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
@@ -34,6 +36,10 @@ public class Employee implements UserDetails {
     private String about;
 
     private Double rating;
+
+    private EmployeeStatus status;
+
+    private EmployeeExperience experience;
 
     private Timestamp createdAt;
 

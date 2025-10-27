@@ -4,16 +4,14 @@ package com.bookitnowv2.appointment_booking.controller;
 import com.bookitnowv2.appointment_booking.elasticSearch.service.ElasticEmployeeService;
 import com.bookitnowv2.appointment_booking.entity.Employee;
 import com.bookitnowv2.appointment_booking.entity.ServiceEntity;
-import com.bookitnowv2.appointment_booking.entity.dto.employee.EmployeeGetResponseDTO;
-import com.bookitnowv2.appointment_booking.entity.dto.employee.EmployeePageResponseDTO;
-import com.bookitnowv2.appointment_booking.entity.dto.employee.EmployeeSearchOptionsResponseDTO;
-import com.bookitnowv2.appointment_booking.entity.dto.employee.EmployeeSearchRequestDTO;
+import com.bookitnowv2.appointment_booking.entity.dto.employee.*;
 import com.bookitnowv2.appointment_booking.mapper.EmployeeMapper;
 import com.bookitnowv2.appointment_booking.service.EmployeeService;
 import com.bookitnowv2.appointment_booking.service.ServiceEntityService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
@@ -66,6 +64,14 @@ public class EmployeeController {
         }
 
         return ResponseEntity.ok(employeeResult);
+    }
+
+    @GetMapping("/employee-table")
+    @PreAuthorize("hasRole('COMPANY')")
+    public ResponseEntity<List<EmployeeDataTableResponseDTO>> getEmployeeTable()
+    {
+        List<EmployeeDataTableResponseDTO> employeeTableData = employeeService.getCompanyEmployeeTable();
+        return ResponseEntity.ok(employeeTableData);
     }
 
 

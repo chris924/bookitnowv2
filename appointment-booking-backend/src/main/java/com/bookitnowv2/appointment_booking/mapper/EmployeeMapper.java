@@ -3,11 +3,13 @@ package com.bookitnowv2.appointment_booking.mapper;
 import com.bookitnowv2.appointment_booking.elasticSearch.document.EmployeeDocument;
 import com.bookitnowv2.appointment_booking.entity.Employee;
 import com.bookitnowv2.appointment_booking.entity.ServiceEntity;
+import com.bookitnowv2.appointment_booking.entity.dto.employee.EmployeeDataTableResponseDTO;
 import com.bookitnowv2.appointment_booking.entity.dto.employee.EmployeeGetResponseDTO;
 import com.bookitnowv2.appointment_booking.entity.dto.employee.EmployeePageResponseDTO;
 import com.bookitnowv2.appointment_booking.entity.dto.employee.SearchOptionDetails.CompanyDTO;
 import com.bookitnowv2.appointment_booking.entity.dto.employee.SearchOptionDetails.PlaceDTO;
 import com.bookitnowv2.appointment_booking.entity.dto.employee.SearchOptionDetails.SpecialistDTO;
+import com.bookitnowv2.appointment_booking.utils.AppointmentStatus;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -90,6 +92,13 @@ public class EmployeeMapper {
     {
         List<ServiceEntity> services = employee.getServices();
         return new EmployeePageResponseDTO(toGetDTO(employee), services.stream().map(serviceMapper::toGetDTO).toList());
+    }
+
+    public static EmployeeDataTableResponseDTO toDataTableResponseDTO(Employee employee)
+    {
+        Long bookedAppointmentsCount = employee.getAppointments().stream().filter((app) -> app.getAppointmentStatus() == AppointmentStatus.BOOKED).count();
+
+        return new EmployeeDataTableResponseDTO(employee.getId(), employee.getName(), employee.getExperience(), employee.getStatus(), bookedAppointmentsCount, employee.getRating());
     }
 
 }

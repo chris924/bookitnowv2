@@ -1,3 +1,4 @@
+import { EmployeeDataTableResponseDTO } from "@/lib/specialist-types";
 import api from "../axios";
 import { CompanyPastAppointsmentsResponseDTO, CompanySectionCardsResponseDTO } from '@/lib/company-types';
 
@@ -20,5 +21,10 @@ export const getTotalAppointmentsData = async (): Promise<CompanyPastAppointsmen
 
 export const getCompanySectionCardStatistics = async (): Promise<CompanySectionCardsResponseDTO> => {
   const {data} = await api.get('company/section-cards-statistics');
+  return data;
+}
+
+export const getCompanyEmployeeDataTable = async (): Promise<EmployeeDataTableResponseDTO[]> => {
+  const {data} = await api.get('employees/employee-table')
   return data;
 }

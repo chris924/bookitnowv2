@@ -17,6 +17,8 @@ import com.bookitnowv2.appointment_booking.entity.*;
 import com.bookitnowv2.appointment_booking.repository.*;
 import com.bookitnowv2.appointment_booking.service.AppointmentService;
 import com.bookitnowv2.appointment_booking.utils.AppointmentStatus;
+import com.bookitnowv2.appointment_booking.utils.EmployeeExperience;
+import com.bookitnowv2.appointment_booking.utils.EmployeeStatus;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
@@ -139,9 +141,9 @@ public class DatabaseSeeder implements CommandLineRunner {
         employeeRoles.add(roleRepository.findByAuthority("EMPLOYEE").orElseThrow(() -> new RuntimeException("EMPLOYEE role not found")));
 
 
-        Employee employee1 = createEmployee("John David", "jdavid", "jdavid@gmail.com", "jdavidpass", new Timestamp(System.currentTimeMillis()), employeeRoles, company1, 4.5, serverAddress + "/avatar/employee/default-avatar.jpg", "This is the about section. This is the about section. This is the about section.");
-        Employee employee2 = createEmployee("John Mike", "dds", "dds@gmail.com", "jdavidpass", new Timestamp(System.currentTimeMillis()), employeeRoles, company1, 4.5, serverAddress + "/avatar/employee/default-avatar.jpg", "This is the about section. This is the about section. This is the about section.");
-        Employee employee3 = createEmployee("John XD", "sad", "edwdwd@gmail.com", "jdavidpass", new Timestamp(System.currentTimeMillis()), employeeRoles, company1, 4.5, serverAddress + "/avatar/employee/default-avatar.jpg", "This is the about section. This is the about section. This is the about section.");
+        Employee employee1 = createEmployee("John David", "jdavid", "jdavid@gmail.com", "jdavidpass", new Timestamp(System.currentTimeMillis()), employeeRoles, company1, 4.5, serverAddress + "/avatar/employee/default-avatar.jpg", "This is the about section. This is the about section. This is the about section.", EmployeeStatus.ACTIVE, EmployeeExperience.JUNIOR);
+        Employee employee2 = createEmployee("John Mike", "dds", "dds@gmail.com", "jdavidpass", new Timestamp(System.currentTimeMillis()), employeeRoles, company1, 4.5, serverAddress + "/avatar/employee/default-avatar.jpg", "This is the about section. This is the about section. This is the about section.", EmployeeStatus.ACTIVE, EmployeeExperience.MASTER);
+        Employee employee3 = createEmployee("John XD", "sad", "edwdwd@gmail.com", "jdavidpass", new Timestamp(System.currentTimeMillis()), employeeRoles, company1, 4.5, serverAddress + "/avatar/employee/default-avatar.jpg", "This is the about section. This is the about section. This is the about section.", EmployeeStatus.ACTIVE, EmployeeExperience.SENIOR);
 
         List<EmployeeWorkingHours> employee1WorkingHoursList = new ArrayList<>();
 
@@ -203,7 +205,7 @@ public class DatabaseSeeder implements CommandLineRunner {
     }
 
     @NotNull
-    private Employee createEmployee(String name, String username, String email, String password, Timestamp createdAt, Set<Role> roles, Company company, Double rating, String avatarUrl, String about) {
+    private Employee createEmployee(String name, String username, String email, String password, Timestamp createdAt, Set<Role> roles, Company company, Double rating, String avatarUrl, String about, EmployeeStatus status, EmployeeExperience experience) {
         Employee employee = new Employee();
         employee.setName(name);
         employee.setUsername(username);
@@ -216,6 +218,8 @@ public class DatabaseSeeder implements CommandLineRunner {
         employee.setCreatedAt(createdAt);
         employee.setAvatarUrl(avatarUrl);
         employee.setAbout(about);
+        employee.setStatus(status);
+        employee.setExperience(experience);
 
         employeeRepository.save(employee);
 
