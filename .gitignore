@@ -1,2 +1,5 @@
 .idea
 /appointment-booking-backend/src/main/resources/keys/
+.env
+/appointment-booking-backend/src/main/resources/
+/appointment-booking-backend/.env

@@ -117,7 +117,7 @@ public class CompanyService {
         ).orElse(0L);
 
         Long totalActiveAppointments = Optional.ofNullable(
-                companyRepository.getCompanyTotalActiveAppointments(currentCompany.getId(), AppointmentStatus.BOOKED)
+                companyRepository.getCompanyTotalActiveAppointments(currentCompany.getId(), AppointmentStatus.BOOKED, LocalDate.now())
         ).orElse(0L);
 
         Long newCustomers = Optional.ofNullable(

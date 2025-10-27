@@ -12,6 +12,7 @@ import com.bookitnowv2.appointment_booking.entity.dto.employee.SearchOptionDetai
 import com.bookitnowv2.appointment_booking.utils.AppointmentStatus;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Component
@@ -96,7 +97,7 @@ public class EmployeeMapper {
 
     public static EmployeeDataTableResponseDTO toDataTableResponseDTO(Employee employee)
     {
-        Long bookedAppointmentsCount = employee.getAppointments().stream().filter((app) -> app.getAppointmentStatus() == AppointmentStatus.BOOKED).count();
+        Long bookedAppointmentsCount = employee.getAppointments().stream().filter((app) -> app.getAppointmentStatus() == AppointmentStatus.BOOKED && app.getDate().isAfter(LocalDate.now())).count();
 
         return new EmployeeDataTableResponseDTO(employee.getId(), employee.getName(), employee.getExperience(), employee.getStatus(), bookedAppointmentsCount, employee.getRating());
     }

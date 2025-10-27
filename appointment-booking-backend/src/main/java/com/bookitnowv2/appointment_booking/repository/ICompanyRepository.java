@@ -51,10 +51,12 @@ public interface ICompanyRepository extends JpaRepository<Company, Long> {
     FROM Appointment a
     WHERE a.service.company.id = :companyId
       AND a.appointmentStatus = :status
+      AND a.date > :startDate
 """)
     Long getCompanyTotalActiveAppointments(
             @Param("companyId") Long companyId,
-            @Param("status") AppointmentStatus status
+            @Param("status") AppointmentStatus status,
+            @Param("startDate") LocalDate startDate
     );
 
 
