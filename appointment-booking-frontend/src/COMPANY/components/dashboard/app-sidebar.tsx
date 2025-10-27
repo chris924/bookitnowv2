@@ -40,27 +40,22 @@ const data = {
   },
   navMain: [
     {
-      title: "Dashboard",
+      title: "Áttekintés",
       url: "#",
       icon: IconDashboard,
     },
     {
-      title: "Lifecycle",
+      title: "Beállítások",
       url: "#",
       icon: IconListDetails,
     },
     {
-      title: "Analytics",
+      title: "Statisztikák",
       url: "#",
       icon: IconChartBar,
     },
     {
-      title: "Projects",
-      url: "#",
-      icon: IconFolder,
-    },
-    {
-      title: "Team",
+      title: "Alkalmazottak",
       url: "#",
       icon: IconUsers,
     },
@@ -132,19 +127,14 @@ const data = {
   ],
   documents: [
     {
-      name: "Data Library",
+      name: "Könyvtár",
       url: "#",
       icon: IconDatabase,
     },
     {
-      name: "Reports",
+      name: "Riportok",
       url: "#",
       icon: IconReport,
-    },
-    {
-      name: "Word Assistant",
-      url: "#",
-      icon: IconFileWord,
     },
   ],
 }
