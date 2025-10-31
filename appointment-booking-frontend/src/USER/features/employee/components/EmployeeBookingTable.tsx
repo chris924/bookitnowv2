@@ -4,13 +4,14 @@ import { EventInput } from '@fullcalendar/core/index.js';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin from '@fullcalendar/interaction'; // for click/select
-import { useUserStore } from '@/stores/AuthStore';
+import { useEmployeeStore, useUserStore } from '@/stores/AuthStore';
 
-import { AppointmentSlotResponseDTO, SlotResponseDTO } from '@/lib/appointment-types';
+
 import GuestLogin from '@/components/ui/own/GuestLogin';
 import { EventImpl } from '@fullcalendar/core/internal';
 import ApproveDialogForm from '@/components/ui/own/ApproveDialogForm';
 import { useBookAppointment } from '@/USER/hooks/query/UserAppointmentsQuery';
+import { AppointmentSlotResponseDTO, SlotResponseDTO } from '@/API';
 
 type EmployeeBookingTableProps = {
   appointmentSlots?: AppointmentSlotResponseDTO;
@@ -36,7 +37,7 @@ export default function EmployeeBookingTable({ appointmentSlots }: EmployeeBooki
   const [showApproveBooking, setShowApproveBooking] = useState(false);
   const [clickedAppointment, setClickedAppointment] = useState<EventImpl>();
 
-  const {isAuthenticated} = useUserStore();
+  const {isAuthenticated} = useEmployeeStore();
 
   const [view, setView] = useState<"login" | "register">("login");
 

@@ -63,7 +63,7 @@ public class AppointmentController {
 
 
     @GetMapping("/user/{userSlug}/booked-appointments")
-    public ResponseEntity<List<AppointmentGetResponseDTO>> getUserBookedAppointments()
+    public ResponseEntity<List<AppointmentGetResponseDTO>> getUserBookedAppointments(@PathVariable String userSlug)
     {
         User foundUser = SecurityUtils.getCurrentUser();
 
@@ -74,7 +74,7 @@ public class AppointmentController {
     }
 
     @PostMapping("/user/{userSlug}/cancel-appointment/{appointmentId}")
-    public ResponseEntity<String> cancelUserAppointment(@PathVariable Long appointmentId) {
+    public ResponseEntity<String> cancelUserAppointment(@PathVariable String userSlug, @PathVariable Long appointmentId) {
         User foundUser = SecurityUtils.getCurrentUser();
 
         Appointment foundAppointment = appointmentService.getAppointmentById(appointmentId);

@@ -1,10 +1,10 @@
-import { getUserData } from "@/api/userSide/user";
-import { UserDataResponseDTO } from "@/lib/profile-types";
+import { getUserData } from "@/api_old/userSide/user";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import UserDetailsForm from "./components/UserDetailsForm";
 import { handleAPIError } from "@/lib/utils";
 import Loader from "@/components/ui/own/Loader";
+import { UserDataResponseDTO } from "@/API/models/UserDataResponseDTO";
 
 
 export default function UserProfileContent()

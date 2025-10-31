@@ -1,12 +1,12 @@
 import { useState, useEffect } from "react";
 import {
   EmployeeSearchPayload
-} from "@/api/userSide/employee";
+} from "@/api_old/userSide/employee";
 import SpecialistGrid from "./SpecialistGrid";
-import { SpecialistDTO, CompanyDTO, PlaceDTO } from "@/lib/specialist-types";
 import BaseSearchForm from "@/components/ui/own/base-search-form";
 import { UserSearchResultsQuery } from "@/USER/hooks/query/UserSearchResultsQuery";
 import Loader from "@/components/ui/own/Loader";
+import { SpecialistDTO, PlaceDTO, CompanyDTO, EmployeeSearchRequestDTO, GetSearchEmployeeRequest } from "@/API";
 
 export default function SearchForm() {
   const [specialistName, setSpecialistName] = useState("");
@@ -37,7 +37,7 @@ export default function SearchForm() {
   }, [specialistName, specialistCompany, specialistPlace]);
 
 
-  const searchCriteria: EmployeeSearchPayload = {
+  const searchCriteria: GetSearchEmployeeRequest = {
     name: selectedSpecialist?.value ?? debouncedCriteria.name,
     company: selectedCompany?.value ?? debouncedCriteria.company,
     place: selectedPlace?.value ?? debouncedCriteria.place,

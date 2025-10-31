@@ -32,7 +32,7 @@ public class EmployeeMapper {
                 "EMPLOYEE",
                 employee.getId(),
                 employee.getName(),
-                employee.getName(),
+                employee.getUsername(),
                 employee.getAvatarUrl(),
                 employee.getCompany().getName(),
                 employee.getCompany().getPlace(),
@@ -48,7 +48,7 @@ public class EmployeeMapper {
                 "EMPLOYEE",
                 employeeDoc.getId(),
                 employeeDoc.getName(),
-                employeeDoc.getName(),
+                employeeDoc.getUsername(),
                 employeeDoc.getAvatarUrl(),
                 employeeDoc.getCompany(),
                 employeeDoc.getPlace(),
@@ -59,7 +59,7 @@ public class EmployeeMapper {
 
     public CompanyDTO addCompanyDTO(EmployeeDocument employeeDocument)
     {
-        return new CompanyDTO(employeeDocument.getCompany(), employeeDocument.getCompany(), employeeDocument.getCompanyAvatarUrl(), employeeDocument.getCompanyRating());
+        return new CompanyDTO(employeeDocument.getId(), employeeDocument.getCompany(), employeeDocument.getCompany(), employeeDocument.getCompanyAvatarUrl(), employeeDocument.getCompanyRating());
 
 
     }
@@ -79,6 +79,7 @@ public class EmployeeMapper {
     public EmployeeDocument toDocument(Employee employee) {
        return new EmployeeDocument(employee.getId(),
                employee.getName(),
+               employee.getUsername(),
                employee.getCompany().getName(),
                employee.getCompany().getAvatarUrl(),
                employee.getCompany().getRating(),

@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @EqualsAndHashCode
 public class CompanyDTO {
+    public Long Id;
     public String label;
     public String value;
     public String image;

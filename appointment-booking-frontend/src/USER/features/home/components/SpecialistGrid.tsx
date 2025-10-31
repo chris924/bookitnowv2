@@ -1,13 +1,18 @@
+import { SpecialistDTO } from "@/API/models/SpecialistDTO";
 import {
   Card,
   CardContent,
 } from "@/components/ui/card"
-import { searchResultPropInterface, SpecialistDTO } from "@/lib/specialist-types";
+import { showToast } from "@/components/ui/own/ShowToast";
 import { createSlug } from "@/lib/utils";
 import { useNavigate } from "react-router-dom";
 
 
-export default function SpecialistGrid({specialists} : searchResultPropInterface)
+interface SpecialistGridProps{
+  specialists: SpecialistDTO[]
+}
+
+export default function SpecialistGrid({specialists} : SpecialistGridProps)
 {
 
   const navigate = useNavigate();
@@ -19,8 +24,14 @@ if (specialists.length === 0) {
   async function handleSpecialistClick(specialist: SpecialistDTO)
   {
     // Navigate to the specialist's page using the slug
-    const slug = await createSlug(specialist.label, specialist.id);
-    navigate(`/employee/${slug}`);
+    if(specialist.label && specialist.id)
+    {
+      const slug = await createSlug(specialist.label, specialist.id);
+      navigate(`/employee/${slug}`);
+    }
+    else
+      showToast.error("Label vagy Id nem definiált!");
+    
   }
 
 return(

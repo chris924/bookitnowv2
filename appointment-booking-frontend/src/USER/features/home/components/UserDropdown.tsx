@@ -3,8 +3,9 @@ import { Avatar, AvatarImage, AvatarFallback } from "@radix-ui/react-avatar";
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuSeparator, DropdownMenuItem } from "@radix-ui/react-dropdown-menu";
 import { useNavigate } from "react-router-dom";
 import defaultAvatar from "@/assets/default.jpg"
-import { UserDataResponseDTO } from "@/lib/profile-types";
 import { useUserStore } from "@/stores/AuthStore";
+import { UserDataResponseDTO } from "@/API/models/UserDataResponseDTO";
+import { showToast } from "@/components/ui/own/ShowToast";
 
 export default function DropdownUser({user}: {user: UserDataResponseDTO} )
 {
@@ -15,22 +16,27 @@ export default function DropdownUser({user}: {user: UserDataResponseDTO} )
 
   async function handleDropDownClick(clickType: string)
   {
-    const userSlug = await createSlug(user.name, parseInt(user.id.toString()));
-    if(clickType == "exit")
+    if(user.name && user.id)
     {
-      await logout();
-      navigate("/");
+      const userSlug = await createSlug(user.name, parseInt(user.id.toString()));
+      if(clickType == "exit")
+      {
+        await logout();
+        navigate("/");
+      }
+      if(clickType == "account")
+      {
+        console.log("USER IS:", user);
+        
+        navigate(`/user/${userSlug}`)
+      }
+      if(clickType == "appointments")
+      {
+        navigate(`/user/${userSlug}/booked-appointments`);
+      }
     }
-    if(clickType == "account")
-    {
-      console.log("USER IS:", user);
-      
-      navigate(`/user/${userSlug}`)
-    }
-    if(clickType == "appointments")
-    {
-      navigate(`/user/${userSlug}/booked-appointments`);
-    }
+    else
+      showToast.error("Név vagy Id hiányzik!");
   }
 
     return(

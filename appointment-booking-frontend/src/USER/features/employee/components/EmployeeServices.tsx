@@ -1,5 +1,6 @@
 
-import { getMonthlyAppointments } from "@/api/userSide/appointments";
+import { ServiceGetResponseDTO, AppointmentSlotResponseDTO } from "@/API";
+import { getMonthlyAppointments } from "@/api_old/userSide/appointments";
 import { Button } from "@/components/ui/button";
 import {
   Table,
@@ -11,11 +12,9 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { AppointmentSlotResponseDTO } from "@/lib/appointment-types";
-import { SpecialistServiceDTO } from "@/lib/specialist-types"
 
 type SpecialistServicesData = {
-    employeeServices: SpecialistServiceDTO[];
+    employeeServices: ServiceGetResponseDTO[];
     setSlots: (slots: AppointmentSlotResponseDTO) => void;
 }
 

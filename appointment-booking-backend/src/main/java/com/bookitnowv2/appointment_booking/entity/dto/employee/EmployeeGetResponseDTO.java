@@ -7,8 +7,8 @@ public class EmployeeGetResponseDTO {
 
     public String type;
     public Long id;
-    public String label;
-    public String value;
+    public String name;
+    public String username;
     public String image;
     public String company;
     public String place;

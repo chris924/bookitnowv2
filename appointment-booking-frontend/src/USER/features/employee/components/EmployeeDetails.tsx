@@ -1,9 +1,9 @@
-import { SpecialistDTO } from "@/lib/specialist-types"
+import { EmployeeGetResponseDTO } from "@/API"
 import { useEffect } from "react"
 
 type EmployeeDetails = {
 
-    employeeData: SpecialistDTO
+    employeeData: EmployeeGetResponseDTO
 }
 
 

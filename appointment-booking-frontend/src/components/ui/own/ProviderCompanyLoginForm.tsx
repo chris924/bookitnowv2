@@ -7,7 +7,7 @@ import { useState } from "react";
 import { useUserStore } from"@/stores/AuthStore";
 import { useMutation } from "@tanstack/react-query";
 import { showToast } from "./ShowToast";
-import { loginCompany } from "@/api/companySide/company";
+import { loginCompany } from "@/api_old/companySide/company";
 
 
 export default function ProviderCompanyLoginForm({

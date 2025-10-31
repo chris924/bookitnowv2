@@ -74,6 +74,7 @@ public class SecurityConfiguration {
                     auth.requestMatchers("/user/**").hasAnyRole("ADMIN", "USER");
                     auth.requestMatchers("/company/**").hasAnyRole("ADMIN", "COMPANY");
                     auth.requestMatchers("/appointment/**").hasAnyRole("ADMIN", "USER", "COMPANY");
+                    auth.requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll();
 
                     auth.anyRequest().authenticated();
                 })

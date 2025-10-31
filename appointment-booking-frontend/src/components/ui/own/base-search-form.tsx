@@ -27,10 +27,11 @@ import { useForm } from "react-hook-form"
 import { Button } from "../button"
 import { cn } from "@/lib/utils"
 import { useState } from "react"
-import { BaseItemInterface } from "@/lib/specialist-types"
+import { CompanyDTO, PlaceDTO, SpecialistDTO } from "@/API"
+//import { BaseItemInterface } from "@/lib/specialist-types"
 
 
-interface SearchFormPropInterface<T extends BaseItemInterface>
+interface SearchFormPropInterface<T>
 {
     title: string;
     type: string;
@@ -42,7 +43,7 @@ interface SearchFormPropInterface<T extends BaseItemInterface>
 
 
  
-export default function BaseSearchForm<T extends BaseItemInterface>({ title, options, selected, onSelect, onChange }: SearchFormPropInterface<T>) {
+export default function BaseSearchForm<T extends SpecialistDTO & CompanyDTO & PlaceDTO>({ title, options, selected, onSelect, onChange }: SearchFormPropInterface<T>) {
 
   const FormSchema = z.object({
     type: z.string({
@@ -132,10 +133,10 @@ export default function BaseSearchForm<T extends BaseItemInterface>({ title, opt
                                   onSelect(undefined); // deselect
                                   onChange("");
                                 } else {
-                                  form.setValue("type", option.value);
+                                  form.setValue("type", option.value ?? "");
                                   onSelect(option);
                                   console.log("ONSELECT: " , option);
-                                  onChange(option.value); 
+                                  onChange(option.value ?? ""); 
                                 }
                                 setOpen(false);
                               }}

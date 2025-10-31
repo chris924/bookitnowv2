@@ -20,6 +20,7 @@ public class EmployeeDocument {
     private Long id;
 
     private String name;
+    private String username;
     private String company;
     private String companyAvatarUrl;
     private Double companyRating;

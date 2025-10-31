@@ -1,19 +1,19 @@
-import { getSpecificEmployeeContent } from "@/api/userSide/employee"
+import { getSpecificEmployeeContent } from "@/api_old/userSide/employee"
 import { useEffect, useState } from "react"
 import { useParams } from "react-router-dom";
-import { SpecialistPageDTO } from "@/lib/specialist-types";
 import EmployeeServicesTable from "./components/EmployeeServices";
 import EmployeeDetails from "./components/EmployeeDetails";
 import EmployeeBookingTable from "./components/EmployeeBookingTable";
-import { AppointmentSlotResponseDTO } from "@/lib/appointment-types";
+import { EmployeePageResponseDTO } from "@/API/models/EmployeePageResponseDTO";
+import { AppointmentSlotResponseDTO } from "@/API/models/AppointmentSlotResponseDTO";
 
 
 export default function EmployeeContent()
 {
      const { slug } = useParams();
 
-     const [employeeData, setEmployeeData] = useState<SpecialistPageDTO | undefined>();
-     const [appointmentSlots, setAppointmentSlots] = useState<AppointmentSlotResponseDTO | undefined>();
+     const [employeeData, setEmployeeData] = useState<EmployeePageResponseDTO>();
+     const [appointmentSlots, setAppointmentSlots] = useState<AppointmentSlotResponseDTO>();
 
 
     useEffect( () => {

@@ -1,4 +1,4 @@
-import { getCompanyEmployeeDataTable, getCompanySectionCardStatistics, getTotalAppointmentsData } from "@/api/companySide/company";
+import { getCompanyEmployeeDataTable, getCompanySectionCardStatistics, getTotalAppointmentsData } from "@/api_old/companySide/company";
 import {CompanyPastAppointsmentsResponseDTO, CompanySectionCardsResponseDTO } from "@/lib/company-types";
 import { EmployeeDataTableResponseDTO } from "@/lib/specialist-types";
 import { useQuery } from "@tanstack/react-query";

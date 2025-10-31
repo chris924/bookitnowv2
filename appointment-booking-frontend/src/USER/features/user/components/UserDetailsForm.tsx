@@ -15,7 +15,6 @@ import {
 import { Input } from "@/components/ui/input"
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
 import { Avatar, AvatarImage, AvatarFallback } from "@radix-ui/react-avatar"
-import { UserDataResponseDTO } from "@/lib/profile-types"
 import { useRef, useState } from "react"
 import {
   Popover,
@@ -26,12 +25,13 @@ import {
 
 import defaultAvatar from "@/assets/default.jpg"
 import { PopoverArrow } from "@radix-ui/react-popover"
-import { changeUserDetails, uploadUserAvatar, userDetailsChangeDTO } from "@/api/userSide/user"
+import { changeUserDetails, uploadUserAvatar, userDetailsChangeDTO } from "@/api_old/userSide/user"
 import { useMutation } from "@tanstack/react-query"
 import { showToast } from "@/components/ui/own/ShowToast"
 import { handleAPIError } from "@/lib/utils"
 import Loader from "@/components/ui/own/Loader"
 import { useUserStore } from "@/stores/AuthStore"
+import { UserDataResponseDTO } from "@/API"
 
 
 export type UserDetailsFormProps = {
@@ -47,7 +47,7 @@ export default function UserDetailsForm()
   
    const fileInputRef = useRef<HTMLInputElement>(null);
 
-     const {user, loading } = useUserStore();
+    const {user, loading } = useUserStore();
 
    const avatarChangeMutation = useMutation({
     mutationFn: (file: File) => uploadUserAvatar(file),
@@ -85,8 +85,10 @@ export default function UserDetailsForm()
  const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
+ 
       name: user?.name,
       username: user?.username
+      
     },
   })
 

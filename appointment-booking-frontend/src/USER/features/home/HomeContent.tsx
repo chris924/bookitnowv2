@@ -2,7 +2,7 @@
 import defaultImage from "@/assets/default.jpg"
 import MostRatedSpecialist from "./components/MostRatedSpecialist";
 import { useEffect, useState } from "react";
-import { getMostRatedEmployees, TopRatedEmp } from "@/api/userSide/employee";
+import { getMostRatedEmployees, TopRatedEmp } from "@/api_old/userSide/employee";
 import FeaturedSpecialist from "./components/FeaturedSpecialist";
 import SearchForm from "./components/SearchForm";
 
