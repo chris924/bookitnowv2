@@ -4,7 +4,7 @@ import { EventInput } from '@fullcalendar/core/index.js';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin from '@fullcalendar/interaction'; // for click/select
-import { useEmployeeStore, useUserStore } from '@/stores/AuthStore';
+import { useEmployeeStore } from '@/stores/AuthStore';
 
 
 import GuestLogin from '@/components/ui/own/GuestLogin';
@@ -17,7 +17,7 @@ type EmployeeBookingTableProps = {
   appointmentSlots?: AppointmentSlotResponseDTO;
 };
 
-function toFullCalendarEvent(slot: SlotResponseDTO, index: number): EventInput {
+function toFullCalendarEvent(slot: SlotResponseDTO, _index: number): EventInput {
   const startTime = slot.start.slice(0, 5); // 'HH:mm'
   const endTime = slot.end.slice(0, 5);
 
@@ -39,7 +39,7 @@ export default function EmployeeBookingTable({ appointmentSlots }: EmployeeBooki
 
   const {isAuthenticated} = useEmployeeStore();
 
-  const [view, setView] = useState<"login" | "register">("login");
+ // const [view, setView] = useState<"login" | "register">("login");
 
   const handleBookAppointment = useBookAppointment();
 

@@ -8,6 +8,7 @@ import { useUserStore } from"@/stores/AuthStore";
 import { useMutation } from "@tanstack/react-query";
 import { showToast } from "./ShowToast";
 import { loginCompany } from "@/api_old/companySide/company";
+import { useApi } from "@/hooks/useApi";
 
 
 export default function ProviderCompanyLoginForm({
@@ -18,9 +19,13 @@ export default function ProviderCompanyLoginForm({
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
+   const api = useApi();
+
     const {mutate, isPending, isError, error} = useMutation({
 
-    mutationFn: loginCompany,
+   
+
+    mutationFn: api.companyAuth.loginCompany,
     onSuccess: async (data) => {
       console.log('Logged in:', data);
       showToast.success("Sikeres bejelentkezés!");

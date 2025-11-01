@@ -3,8 +3,8 @@ package com.bookitnowv2.appointment_booking.controller;
 
 import com.bookitnowv2.appointment_booking.elasticSearch.service.ElasticEmployeeService;
 import com.bookitnowv2.appointment_booking.entity.Employee;
-import com.bookitnowv2.appointment_booking.entity.ServiceEntity;
 import com.bookitnowv2.appointment_booking.entity.dto.employee.*;
+import com.bookitnowv2.appointment_booking.entity.dto.employee.SearchOptionDetails.SpecialistDTO;
 import com.bookitnowv2.appointment_booking.mapper.EmployeeMapper;
 import com.bookitnowv2.appointment_booking.service.EmployeeService;
 import com.bookitnowv2.appointment_booking.service.ServiceEntityService;
@@ -36,9 +36,9 @@ public class EmployeeController {
     }
 
     @GetMapping("/most-rated")
-    public ResponseEntity<List<EmployeeGetResponseDTO>> getMostRatedEmployees()
+    public ResponseEntity<List<SpecialistDTO>> getMostRatedEmployees()
     {
-        List<EmployeeGetResponseDTO> topEmployees =  employeeService.getMostRatedEmployees();
+        List<SpecialistDTO> topEmployees =  employeeService.getMostRatedEmployees();
 
         return ResponseEntity.ok(topEmployees);
     }
@@ -68,7 +68,7 @@ public class EmployeeController {
 
     @GetMapping("/employee-table")
     @PreAuthorize("hasRole('COMPANY')")
-    public ResponseEntity<List<EmployeeDataTableResponseDTO>> getEmployeeTable()
+    public ResponseEntity<List<EmployeeDataTableResponseDTO>> getCompanyEmployeeTable()
     {
         List<EmployeeDataTableResponseDTO> employeeTableData = employeeService.getCompanyEmployeeTable();
         return ResponseEntity.ok(employeeTableData);

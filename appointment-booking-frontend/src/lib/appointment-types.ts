@@ -1,6 +1,6 @@
 
 
-export interface AppointmentSlotResponseDTO{
+/*export interface AppointmentSlotResponseDTO{
 
     firstHour: string;
     lastHour: string;
@@ -29,4 +29,4 @@ export interface AppointmentGetResponseDTO{
     companyName: string;
     serviceName: string;
     servicePrice: number;
-}
+}*/

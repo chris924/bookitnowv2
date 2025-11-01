@@ -32,10 +32,6 @@ export interface ChangeUserDetailsRequest {
     userDetailsChangeDTO: UserDetailsChangeDTO;
 }
 
-export interface GetUserDataFromIdRequest {
-    userSlug: string;
-}
-
 export interface UploadUserAvatarOperationRequest {
     uploadUserAvatarRequest?: UploadUserAvatarRequest;
 }
@@ -84,21 +80,13 @@ export class UserControllerApi extends runtime.BaseAPI {
 
     /**
      */
-    async getUserDataFromIdRaw(requestParameters: GetUserDataFromIdRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserDataResponseDTO>> {
-        if (requestParameters['userSlug'] == null) {
-            throw new runtime.RequiredError(
-                'userSlug',
-                'Required parameter "userSlug" was null or undefined when calling getUserDataFromId().'
-            );
-        }
-
+    async getUserDataRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<UserDataResponseDTO>> {
         const queryParameters: any = {};
 
         const headerParameters: runtime.HTTPHeaders = {};
 
 
-        let urlPath = `/user/{userSlug}`;
-        urlPath = urlPath.replace(`{${"userSlug"}}`, encodeURIComponent(String(requestParameters['userSlug'])));
+        let urlPath = `/user/user-data`;
 
         const response = await this.request({
             path: urlPath,
@@ -112,8 +100,8 @@ export class UserControllerApi extends runtime.BaseAPI {
 
     /**
      */
-    async getUserDataFromId(requestParameters: GetUserDataFromIdRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UserDataResponseDTO> {
-        const response = await this.getUserDataFromIdRaw(requestParameters, initOverrides);
+    async getUserData(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<UserDataResponseDTO> {
+        const response = await this.getUserDataRaw(initOverrides);
         return await response.value();
     }
 

@@ -15,7 +15,7 @@ export function UserSearchResultsQuery(searchCrit: GetSearchEmployeeRequest)
         queryFn: () => employeeApi.employee.getSearchEmployee(searchCrit).then(res => res),
         enabled: !!searchCrit,
         staleTime: 1000 * 60,
-        placeholderData: () => ({ specialists: [], companies: [], places: [] })
+        placeholderData: () => ({ specialists: [], companies: [], places: [] }),
     });
 }
 

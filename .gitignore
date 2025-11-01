@@ -3,3 +3,5 @@
 .env
 /appointment-booking-backend/src/main/resources/
 /appointment-booking-backend/.env
+openapi.json
+openapi.md5

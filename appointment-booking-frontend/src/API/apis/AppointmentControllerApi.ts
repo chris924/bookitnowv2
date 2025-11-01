@@ -17,12 +17,15 @@ import * as runtime from '../runtime';
 import type {
   AppointmentGetResponseDTO,
   AppointmentSlotResponseDTO,
+  CompanyAppointmentsByDateResponseDTO,
 } from '../models/index';
 import {
     AppointmentGetResponseDTOFromJSON,
     AppointmentGetResponseDTOToJSON,
     AppointmentSlotResponseDTOFromJSON,
     AppointmentSlotResponseDTOToJSON,
+    CompanyAppointmentsByDateResponseDTOFromJSON,
+    CompanyAppointmentsByDateResponseDTOToJSON,
 } from '../models/index';
 
 export interface BookAppointmentRequest {
@@ -30,16 +33,11 @@ export interface BookAppointmentRequest {
 }
 
 export interface CancelUserAppointmentRequest {
-    userSlug: string;
     appointmentId: number;
 }
 
-export interface GetMonthlyAppointmentsRequest {
+export interface GetEmployeeMonthlyAppointmentsRequest {
     serviceId: number;
-}
-
-export interface GetUserBookedAppointmentsRequest {
-    userSlug: string;
 }
 
 /**
@@ -85,13 +83,6 @@ export class AppointmentControllerApi extends runtime.BaseAPI {
     /**
      */
     async cancelUserAppointmentRaw(requestParameters: CancelUserAppointmentRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<string>> {
-        if (requestParameters['userSlug'] == null) {
-            throw new runtime.RequiredError(
-                'userSlug',
-                'Required parameter "userSlug" was null or undefined when calling cancelUserAppointment().'
-            );
-        }
-
         if (requestParameters['appointmentId'] == null) {
             throw new runtime.RequiredError(
                 'appointmentId',
@@ -104,8 +95,7 @@ export class AppointmentControllerApi extends runtime.BaseAPI {
         const headerParameters: runtime.HTTPHeaders = {};
 
 
-        let urlPath = `/appointments/user/{userSlug}/cancel-appointment/{appointmentId}`;
-        urlPath = urlPath.replace(`{${"userSlug"}}`, encodeURIComponent(String(requestParameters['userSlug'])));
+        let urlPath = `/appointments/user/cancel-appointment/{appointmentId}`;
         urlPath = urlPath.replace(`{${"appointmentId"}}`, encodeURIComponent(String(requestParameters['appointmentId'])));
 
         const response = await this.request({
@@ -131,11 +121,38 @@ export class AppointmentControllerApi extends runtime.BaseAPI {
 
     /**
      */
-    async getMonthlyAppointmentsRaw(requestParameters: GetMonthlyAppointmentsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<AppointmentSlotResponseDTO>> {
+    async getCompanyPastAppointmentsByMonthRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<CompanyAppointmentsByDateResponseDTO>>> {
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+
+        let urlPath = `/appointments/company-total-month-data`;
+
+        const response = await this.request({
+            path: urlPath,
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(CompanyAppointmentsByDateResponseDTOFromJSON));
+    }
+
+    /**
+     */
+    async getCompanyPastAppointmentsByMonth(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<CompanyAppointmentsByDateResponseDTO>> {
+        const response = await this.getCompanyPastAppointmentsByMonthRaw(initOverrides);
+        return await response.value();
+    }
+
+    /**
+     */
+    async getEmployeeMonthlyAppointmentsRaw(requestParameters: GetEmployeeMonthlyAppointmentsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<AppointmentSlotResponseDTO>> {
         if (requestParameters['serviceId'] == null) {
             throw new runtime.RequiredError(
                 'serviceId',
-                'Required parameter "serviceId" was null or undefined when calling getMonthlyAppointments().'
+                'Required parameter "serviceId" was null or undefined when calling getEmployeeMonthlyAppointments().'
             );
         }
 
@@ -159,28 +176,20 @@ export class AppointmentControllerApi extends runtime.BaseAPI {
 
     /**
      */
-    async getMonthlyAppointments(requestParameters: GetMonthlyAppointmentsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<AppointmentSlotResponseDTO> {
-        const response = await this.getMonthlyAppointmentsRaw(requestParameters, initOverrides);
+    async getEmployeeMonthlyAppointments(requestParameters: GetEmployeeMonthlyAppointmentsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<AppointmentSlotResponseDTO> {
+        const response = await this.getEmployeeMonthlyAppointmentsRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      */
-    async getUserBookedAppointmentsRaw(requestParameters: GetUserBookedAppointmentsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<AppointmentGetResponseDTO>>> {
-        if (requestParameters['userSlug'] == null) {
-            throw new runtime.RequiredError(
-                'userSlug',
-                'Required parameter "userSlug" was null or undefined when calling getUserBookedAppointments().'
-            );
-        }
-
+    async getUserBookedAppointmentsRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<AppointmentGetResponseDTO>>> {
         const queryParameters: any = {};
 
         const headerParameters: runtime.HTTPHeaders = {};
 
 
-        let urlPath = `/appointments/user/{userSlug}/booked-appointments`;
-        urlPath = urlPath.replace(`{${"userSlug"}}`, encodeURIComponent(String(requestParameters['userSlug'])));
+        let urlPath = `/appointments/user/booked-appointments`;
 
         const response = await this.request({
             path: urlPath,
@@ -194,8 +203,8 @@ export class AppointmentControllerApi extends runtime.BaseAPI {
 
     /**
      */
-    async getUserBookedAppointments(requestParameters: GetUserBookedAppointmentsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<AppointmentGetResponseDTO>> {
-        const response = await this.getUserBookedAppointmentsRaw(requestParameters, initOverrides);
+    async getUserBookedAppointments(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<AppointmentGetResponseDTO>> {
+        const response = await this.getUserBookedAppointmentsRaw(initOverrides);
         return await response.value();
     }
 

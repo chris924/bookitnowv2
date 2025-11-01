@@ -2,15 +2,17 @@
 import defaultImage from "@/assets/default.jpg"
 import MostRatedSpecialist from "./components/MostRatedSpecialist";
 import { useEffect, useState } from "react";
-import { getMostRatedEmployees, TopRatedEmp } from "@/api_old/userSide/employee";
+import { getMostRatedEmployees } from "@/api_old/userSide/employee";
 import FeaturedSpecialist from "./components/FeaturedSpecialist";
 import SearchForm from "./components/SearchForm";
+import { SpecialistDTO } from "@/API/models/SpecialistDTO";
+import { EmployeeGetResponseDTO } from "@/API";
 
 
 
 export default function HomeContent()
 {
-    const [topRatedEmployees, setTopRatedEmployees] = useState<TopRatedEmp[]>([]);
+    const [topRatedEmployees, setTopRatedEmployees] = useState<EmployeeGetResponseDTO[]>([]);
  
     let specialists = [
         {
@@ -24,7 +26,7 @@ export default function HomeContent()
         },
         {
           id: 2,
-          label: "Anna Smith",
+          label: "Buckó",
           value: "anna-smith",
           image:  defaultImage,
           company: "HealthPlus",

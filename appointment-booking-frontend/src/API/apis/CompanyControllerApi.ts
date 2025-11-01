@@ -15,12 +15,9 @@
 
 import * as runtime from '../runtime';
 import type {
-  CompanyAppointmentsByDateResponseDTO,
   CompanySectionCardsResponseDTO,
 } from '../models/index';
 import {
-    CompanyAppointmentsByDateResponseDTOFromJSON,
-    CompanyAppointmentsByDateResponseDTOToJSON,
     CompanySectionCardsResponseDTOFromJSON,
     CompanySectionCardsResponseDTOToJSON,
 } from '../models/index';
@@ -32,7 +29,7 @@ export class CompanyControllerApi extends runtime.BaseAPI {
 
     /**
      */
-    async getCompanyTotalRevenueRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<CompanySectionCardsResponseDTO>> {
+    async getCompanySectionCardsStatisticsRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<CompanySectionCardsResponseDTO>> {
         const queryParameters: any = {};
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -52,35 +49,8 @@ export class CompanyControllerApi extends runtime.BaseAPI {
 
     /**
      */
-    async getCompanyTotalRevenue(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<CompanySectionCardsResponseDTO> {
-        const response = await this.getCompanyTotalRevenueRaw(initOverrides);
-        return await response.value();
-    }
-
-    /**
-     */
-    async getMonthAppointmentsDataRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<CompanyAppointmentsByDateResponseDTO>>> {
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-
-        let urlPath = `/company/appointments-month-data`;
-
-        const response = await this.request({
-            path: urlPath,
-            method: 'GET',
-            headers: headerParameters,
-            query: queryParameters,
-        }, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(CompanyAppointmentsByDateResponseDTOFromJSON));
-    }
-
-    /**
-     */
-    async getMonthAppointmentsData(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<CompanyAppointmentsByDateResponseDTO>> {
-        const response = await this.getMonthAppointmentsDataRaw(initOverrides);
+    async getCompanySectionCardsStatistics(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<CompanySectionCardsResponseDTO> {
+        const response = await this.getCompanySectionCardsStatisticsRaw(initOverrides);
         return await response.value();
     }
 

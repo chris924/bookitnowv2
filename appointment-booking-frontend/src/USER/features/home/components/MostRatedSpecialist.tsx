@@ -1,13 +1,18 @@
 import Autoplay from "embla-carousel-autoplay"
-import { searchResultPropInterface, SpecialistDTO } from "@/lib/specialist-types"
 import { createSlug } from "@/lib/utils"
 import { useNavigate } from "react-router-dom"
 import React from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Carousel, CarouselContent, CarouselItem, CarouselPrevious, CarouselNext } from "@/components/ui/carousel";
+import { SpecialistDTO } from "@/API/models";
 
 
-export default function MostRatedSpecialist({specialists}: searchResultPropInterface)
+interface MostRatedSpecialistProps {
+  specialists: SpecialistDTO[];
+}
+
+
+export default function MostRatedSpecialist({specialists}: MostRatedSpecialistProps)
 {
     const navigate = useNavigate();
 
@@ -18,10 +23,12 @@ export default function MostRatedSpecialist({specialists}: searchResultPropInter
         //TODO: Refactor employee clicks, so it's only at one place?
       async function handleMostRatedSpecialistClick(specialist : SpecialistDTO)
       {
+        if(specialist.label && specialist.id)
+        {
+           const slug = await createSlug(specialist.label, specialist.id);
+          navigate(`/employee/${slug}`);
+        }
         
-         const slug = await createSlug(specialist.label, specialist.id);
-            navigate(`/employee/${slug}`);
-
       }
 
     return(

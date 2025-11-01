@@ -1,9 +1,11 @@
 package com.bookitnowv2.appointment_booking.service;
 
+import com.bookitnowv2.appointment_booking.configuration.SecurityUtils;
 import com.bookitnowv2.appointment_booking.entity.*;
 import com.bookitnowv2.appointment_booking.entity.dto.appointment.AppointmentGetResponseDTO;
 import com.bookitnowv2.appointment_booking.entity.dto.appointment.AppointmentSlotResponseDTO;
 import com.bookitnowv2.appointment_booking.entity.dto.appointment.SlotResponseDTO;
+import com.bookitnowv2.appointment_booking.entity.dto.company.CompanyAppointmentsByDateResponseDTO;
 import com.bookitnowv2.appointment_booking.exception.appointment.AppointmentNotBookedException;
 import com.bookitnowv2.appointment_booking.exception.appointment.AppointmentNotFreeException;
 import com.bookitnowv2.appointment_booking.mapper.AppointmentMapper;
@@ -12,6 +14,7 @@ import com.bookitnowv2.appointment_booking.utils.AppointmentStatus;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
 import java.time.*;
@@ -270,5 +273,19 @@ public class AppointmentService {
 
         };
 
+    }
+
+    @Transactional
+    public List<CompanyAppointmentsByDateResponseDTO> getCompanyTotalAppointmentsByMonth(Integer monthCount)
+    {
+
+
+        Company authCompany = SecurityUtils.getCurrentCompany();
+
+        LocalDate currentDate = LocalDate.now();
+
+        LocalDate startDate = currentDate.minusMonths(monthCount);
+
+        return appointmentRepository.countCompanyTotalAppointmentsByDate(authCompany.getId(), startDate, AppointmentStatus.BOOKED);
     }
 }

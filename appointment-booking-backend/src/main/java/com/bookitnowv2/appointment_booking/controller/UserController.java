@@ -47,10 +47,9 @@ public class UserController {
     }
 
 
-    @GetMapping("/{userSlug}")
-    public ResponseEntity<UserDataResponseDTO> getUserDataFromId(@PathVariable String userSlug) {
-       // Integer userId = SlugExtractor.getIdFromSlug(userSlug);
-      //  User foundUser = userService.getUserById(userId);
+    @GetMapping("/user-data")
+    public ResponseEntity<UserDataResponseDTO> getUserData() {
+
         User currentUser = SecurityUtils.getCurrentUser();
         return ResponseEntity.ok(UserMapper.toUserDataResponseDTO(currentUser));
 

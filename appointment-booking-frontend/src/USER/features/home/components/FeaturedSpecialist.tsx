@@ -1,9 +1,12 @@
+import { SpecialistDTO } from "@/API/models/SpecialistDTO";
 import { Card, CardContent } from "@/components/ui/card"
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel"
-import { searchResultPropInterface, SpecialistDTO } from "@/lib/specialist-types"
 import Autoplay from "embla-carousel-autoplay"
 import React from "react"
 
+interface searchResultPropInterface {
+  specialists: SpecialistDTO[];
+}
 
 
 export default function FeaturedSpecialist({specialists}: searchResultPropInterface)

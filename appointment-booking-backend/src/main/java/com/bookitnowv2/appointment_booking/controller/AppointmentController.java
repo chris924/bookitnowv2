@@ -6,6 +6,7 @@ import com.bookitnowv2.appointment_booking.entity.ServiceEntity;
 import com.bookitnowv2.appointment_booking.entity.User;
 import com.bookitnowv2.appointment_booking.entity.dto.appointment.AppointmentGetResponseDTO;
 import com.bookitnowv2.appointment_booking.entity.dto.appointment.AppointmentSlotResponseDTO;
+import com.bookitnowv2.appointment_booking.entity.dto.company.CompanyAppointmentsByDateResponseDTO;
 import com.bookitnowv2.appointment_booking.mapper.AppointmentMapper;
 import com.bookitnowv2.appointment_booking.service.AppointmentService;
 import com.bookitnowv2.appointment_booking.service.ServiceEntityService;
@@ -39,7 +40,7 @@ public class AppointmentController {
     }
 
     @GetMapping("/employee/{serviceId}")
-    public ResponseEntity<AppointmentSlotResponseDTO> getMonthlyAppointments(@PathVariable Long serviceId) {
+    public ResponseEntity<AppointmentSlotResponseDTO> getEmployeeMonthlyAppointments(@PathVariable Long serviceId) {
         ServiceEntity service = serviceEntityService.getServiceEntityById(serviceId);
 
         AppointmentSlotResponseDTO appointmentSlots = appointmentService.getAppointmentSlotsFromService(service);
@@ -62,8 +63,8 @@ public class AppointmentController {
     }
 
 
-    @GetMapping("/user/{userSlug}/booked-appointments")
-    public ResponseEntity<List<AppointmentGetResponseDTO>> getUserBookedAppointments(@PathVariable String userSlug)
+    @GetMapping("/user/booked-appointments")
+    public ResponseEntity<List<AppointmentGetResponseDTO>> getUserBookedAppointments()
     {
         User foundUser = SecurityUtils.getCurrentUser();
 
@@ -73,8 +74,8 @@ public class AppointmentController {
 
     }
 
-    @PostMapping("/user/{userSlug}/cancel-appointment/{appointmentId}")
-    public ResponseEntity<String> cancelUserAppointment(@PathVariable String userSlug, @PathVariable Long appointmentId) {
+    @PostMapping("/user/cancel-appointment/{appointmentId}")
+    public ResponseEntity<String> cancelUserAppointment(@PathVariable Long appointmentId) {
         User foundUser = SecurityUtils.getCurrentUser();
 
         Appointment foundAppointment = appointmentService.getAppointmentById(appointmentId);
@@ -89,7 +90,11 @@ public class AppointmentController {
     }
 
 
-
+    @GetMapping("/company-total-month-data")
+    public List<CompanyAppointmentsByDateResponseDTO> getCompanyPastAppointmentsByMonth()
+    {
+        return appointmentService.getCompanyTotalAppointmentsByMonth(3);
+    }
 
 
 

@@ -19,19 +19,7 @@ public interface ICompanyRepository extends JpaRepository<Company, Long> {
     Optional<Company> getCompanyByEmail(String email);
     Optional<Company> getCompanyByName(String name);
 
-    @Query("""
-    SELECT new com.bookitnowv2.appointment_booking.entity.dto.company.CompanyAppointmentsByDateResponseDTO(a.date, COUNT(DISTINCT a.id), SUM(a.service.price))
-    FROM Appointment a
-    WHERE a.service.company.id = :companyId
-        AND a.date > :startDate
-        AND a.appointmentStatus = :appointmentStatus
-    GROUP BY a.date
-""")
-    List<CompanyAppointmentsByDateResponseDTO> countTotalAppointmentsByDate(
-            @Param("companyId") Long companyId,
-            @Param("startDate") LocalDate startDate,
-            @Param("appointmentStatus") AppointmentStatus appointmentStatus
-            );
+
 
 
     @Query("""

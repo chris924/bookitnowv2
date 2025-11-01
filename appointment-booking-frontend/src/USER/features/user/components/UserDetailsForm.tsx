@@ -31,14 +31,7 @@ import { showToast } from "@/components/ui/own/ShowToast"
 import { handleAPIError } from "@/lib/utils"
 import Loader from "@/components/ui/own/Loader"
 import { useUserStore } from "@/stores/AuthStore"
-import { UserDataResponseDTO } from "@/API"
 
-
-export type UserDetailsFormProps = {
-
-  userData: UserDataResponseDTO;
-  setUserData: (userData: UserDataResponseDTO) => void;
-}
 
 export default function UserDetailsForm()
 {

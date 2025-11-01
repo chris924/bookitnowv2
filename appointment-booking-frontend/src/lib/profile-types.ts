@@ -1,7 +1,7 @@
-import { SpecialistDTO } from "./specialist-types";
+//import { SpecialistDTO } from "./specialist-types";
 
 
-export interface BaseProfileDTO  {
+/*export interface BaseProfileDTO  {
     id: number;
     name: string;
     email: string;
@@ -27,4 +27,4 @@ export interface EmployeeDataResponseDTO extends BaseProfileDTO {
     type: "EMPLOYEE";
     username: string;
     rating: number;
-}
+}*/

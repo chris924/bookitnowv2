@@ -6,6 +6,7 @@ import com.bookitnowv2.appointment_booking.entity.Company;
 import com.bookitnowv2.appointment_booking.entity.Employee;
 import com.bookitnowv2.appointment_booking.entity.dto.employee.EmployeeDataTableResponseDTO;
 import com.bookitnowv2.appointment_booking.entity.dto.employee.EmployeeGetResponseDTO;
+import com.bookitnowv2.appointment_booking.entity.dto.employee.SearchOptionDetails.SpecialistDTO;
 import com.bookitnowv2.appointment_booking.exception.EmployeeNotFoundException;
 import com.bookitnowv2.appointment_booking.mapper.EmployeeMapper;
 import com.bookitnowv2.appointment_booking.repository.*;
@@ -51,10 +52,10 @@ public class EmployeeService {
                 .orElseThrow(() -> new EmployeeNotFoundException(id.toString()));
     }
 
-    public List<EmployeeGetResponseDTO> getMostRatedEmployees()
+    public List<SpecialistDTO> getMostRatedEmployees()
     {
        return employeeRepository.findTopRatedEmployees(PageRequest.of(0, 20))
-               .stream().map(EmployeeMapper::toGetDTO).toList();
+               .stream().map(EmployeeMapper::toSpecialistDTO).toList();
     }
 
     // For extracting the id from the incoming slugs(name-id)

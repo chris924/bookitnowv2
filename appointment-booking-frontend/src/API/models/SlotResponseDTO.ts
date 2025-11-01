@@ -24,13 +24,13 @@ export interface SlotResponseDTO {
      * @type {number}
      * @memberof SlotResponseDTO
      */
-    id?: number;
+    id: number;
     /**
      * 
      * @type {Date}
      * @memberof SlotResponseDTO
      */
-    date?: Date;
+    date: Date;
     /**
      * 
      * @type {string}
@@ -55,6 +55,8 @@ export interface SlotResponseDTO {
  * Check if a given object implements the SlotResponseDTO interface.
  */
 export function instanceOfSlotResponseDTO(value: object): value is SlotResponseDTO {
+    if (!('id' in value) || value['id'] === undefined) return false;
+    if (!('date' in value) || value['date'] === undefined) return false;
     if (!('start' in value) || value['start'] === undefined) return false;
     if (!('end' in value) || value['end'] === undefined) return false;
     return true;
@@ -70,8 +72,8 @@ export function SlotResponseDTOFromJSONTyped(json: any, ignoreDiscriminator: boo
     }
     return {
         
-        'id': json['id'] == null ? undefined : json['id'],
-        'date': json['date'] == null ? undefined : (new Date(json['date'])),
+        'id': json['id'],
+        'date': (new Date(json['date'])),
         'start': json['start'],
         'end': json['end'],
         'status': json['status'] == null ? undefined : json['status'],
@@ -90,7 +92,7 @@ export function SlotResponseDTOToJSONTyped(value?: SlotResponseDTO | null, ignor
     return {
         
         'id': value['id'],
-        'date': value['date'] == null ? value['date'] : value['date'].toISOString().substring(0,10),
+        'date': value['date'].toISOString().substring(0,10),
         'start': value['start'],
         'end': value['end'],
         'status': value['status'],

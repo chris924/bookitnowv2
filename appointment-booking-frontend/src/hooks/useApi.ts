@@ -3,6 +3,9 @@ import {
   EmployeeControllerApi,
   CompanyControllerApi,
   AppointmentControllerApi,
+  UserControllerApi,
+  CompanyAuthenticationControllerApi,
+  UserAuthenticationControllerApi,
 } from "@/API";
 import { apiConfig } from "@/lib/apiClient";
 
@@ -10,9 +13,12 @@ export function useApi() {
   // useMemo ensures the API instances are not recreated on every render
   const apis = useMemo(() => {
     return {
+      user: new UserControllerApi(apiConfig),
       employee: new EmployeeControllerApi(apiConfig),
       company: new CompanyControllerApi(apiConfig),
       appointment: new AppointmentControllerApi(apiConfig),
+      companyAuth: new CompanyAuthenticationControllerApi(apiConfig),
+      userAuth: new UserAuthenticationControllerApi(apiConfig)
     };
   }, []);
 

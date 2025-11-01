@@ -1,9 +1,6 @@
-import { useParams } from "react-router-dom";
 import { useCancelAppointment, UserAppointmentsQuery } from "@/USER/hooks/query/UserAppointmentsQuery";
-import { showToast } from "@/components/ui/own/ShowToast";
 import {
   Card,
-  CardAction,
   CardContent,
   CardDescription,
   CardFooter,
@@ -13,22 +10,21 @@ import {
 import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
 import ApproveDialogForm from "@/components/ui/own/ApproveDialogForm";
-import { AppointmentGetResponseDTO } from "@/lib/appointment-types";
+import { AppointmentGetResponseDTO } from "@/API/models/AppointmentGetResponseDTO";
+import Loader from "@/components/ui/own/Loader";
 
-function getAppointmentStart(slot: { date: string; start: string }) {
-    return new Date(`${slot.date}T${slot.start}`);
-    }
+
+function getAppointmentStart(slot: { date: string | Date; start: string | undefined }) {
+  if (!slot.date || !slot.start) return new Date(NaN);
+  const dateStr = typeof slot.date === "string" ? slot.date : slot.date.toISOString().split("T")[0];
+  return new Date(`${dateStr}T${slot.start}`);
+}
 
 
 export default function UserBookedAppointmentsForm()
 {
 
-    const { slug } = useParams<{ slug: string }>();
-    
-    if(!slug)
-        return showToast.error("A felhasználó nem található!");
-
-    const {data: appointments, isLoading, error} = UserAppointmentsQuery(slug);
+    const {data: appointments, isLoading, error} = UserAppointmentsQuery();
     const cancelMutation = useCancelAppointment();
     const [showApproveForm, setShowApproveForm] = useState(false);
     const [cancelAppointmentData, setCancelAppointmentData] = useState<AppointmentGetResponseDTO>();
@@ -36,7 +32,7 @@ export default function UserBookedAppointmentsForm()
     const now = new Date();
 
     const upcomingAppointments = appointments?.filter(
-    (a) => getAppointmentStart(a.slotResponseDTO) >= now && a.slotResponseDTO.status !== "Cancelled"
+    (a) =>  a.slotResponseDTO && a.slotResponseDTO.date && getAppointmentStart(a.slotResponseDTO) >= now && a.slotResponseDTO.status !== "Cancelled"
     );
 
     const pastAppointments = appointments?.filter(
@@ -45,10 +41,8 @@ export default function UserBookedAppointmentsForm()
 
     //handleCancelAppointmentClick(appointment.slotResponseDTO.id)
     function handleCancelAppointmentClick(appointmentId: string) {
-    if (!slug) return; 
 
     cancelMutation.mutate({
-        userSlug: slug,
         appointmentId:  Number(appointmentId),
     });
 }
@@ -65,6 +59,8 @@ export default function UserBookedAppointmentsForm()
     }
     }, [cancelMutation.isSuccess, cancelMutation.isError]);
 
+    if(isLoading)
+      return <Loader/>
 
    return (
   <div className="space-y-10">
@@ -84,7 +80,7 @@ export default function UserBookedAppointmentsForm()
                 />
                 <div>
                   <CardTitle className="text-lg">{appointment.employeeName}</CardTitle>
-                  <CardDescription>{appointment.companyName} , {appointment.slotResponseDTO.status}</CardDescription>
+                  <CardDescription>{appointment.companyName ?? "-"} , {appointment.slotResponseDTO.status}</CardDescription>
                 </div>
               </CardHeader>
 
@@ -97,7 +93,7 @@ export default function UserBookedAppointmentsForm()
 
               <CardFooter className="flex justify-between items-center text-sm text-muted-foreground">
                 <p>
-                  {appointment.slotResponseDTO.date} • {appointment.slotResponseDTO.start}–{appointment.slotResponseDTO.end}
+                  {appointment.slotResponseDTO.date.toDateString()} • {appointment.slotResponseDTO.start}–{appointment.slotResponseDTO.end}
                 </p>
                 <Button className="text-red-600 hover:text-red-800 font-medium" onClick={() => clickOnCancel(appointment)}>Foglalás törlése</Button>
               </CardFooter>
@@ -124,7 +120,7 @@ export default function UserBookedAppointmentsForm()
                 />
                 <div>
                   <CardTitle className="text-lg">{appointment.employeeName}</CardTitle>
-                  <CardDescription>{appointment.companyName}</CardDescription>
+                  <CardDescription>{appointment.companyName ?? "-"}</CardDescription>
                 </div>
               </CardHeader>
 
@@ -137,7 +133,7 @@ export default function UserBookedAppointmentsForm()
 
               <CardFooter className="flex justify-between items-center text-sm text-muted-foreground">
                 <p>
-                  {appointment.slotResponseDTO.date} • {appointment.slotResponseDTO.start}–{appointment.slotResponseDTO.end}
+                  {appointment.slotResponseDTO.date.toDateString()} • {appointment.slotResponseDTO.start}–{appointment.slotResponseDTO.end}
                 </p>
               </CardFooter>
             </Card>

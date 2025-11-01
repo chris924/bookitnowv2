@@ -16,22 +16,22 @@
 import * as runtime from '../runtime';
 import type {
   EmployeeDataTableResponseDTO,
-  EmployeeGetResponseDTO,
   EmployeePageResponseDTO,
   EmployeeSearchOptionsResponseDTO,
   EmployeeSearchRequestDTO,
+  SpecialistDTO,
 } from '../models/index';
 import {
     EmployeeDataTableResponseDTOFromJSON,
     EmployeeDataTableResponseDTOToJSON,
-    EmployeeGetResponseDTOFromJSON,
-    EmployeeGetResponseDTOToJSON,
     EmployeePageResponseDTOFromJSON,
     EmployeePageResponseDTOToJSON,
     EmployeeSearchOptionsResponseDTOFromJSON,
     EmployeeSearchOptionsResponseDTOToJSON,
     EmployeeSearchRequestDTOFromJSON,
     EmployeeSearchRequestDTOToJSON,
+    SpecialistDTOFromJSON,
+    SpecialistDTOToJSON,
 } from '../models/index';
 
 export interface GetEmployeePageRequest {
@@ -46,6 +46,33 @@ export interface GetSearchEmployeeRequest {
  * 
  */
 export class EmployeeControllerApi extends runtime.BaseAPI {
+
+    /**
+     */
+    async getCompanyEmployeeTableRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<EmployeeDataTableResponseDTO>>> {
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+
+        let urlPath = `/employees/employee-table`;
+
+        const response = await this.request({
+            path: urlPath,
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(EmployeeDataTableResponseDTOFromJSON));
+    }
+
+    /**
+     */
+    async getCompanyEmployeeTable(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<EmployeeDataTableResponseDTO>> {
+        const response = await this.getCompanyEmployeeTableRaw(initOverrides);
+        return await response.value();
+    }
 
     /**
      */
@@ -84,34 +111,7 @@ export class EmployeeControllerApi extends runtime.BaseAPI {
 
     /**
      */
-    async getEmployeeTableRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<EmployeeDataTableResponseDTO>>> {
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-
-        let urlPath = `/employees/employee-table`;
-
-        const response = await this.request({
-            path: urlPath,
-            method: 'GET',
-            headers: headerParameters,
-            query: queryParameters,
-        }, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(EmployeeDataTableResponseDTOFromJSON));
-    }
-
-    /**
-     */
-    async getEmployeeTable(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<EmployeeDataTableResponseDTO>> {
-        const response = await this.getEmployeeTableRaw(initOverrides);
-        return await response.value();
-    }
-
-    /**
-     */
-    async getMostRatedEmployeesRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<EmployeeGetResponseDTO>>> {
+    async getMostRatedEmployeesRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<SpecialistDTO>>> {
         const queryParameters: any = {};
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -126,12 +126,12 @@ export class EmployeeControllerApi extends runtime.BaseAPI {
             query: queryParameters,
         }, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(EmployeeGetResponseDTOFromJSON));
+        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(SpecialistDTOFromJSON));
     }
 
     /**
      */
-    async getMostRatedEmployees(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<EmployeeGetResponseDTO>> {
+    async getMostRatedEmployees(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<SpecialistDTO>> {
         const response = await this.getMostRatedEmployeesRaw(initOverrides);
         return await response.value();
     }

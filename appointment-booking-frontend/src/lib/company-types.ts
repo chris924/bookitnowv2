@@ -1,6 +1,6 @@
 
 
-export interface CompanyPastAppointsmentsResponseDTO {
+/*export interface CompanyPastAppointsmentsResponseDTO {
     date: Date;
     count: Number;
     income: Number;
@@ -12,4 +12,4 @@ export interface CompanySectionCardsResponseDTO
     totalActiveAppointments: Number;
     bestRatedEmployee: String;
     monthlyNewCustomers: Number;
-}
+}*/

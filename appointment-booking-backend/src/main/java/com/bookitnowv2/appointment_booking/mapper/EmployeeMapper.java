@@ -90,6 +90,11 @@ public class EmployeeMapper {
 
     }
 
+    public static SpecialistDTO toSpecialistDTO(Employee employee)
+    {
+        return new SpecialistDTO(employee.getId(), employee.getName(), employee.getName(), employee.getAvatarUrl(), employee.getCompany().getName(), employee.getRating());
+    }
+
     public EmployeePageResponseDTO toPageResponseDTO(Employee employee)
     {
         List<ServiceEntity> services = employee.getServices();

@@ -14,7 +14,9 @@ import java.time.LocalTime;
 @NoArgsConstructor
 public class SlotResponseDTO {
 
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     private Integer id;
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     private LocalDate date;
     @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     private LocalTime start;

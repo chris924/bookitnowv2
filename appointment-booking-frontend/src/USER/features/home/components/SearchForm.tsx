@@ -37,14 +37,18 @@ export default function SearchForm() {
   }, [specialistName, specialistCompany, specialistPlace]);
 
 
-  const searchCriteria: GetSearchEmployeeRequest = {
+  const searchCriteria: EmployeeSearchRequestDTO= {
     name: selectedSpecialist?.value ?? debouncedCriteria.name,
     company: selectedCompany?.value ?? debouncedCriteria.company,
     place: selectedPlace?.value ?? debouncedCriteria.place,
+  }
+
+  const searchCriteriaFinal: GetSearchEmployeeRequest = {
+    employeeSearchRequestDTO: searchCriteria
   };
 
 
-  const { data, isLoading, isFetching, error } = UserSearchResultsQuery(searchCriteria);
+  const { data, isLoading, isFetching, error } = UserSearchResultsQuery(searchCriteriaFinal);
 
   const specialists = data?.specialists ?? [];
   const companies = data?.companies ?? [];

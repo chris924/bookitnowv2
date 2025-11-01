@@ -1,42 +1,14 @@
-import { getUserData } from "@/api_old/userSide/user";
-import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useState } from "react";
 import UserDetailsForm from "./components/UserDetailsForm";
-import { handleAPIError } from "@/lib/utils";
 import Loader from "@/components/ui/own/Loader";
 import { UserDataResponseDTO } from "@/API/models/UserDataResponseDTO";
+import { UserDataQuery } from "@/USER/hooks/query/UserDataQuery";
 
 
 export default function UserProfileContent()
 {
-    const { slug } = useParams();
 
-    const [userData, setUserData] = useState<UserDataResponseDTO>();
-    const [isLoading, setIsLoading] = useState(false);
-
-   const fetchUserContent = async () => {
-  try {
-
-    setIsLoading(true);
-
-    if (!slug) {
-      console.error("No slug provided in URL parameters.");
-      return;
-    }
-
-    const userContent = await getUserData(slug);
-    console.log("User Content:", userContent);
-    setUserData(userContent);
-  } catch (error) {
-    handleAPIError(error);
-  } finally{
-    setIsLoading(false);
-  }
-};
-
-useEffect(() => {
-  fetchUserContent();
-}, [slug]); 
+    const {data: userData, isLoading, error} = UserDataQuery();  // Not used yet, might need it!!
 
 return (
     <>

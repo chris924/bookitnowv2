@@ -1,6 +1,6 @@
 import { EmployeeDataTableResponseDTO } from "@/lib/specialist-types";
 import api from "../axios";
-import { CompanyPastAppointsmentsResponseDTO, CompanySectionCardsResponseDTO } from '@/lib/company-types';
+
 
 interface loginCompanyInterface
 {

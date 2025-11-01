@@ -90,20 +90,7 @@ public class CompanyService {
 
 
 
-    @Transactional
-    public List<CompanyAppointmentsByDateResponseDTO> getTotalAppointmentsByMonth(Integer monthCount)
-    {
 
-
-        Company authCompany = SecurityUtils.getCurrentCompany();
-        Company currentCompany = this.getCompanyByIdTemp(authCompany.getId());
-
-        LocalDate currentDate = LocalDate.now();
-
-        LocalDate startDate = currentDate.minusMonths(monthCount);
-
-        return companyRepository.countTotalAppointmentsByDate(currentCompany.getId(), startDate, AppointmentStatus.BOOKED);
-    }
 
     @Transactional
     public CompanySectionCardsResponseDTO getCompanySectionCardsData()

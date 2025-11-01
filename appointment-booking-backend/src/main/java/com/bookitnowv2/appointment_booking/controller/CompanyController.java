@@ -30,14 +30,8 @@ public class CompanyController {
         this.companyService = companyService;
     }
 
-    @GetMapping("/appointments-month-data")
-    public List<CompanyAppointmentsByDateResponseDTO> getMonthAppointmentsData()
-    {
-        return companyService.getTotalAppointmentsByMonth(3);
-    }
-
     @GetMapping("/section-cards-statistics")
-    public CompanySectionCardsResponseDTO getCompanyTotalRevenue()
+    public CompanySectionCardsResponseDTO getCompanySectionCardsStatistics()
     {
         return companyService.getCompanySectionCardsData();
     }

@@ -32,7 +32,7 @@ export interface AppointmentGetResponseDTO {
      * @type {SlotResponseDTO}
      * @memberof AppointmentGetResponseDTO
      */
-    slotResponseDTO?: SlotResponseDTO;
+    slotResponseDTO: SlotResponseDTO;
     /**
      * 
      * @type {number}
@@ -68,6 +68,12 @@ export interface AppointmentGetResponseDTO {
      * @type {string}
      * @memberof AppointmentGetResponseDTO
      */
+    companyName?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof AppointmentGetResponseDTO
+     */
     name?: string;
     /**
      * 
@@ -87,6 +93,7 @@ export interface AppointmentGetResponseDTO {
  * Check if a given object implements the AppointmentGetResponseDTO interface.
  */
 export function instanceOfAppointmentGetResponseDTO(value: object): value is AppointmentGetResponseDTO {
+    if (!('slotResponseDTO' in value) || value['slotResponseDTO'] === undefined) return false;
     return true;
 }
 
@@ -100,12 +107,13 @@ export function AppointmentGetResponseDTOFromJSONTyped(json: any, ignoreDiscrimi
     }
     return {
         
-        'slotResponseDTO': json['slotResponseDTO'] == null ? undefined : SlotResponseDTOFromJSON(json['slotResponseDTO']),
+        'slotResponseDTO': SlotResponseDTOFromJSON(json['slotResponseDTO']),
         'userId': json['userId'] == null ? undefined : json['userId'],
         'employeeId': json['employeeId'] == null ? undefined : json['employeeId'],
         'employeeName': json['employeeName'] == null ? undefined : json['employeeName'],
         'employeeAvatarUrl': json['employeeAvatarUrl'] == null ? undefined : json['employeeAvatarUrl'],
         'companyId': json['companyId'] == null ? undefined : json['companyId'],
+        'companyName': json['companyName'] == null ? undefined : json['companyName'],
         'name': json['name'] == null ? undefined : json['name'],
         'serviceName': json['serviceName'] == null ? undefined : json['serviceName'],
         'servicePrice': json['servicePrice'] == null ? undefined : json['servicePrice'],
@@ -129,6 +137,7 @@ export function AppointmentGetResponseDTOToJSONTyped(value?: AppointmentGetRespo
         'employeeName': value['employeeName'],
         'employeeAvatarUrl': value['employeeAvatarUrl'],
         'companyId': value['companyId'],
+        'companyName': value['companyName'],
         'name': value['name'],
         'serviceName': value['serviceName'],
         'servicePrice': value['servicePrice'],

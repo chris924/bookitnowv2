@@ -23,6 +23,7 @@ public class AppointmentMapper {
                 employee.getAvatarUrl(),
                 company.getId(),
                 company.getName(),
+                company.getName(),
                 serviceEntity.getName(),
                 serviceEntity.getPrice()
         );
