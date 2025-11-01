@@ -19,7 +19,7 @@ export function CompanyPastAppointmentsQuery()
     });
 }
 
-export function CompanyTotalRevenue()
+export function CompanyTotalRevenueQuery()
 {
    
     const api = useApi();
@@ -33,7 +33,7 @@ export function CompanyTotalRevenue()
     })
 }
 
-export function EmployeeTable()
+export function CompanyEmployeeTableQuery()
 {
     const api = useApi();
     return useQuery<EmployeeDataTableResponseDTO[]>({

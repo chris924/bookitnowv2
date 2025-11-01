@@ -14,6 +14,13 @@
 
 
 import * as runtime from '../runtime';
+import type {
+  AuthInfoResponseDTO,
+} from '../models/index';
+import {
+    AuthInfoResponseDTOFromJSON,
+    AuthInfoResponseDTOToJSON,
+} from '../models/index';
 
 /**
  * 
@@ -22,7 +29,7 @@ export class AuthInfoControllerApi extends runtime.BaseAPI {
 
     /**
      */
-    async checkAuthRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<object>> {
+    async checkAuthRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<AuthInfoResponseDTO>> {
         const queryParameters: any = {};
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -37,12 +44,12 @@ export class AuthInfoControllerApi extends runtime.BaseAPI {
             query: queryParameters,
         }, initOverrides);
 
-        return new runtime.JSONApiResponse<any>(response);
+        return new runtime.JSONApiResponse(response, (jsonValue) => AuthInfoResponseDTOFromJSON(jsonValue));
     }
 
     /**
      */
-    async checkAuth(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<object> {
+    async checkAuth(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<AuthInfoResponseDTO> {
         const response = await this.checkAuthRaw(initOverrides);
         return await response.value();
     }

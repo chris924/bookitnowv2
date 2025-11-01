@@ -107,7 +107,7 @@ export class UserControllerApi extends runtime.BaseAPI {
 
     /**
      */
-    async uploadUserAvatarRaw(requestParameters: UploadUserAvatarOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<object>> {
+    async uploadUserAvatarRaw(requestParameters: UploadUserAvatarOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<string>> {
         const queryParameters: any = {};
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -125,12 +125,16 @@ export class UserControllerApi extends runtime.BaseAPI {
             body: UploadUserAvatarRequestToJSON(requestParameters['uploadUserAvatarRequest']),
         }, initOverrides);
 
-        return new runtime.JSONApiResponse<any>(response);
+        if (this.isJsonMime(response.headers.get('content-type'))) {
+            return new runtime.JSONApiResponse<string>(response);
+        } else {
+            return new runtime.TextApiResponse(response) as any;
+        }
     }
 
     /**
      */
-    async uploadUserAvatar(requestParameters: UploadUserAvatarOperationRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<object> {
+    async uploadUserAvatar(requestParameters: UploadUserAvatarOperationRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<string> {
         const response = await this.uploadUserAvatarRaw(requestParameters, initOverrides);
         return await response.value();
     }

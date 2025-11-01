@@ -1,5 +1,6 @@
 package com.bookitnowv2.appointment_booking.entity.dto.company;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
@@ -13,6 +14,7 @@ import java.time.LocalDate;
 @Data
 public class CompanyAppointmentsByDateResponseDTO {
 
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     private LocalDate date;
     private Long count;
     private Long income;

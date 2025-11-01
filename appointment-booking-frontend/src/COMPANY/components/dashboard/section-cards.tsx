@@ -9,12 +9,12 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
-import { CompanyTotalRevenue } from "@/COMPANY/hooks/query/CompanyDashboardQuerys";
+import { CompanyTotalRevenueQuery } from "@/COMPANY/hooks/query/CompanyDashboardQuerys";
 import Loader from "@/components/ui/own/Loader";
 
 export function SectionCards() {
 
-  const {data, isLoading} = CompanyTotalRevenue();
+  const {data, isLoading} = CompanyTotalRevenueQuery();
 
   if(isLoading || !data) return <Loader/>
 

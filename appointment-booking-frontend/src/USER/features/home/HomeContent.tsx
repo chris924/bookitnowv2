@@ -2,11 +2,11 @@
 import defaultImage from "@/assets/default.jpg"
 import MostRatedSpecialist from "./components/MostRatedSpecialist";
 import { useEffect, useState } from "react";
-import { getMostRatedEmployees } from "@/api_old/userSide/employee";
 import FeaturedSpecialist from "./components/FeaturedSpecialist";
 import SearchForm from "./components/SearchForm";
 import { SpecialistDTO } from "@/API/models/SpecialistDTO";
 import { EmployeeGetResponseDTO } from "@/API";
+import { useApi } from "@/hooks/useApi";
 
 
 
@@ -76,9 +76,9 @@ export default function HomeContent()
         async function fetchMostRatedEmployees()
         {
          try {
-            const response = await getMostRatedEmployees();
-            setTopRatedEmployees(response);
-          //  console.log("RESPONSE:", response)
+          const api = useApi();
+          const response = await api.employee.getMostRatedEmployees();
+          setTopRatedEmployees(response);
           } catch (error) {
             console.error('Failed to fetch top-rated employees:', error);
           }

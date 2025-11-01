@@ -1,9 +1,8 @@
 import { create } from "zustand";
-import { logoutUser } from "@/api_old/userSide/user";
-import { authInfo } from "@/api_old/userSide/auth-info";
 import { UserDataResponseDTO } from "@/API/models/UserDataResponseDTO";
-import { EmployeeGetResponseDTO } from "@/API";
-import { CompanyDataResponseDTO } from "@/lib/profile-types";
+import { AuthInfoResponseDTO, CompanyGetResponseDTO, EmployeeGetResponseDTO } from "@/API";
+import { useApi } from "@/hooks/useApi";
+
 
 interface UserState {
   user: UserDataResponseDTO | null; // includes avatar, name, etc.
@@ -26,13 +25,20 @@ interface EmployeeState {
 }
 
 interface CompanyState {
-  company: CompanyDataResponseDTO | null; // includes avatar, name, etc.
+  company: CompanyGetResponseDTO | null; // includes avatar, name, etc.
   loading: boolean;
   isAuthenticated: boolean;
   checkAuth: () => Promise<void>;
   updateCompanyAvatar: (data: string) => void;
-  updateCompanyObject: (data: CompanyDataResponseDTO) => void;
+  updateCompanyObject: (data: CompanyGetResponseDTO) => void;
   logout: () => Promise<void>;
+}
+
+async function checkAuthFunction(): Promise<AuthInfoResponseDTO>  {
+
+  const api = useApi();
+  const res = await api.authInfo.checkAuth();
+  return res;
 }
 
 export const useUserStore = create<UserState>((set) => ({
@@ -42,9 +48,9 @@ export const useUserStore = create<UserState>((set) => ({
 
   checkAuth: async () => {
     try {
-      const res = await authInfo();
-      if (res.status === 200) {
-        set({ user: res.data, isAuthenticated: true, loading: false });
+      const res = await checkAuthFunction();
+      if (res.userGetResponseDTO) {
+        set({ user: res.userGetResponseDTO, isAuthenticated: true, loading: false });
       }
     } catch {
       set({ user: null, isAuthenticated: false, loading: false });
@@ -63,7 +69,8 @@ export const useUserStore = create<UserState>((set) => ({
 
   logout: async () => {
     try {
-      await logoutUser();
+      const api = useApi();
+      await api.userAuth.logoutUser();
     } finally {
       set({ user: null, isAuthenticated: false, loading: false });
     }
@@ -78,9 +85,9 @@ export const useEmployeeStore = create<EmployeeState>((set) => ({
 
   checkAuth: async () => {
     try {
-      const res = await authInfo();
-      if (res.status === 200) {
-        set({ employee: res.data, isAuthenticated: true, loading: false });
+      const res = await checkAuthFunction();
+      if (res.companyGetResponseDTO) {
+        set({ employee: res.companyGetResponseDTO, isAuthenticated: true, loading: false });
       }
     } catch {
       set({ employee: null, isAuthenticated: false, loading: false });
@@ -99,7 +106,8 @@ export const useEmployeeStore = create<EmployeeState>((set) => ({
 
   logout: async () => {
     try {
-      await logoutUser();
+      const api = useApi();
+   //   await api.employeeAuth.logoutEmployee(); //TODO
     } finally {
       set({ employee: null, isAuthenticated: false, loading: false });
     }
@@ -114,9 +122,9 @@ export const useCompanyStore = create<CompanyState>((set) => ({
 
   checkAuth: async () => {
     try {
-      const res = await authInfo();
-      if (res.status === 200) {
-        set({ company: res.data, isAuthenticated: true, loading: false });
+      const res = await checkAuthFunction();
+      if (res.companyGetResponseDTO) {
+        set({ company: res.companyGetResponseDTO, isAuthenticated: true, loading: false });
       }
     } catch {
       set({ company: null, isAuthenticated: false, loading: false });
@@ -128,14 +136,15 @@ export const useCompanyStore = create<CompanyState>((set) => ({
     company: state.company ? { ...state.company, avatarUrl } : state.company,
   })),
 
-  updateCompanyObject: (updatedUser: CompanyDataResponseDTO) =>
+  updateCompanyObject: (updatedUser: CompanyGetResponseDTO) =>
     set((state) => ({
       company: updatedUser
     })),
 
   logout: async () => {
     try {
-      await logoutUser();
+        const api = useApi();
+   //   await api.companyAuth.logoutCompany(); //TODO
     } finally {
       set({ company: null, isAuthenticated: false, loading: false });
     }

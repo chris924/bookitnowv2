@@ -25,20 +25,25 @@ public class AuthInfoController {
     private SecurityUtils securityUtils;
 
     @GetMapping("/auth-info")
-    public ResponseEntity<?> checkAuth(Authentication authentication)
+    public ResponseEntity<AuthInfoResponseDTO> checkAuth(Authentication authentication)
     {
         UserDetails userDetails = SecurityUtils.getCurrentPrincipal();
 
-        return switch (userDetails) {
+        AuthInfoResponseDTO authInfoResponseDTO = new AuthInfoResponseDTO();
+
+        switch (userDetails) {
             case User userPrincipal ->
-                    ResponseEntity.ok(UserMapper.toUserDataResponseDTO(userPrincipal));
+                    authInfoResponseDTO.setUserGetResponseDTO(UserMapper.toUserDataResponseDTO(userPrincipal));
             case Company companyPrincipal ->
-                    ResponseEntity.ok(CompanyMapper.toGetDTO(companyPrincipal));
+                    authInfoResponseDTO.setCompanyGetResponseDTO(CompanyMapper.toGetDTO(companyPrincipal));
             case Employee employeePrincipal ->
-                    ResponseEntity.ok(EmployeeMapper.toGetDTO(employeePrincipal));
-            case null, default -> ResponseEntity.notFound().build();
+                    authInfoResponseDTO.setEmployeeGetResponseDTO(EmployeeMapper.toGetDTO(employeePrincipal));
+            case null, default -> {
+                return ResponseEntity.notFound().build();
+            }
         };
 
+        return ResponseEntity.ok().body(authInfoResponseDTO);
     }
 
 }

@@ -24,37 +24,37 @@ export interface EmployeeDataTableResponseDTO {
      * @type {number}
      * @memberof EmployeeDataTableResponseDTO
      */
-    id?: number;
+    id: number;
     /**
      * 
      * @type {string}
      * @memberof EmployeeDataTableResponseDTO
      */
-    name?: string;
+    name: string;
     /**
      * 
      * @type {string}
      * @memberof EmployeeDataTableResponseDTO
      */
-    experience?: EmployeeDataTableResponseDTOExperienceEnum;
+    experience: EmployeeDataTableResponseDTOExperienceEnum;
     /**
      * 
      * @type {string}
      * @memberof EmployeeDataTableResponseDTO
      */
-    status?: EmployeeDataTableResponseDTOStatusEnum;
+    status: EmployeeDataTableResponseDTOStatusEnum;
     /**
      * 
      * @type {number}
      * @memberof EmployeeDataTableResponseDTO
      */
-    bookedAppointments?: number;
+    bookedAppointments: number;
     /**
      * 
      * @type {number}
      * @memberof EmployeeDataTableResponseDTO
      */
-    rating?: number;
+    rating: number;
 }
 
 
@@ -82,6 +82,12 @@ export type EmployeeDataTableResponseDTOStatusEnum = typeof EmployeeDataTableRes
  * Check if a given object implements the EmployeeDataTableResponseDTO interface.
  */
 export function instanceOfEmployeeDataTableResponseDTO(value: object): value is EmployeeDataTableResponseDTO {
+    if (!('id' in value) || value['id'] === undefined) return false;
+    if (!('name' in value) || value['name'] === undefined) return false;
+    if (!('experience' in value) || value['experience'] === undefined) return false;
+    if (!('status' in value) || value['status'] === undefined) return false;
+    if (!('bookedAppointments' in value) || value['bookedAppointments'] === undefined) return false;
+    if (!('rating' in value) || value['rating'] === undefined) return false;
     return true;
 }
 
@@ -95,12 +101,12 @@ export function EmployeeDataTableResponseDTOFromJSONTyped(json: any, ignoreDiscr
     }
     return {
         
-        'id': json['id'] == null ? undefined : json['id'],
-        'name': json['name'] == null ? undefined : json['name'],
-        'experience': json['experience'] == null ? undefined : json['experience'],
-        'status': json['status'] == null ? undefined : json['status'],
-        'bookedAppointments': json['bookedAppointments'] == null ? undefined : json['bookedAppointments'],
-        'rating': json['rating'] == null ? undefined : json['rating'],
+        'id': json['id'],
+        'name': json['name'],
+        'experience': json['experience'],
+        'status': json['status'],
+        'bookedAppointments': json['bookedAppointments'],
+        'rating': json['rating'],
     };
 }
 

@@ -7,11 +7,11 @@ import { AppSidebar } from "../components/dashboard/app-sidebar"
 import { ChartAreaInteractive } from "../components/dashboard/chart-area-interactive"
 import { DataTable } from "../components/dashboard/data-table"
 import { SectionCards } from "../components/dashboard/section-cards"
-import { EmployeeTable } from "../hooks/query/CompanyDashboardQuerys"
+import { CompanyEmployeeTableQuery } from "../hooks/query/CompanyDashboardQuerys"
 import Loader from "@/components/ui/own/Loader"
 export default function CompanyDashboard() {
 
-  const {data, isLoading} = EmployeeTable();
+  const {data, isLoading} = CompanyEmployeeTableQuery();
   
     if(isLoading || !data) return <Loader/>
 

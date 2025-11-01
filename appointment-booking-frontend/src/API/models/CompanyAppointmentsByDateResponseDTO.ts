@@ -24,7 +24,7 @@ export interface CompanyAppointmentsByDateResponseDTO {
      * @type {Date}
      * @memberof CompanyAppointmentsByDateResponseDTO
      */
-    date?: Date;
+    date: Date;
     /**
      * 
      * @type {number}
@@ -43,6 +43,7 @@ export interface CompanyAppointmentsByDateResponseDTO {
  * Check if a given object implements the CompanyAppointmentsByDateResponseDTO interface.
  */
 export function instanceOfCompanyAppointmentsByDateResponseDTO(value: object): value is CompanyAppointmentsByDateResponseDTO {
+    if (!('date' in value) || value['date'] === undefined) return false;
     return true;
 }
 
@@ -56,7 +57,7 @@ export function CompanyAppointmentsByDateResponseDTOFromJSONTyped(json: any, ign
     }
     return {
         
-        'date': json['date'] == null ? undefined : (new Date(json['date'])),
+        'date': (new Date(json['date'])),
         'count': json['count'] == null ? undefined : json['count'],
         'income': json['income'] == null ? undefined : json['income'],
     };
@@ -73,7 +74,7 @@ export function CompanyAppointmentsByDateResponseDTOToJSONTyped(value?: CompanyA
 
     return {
         
-        'date': value['date'] == null ? value['date'] : value['date'].toISOString().substring(0,10),
+        'date': value['date'].toISOString().substring(0,10),
         'count': value['count'],
         'income': value['income'],
     };

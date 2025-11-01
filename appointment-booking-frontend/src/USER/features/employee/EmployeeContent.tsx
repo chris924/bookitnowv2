@@ -1,4 +1,3 @@
-import { getSpecificEmployeeContent } from "@/api_old/userSide/employee"
 import { useEffect, useState } from "react"
 import { useParams } from "react-router-dom";
 import EmployeeServicesTable from "./components/EmployeeServices";
@@ -6,11 +5,12 @@ import EmployeeDetails from "./components/EmployeeDetails";
 import EmployeeBookingTable from "./components/EmployeeBookingTable";
 import { EmployeePageResponseDTO } from "@/API/models/EmployeePageResponseDTO";
 import { AppointmentSlotResponseDTO } from "@/API/models/AppointmentSlotResponseDTO";
+import { useApi } from "@/hooks/useApi";
 
 
 export default function EmployeeContent()
 {
-     const { slug } = useParams();
+     const { employeeSlug } = useParams();
 
      const [employeeData, setEmployeeData] = useState<EmployeePageResponseDTO>();
      const [appointmentSlots, setAppointmentSlots] = useState<AppointmentSlotResponseDTO>();
@@ -22,12 +22,14 @@ export default function EmployeeContent()
         const fetchEmployeeConntent = async () => {
 
             try{
-                if (!slug) {
+                if (!employeeSlug) {
                     console.error("No slug provided in URL parameters.");
                     return;
                 }
+                
+                const api = useApi();
 
-                const employeeContent = await getSpecificEmployeeContent(slug);
+                const employeeContent = await api.employee.getEmployeePage({employeeSlug}) //getSpecificEmployeeContent(slug);
                 console.log("Employee Content:", employeeContent);
                 setEmployeeData(employeeContent);
                 

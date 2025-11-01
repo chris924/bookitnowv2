@@ -81,7 +81,7 @@ public class UserController {
 
 
     @PostMapping("/upload-avatar")
-    public ResponseEntity<?> uploadUserAvatar(@RequestParam("avatar") MultipartFile file) {
+    public ResponseEntity<String> uploadUserAvatar(@RequestParam("avatar") MultipartFile file) {
 
         User currentUser = SecurityUtils.getCurrentUser();
         UserDocument userDocument = elasticUserService.getUserDocument(currentUser);

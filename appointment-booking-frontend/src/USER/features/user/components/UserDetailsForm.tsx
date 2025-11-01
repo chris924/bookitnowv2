@@ -25,12 +25,13 @@ import {
 
 import defaultAvatar from "@/assets/default.jpg"
 import { PopoverArrow } from "@radix-ui/react-popover"
-import { changeUserDetails, uploadUserAvatar, userDetailsChangeDTO } from "@/api_old/userSide/user"
 import { useMutation } from "@tanstack/react-query"
 import { showToast } from "@/components/ui/own/ShowToast"
 import { handleAPIError } from "@/lib/utils"
 import Loader from "@/components/ui/own/Loader"
 import { useUserStore } from "@/stores/AuthStore"
+import { useApi } from "@/hooks/useApi"
+import { UploadUserAvatarRequest, UserDetailsChangeDTO } from "@/API"
 
 
 export default function UserDetailsForm()
@@ -42,14 +43,16 @@ export default function UserDetailsForm()
 
     const {user, loading } = useUserStore();
 
+    const api = useApi();
+
    const avatarChangeMutation = useMutation({
-    mutationFn: (file: File) => uploadUserAvatar(file),
+    
+    mutationFn: (file: File) =>  api.user.uploadUserAvatar({ uploadUserAvatarRequest: { avatar: file }}),
     onSuccess: (response) => {
       if(response)
       {
      //   setUserData({...userData, avatarUrl: response.data})
-
-        useUserStore.getState().updateUserAvatar(response.data);
+        useUserStore.getState().updateUserAvatar(response);
         showToast.success("Sikeres profilkép módosítás!");
       }
     },
@@ -86,10 +89,10 @@ export default function UserDetailsForm()
   })
 
   const changeUserDetailsMutation = useMutation({
-    mutationFn: (dto: userDetailsChangeDTO) => changeUserDetails(dto),
+    mutationFn: (dto: UserDetailsChangeDTO) => api.user.changeUserDetails({userDetailsChangeDTO: dto}),  //changeUserDetails(dto),
     onSuccess: (data) => {
    //   setUserData(data.data);
-      useUserStore.getState().updateUserObject(data.data)
+      useUserStore.getState().updateUserObject(data)
       showToast.success("Adatok sikeresen frissítve!");
       setEnableModifyUserData(false);
     },
@@ -98,7 +101,7 @@ export default function UserDetailsForm()
 
 async function onSubmit(values: z.infer<typeof formSchema>) {
 
-  const dto: userDetailsChangeDTO = {
+  const dto: UserDetailsChangeDTO = {
      name: values.name,
     username: values.username
   }

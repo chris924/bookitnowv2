@@ -1,7 +1,4 @@
 import { useState, useEffect } from "react";
-import {
-  EmployeeSearchPayload
-} from "@/api_old/userSide/employee";
 import SpecialistGrid from "./SpecialistGrid";
 import BaseSearchForm from "@/components/ui/own/base-search-form";
 import { UserSearchResultsQuery } from "@/USER/hooks/query/UserSearchResultsQuery";
@@ -12,6 +9,12 @@ export default function SearchForm() {
   const [specialistName, setSpecialistName] = useState("");
   const [specialistCompany, setSpecialistCompany] = useState("");
   const [specialistPlace, setSpecialistPlace] = useState("");
+
+interface EmployeeSearchPayload {
+  name: string;
+  company: string;
+  place: string;
+}
 
   const [debouncedCriteria, setDebouncedCriteria] = useState<EmployeeSearchPayload>({
     name: "",
