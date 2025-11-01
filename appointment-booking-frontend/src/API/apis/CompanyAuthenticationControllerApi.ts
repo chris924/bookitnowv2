@@ -71,4 +71,35 @@ export class CompanyAuthenticationControllerApi extends runtime.BaseAPI {
         return await response.value();
     }
 
+    /**
+     */
+    async logoutCompanyRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<string>> {
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+
+        let urlPath = `/auth/company/logout`;
+
+        const response = await this.request({
+            path: urlPath,
+            method: 'POST',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        if (this.isJsonMime(response.headers.get('content-type'))) {
+            return new runtime.JSONApiResponse<string>(response);
+        } else {
+            return new runtime.TextApiResponse(response) as any;
+        }
+    }
+
+    /**
+     */
+    async logoutCompany(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<string> {
+        const response = await this.logoutCompanyRaw(initOverrides);
+        return await response.value();
+    }
+
 }

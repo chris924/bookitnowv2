@@ -1,5 +1,4 @@
 import { AppointmentGetResponseDTO } from "@/API/models/AppointmentGetResponseDTO";
-import { addUserToAppointment} from "@/api_old/userSide/appointments";
 import { showToast } from "@/components/ui/own/ShowToast";
 import { useApi } from "@/hooks/useApi";
 import { createSlug, handleAPIError } from "@/lib/utils";
@@ -38,10 +37,11 @@ export function useBookAppointment() {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   const {user} = useUserStore();
+  const api = useApi();
 
   return useMutation({
     mutationFn: ({  appointmentId }: { appointmentId: number }) =>
-      addUserToAppointment(appointmentId),
+      api.appointment.bookAppointment({appointmentId}),
     onSuccess: async () => {
       queryClient.invalidateQueries({ queryKey: ["appointments"] });
       if(user?.name && user?.id)

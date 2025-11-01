@@ -25,7 +25,7 @@ export default function MostRatedSpecialist({specialists}: MostRatedSpecialistPr
       {
         if(specialist.label && specialist.id)
         {
-           const slug = await createSlug(specialist.label, specialist.id);
+          const slug = await createSlug(specialist.label, specialist.id);
           navigate(`/employee/${slug}`);
         }
         

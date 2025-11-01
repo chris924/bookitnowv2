@@ -143,8 +143,8 @@ export const useCompanyStore = create<CompanyState>((set) => ({
 
   logout: async () => {
     try {
-        const api = useApi();
-   //   await api.companyAuth.logoutCompany(); //TODO
+      const api = useApi();
+      await api.companyAuth.logoutCompany(); 
     } finally {
       set({ company: null, isAuthenticated: false, loading: false });
     }

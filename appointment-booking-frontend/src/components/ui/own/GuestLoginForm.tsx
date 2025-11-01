@@ -4,11 +4,12 @@ import { Button } from "../button";
 import { DialogHeader, DialogFooter } from "../dialog";
 import { Input } from "../input";
 import { useNavigate } from "react-router-dom";
-import { loginUser } from "@/api_old/userSide/user";
 import { useUserStore } from "@/stores/AuthStore";
 import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
 import { showToast } from "./ShowToast";
+import { useApi } from "@/hooks/useApi";
+import { LoginUserRequest } from "@/API";
 
 type GuestLoginFormProps = {
   setView: React.Dispatch<React.SetStateAction<"login" | "register">>;
@@ -20,14 +21,15 @@ export default function GuestLoginForm({setView, onOpenChange, showApproveBookin
 {
 
 
-     const [email, setEmail] = useState("");
+    const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const api = useApi();
 
-const navigate = useNavigate();
+    const navigate = useNavigate();
 
   const {mutate, isPending, isError, error} = useMutation({
 
-    mutationFn: loginUser,
+    mutationFn: (request: LoginUserRequest) => api.userAuth.loginUser(request),
     onSuccess: async (data) => {
       console.log('Logged in:', data);
       showToast.success("Sikeres bejelentkezés!");
@@ -42,9 +44,11 @@ const navigate = useNavigate();
   })
 
 
-  const handleSubmit = (e: any) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    mutate({ email, password });
+    mutate({
+      loginDTO: { email, password },
+    });
   };
 
     return (

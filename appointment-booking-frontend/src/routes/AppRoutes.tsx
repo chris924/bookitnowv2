@@ -36,7 +36,7 @@ export default function AppRoutes() {
     <Routes>
       <Route element={isCompany ? <CompanyLayout /> : <MainLayout />}>
         <Route path="/" element={<DetermineHomePage />} />
-        <Route path="/employee/:slug" element={<DedicatedEmployeePage />} />
+        <Route path="/employee/:employeeSlug" element={<DedicatedEmployeePage />} />
         <Route path="/user/:slug" element={<DedicatedUserPage />} />
         <Route path="/user/:slug/booked-appointments" element={<UserBookedAppointmentsPage />} />
       </Route>

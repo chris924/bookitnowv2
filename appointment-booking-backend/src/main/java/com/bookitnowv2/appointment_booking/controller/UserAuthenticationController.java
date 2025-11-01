@@ -85,7 +85,7 @@ public class UserAuthenticationController {
 
     @PostMapping("/logout")
     @Transactional //TODO: Add Redis blacklist JWT for more security?
-    public ResponseEntity<?> logoutUser(Authentication authentication, HttpServletRequest request, HttpServletResponse response)
+    public ResponseEntity<String> logoutUser(Authentication authentication, HttpServletRequest request, HttpServletResponse response)
     {
         User foundUser = SecurityUtils.getCurrentUser();
 

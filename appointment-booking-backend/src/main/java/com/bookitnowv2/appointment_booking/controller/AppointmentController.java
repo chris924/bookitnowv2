@@ -50,7 +50,7 @@ public class AppointmentController {
     }
 
     @GetMapping("/employee/book-event/{appointmentId}")
-    public ResponseEntity<?> bookAppointment(@AuthenticationPrincipal UserDetails userDetails, @PathVariable Long appointmentId)
+    public ResponseEntity<String> bookAppointment(@AuthenticationPrincipal UserDetails userDetails, @PathVariable Long appointmentId)
     {
         String foundUsername = userDetails.getUsername();
 

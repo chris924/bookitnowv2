@@ -5,8 +5,9 @@ import { DialogHeader, DialogFooter } from "../dialog";
 import { Input } from "../input";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { registerUser } from "@/api_old/userSide/user";
 import { useMutation } from "@tanstack/react-query";
+import { useApi } from "@/hooks/useApi";
+import { RegisterUserRequest } from "@/API";
 
 
 export default function GuestRegisterForm()
@@ -19,10 +20,11 @@ export default function GuestRegisterForm()
    const [passwordConfirm, setPasswordConfirm] = useState("");
 
    const navigate = useNavigate();
+   const api = useApi();
 
   const {mutate, isPending, isError, error} = useMutation({
 
-    mutationFn: registerUser,
+    mutationFn: (request: RegisterUserRequest) => api.userAuth.registerUser(request),
     onSuccess: async (data) => {
       console.log('Registered:', data);
       navigate("/");
@@ -32,7 +34,7 @@ export default function GuestRegisterForm()
 
    const handleRegister = (e: React.MouseEvent) => {
       e.preventDefault();
-      mutate({name, username, email, password})
+      mutate({userRegistrationDTO: {name, username, email, password}})
    }
 
 

@@ -14,7 +14,7 @@ export default function EmployeeContent()
 
      const [employeeData, setEmployeeData] = useState<EmployeePageResponseDTO>();
      const [appointmentSlots, setAppointmentSlots] = useState<AppointmentSlotResponseDTO>();
-
+     const api = useApi();
 
     useEffect( () => {
 
@@ -27,7 +27,7 @@ export default function EmployeeContent()
                     return;
                 }
                 
-                const api = useApi();
+                
 
                 const employeeContent = await api.employee.getEmployeePage({employeeSlug}) //getSpecificEmployeeContent(slug);
                 console.log("Employee Content:", employeeContent);

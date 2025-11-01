@@ -13,6 +13,7 @@ import { useApi } from "@/hooks/useApi";
 export default function HomeContent()
 {
     const [topRatedEmployees, setTopRatedEmployees] = useState<EmployeeGetResponseDTO[]>([]);
+    const api = useApi();
  
     let specialists = [
         {
@@ -76,7 +77,7 @@ export default function HomeContent()
         async function fetchMostRatedEmployees()
         {
          try {
-          const api = useApi();
+          
           const response = await api.employee.getMostRatedEmployees();
           setTopRatedEmployees(response);
           } catch (error) {

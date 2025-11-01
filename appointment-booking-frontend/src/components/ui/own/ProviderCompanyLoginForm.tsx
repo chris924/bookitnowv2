@@ -7,8 +7,8 @@ import { useState } from "react";
 import { useUserStore } from"@/stores/AuthStore";
 import { useMutation } from "@tanstack/react-query";
 import { showToast } from "./ShowToast";
-import { loginCompany } from "@/api_old/companySide/company";
 import { useApi } from "@/hooks/useApi";
+import { LoginCompanyRequest } from "@/API";
 
 
 export default function ProviderCompanyLoginForm({
@@ -25,7 +25,7 @@ export default function ProviderCompanyLoginForm({
 
    
 
-    mutationFn: api.companyAuth.loginCompany,
+    mutationFn: (request: LoginCompanyRequest) =>  api.companyAuth.loginCompany(request),
     onSuccess: async (data) => {
       console.log('Logged in:', data);
       showToast.success("Sikeres bejelentkezés!");
@@ -35,10 +35,12 @@ export default function ProviderCompanyLoginForm({
     }
   })
 
-  const handleSubmit = (e: any) => {
-    e.preventDefault();
-    mutate({ email, password });
-  };
+  const handleSubmit = (e: React.FormEvent) => {
+  e.preventDefault();
+  mutate({
+    loginDTO: { email, password },
+  });
+};
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>

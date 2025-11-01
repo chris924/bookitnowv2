@@ -21,8 +21,10 @@ type SpecialistServicesData = {
 export default function EmployeeServicesTable({employeeServices, setSlots} : SpecialistServicesData)
 {
 
+   const api = useApi();
+   
 async function handleBookingClick(serviceId: number) {
-  const api = useApi();
+ 
   console.log(`Booking clicked for service ID: ${serviceId}`);
   const response = await api.appointment.getEmployeeMonthlyAppointments({serviceId}); //getMonthlyAppointments(serviceId);
   console.log(response);
