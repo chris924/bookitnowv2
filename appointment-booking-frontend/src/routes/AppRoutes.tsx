@@ -1,7 +1,7 @@
 import CompanyHomePage from '@/COMPANY/pages/CompanyHomePage';
 import CompanyLayout from '@/components/layout/CompanyLayout';
 import MainLayout from '@/components/layout/MainLayout';
-import { useUserStore } from '@/stores/AuthStore';
+import { useCompanyStore, useEmployeeStore, useUserStore } from '@/stores/AuthStore';
 import DedicatedEmployeePage from '@/USER/pages/DedicatedEmployeePage';
 import DedicatedUserPage from '@/USER/pages/DedicatedUserPage';
 import HomePage from '@/USER/pages/HomePage';
@@ -11,18 +11,23 @@ import { Routes, Route } from 'react-router-dom';
 export default function AppRoutes() {
 
   const { user } = useUserStore();
-  const isCompany = user?.type === "COMPANY";
+  const { company} = useCompanyStore();
+  const { employee } = useEmployeeStore();
+
+  let isCompany = false;
+
   function DetermineHomePage()
   {
-    if(user?.type == "USER")
+    if(user)
     {
       return <HomePage/>
     }
-    else if(user?.type == "COMPANY")
+    else if(company)
     {
+      isCompany = true;
       return <CompanyHomePage/>
     }
-    else if(user?.type == "EMPLOYEE")
+    else if(employee)
     {
       // return <EmployeeHomePage/> // TODO: Needs implementation
     }

@@ -47,7 +47,7 @@ export class AppointmentControllerApi extends runtime.BaseAPI {
 
     /**
      */
-    async bookAppointmentRaw(requestParameters: BookAppointmentRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<object>> {
+    async bookAppointmentRaw(requestParameters: BookAppointmentRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<string>> {
         if (requestParameters['appointmentId'] == null) {
             throw new runtime.RequiredError(
                 'appointmentId',
@@ -70,12 +70,16 @@ export class AppointmentControllerApi extends runtime.BaseAPI {
             query: queryParameters,
         }, initOverrides);
 
-        return new runtime.JSONApiResponse<any>(response);
+        if (this.isJsonMime(response.headers.get('content-type'))) {
+            return new runtime.JSONApiResponse<string>(response);
+        } else {
+            return new runtime.TextApiResponse(response) as any;
+        }
     }
 
     /**
      */
-    async bookAppointment(requestParameters: BookAppointmentRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<object> {
+    async bookAppointment(requestParameters: BookAppointmentRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<string> {
         const response = await this.bookAppointmentRaw(requestParameters, initOverrides);
         return await response.value();
     }

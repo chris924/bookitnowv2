@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { UserDataResponseDTO } from "@/API/models/UserDataResponseDTO";
 import { AuthInfoResponseDTO, CompanyGetResponseDTO, EmployeeGetResponseDTO } from "@/API";
-import { useApi } from "@/hooks/useApi";
+import { api } from "@/lib/apiClient";
 
 
 interface UserState {
@@ -34,13 +34,6 @@ interface CompanyState {
   logout: () => Promise<void>;
 }
 
-async function checkAuthFunction(): Promise<AuthInfoResponseDTO>  {
-
-  const api = useApi();
-  const res = await api.authInfo.checkAuth();
-  return res;
-}
-
 export const useUserStore = create<UserState>((set) => ({
   user: null,
   loading: true,
@@ -48,7 +41,7 @@ export const useUserStore = create<UserState>((set) => ({
 
   checkAuth: async () => {
     try {
-      const res = await checkAuthFunction();
+      const res = await api.authInfo.checkAuth();
       if (res.userGetResponseDTO) {
         set({ user: res.userGetResponseDTO, isAuthenticated: true, loading: false });
       }
@@ -69,7 +62,6 @@ export const useUserStore = create<UserState>((set) => ({
 
   logout: async () => {
     try {
-      const api = useApi();
       await api.userAuth.logoutUser();
     } finally {
       set({ user: null, isAuthenticated: false, loading: false });
@@ -85,11 +77,11 @@ export const useEmployeeStore = create<EmployeeState>((set) => ({
 
   checkAuth: async () => {
     try {
-      const res = await checkAuthFunction();
-      if (res.companyGetResponseDTO) {
-        set({ employee: res.companyGetResponseDTO, isAuthenticated: true, loading: false });
+        const res = await api.authInfo.checkAuth();
+      if (res.employeeGetResponseDTO) {
+        set({ employee: res.employeeGetResponseDTO, isAuthenticated: true, loading: false });
       }
-    } catch {
+    } catch(error) {
       set({ employee: null, isAuthenticated: false, loading: false });
     }
   },
@@ -106,7 +98,6 @@ export const useEmployeeStore = create<EmployeeState>((set) => ({
 
   logout: async () => {
     try {
-      const api = useApi();
    //   await api.employeeAuth.logoutEmployee(); //TODO
     } finally {
       set({ employee: null, isAuthenticated: false, loading: false });
@@ -122,11 +113,14 @@ export const useCompanyStore = create<CompanyState>((set) => ({
 
   checkAuth: async () => {
     try {
-      const res = await checkAuthFunction();
+      const res = await api.authInfo.checkAuth();
+      console.log("RES: ", res);
       if (res.companyGetResponseDTO) {
         set({ company: res.companyGetResponseDTO, isAuthenticated: true, loading: false });
+        console.log("FFFF");
       }
-    } catch {
+    } catch(error){
+        console.error("checkAuth error:", error);
       set({ company: null, isAuthenticated: false, loading: false });
     }
   },
@@ -143,7 +137,6 @@ export const useCompanyStore = create<CompanyState>((set) => ({
 
   logout: async () => {
     try {
-      const api = useApi();
       await api.companyAuth.logoutCompany(); 
     } finally {
       set({ company: null, isAuthenticated: false, loading: false });

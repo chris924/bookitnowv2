@@ -3,11 +3,13 @@ package com.bookitnowv2.appointment_booking.entity.dto;
 import com.bookitnowv2.appointment_booking.entity.dto.company.CompanyGetResponseDTO;
 import com.bookitnowv2.appointment_booking.entity.dto.employee.EmployeeGetResponseDTO;
 import com.bookitnowv2.appointment_booking.entity.dto.user.UserDataResponseDTO;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @NoArgsConstructor
+@AllArgsConstructor
+@Getter
 @Setter
+@Data
 public class AuthInfoResponseDTO {
 
     private UserDataResponseDTO userGetResponseDTO;

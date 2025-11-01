@@ -4,7 +4,7 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "../ca
 import { Input } from "../input";
 import { Label } from "../label";
 import { useState } from "react";
-import { useUserStore } from"@/stores/AuthStore";
+import { useCompanyStore, useUserStore } from"@/stores/AuthStore";
 import { useMutation } from "@tanstack/react-query";
 import { showToast } from "./ShowToast";
 import { useApi } from "@/hooks/useApi";
@@ -29,7 +29,7 @@ export default function ProviderCompanyLoginForm({
     onSuccess: async (data) => {
       console.log('Logged in:', data);
       showToast.success("Sikeres bejelentkezés!");
-      await useUserStore.getState().checkAuth();
+      await useCompanyStore.getState().checkAuth();
       
     //  navigate("/");
     }
