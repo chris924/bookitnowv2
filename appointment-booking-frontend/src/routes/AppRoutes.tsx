@@ -25,8 +25,6 @@ export default function AppRoutes() {
     return <HomePage />;
   }
 
-
-
    return (
     <Routes>
       <Route element={isCompany ? <CompanyLayout /> : <MainLayout />}>

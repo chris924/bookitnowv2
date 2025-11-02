@@ -2,6 +2,7 @@ import { create } from "zustand";
 import { UserDataResponseDTO } from "@/API/models/UserDataResponseDTO";
 import { AuthInfoResponseDTO, CompanyGetResponseDTO, EmployeeGetResponseDTO } from "@/API";
 import { api } from "@/lib/apiClient";
+import { showToast } from "@/components/ui/own/ShowToast";
 
 
 interface UserState {
@@ -11,7 +12,7 @@ interface UserState {
   checkUserAuth: () => Promise<void>;
   updateUserAvatar: (data: string) => void;
   updateUserObject: (data: UserDataResponseDTO) => void;
-  logout: () => Promise<void>;
+  logoutUser: () => Promise<void>;
 }
 
 interface EmployeeState {
@@ -21,7 +22,7 @@ interface EmployeeState {
   checkEmployeeAuth: () => Promise<void>;
   updateEmployeeAvatar: (data: string) => void;
   updateEmployeeObject: (data: EmployeeGetResponseDTO) => void;
-  logout: () => Promise<void>;
+  logoutEmployee: () => Promise<void>;
 }
 
 interface CompanyState {
@@ -31,7 +32,7 @@ interface CompanyState {
   checkCompanyAuth: () => Promise<void>;
   updateCompanyAvatar: (data: string) => void;
   updateCompanyObject: (data: CompanyGetResponseDTO) => void;
-  logout: () => Promise<void>;
+  logoutCompany: () => Promise<void>;
 }
 
 export const useUserStore = create<UserState>((set) => ({
@@ -62,9 +63,10 @@ export const useUserStore = create<UserState>((set) => ({
       user: updatedUser
     })),
 
-  logout: async () => {
+  logoutUser: async () => {
     try {
       await api.userAuth.logoutUser();
+      showToast.success("Kijelentkezve")
     } finally {
       set({ user: null, isAuthenticated: false, userLoading: false });
     }
@@ -100,9 +102,10 @@ export const useEmployeeStore = create<EmployeeState>((set) => ({
       employee: updatedUser
     })),
 
-  logout: async () => {
+  logoutEmployee: async () => {
     try {
    //   await api.employeeAuth.logoutEmployee(); //TODO
+    showToast.success("Kijelentkezve")
     } finally {
       set({ employee: null, isAuthenticated: false, employeeLoading: false });
     }
@@ -141,9 +144,10 @@ export const useCompanyStore = create<CompanyState>((set) => ({
       company: updatedUser
     })),
 
-  logout: async () => {
+  logoutCompany: async () => {
     try {
-      await api.companyAuth.logoutCompany(); 
+      await api.companyAuth.logoutCompany();
+      showToast.success("Kijelentkezve") 
     } finally {
       set({ company: null, isAuthenticated: false, companyLoading: false });
     }

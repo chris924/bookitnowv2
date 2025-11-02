@@ -10,7 +10,7 @@ import { showToast } from "@/components/ui/own/ShowToast";
 export default function DropdownUser({user}: {user: UserDataResponseDTO} )
 {
 
-  const {logout} = useUserStore();
+  const {logoutUser} = useUserStore();
   const navigate = useNavigate();
 
 
@@ -21,7 +21,7 @@ export default function DropdownUser({user}: {user: UserDataResponseDTO} )
       const userSlug = await createSlug(user.name, parseInt(user.id.toString()));
       if(clickType == "exit")
       {
-        await logout();
+        await logoutUser();
         navigate("/");
       }
       if(clickType == "account")
