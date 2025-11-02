@@ -33,7 +33,7 @@ export default function ProviderLoginFormWrapper({open, onOpenChange}: ProviderL
          {switchLoginForm ? (
           <ProviderEmployeeLoginForm />
         ) : (
-          <ProviderCompanyLoginForm />
+          <ProviderCompanyLoginForm onOpenChange={onOpenChange}/>
         )}
         </div>
        

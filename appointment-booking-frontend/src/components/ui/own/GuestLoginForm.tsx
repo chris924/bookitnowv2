@@ -33,7 +33,7 @@ export default function GuestLoginForm({setView, onOpenChange, showApproveBookin
     onSuccess: async (data) => {
       console.log('Logged in:', data);
       showToast.success("Sikeres bejelentkezés!");
-      await useUserStore.getState().checkAuth();
+      await useUserStore.getState().checkUserAuth();
       onOpenChange(false);
 
       if(showApproveBooking)  // This is responsible for showing the ApproveBookingForm after a successful login

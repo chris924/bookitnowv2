@@ -10,11 +10,11 @@ import { showToast } from "./ShowToast";
 import { useApi } from "@/hooks/useApi";
 import { LoginCompanyRequest } from "@/API";
 
+interface ProviderCompanyLoginFormProps{
+  onOpenChange: (open: boolean) => void;
+}
 
-export default function ProviderCompanyLoginForm({
-  className,
-  ...props
-}: React.ComponentProps<"div">) {
+export default function ProviderCompanyLoginForm({onOpenChange} : ProviderCompanyLoginFormProps) {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -23,15 +23,12 @@ export default function ProviderCompanyLoginForm({
 
     const {mutate, isPending, isError, error} = useMutation({
 
-   
-
     mutationFn: (request: LoginCompanyRequest) =>  api.companyAuth.loginCompany(request),
     onSuccess: async (data) => {
       console.log('Logged in:', data);
       showToast.success("Sikeres bejelentkezés!");
-      await useCompanyStore.getState().checkAuth();
-      
-    //  navigate("/");
+      await useCompanyStore.getState().checkCompanyAuth();
+      onOpenChange(false);
     }
   })
 
@@ -43,7 +40,7 @@ export default function ProviderCompanyLoginForm({
 };
 
   return (
-    <div className={cn("flex flex-col gap-6", className)} {...props}>
+    <div className={cn("flex flex-col gap-6")}>
       <Card>
         <CardHeader>
           <CardTitle>Cég belépés</CardTitle>

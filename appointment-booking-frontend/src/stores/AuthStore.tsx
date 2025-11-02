@@ -6,9 +6,9 @@ import { api } from "@/lib/apiClient";
 
 interface UserState {
   user: UserDataResponseDTO | null; // includes avatar, name, etc.
-  loading: boolean;
+  userLoading: boolean;
   isAuthenticated: boolean;
-  checkAuth: () => Promise<void>;
+  checkUserAuth: () => Promise<void>;
   updateUserAvatar: (data: string) => void;
   updateUserObject: (data: UserDataResponseDTO) => void;
   logout: () => Promise<void>;
@@ -16,9 +16,9 @@ interface UserState {
 
 interface EmployeeState {
   employee: EmployeeGetResponseDTO | null; // includes avatar, name, etc.
-  loading: boolean;
+  employeeLoading: boolean;
   isAuthenticated: boolean;
-  checkAuth: () => Promise<void>;
+  checkEmployeeAuth: () => Promise<void>;
   updateEmployeeAvatar: (data: string) => void;
   updateEmployeeObject: (data: EmployeeGetResponseDTO) => void;
   logout: () => Promise<void>;
@@ -26,9 +26,9 @@ interface EmployeeState {
 
 interface CompanyState {
   company: CompanyGetResponseDTO | null; // includes avatar, name, etc.
-  loading: boolean;
+  companyLoading: boolean;
   isAuthenticated: boolean;
-  checkAuth: () => Promise<void>;
+  checkCompanyAuth: () => Promise<void>;
   updateCompanyAvatar: (data: string) => void;
   updateCompanyObject: (data: CompanyGetResponseDTO) => void;
   logout: () => Promise<void>;
@@ -36,17 +36,19 @@ interface CompanyState {
 
 export const useUserStore = create<UserState>((set) => ({
   user: null,
-  loading: true,
+  userLoading: true,
   isAuthenticated: false,
 
-  checkAuth: async () => {
+  checkUserAuth: async () => {
     try {
       const res = await api.authInfo.checkAuth();
       if (res.userGetResponseDTO) {
-        set({ user: res.userGetResponseDTO, isAuthenticated: true, loading: false });
+        set({ user: res.userGetResponseDTO, isAuthenticated: true, userLoading: false });
       }
+      else
+        set({ user: null, isAuthenticated: false, userLoading: false });
     } catch {
-      set({ user: null, isAuthenticated: false, loading: false });
+      set({ user: null, isAuthenticated: false, userLoading: false });
     }
   },
 
@@ -64,7 +66,7 @@ export const useUserStore = create<UserState>((set) => ({
     try {
       await api.userAuth.logoutUser();
     } finally {
-      set({ user: null, isAuthenticated: false, loading: false });
+      set({ user: null, isAuthenticated: false, userLoading: false });
     }
   },
 }));
@@ -72,17 +74,19 @@ export const useUserStore = create<UserState>((set) => ({
 
 export const useEmployeeStore = create<EmployeeState>((set) => ({
   employee: null,
-  loading: true,
+  employeeLoading: true,
   isAuthenticated: false,
 
-  checkAuth: async () => {
+  checkEmployeeAuth: async () => {
     try {
         const res = await api.authInfo.checkAuth();
       if (res.employeeGetResponseDTO) {
-        set({ employee: res.employeeGetResponseDTO, isAuthenticated: true, loading: false });
+        set({ employee: res.employeeGetResponseDTO, isAuthenticated: true, employeeLoading: false });
       }
+      else
+        set({ employee: null, isAuthenticated: false, employeeLoading: false });
     } catch(error) {
-      set({ employee: null, isAuthenticated: false, loading: false });
+      set({ employee: null, isAuthenticated: false, employeeLoading: false });
     }
   },
 
@@ -100,7 +104,7 @@ export const useEmployeeStore = create<EmployeeState>((set) => ({
     try {
    //   await api.employeeAuth.logoutEmployee(); //TODO
     } finally {
-      set({ employee: null, isAuthenticated: false, loading: false });
+      set({ employee: null, isAuthenticated: false, employeeLoading: false });
     }
   },
 }));
@@ -108,20 +112,22 @@ export const useEmployeeStore = create<EmployeeState>((set) => ({
 
 export const useCompanyStore = create<CompanyState>((set) => ({
   company: null,
-  loading: true,
+  companyLoading: true,
   isAuthenticated: false,
 
-  checkAuth: async () => {
+  checkCompanyAuth: async () => {
     try {
       const res = await api.authInfo.checkAuth();
       console.log("RES: ", res);
       if (res.companyGetResponseDTO) {
-        set({ company: res.companyGetResponseDTO, isAuthenticated: true, loading: false });
+        set({ company: res.companyGetResponseDTO, isAuthenticated: true, companyLoading: false });
         console.log("FFFF");
       }
+      else
+        set({ company: null, isAuthenticated: false, companyLoading: false });
     } catch(error){
         console.error("checkAuth error:", error);
-      set({ company: null, isAuthenticated: false, loading: false });
+      set({ company: null, isAuthenticated: false, companyLoading: false });
     }
   },
 
@@ -139,7 +145,7 @@ export const useCompanyStore = create<CompanyState>((set) => ({
     try {
       await api.companyAuth.logoutCompany(); 
     } finally {
-      set({ company: null, isAuthenticated: false, loading: false });
+      set({ company: null, isAuthenticated: false, companyLoading: false });
     }
   },
 }));

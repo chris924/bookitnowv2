@@ -1,4 +1,4 @@
-import { useUserStore } from "@/stores/AuthStore";
+import { useCompanyStore, useUserStore } from "@/stores/AuthStore";
 import { useEffect, useState } from "react";
 import GuestLogin from "../ui/own/GuestLogin";
 import { ModeToggle } from "../ui/own/theme-toggle";
@@ -13,13 +13,13 @@ import DropdownUser from "@/USER/features/home/components/UserDropdown";
 export default function Navbar()
 {
   
-  const { checkAuth, isAuthenticated, user, loading } = useUserStore();
+  const { checkUserAuth, isAuthenticated, user, userLoading } = useUserStore();
   
   const [openLogin, setOpenLogin] = useState(false);
   const [showProviderWrapper, setShowProviderWrapper] = useState(false);
 
   useEffect(() => {
-    checkAuth();    
+    checkUserAuth();    
   }, [])
 
     return (
@@ -28,7 +28,7 @@ export default function Navbar()
   <header className="flex justify-between items-center px-4 py-4">
   <div className="text-m md:text-4xl font-semibold text-center justify-center">Appointment</div>
   <div className="flex items-center gap-x-1.5 md:gap-x-4">
-  {loading ? (
+  {userLoading ? (
     <Loader/>
   ) : isAuthenticated && user ? (
     <DropdownUser user={user} />
