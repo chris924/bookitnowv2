@@ -19,6 +19,7 @@ public class CompanyMapper {
                 "COMPANY",
                 company.getName(),
                 company.getPlace(),
+                company.getAvatarUrl(), 
                 company.getServiceName(),
                 company.getServiceDescription(),
                 company.getDescription(),

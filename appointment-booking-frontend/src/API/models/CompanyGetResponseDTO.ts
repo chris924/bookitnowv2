@@ -42,6 +42,12 @@ export interface CompanyGetResponseDTO {
      * @type {string}
      * @memberof CompanyGetResponseDTO
      */
+    avatarUrl?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof CompanyGetResponseDTO
+     */
     serviceName?: string;
     /**
      * 
@@ -89,6 +95,7 @@ export function CompanyGetResponseDTOFromJSONTyped(json: any, ignoreDiscriminato
         'type': json['type'] == null ? undefined : json['type'],
         'name': json['name'] == null ? undefined : json['name'],
         'place': json['place'] == null ? undefined : json['place'],
+        'avatarUrl': json['avatarUrl'] == null ? undefined : json['avatarUrl'],
         'serviceName': json['serviceName'] == null ? undefined : json['serviceName'],
         'serviceDescription': json['serviceDescription'] == null ? undefined : json['serviceDescription'],
         'description': json['description'] == null ? undefined : json['description'],
@@ -111,6 +118,7 @@ export function CompanyGetResponseDTOToJSONTyped(value?: CompanyGetResponseDTO |
         'type': value['type'],
         'name': value['name'],
         'place': value['place'],
+        'avatarUrl': value['avatarUrl'],
         'serviceName': value['serviceName'],
         'serviceDescription': value['serviceDescription'],
         'description': value['description'],

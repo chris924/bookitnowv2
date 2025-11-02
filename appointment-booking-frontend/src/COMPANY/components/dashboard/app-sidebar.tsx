@@ -110,20 +110,10 @@ const data = {
   ],
   navSecondary: [
     {
-      title: "Settings",
-      url: "#",
-      icon: IconSettings,
-    },
-    {
-      title: "Get Help",
+      title: "Segítség",
       url: "#",
       icon: IconHelp,
-    },
-    {
-      title: "Search",
-      url: "#",
-      icon: IconSearch,
-    },
+    }
   ],
   documents: [
     {
@@ -143,12 +133,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 
 const { company } = useCompanyStore();
 
-const dashboardUser = {
-  name: company?.email ?? "UNKNOWN",
-  email: company?.email ?? "UNKNOWN",
-  avatar: company?.avatarUrl ?? ""
-}
-
   return (
     <Sidebar collapsible="offcanvas" {...props}>
       <SidebarHeader>
@@ -160,7 +144,7 @@ const dashboardUser = {
             >
               <a href="#">
                 <IconInnerShadowTop className="!size-5" />
-                <span className="text-base font-semibold">Acme Inc.</span>
+                <span className="text-base font-semibold">{company?.name}</span>
               </a>
             </SidebarMenuButton>
           </SidebarMenuItem>
@@ -172,7 +156,7 @@ const dashboardUser = {
         <NavSecondary items={data.navSecondary} className="mt-auto" />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={dashboardUser} />
+       {company && <NavUser company={company} />}
       </SidebarFooter>
     </Sidebar>
   )

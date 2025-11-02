@@ -14,6 +14,7 @@ public class CompanyGetResponseDTO {
     public String type;
     public String name;
     public String place;
+    public String avatarUrl;
     public String serviceName;
     public String serviceDescription;
     public String description;
