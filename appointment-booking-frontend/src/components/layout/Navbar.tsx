@@ -1,4 +1,4 @@
-import { useCompanyStore, useUserStore } from "@/stores/AuthStore";
+import { useUserStore } from "@/stores/AuthStore";
 import { useEffect, useState } from "react";
 import GuestLogin from "../ui/own/GuestLogin";
 import { ModeToggle } from "../ui/own/theme-toggle";
@@ -18,6 +18,8 @@ export default function Navbar()
   const [openLogin, setOpenLogin] = useState(false);
   const [showProviderWrapper, setShowProviderWrapper] = useState(false);
 
+  const location = useLocation();
+
   useEffect(() => {
     checkUserAuth();    
   }, [])
@@ -35,7 +37,7 @@ export default function Navbar()
   ) : (
     <Button onClick={() => setOpenLogin(true)} className="bg-green-200">Belépés</Button>
   )}
-  {!isAuthenticated && <Button variant={"secondary"} onClick={() => setShowProviderWrapper(true)}>Szolgáltatóknak</Button>}
+  {!isAuthenticated && location.pathname == "/" && <Button variant={"secondary"} onClick={() => setShowProviderWrapper(true)}>Szolgáltatóknak</Button>}
   <GuestLogin open={openLogin} onOpenChange={setOpenLogin} />
   <ProviderLoginFormWrapper open={showProviderWrapper} onOpenChange={setShowProviderWrapper}/>
   <ModeToggle />

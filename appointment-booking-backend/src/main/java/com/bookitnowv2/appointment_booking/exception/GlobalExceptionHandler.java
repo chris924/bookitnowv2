@@ -51,4 +51,12 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponseDTO);
     }
 
+    @ExceptionHandler(BadCredentialException.class)
+    public ResponseEntity<ErrorResponseDTO> handleBadCredentialsException(BadCredentialException ex)
+    {
+        ErrorResponseDTO errorResponseDTO = new ErrorResponseDTO(ex.getCode(), ex.getMessage(), HttpStatus.BAD_REQUEST.value());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponseDTO);
+    }
+
+
 }

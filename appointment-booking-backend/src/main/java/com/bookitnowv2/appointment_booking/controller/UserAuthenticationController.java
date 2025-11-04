@@ -9,6 +9,7 @@ import com.bookitnowv2.appointment_booking.entity.dto.LoginDTO;
 import com.bookitnowv2.appointment_booking.entity.dto.user.UserLoginResponseDTO;
 import com.bookitnowv2.appointment_booking.entity.dto.user.UserRegistrationDTO;
 import com.bookitnowv2.appointment_booking.entity.dto.user.UserRegistrationResponseDTO;
+import com.bookitnowv2.appointment_booking.exception.BadCredentialException;
 import com.bookitnowv2.appointment_booking.service.UserAuthenticationService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -52,21 +53,27 @@ public class UserAuthenticationController {
             throw new BadCredentialsException("Invalid user !");
         }
 
-        String token = userAuthenticationService.loginUser(body.getEmail(), body.getPassword());
+        try{
+            String token = userAuthenticationService.loginUser(body.getEmail(), body.getPassword());
 
-        ResponseCookie cookie = ResponseCookie.from("jwt", token)
-                .httpOnly(true)
-                // ! ONLY FOR LOCALHOST TESTING !
-                .secure(false) //TODO: Change in the future
-                // ! ONLY FOR LOCALHOST TESTING !
-                .sameSite("Strict")
-                .path("/")
-                .maxAge(Duration.ofHours(2))
-                .build();
+            ResponseCookie cookie = ResponseCookie.from("jwt", token)
+                    .httpOnly(true)
+                    // ! ONLY FOR LOCALHOST TESTING !
+                    .secure(false) //TODO: Change in the future
+                    // ! ONLY FOR LOCALHOST TESTING !
+                    .sameSite("Strict")
+                    .path("/")
+                    .maxAge(Duration.ofHours(2))
+                    .build();
 
-        return ResponseEntity.ok()
-                .header(HttpHeaders.SET_COOKIE, cookie.toString())
-                .body(response);
+            return ResponseEntity.ok()
+                    .header(HttpHeaders.SET_COOKIE, cookie.toString())
+                    .body(response);
+
+        }catch (Exception e)
+        {
+            throw new BadCredentialException("Rossz felhasználónév vagy jelszó!");
+        }
     }
 
     @PostMapping("/register")

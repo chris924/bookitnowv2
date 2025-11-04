@@ -7,7 +7,6 @@ import DedicatedEmployeePage from '@/USER/pages/DedicatedEmployeePage';
 import DedicatedUserPage from '@/USER/pages/DedicatedUserPage';
 import HomePage from '@/USER/pages/HomePage';
 import UserBookedAppointmentsPage from '@/USER/pages/UserBookedAppointmentsPage';
-import { useEffect, useState } from 'react';
 import { Routes, Route } from 'react-router-dom';
 
 export default function AppRoutes() {

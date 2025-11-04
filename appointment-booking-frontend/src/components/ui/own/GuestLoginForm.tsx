@@ -10,6 +10,7 @@ import { useState } from "react";
 import { showToast } from "./ShowToast";
 import { useApi } from "@/hooks/useApi";
 import { LoginUserRequest } from "@/API";
+import { handleAPIError } from "@/lib/utils";
 
 type GuestLoginFormProps = {
   setView: React.Dispatch<React.SetStateAction<"login" | "register">>;
@@ -40,7 +41,8 @@ export default function GuestLoginForm({setView, onOpenChange, showApproveBookin
         showApproveBooking(true);
       
     //  navigate("/");
-    }
+    },
+    onError: (error) => handleAPIError(error)
   })
 
 
