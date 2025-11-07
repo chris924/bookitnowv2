@@ -6,6 +6,7 @@ import com.bookitnowv2.appointment_booking.entity.dto.appointment.AppointmentGet
 import com.bookitnowv2.appointment_booking.entity.dto.appointment.AppointmentSlotResponseDTO;
 import com.bookitnowv2.appointment_booking.entity.dto.appointment.SlotResponseDTO;
 import com.bookitnowv2.appointment_booking.entity.dto.company.CompanyAppointmentsByDateResponseDTO;
+import com.bookitnowv2.appointment_booking.entity.dto.employee.EmployeeAppointmentsByDateResponseDTO;
 import com.bookitnowv2.appointment_booking.exception.appointment.AppointmentNotBookedException;
 import com.bookitnowv2.appointment_booking.exception.appointment.AppointmentNotFreeException;
 import com.bookitnowv2.appointment_booking.mapper.AppointmentMapper;
@@ -287,5 +288,14 @@ public class AppointmentService {
         LocalDate startDate = currentDate.minusMonths(monthCount);
 
         return appointmentRepository.countCompanyTotalAppointmentsByDate(authCompany.getId(), startDate, AppointmentStatus.BOOKED);
+    }
+
+    public List<EmployeeAppointmentsByDateResponseDTO> getEmployeePreviousBookingsByMonth(Employee employee)
+    {
+        Long monthCount = 6L;
+        LocalDate currentDate = LocalDate.now();
+
+        LocalDate startDate = currentDate.minusMonths(monthCount);
+        return appointmentRepository.getEmployeePreviousBookings(employee.getId(), startDate, AppointmentStatus.BOOKED);
     }
 }

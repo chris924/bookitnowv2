@@ -90,7 +90,7 @@ public class AppointmentController {
     }
 
 
-    @GetMapping("/company-total-month-data")
+    @GetMapping("/company-total-month-data") //TODO: Replace into CompanyController, The service can stay in Appointment
     public List<CompanyAppointmentsByDateResponseDTO> getCompanyPastAppointmentsByMonth()
     {
         return appointmentService.getCompanyTotalAppointmentsByMonth(3);

@@ -105,6 +105,9 @@ import {
   TabsList,
   TabsTrigger,
 } from "@/components/ui/tabs"
+import { CompanyDedicatedEmployeePastBookings } from "@/COMPANY/hooks/query/CompanyDedicatedEmployeeQuery"
+import { createSlug } from "@/lib/utils"
+import Loader from "@/components/ui/own/Loader"
 
 export const schema = z.object({
   id: z.number(),
@@ -170,13 +173,14 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
   {
     accessorKey: "header",
     header: "Alkalmazott",
+
     cell: ({ row }) => {
       return <TableCellViewer item={row.original} />
     },
     enableHiding: false,
   },
   {
-    accessorKey: "type",
+    accessorKey: "Besorolás",
     header: "Besorolás",
     cell: ({ row }) => (
        <div className="flex justify-center items-center w-16">
@@ -187,7 +191,7 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
     ),
   },
   {
-    accessorKey: "status",
+    accessorKey: "Státusz",
     header: "Státusz",
     cell: ({ row }) => (
      <div className="flex justify-center items-center w-16">
@@ -198,7 +202,7 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
     ),
   },
   {
-    accessorKey: "target",
+    accessorKey: "lefoglalt időpontok",
     header: "Lefoglalt Időpontok",
     cell: ({ row }) => (
 
@@ -210,7 +214,7 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
     ),
   },
   {
-    accessorKey: "limit",
+    accessorKey: "értékelés",
     header: "Értékelés",
     cell: ({ row }) => (
         <Badge variant="outline" className="text-muted-foreground px-1.5 text-xl">
@@ -394,7 +398,7 @@ export function DataTable({
           </DropdownMenu>
           <Button variant="outline" size="sm">
             <IconPlus />
-            <span className="hidden lg:inline">Hozzáadás</span>
+            <span className="hidden lg:inline">Új Alkalmazott Hozzáadás</span>
           </Button>
         </div>
       </div>
@@ -550,14 +554,7 @@ export function DataTable({
   )
 }
 
-const chartData = [
-  { month: "January", desktop: 186, mobile: 80 },
-  { month: "February", desktop: 305, mobile: 200 },
-  { month: "March", desktop: 237, mobile: 120 },
-  { month: "April", desktop: 73, mobile: 190 },
-  { month: "May", desktop: 209, mobile: 130 },
-  { month: "June", desktop: 214, mobile: 140 },
-]
+
 
 const chartConfig = {
   desktop: {
@@ -570,8 +567,16 @@ const chartConfig = {
   },
 } satisfies ChartConfig
 
-function TableCellViewer({ item }: { item: z.infer<typeof schema> }) {
+ function TableCellViewer({ item }: { item: z.infer<typeof schema> }) {
   const isMobile = useIsMobile()
+
+
+  const employeeSlug =  createSlug(item.name, item.id);
+
+  console.log("EMPLOYEESLUG: ", employeeSlug);
+  const {data, isLoading, error} = CompanyDedicatedEmployeePastBookings(employeeSlug);
+
+  if(isLoading) return <Loader/>
 
   return (
     <Drawer direction={isMobile ? "bottom" : "right"}>
@@ -584,16 +589,16 @@ function TableCellViewer({ item }: { item: z.infer<typeof schema> }) {
         <DrawerHeader className="gap-1">
           <DrawerTitle>{item.name}</DrawerTitle>
           <DrawerDescription>
-            Showing total visitors for the last 6 months
+            Az összes foglalás az elmúlt 6 hónapban
           </DrawerDescription>
         </DrawerHeader>
         <div className="flex flex-col gap-4 overflow-y-auto px-4 text-sm">
-          {!isMobile && (
+          
             <>
               <ChartContainer config={chartConfig}>
                 <AreaChart
                   accessibilityLayer
-                  data={chartData}
+                  data={data}
                   margin={{
                     left: 0,
                     right: 10,
@@ -601,50 +606,36 @@ function TableCellViewer({ item }: { item: z.infer<typeof schema> }) {
                 >
                   <CartesianGrid vertical={false} />
                   <XAxis
-                    dataKey="month"
+                    dataKey="date"
                     tickLine={false}
                     axisLine={false}
                     tickMargin={8}
-                    tickFormatter={(value) => value.slice(0, 3)}
-                    hide
+                    tickFormatter={(value) => {
+                    const date = new Date(value)
+                    return date.toLocaleDateString("en-US", {
+                      month: "short",
+                      day: "numeric",
+                    })
+                  }}
                   />
                   <ChartTooltip
                     cursor={false}
                     content={<ChartTooltipContent indicator="dot" />}
                   />
                   <Area
-                    dataKey="mobile"
-                    type="natural"
-                    fill="var(--color-mobile)"
-                    fillOpacity={0.6}
-                    stroke="var(--color-mobile)"
-                    stackId="a"
-                  />
-                  <Area
-                    dataKey="desktop"
+                    dataKey="count"
                     type="natural"
                     fill="var(--color-desktop)"
                     fillOpacity={0.4}
                     stroke="var(--color-desktop)"
                     stackId="a"
+                    name="Foglalások"
                   />
                 </AreaChart>
               </ChartContainer>
               <Separator />
-              <div className="grid gap-2">
-                <div className="flex gap-2 leading-none font-medium">
-                  Trending up by 5.2% this month{" "}
-                  <IconTrendingUp className="size-4" />
-                </div>
-                <div className="text-muted-foreground">
-                  Showing total visitors for the last 6 months. This is just
-                  some random text to test the layout. It spans multiple lines
-                  and should wrap around.
-                </div>
-              </div>
-              <Separator />
             </>
-          )}
+          
           <form className="flex flex-col gap-4">
             <div className="flex flex-col gap-3">
               <Label htmlFor="header">Header</Label>
@@ -652,9 +643,9 @@ function TableCellViewer({ item }: { item: z.infer<typeof schema> }) {
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div className="flex flex-col gap-3">
-                <Label htmlFor="type">Type</Label>
+                <Label htmlFor="Besorolás">Type</Label>
                 <Select defaultValue={item.status}>
-                  <SelectTrigger id="type" className="w-full">
+                  <SelectTrigger id="Besorolás" className="w-full">
                     <SelectValue placeholder="Select a type" />
                   </SelectTrigger>
                   <SelectContent>
@@ -678,9 +669,9 @@ function TableCellViewer({ item }: { item: z.infer<typeof schema> }) {
                 </Select>
               </div>
               <div className="flex flex-col gap-3">
-                <Label htmlFor="status">Status</Label>
+                <Label htmlFor="Státsu">Status</Label>
                 <Select defaultValue={item.status}>
-                  <SelectTrigger id="status" className="w-full">
+                  <SelectTrigger id="Státusz" className="w-full">
                     <SelectValue placeholder="Select a status" />
                   </SelectTrigger>
                   <SelectContent>
@@ -693,12 +684,12 @@ function TableCellViewer({ item }: { item: z.infer<typeof schema> }) {
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div className="flex flex-col gap-3">
-                <Label htmlFor="target">Target</Label>
-                <Input id="target" defaultValue={item.bookedAppointments} />
+                <Label htmlFor="lefoglalt időpontok">Lefoglalt időpontok</Label>
+                <Input id="lefoglalt időpontok" defaultValue={item.bookedAppointments} />
               </div>
               <div className="flex flex-col gap-3">
-                <Label htmlFor="limit">Limit</Label>
-                <Input id="limit" defaultValue={item.rating} />
+                <Label htmlFor="értékelés">Értékelés</Label>
+                <Input id="értékelés" defaultValue={item.rating} />
               </div>
             </div>
           </form>

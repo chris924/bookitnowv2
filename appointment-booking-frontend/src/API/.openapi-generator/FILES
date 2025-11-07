@@ -16,6 +16,7 @@ models/CompanyDTO.ts
 models/CompanyGetResponseDTO.ts
 models/CompanyLoginResponseDTO.ts
 models/CompanySectionCardsResponseDTO.ts
+models/EmployeeAppointmentsByDateResponseDTO.ts
 models/EmployeeDataTableResponseDTO.ts
 models/EmployeeGetResponseDTO.ts
 models/EmployeePageResponseDTO.ts

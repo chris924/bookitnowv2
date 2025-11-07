@@ -6,6 +6,7 @@ import com.bookitnowv2.appointment_booking.entity.Employee;
 import com.bookitnowv2.appointment_booking.entity.dto.employee.*;
 import com.bookitnowv2.appointment_booking.entity.dto.employee.SearchOptionDetails.SpecialistDTO;
 import com.bookitnowv2.appointment_booking.mapper.EmployeeMapper;
+import com.bookitnowv2.appointment_booking.service.AppointmentService;
 import com.bookitnowv2.appointment_booking.service.EmployeeService;
 import com.bookitnowv2.appointment_booking.service.ServiceEntityService;
 import jakarta.validation.Valid;
@@ -23,15 +24,17 @@ import java.util.List;
 public class EmployeeController {
 
     private final EmployeeService employeeService;
+    private final AppointmentService appointmentService;
     private final ServiceEntityService serviceEntityService;
     private final ElasticEmployeeService elasticEmployeeService;
     private final EmployeeMapper employeeMapper;
 
-    public EmployeeController(EmployeeService employeeService, ElasticEmployeeService elasticEmployeeService, ServiceEntityService serviceEntityService, EmployeeMapper employeeMapper)
+    public EmployeeController(EmployeeService employeeService, ElasticEmployeeService elasticEmployeeService, ServiceEntityService serviceEntityService, AppointmentService appointmentService, EmployeeMapper employeeMapper)
     {
         this.employeeService = employeeService;
         this.elasticEmployeeService = elasticEmployeeService;
         this.serviceEntityService = serviceEntityService;
+        this.appointmentService = appointmentService;
         this.employeeMapper = employeeMapper;
     }
 
@@ -72,6 +75,18 @@ public class EmployeeController {
     {
         List<EmployeeDataTableResponseDTO> employeeTableData = employeeService.getCompanyEmployeeTable();
         return ResponseEntity.ok(employeeTableData);
+    }
+
+    @GetMapping("employee/{employeeSlug}/previous-booking-stat")
+    @PreAuthorize("hasRole('COMPANY','EMPLOYEE')")
+    public ResponseEntity<List<EmployeeAppointmentsByDateResponseDTO>> getEmployeePreviousBookingStat(@PathVariable String employeeSlug)
+    {
+        Long employeeId = employeeService.getEmployeeIdFromSlug(employeeSlug);
+        Employee foundEmployee = employeeService.getEmployeeById(employeeId);
+
+        List<EmployeeAppointmentsByDateResponseDTO> appointments = appointmentService.getEmployeePreviousBookingsByMonth(foundEmployee);
+
+        return ResponseEntity.ok().body(appointments);
     }
 
 

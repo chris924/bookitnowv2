@@ -33,31 +33,22 @@ import { NavUser } from "./nav-user"
 import { useCompanyStore, useUserStore } from "@/stores/AuthStore"
 
 const data = {
-  user: {
-    name: "shadcn",
-    email: "m@example.com",
-    avatar: "/avatars/shadcn.jpg",
-  },
+
   navMain: [
     {
       title: "Áttekintés",
-      url: "#",
+      url: "",
       icon: IconDashboard,
     },
     {
       title: "Beállítások",
-      url: "#",
+      url: "company/options",
       icon: IconListDetails,
     },
     {
       title: "Statisztikák",
-      url: "#",
+      url: "company/statistics",
       icon: IconChartBar,
-    },
-    {
-      title: "Alkalmazottak",
-      url: "#",
-      icon: IconUsers,
     },
   ],
   navClouds: [
@@ -151,7 +142,7 @@ const { company } = useCompanyStore();
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent>
-        <NavMain items={data.navMain} />
+        <NavMain items={data.navMain}/>
         <NavDocuments items={data.documents} />
         <NavSecondary items={data.navSecondary} className="mt-auto" />
       </SidebarContent>

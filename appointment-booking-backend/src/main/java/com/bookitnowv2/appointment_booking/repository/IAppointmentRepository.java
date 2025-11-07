@@ -2,6 +2,7 @@ package com.bookitnowv2.appointment_booking.repository;
 
 import com.bookitnowv2.appointment_booking.entity.Appointment;
 import com.bookitnowv2.appointment_booking.entity.dto.company.CompanyAppointmentsByDateResponseDTO;
+import com.bookitnowv2.appointment_booking.entity.dto.employee.EmployeeAppointmentsByDateResponseDTO;
 import com.bookitnowv2.appointment_booking.utils.AppointmentStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -41,4 +42,14 @@ public interface IAppointmentRepository extends JpaRepository<Appointment, Long>
             @Param("startDate") LocalDate startDate,
             @Param("appointmentStatus") AppointmentStatus appointmentStatus
     );
+
+    @Query("""
+    SELECT new com.bookitnowv2.appointment_booking.entity.dto.employee.EmployeeAppointmentsByDateResponseDTO(a.date, COUNT(DISTINCT a.id))
+    FROM Appointment a
+    WHERE a.service.employee.id = :employeeId
+        AND a.date > :startDate
+        AND a.appointmentStatus = :appointmentStatus
+    GROUP BY a.date
+""")
+    List<EmployeeAppointmentsByDateResponseDTO> getEmployeePreviousBookings(@Param("employeeId") Long employeeId, @Param("startDate")LocalDate startDate, @Param("appointmentStatus") AppointmentStatus appointmentStatus);
 }

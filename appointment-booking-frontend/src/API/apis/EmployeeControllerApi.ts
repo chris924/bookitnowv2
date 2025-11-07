@@ -15,6 +15,7 @@
 
 import * as runtime from '../runtime';
 import type {
+  EmployeeAppointmentsByDateResponseDTO,
   EmployeeDataTableResponseDTO,
   EmployeePageResponseDTO,
   EmployeeSearchOptionsResponseDTO,
@@ -22,6 +23,8 @@ import type {
   SpecialistDTO,
 } from '../models/index';
 import {
+    EmployeeAppointmentsByDateResponseDTOFromJSON,
+    EmployeeAppointmentsByDateResponseDTOToJSON,
     EmployeeDataTableResponseDTOFromJSON,
     EmployeeDataTableResponseDTOToJSON,
     EmployeePageResponseDTOFromJSON,
@@ -35,6 +38,10 @@ import {
 } from '../models/index';
 
 export interface GetEmployeePageRequest {
+    employeeSlug: string;
+}
+
+export interface GetEmployeePreviousBookingStatRequest {
     employeeSlug: string;
 }
 
@@ -106,6 +113,41 @@ export class EmployeeControllerApi extends runtime.BaseAPI {
      */
     async getEmployeePage(requestParameters: GetEmployeePageRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<EmployeePageResponseDTO> {
         const response = await this.getEmployeePageRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     */
+    async getEmployeePreviousBookingStatRaw(requestParameters: GetEmployeePreviousBookingStatRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<EmployeeAppointmentsByDateResponseDTO>>> {
+        if (requestParameters['employeeSlug'] == null) {
+            throw new runtime.RequiredError(
+                'employeeSlug',
+                'Required parameter "employeeSlug" was null or undefined when calling getEmployeePreviousBookingStat().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+
+        let urlPath = `/employees/employee/{employeeSlug}/previous-booking-stat`;
+        urlPath = urlPath.replace(`{${"employeeSlug"}}`, encodeURIComponent(String(requestParameters['employeeSlug'])));
+
+        const response = await this.request({
+            path: urlPath,
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(EmployeeAppointmentsByDateResponseDTOFromJSON));
+    }
+
+    /**
+     */
+    async getEmployeePreviousBookingStat(requestParameters: GetEmployeePreviousBookingStatRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<EmployeeAppointmentsByDateResponseDTO>> {
+        const response = await this.getEmployeePreviousBookingStatRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
