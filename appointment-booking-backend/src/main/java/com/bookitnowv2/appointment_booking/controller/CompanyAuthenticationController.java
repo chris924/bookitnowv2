@@ -5,6 +5,7 @@ import com.bookitnowv2.appointment_booking.entity.Company;
 import com.bookitnowv2.appointment_booking.entity.User;
 import com.bookitnowv2.appointment_booking.entity.dto.LoginDTO;
 import com.bookitnowv2.appointment_booking.entity.dto.company.CompanyLoginResponseDTO;
+import com.bookitnowv2.appointment_booking.exception.BadCredentialException;
 import com.bookitnowv2.appointment_booking.service.CompanyAuthService;
 import com.bookitnowv2.appointment_booking.service.CompanyAuthenticationService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -49,21 +50,26 @@ public class CompanyAuthenticationController {
             throw new BadCredentialsException("Invalid company!");
         }
 
-        String token = companyAuthenticationService.loginCompany(body.getEmail(), body.getPassword());
+        try {
+            String token = companyAuthenticationService.loginCompany(body.getEmail(), body.getPassword());
 
-        ResponseCookie cookie = ResponseCookie.from("jwt", token)
-                .httpOnly(true)
-                // ! ONLY FOR LOCALHOST TESTING !
-                .secure(false) //TODO: Change in the future
-                // ! ONLY FOR LOCALHOST TESTING !
-                .sameSite("Strict")
-                .path("/")
-                .maxAge(Duration.ofHours(2))
-                .build();
+            ResponseCookie cookie = ResponseCookie.from("jwt", token)
+                    .httpOnly(true)
+                    // ! ONLY FOR LOCALHOST TESTING !
+                    .secure(false) //TODO: Change in the future
+                    // ! ONLY FOR LOCALHOST TESTING !
+                    .sameSite("Strict")
+                    .path("/")
+                    .maxAge(Duration.ofHours(2))
+                    .build();
 
-        return ResponseEntity.ok()
-                .header(HttpHeaders.SET_COOKIE, cookie.toString())
-                .body(response);
+            return ResponseEntity.ok()
+                    .header(HttpHeaders.SET_COOKIE, cookie.toString())
+                    .body(response);
+        } catch (Exception e) {
+            throw new BadCredentialException("Rossz felhasználónév vagy jelszó!"); //TODO: Throw deeper, not here?
+        }
+
     }
 
 

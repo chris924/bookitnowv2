@@ -1,4 +1,4 @@
-import { cn } from "@/lib/utils";
+import { cn, handleAPIError } from "@/lib/utils";
 import { Button } from "../button";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "../card";
 import { Input } from "../input";
@@ -29,7 +29,8 @@ export default function ProviderCompanyLoginForm({onOpenChange} : ProviderCompan
       showToast.success("Sikeres bejelentkezés!");
       await useCompanyStore.getState().checkCompanyAuth();
       onOpenChange(false);
-    }
+    },
+    onError: (error) => handleAPIError(error),
   })
 
   const handleSubmit = (e: React.FormEvent) => {
