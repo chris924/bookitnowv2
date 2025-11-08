@@ -31,4 +31,7 @@ public class EmployeeDataTableResponseDTO {
 
     @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     private Double rating;
+
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
+    private String avatarUrl;
 }

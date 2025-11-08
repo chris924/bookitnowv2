@@ -82,6 +82,11 @@ public class EmployeeService {
         return employeeRepository.findByCompanyId(authCompany.getId()).stream().map(EmployeeMapper::toDataTableResponseDTO).toList();
     }
 
+    public void deleteEmployee(Employee employee)
+    {
+        employeeRepository.delete(employee);
+    }
+
 
 
 

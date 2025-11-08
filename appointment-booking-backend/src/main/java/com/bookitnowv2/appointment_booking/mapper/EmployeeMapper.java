@@ -105,7 +105,7 @@ public class EmployeeMapper {
     {
         Long bookedAppointmentsCount = employee.getAppointments().stream().filter((app) -> app.getAppointmentStatus() == AppointmentStatus.BOOKED && app.getDate().isAfter(LocalDate.now())).count();
 
-        return new EmployeeDataTableResponseDTO(employee.getId(), employee.getName(), employee.getExperience(), employee.getStatus(), bookedAppointmentsCount, employee.getRating());
+        return new EmployeeDataTableResponseDTO(employee.getId(), employee.getName(), employee.getExperience(), employee.getStatus(), bookedAppointmentsCount, employee.getRating(), employee.getAvatarUrl());
     }
 
 }

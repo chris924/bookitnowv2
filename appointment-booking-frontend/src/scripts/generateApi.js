@@ -5,7 +5,7 @@ import crypto from "crypto";
 const SPEC_URL = "http://localhost:8080/v3/api-docs";
 const SPEC_FILE = "openapi.json";
 const HASH_FILE = "openapi.md5";
-const MAX_RETRIES = 10;
+const MAX_RETRIES = 30;
 
 function md5(content) {
   return crypto.createHash("md5").update(content).digest("hex");

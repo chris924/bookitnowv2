@@ -55,6 +55,12 @@ export interface EmployeeDataTableResponseDTO {
      * @memberof EmployeeDataTableResponseDTO
      */
     rating: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof EmployeeDataTableResponseDTO
+     */
+    avatarUrl: string;
 }
 
 
@@ -88,6 +94,7 @@ export function instanceOfEmployeeDataTableResponseDTO(value: object): value is 
     if (!('status' in value) || value['status'] === undefined) return false;
     if (!('bookedAppointments' in value) || value['bookedAppointments'] === undefined) return false;
     if (!('rating' in value) || value['rating'] === undefined) return false;
+    if (!('avatarUrl' in value) || value['avatarUrl'] === undefined) return false;
     return true;
 }
 
@@ -107,6 +114,7 @@ export function EmployeeDataTableResponseDTOFromJSONTyped(json: any, ignoreDiscr
         'status': json['status'],
         'bookedAppointments': json['bookedAppointments'],
         'rating': json['rating'],
+        'avatarUrl': json['avatarUrl'],
     };
 }
 
@@ -127,6 +135,7 @@ export function EmployeeDataTableResponseDTOToJSONTyped(value?: EmployeeDataTabl
         'status': value['status'],
         'bookedAppointments': value['bookedAppointments'],
         'rating': value['rating'],
+        'avatarUrl': value['avatarUrl'],
     };
 }
 

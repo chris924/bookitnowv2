@@ -37,6 +37,10 @@ import {
     SpecialistDTOToJSON,
 } from '../models/index';
 
+export interface DeleteSpecificEmployeeRequest {
+    employeeSlug: string;
+}
+
 export interface GetEmployeePageRequest {
     employeeSlug: string;
 }
@@ -53,6 +57,45 @@ export interface GetSearchEmployeeRequest {
  * 
  */
 export class EmployeeControllerApi extends runtime.BaseAPI {
+
+    /**
+     */
+    async deleteSpecificEmployeeRaw(requestParameters: DeleteSpecificEmployeeRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<string>> {
+        if (requestParameters['employeeSlug'] == null) {
+            throw new runtime.RequiredError(
+                'employeeSlug',
+                'Required parameter "employeeSlug" was null or undefined when calling deleteSpecificEmployee().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+
+        let urlPath = `/employees/employee/delete-employee/{employeeSlug}`;
+        urlPath = urlPath.replace(`{${"employeeSlug"}}`, encodeURIComponent(String(requestParameters['employeeSlug'])));
+
+        const response = await this.request({
+            path: urlPath,
+            method: 'DELETE',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        if (this.isJsonMime(response.headers.get('content-type'))) {
+            return new runtime.JSONApiResponse<string>(response);
+        } else {
+            return new runtime.TextApiResponse(response) as any;
+        }
+    }
+
+    /**
+     */
+    async deleteSpecificEmployee(requestParameters: DeleteSpecificEmployeeRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<string> {
+        const response = await this.deleteSpecificEmployeeRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
 
     /**
      */

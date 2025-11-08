@@ -89,6 +89,16 @@ public class EmployeeController {
         return ResponseEntity.ok().body(appointments);
     }
 
+    @DeleteMapping("employee/delete-employee/{employeeSlug}")
+    @PreAuthorize("hasRole('COMPANY','EMPLOYEE')")
+    public ResponseEntity<String> deleteSpecificEmployee(@PathVariable String employeeSlug)
+    {
+        Long employeeId = employeeService.getEmployeeIdFromSlug(employeeSlug);
+        Employee foundEmployee = employeeService.getEmployeeById(employeeId);
+        employeeService.deleteEmployee(foundEmployee);
+        return ResponseEntity.ok().body("Alkalmazott törölve");
+    }
+
 
 
 }

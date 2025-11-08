@@ -51,6 +51,7 @@ import {
 } from "@tanstack/react-table"
 import { Area, AreaChart, CartesianGrid, XAxis } from "recharts"
 import { toast } from "sonner"
+import defaultAvatar from "@/assets/default.jpg"
 import { z } from "zod"
 
 import { useIsMobile } from "@/hooks/use-mobile"
@@ -106,8 +107,17 @@ import {
   TabsTrigger,
 } from "@/components/ui/tabs"
 import { CompanyDedicatedEmployeePastBookings } from "@/COMPANY/hooks/query/CompanyDedicatedEmployeeQuery"
-import { createSlug } from "@/lib/utils"
+import { createSlug, handleAPIError } from "@/lib/utils"
 import Loader from "@/components/ui/own/Loader"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import ApproveDialogForm from "@/components/ui/own/ApproveDialogForm"
+import { useState } from "react"
+import { useApi } from "@/hooks/useApi"
+import { LoginUserRequest } from "@/API"
+import { useMutation, useQueryClient } from "@tanstack/react-query"
+import { showToast } from "@/components/ui/own/ShowToast"
+
+ 
 
 export const schema = z.object({
   id: z.number(),
@@ -115,7 +125,8 @@ export const schema = z.object({
   experience: z.string(),
   status: z.string(),
   bookedAppointments: z.number(),
-  rating: z.number()
+  rating: z.number(),
+  avatarUrl: z.string(),
 })
 
 // Create a separate component for the drag handle
@@ -138,7 +149,99 @@ function DragHandle({ id }: { id: number }) {
   )
 }
 
-const columns: ColumnDef<z.infer<typeof schema>>[] = [
+
+
+function DraggableRow({ row }: { row: Row<z.infer<typeof schema>> }) {
+  const { transform, transition, setNodeRef, isDragging } = useSortable({
+    id: row.original.id,
+  })
+
+  return (
+    <TableRow
+      data-state={row.getIsSelected() && "selected"}
+      data-dragging={isDragging}
+      ref={setNodeRef}
+      className="relative z-0 data-[dragging=true]:z-10 data-[dragging=true]:opacity-80"
+      style={{
+        transform: CSS.Transform.toString(transform),
+        transition: transition,
+      }}
+    >
+      {row.getVisibleCells().map((cell) => (
+        <TableCell key={cell.id}>
+          {flexRender(cell.column.columnDef.cell, cell.getContext())}
+        </TableCell>
+      ))}
+    </TableRow>
+  )
+}
+
+export function DataTable({
+  data: initialData,
+}: {
+  data: z.infer<typeof schema>[]
+}) {
+
+  const [selectedEmployee, setSelectedEmployee] = useState<{
+  name: string
+  id: number
+} | null>(null);
+ const [showDeleteEmployee, setShowDeleteEmployee] = useState(false);
+
+  const api = useApi();
+  const queryClient = useQueryClient();
+   const {mutate, isPending, isError, error} = useMutation({
+
+    mutationFn: (employeeSlug: string) => api.employee.deleteSpecificEmployee({employeeSlug}),
+    onSuccess: async () => {
+      showToast.success("Alkalmazott törölve!");
+      setShowDeleteEmployee(false);
+      setSelectedEmployee(null);
+      await queryClient.invalidateQueries({ queryKey: ["employeeTable"] });
+      
+      await queryClient.invalidateQueries({ queryKey: ["sectionCardStatistics"] });
+
+      await queryClient.invalidateQueries({ queryKey: ["pastAppointments"] });
+    },
+    onError: (error) => handleAPIError(error)
+  })
+
+function deleteEmployee(employeeSlug : string)
+{
+  mutate(employeeSlug);
+}
+
+
+function handleDeleteClick(name: string, id: number) {
+  setSelectedEmployee({ name, id });
+  setShowDeleteEmployee(true);
+}
+
+  const data = initialData
+  const [rowSelection, setRowSelection] = React.useState({})
+  const [columnVisibility, setColumnVisibility] =
+    React.useState<VisibilityState>({})
+  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
+    []
+  )
+  const [sorting, setSorting] = React.useState<SortingState>([])
+  const [pagination, setPagination] = React.useState({
+    pageIndex: 0,
+    pageSize: 10,
+  })
+  const sortableId = React.useId()
+  const sensors = useSensors(
+    useSensor(MouseSensor, {}),
+    useSensor(TouchSensor, {}),
+    useSensor(KeyboardSensor, {})
+  )
+
+  const dataIds = React.useMemo<UniqueIdentifier[]>(
+    () => data?.map(({ id }) => id) || [],
+    [data]
+  )
+
+  const columns: ColumnDef<z.infer<typeof schema>>[] = [
   {
     id: "drag",
     header: () => null,
@@ -224,7 +327,7 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
   },
   {
     id: "actions",
-    cell: () => (
+    cell: ({row}) => (
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button
@@ -237,70 +340,14 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="w-32">
-          <DropdownMenuItem>Edit</DropdownMenuItem>
-          <DropdownMenuItem>Make a copy</DropdownMenuItem>
-          <DropdownMenuItem>Favorite</DropdownMenuItem>
+          <DropdownMenuItem>Kezelés</DropdownMenuItem>
           <DropdownMenuSeparator />
-          <DropdownMenuItem variant="destructive">Delete</DropdownMenuItem>
+          <DropdownMenuItem variant="destructive" onClick={() => handleDeleteClick(row.original.name, row.original.id)}>Törlés</DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
     ),
   },
 ]
-
-function DraggableRow({ row }: { row: Row<z.infer<typeof schema>> }) {
-  const { transform, transition, setNodeRef, isDragging } = useSortable({
-    id: row.original.id,
-  })
-
-  return (
-    <TableRow
-      data-state={row.getIsSelected() && "selected"}
-      data-dragging={isDragging}
-      ref={setNodeRef}
-      className="relative z-0 data-[dragging=true]:z-10 data-[dragging=true]:opacity-80"
-      style={{
-        transform: CSS.Transform.toString(transform),
-        transition: transition,
-      }}
-    >
-      {row.getVisibleCells().map((cell) => (
-        <TableCell key={cell.id}>
-          {flexRender(cell.column.columnDef.cell, cell.getContext())}
-        </TableCell>
-      ))}
-    </TableRow>
-  )
-}
-
-export function DataTable({
-  data: initialData,
-}: {
-  data: z.infer<typeof schema>[]
-}) {
-  const [data, setData] = React.useState(() => initialData)
-  const [rowSelection, setRowSelection] = React.useState({})
-  const [columnVisibility, setColumnVisibility] =
-    React.useState<VisibilityState>({})
-  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
-    []
-  )
-  const [sorting, setSorting] = React.useState<SortingState>([])
-  const [pagination, setPagination] = React.useState({
-    pageIndex: 0,
-    pageSize: 10,
-  })
-  const sortableId = React.useId()
-  const sensors = useSensors(
-    useSensor(MouseSensor, {}),
-    useSensor(TouchSensor, {}),
-    useSensor(KeyboardSensor, {})
-  )
-
-  const dataIds = React.useMemo<UniqueIdentifier[]>(
-    () => data?.map(({ id }) => id) || [],
-    [data]
-  )
 
   const table = useReactTable({
     data,
@@ -327,18 +374,10 @@ export function DataTable({
     getFacetedUniqueValues: getFacetedUniqueValues(),
   })
 
-  function handleDragEnd(event: DragEndEvent) {
-    const { active, over } = event
-    if (active && over && active.id !== over.id) {
-      setData((data) => {
-        const oldIndex = dataIds.indexOf(active.id)
-        const newIndex = dataIds.indexOf(over.id)
-        return arrayMove(data, oldIndex, newIndex)
-      })
-    }
-  }
+ 
 
   return (
+    <>
     <Tabs
       defaultValue="outline"
       className="w-full flex-col justify-start gap-6"
@@ -410,7 +449,6 @@ export function DataTable({
           <DndContext
             collisionDetection={closestCenter}
             modifiers={[restrictToVerticalAxis]}
-            onDragEnd={handleDragEnd}
             sensors={sensors}
             id={sortableId}
           >
@@ -551,6 +589,18 @@ export function DataTable({
         <div className="aspect-video w-full flex-1 rounded-lg border border-dashed"></div>
       </TabsContent>
     </Tabs>
+   {showDeleteEmployee && selectedEmployee && (
+  <ApproveDialogForm
+    title="Alkalmazott törlése"
+    description="Biztosan törölni szeretné az alkalmazottat és az összes hozzá tartozó adatot?"
+    onButtonClick={() => deleteEmployee(createSlug(selectedEmployee.name, selectedEmployee.id))}
+    onOpenChange={setShowDeleteEmployee}
+    open={showDeleteEmployee}
+    value={createSlug(selectedEmployee.name, selectedEmployee.id)}
+    isLoading={isPending}
+  />
+)}
+    </>
   )
 }
 
@@ -565,6 +615,7 @@ const chartConfig = {
     label: "Mobile",
     color: "var(--primary)",
   },
+  
 } satisfies ChartConfig
 
  function TableCellViewer({ item }: { item: z.infer<typeof schema> }) {
@@ -572,8 +623,6 @@ const chartConfig = {
 
 
   const employeeSlug =  createSlug(item.name, item.id);
-
-  console.log("EMPLOYEESLUG: ", employeeSlug);
   const {data, isLoading, error} = CompanyDedicatedEmployeePastBookings(employeeSlug);
 
   if(isLoading) return <Loader/>
@@ -582,15 +631,34 @@ const chartConfig = {
     <Drawer direction={isMobile ? "bottom" : "right"}>
       <DrawerTrigger asChild>
         <Button variant="link" className="text-foreground w-fit px-0 text-left">
+           <Avatar className="rounded-lg">
+            <AvatarImage
+              src={item.avatarUrl}
+              alt={item.name}
+            />
+            <AvatarFallback>{defaultAvatar}</AvatarFallback>
+          </Avatar>
           {item.name}
         </Button>
       </DrawerTrigger>
       <DrawerContent>
         <DrawerHeader className="gap-1">
-          <DrawerTitle>{item.name}</DrawerTitle>
+          <div className="flex flex-row gap-4 text-center">  
+            <Avatar className="rounded-lg">
+            <AvatarImage
+              src={item.avatarUrl}
+              alt={item.name}
+            />
+            <AvatarFallback>{defaultAvatar}</AvatarFallback>
+          </Avatar>
+          <DrawerTitle>       
+            {item.name}
+            </DrawerTitle>
+          </div>
           <DrawerDescription>
             Az összes foglalás az elmúlt 6 hónapban
           </DrawerDescription>
+         
         </DrawerHeader>
         <div className="flex flex-col gap-4 overflow-y-auto px-4 text-sm">
           

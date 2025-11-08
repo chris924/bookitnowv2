@@ -173,14 +173,25 @@ export function ChartAreaInteractive() {
               cursor={false}
               content={
                 <ChartTooltipContent
-                  labelFormatter={(value) => {
-                    return new Date(value).toLocaleDateString("en-US", {
+                  // ✅ Force it to use the X-axis value (the date)
+                  labelFormatter={(value, payload) => {
+                    // If `value` is a series name (like "Foglalás"), try to grab the actual date
+                    // from the payload — Recharts gives you `payload[0].payload.date`
+                    const dateString = payload?.[0]?.payload?.date ?? value;
+                    const parsedDate = new Date(dateString);
+
+                    if (isNaN(parsedDate.getTime())) {
+                      console.warn("Invalid date in tooltip:", dateString);
+                      return value; // fallback, just show the raw value
+                    }
+
+                    return parsedDate.toLocaleDateString("en-US", {
                       month: "short",
                       day: "numeric",
-                    })
+                    });
                   }}
-                  indicator="dot"
-                />
+      indicator="dot"
+    />
               }
             />
             <Area
