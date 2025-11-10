@@ -10,15 +10,16 @@ type ApproveDialogFormProps = {
     open?: boolean
     onOpenChange: (open: boolean) => void
     value: string;
+    buttonVariant: "default" | "destructive" | "outline" | "secondary" | "ghost" | "link"; 
     isLoading: boolean;
 }
 
 
-export default function ApproveDialogForm({title, description, onButtonClick, open, onOpenChange, value, isLoading} : ApproveDialogFormProps)
+export default function ApproveDialogForm({title, description, onButtonClick, open, onOpenChange, value, buttonVariant, isLoading} : ApproveDialogFormProps)
 {
 
     return(
-        <Dialog open={open} onOpenChange={onOpenChange}>
+        <Dialog open={open} onOpenChange={onOpenChange} >
       <DialogContent className="sm:max-w-[425px] p-6 md:p-8">
         <DialogHeader>
           <DialogTitle className="text-center">
@@ -31,13 +32,18 @@ export default function ApproveDialogForm({title, description, onButtonClick, op
         </div>
 
         <DialogFooter>
+          
           <Button
-            className="bg-blue-400 flex items-center gap-2"
+            className="flex items-center gap-2 aria-label"
             disabled={isLoading}
             onClick={() => onButtonClick(value)}
+            variant={buttonVariant}
           >
             {isLoading && <Loader/>}
             {isLoading ? "Folyamatban..." : "Igen"}
+          </Button>
+          <Button variant="outline" onClick={() => onOpenChange(false)}>
+            Mégse
           </Button>
         </DialogFooter>
       </DialogContent>

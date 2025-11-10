@@ -64,7 +64,7 @@ export default function UserBookedAppointmentsForm()
 
    return (
   <div className="space-y-10">
-    {showApproveForm ? <ApproveDialogForm title="Biztos lemondja a foglalást?" description="" value={cancelAppointmentData?.slotResponseDTO.id.toString()!} onButtonClick={handleCancelAppointmentClick} onOpenChange={setShowApproveForm} open={showApproveForm} isLoading={cancelMutation.isPending}/> : ""}
+    {showApproveForm ? <ApproveDialogForm title="Biztos lemondja a foglalást?" description="" value={cancelAppointmentData?.slotResponseDTO.id.toString()!} onButtonClick={handleCancelAppointmentClick} onOpenChange={setShowApproveForm} open={showApproveForm} buttonVariant="destructive" isLoading={cancelMutation.isPending}/> : ""}
     {/* Upcoming */}
     <section>
       <h2 className="text-xl font-semibold mb-4">Aktív foglalások</h2>

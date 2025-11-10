@@ -112,7 +112,7 @@ export default function EmployeeBookingTable({ appointmentSlots }: EmployeeBooki
       />  
       <div> 
     {showLoginForm ? <GuestLogin open={showLoginForm} onOpenChange={setShowLoginForm} showApproveBooking={setShowApproveBooking}/> :
-                        clickedAppointment && <ApproveDialogForm title='Biztosan lefoglalja az időpontot?' open={showApproveBooking} isLoading={handleBookAppointment.isPending}
+                        clickedAppointment && <ApproveDialogForm title='Biztosan lefoglalja az időpontot?' open={showApproveBooking} isLoading={handleBookAppointment.isPending} buttonVariant='default'
                          description={`Dátum: ${clickedAppointment.start?.toDateString()} Kezdés: ${clickedAppointment.start?.getHours()}:${clickedAppointment.start?.getMinutes().toString().padStart(2, "0")}`} onOpenChange={setShowApproveBooking} onButtonClick={handleOnButtonClick} value={clickedAppointment.id}/>}
     </div>
       

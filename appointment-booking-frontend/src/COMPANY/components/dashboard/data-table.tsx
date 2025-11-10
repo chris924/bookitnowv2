@@ -597,6 +597,7 @@ function handleDeleteClick(name: string, id: number) {
     onOpenChange={setShowDeleteEmployee}
     open={showDeleteEmployee}
     value={createSlug(selectedEmployee.name, selectedEmployee.id)}
+    buttonVariant="destructive"
     isLoading={isPending}
   />
 )}
