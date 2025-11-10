@@ -41,6 +41,8 @@ public class Employee implements UserDetails {
 
     private EmployeeExperience experience;
 
+    private String phoneNumber;
+
     private Timestamp createdAt;
 
     @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL, orphanRemoval = true)

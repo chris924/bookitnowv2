@@ -1,8 +1,12 @@
 package com.bookitnowv2.appointment_booking.entity.dto.employee;
 
 import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 
 @AllArgsConstructor
+@Getter
+@Setter
 public class EmployeeGetResponseDTO {
 
     public String type;
@@ -14,5 +18,9 @@ public class EmployeeGetResponseDTO {
     public String place;
     public String about;
     public Double rating;
+    private String avatarUrl;
+    private String email;
+    private String phoneNumber;
+    private String experience;
 
 }

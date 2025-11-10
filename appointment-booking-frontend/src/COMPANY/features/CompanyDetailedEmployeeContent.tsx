@@ -1,5 +1,6 @@
 import { ServiceGetResponseDTO, EmployeeWorkingHoursResponseDTO } from "@/API";
 import { EmployeeGetResponseDTO } from "@/API/models/EmployeeGetResponseDTO"
+import { EmployeeDetailsCard } from "../components/employee-components/employee-details-card";
 
 
 interface CompanyDetailedEmployeeContentProps
@@ -16,6 +17,7 @@ export default function CompanyDetailedEmployeeContent({details, services, worki
     console.log(workingHours)
 
     return (
-    <div> in progress</div>
+    <EmployeeDetailsCard details={details}/>
+    
 )
 }

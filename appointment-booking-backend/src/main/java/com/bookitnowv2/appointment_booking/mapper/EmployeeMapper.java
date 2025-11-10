@@ -38,23 +38,11 @@ public class EmployeeMapper {
                 employee.getCompany().getName(),
                 employee.getCompany().getPlace(),
                 employee.getAbout(),
-                employee.getRating()
-        );
-    }
-
-    public EmployeeGetResponseDTO toGetDTO(EmployeeDocument employeeDoc)
-    {
-
-        return new EmployeeGetResponseDTO(
-                "EMPLOYEE",
-                employeeDoc.getId(),
-                employeeDoc.getName(),
-                employeeDoc.getUsername(),
-                employeeDoc.getAvatarUrl(),
-                employeeDoc.getCompany(),
-                employeeDoc.getPlace(),
-                employeeDoc.getAbout(),
-                employeeDoc.getRating()
+                employee.getRating(),
+                employee.getAvatarUrl(),
+                employee.getEmail(),
+                employee.getPhoneNumber(),
+                employee.getExperience().toString()
         );
     }
 

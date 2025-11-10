@@ -73,6 +73,30 @@ export interface EmployeeGetResponseDTO {
      * @memberof EmployeeGetResponseDTO
      */
     rating?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof EmployeeGetResponseDTO
+     */
+    avatarUrl?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof EmployeeGetResponseDTO
+     */
+    email?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof EmployeeGetResponseDTO
+     */
+    phoneNumber?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof EmployeeGetResponseDTO
+     */
+    experience?: string;
 }
 
 /**
@@ -101,6 +125,10 @@ export function EmployeeGetResponseDTOFromJSONTyped(json: any, ignoreDiscriminat
         'place': json['place'] == null ? undefined : json['place'],
         'about': json['about'] == null ? undefined : json['about'],
         'rating': json['rating'] == null ? undefined : json['rating'],
+        'avatarUrl': json['avatarUrl'] == null ? undefined : json['avatarUrl'],
+        'email': json['email'] == null ? undefined : json['email'],
+        'phoneNumber': json['phoneNumber'] == null ? undefined : json['phoneNumber'],
+        'experience': json['experience'] == null ? undefined : json['experience'],
     };
 }
 
@@ -124,6 +152,10 @@ export function EmployeeGetResponseDTOToJSONTyped(value?: EmployeeGetResponseDTO
         'place': value['place'],
         'about': value['about'],
         'rating': value['rating'],
+        'avatarUrl': value['avatarUrl'],
+        'email': value['email'],
+        'phoneNumber': value['phoneNumber'],
+        'experience': value['experience'],
     };
 }
 
