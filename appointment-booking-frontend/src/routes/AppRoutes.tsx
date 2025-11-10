@@ -1,3 +1,4 @@
+import CompanyDetailedEmployeePage from '@/COMPANY/pages/CompanyDetailedEmployeePage';
 import CompanyHomePage from '@/COMPANY/pages/CompanyHomePage';
 import CompanyStatisticsPage from '@/COMPANY/pages/CompanyStatisticsPage';
 import CompanyLayout from '@/components/layout/CompanyLayout';
@@ -33,6 +34,7 @@ export default function AppRoutes() {
         <Route path="/user/:slug" element={<DedicatedUserPage />} />
         <Route path="/user/:slug/booked-appointments" element={<UserBookedAppointmentsPage />} />
         <Route path="/company/statistics" element={<CompanyStatisticsPage/>}/>
+        <Route path="/company/employees/:employeeSlug" element={<CompanyDetailedEmployeePage />} />
       </Route>
     </Routes>
   );

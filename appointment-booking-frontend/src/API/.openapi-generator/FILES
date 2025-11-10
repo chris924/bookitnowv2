@@ -19,9 +19,11 @@ models/CompanySectionCardsResponseDTO.ts
 models/EmployeeAppointmentsByDateResponseDTO.ts
 models/EmployeeDataTableResponseDTO.ts
 models/EmployeeGetResponseDTO.ts
+models/EmployeePageForCompanyResponseDTO.ts
 models/EmployeePageResponseDTO.ts
 models/EmployeeSearchOptionsResponseDTO.ts
 models/EmployeeSearchRequestDTO.ts
+models/EmployeeWorkingHoursResponseDTO.ts
 models/LoginDTO.ts
 models/PlaceDTO.ts
 models/ServiceGetResponseDTO.ts

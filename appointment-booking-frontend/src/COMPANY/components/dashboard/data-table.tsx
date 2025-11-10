@@ -116,6 +116,7 @@ import { useApi } from "@/hooks/useApi"
 import { LoginUserRequest } from "@/API"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { showToast } from "@/components/ui/own/ShowToast"
+import { useNavigate } from "react-router-dom"
 
  
 
@@ -190,6 +191,8 @@ export function DataTable({
 
   const api = useApi();
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
+
    const {mutate, isPending, isError, error} = useMutation({
 
     mutationFn: (employeeSlug: string) => api.employee.deleteSpecificEmployee({employeeSlug}),
@@ -340,7 +343,7 @@ function handleDeleteClick(name: string, id: number) {
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="w-32">
-          <DropdownMenuItem>Kezelés</DropdownMenuItem>
+          <DropdownMenuItem onClick={() => navigate(`company/employees/${createSlug(row.original.name, row.original.id)}`)}>Kezelés</DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem variant="destructive" onClick={() => handleDeleteClick(row.original.name, row.original.id)}>Törlés</DropdownMenuItem>
         </DropdownMenuContent>

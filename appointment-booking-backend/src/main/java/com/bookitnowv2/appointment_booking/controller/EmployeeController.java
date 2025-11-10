@@ -1,10 +1,13 @@
 package com.bookitnowv2.appointment_booking.controller;
 
 
+import com.bookitnowv2.appointment_booking.configuration.SecurityUtils;
 import com.bookitnowv2.appointment_booking.elasticSearch.service.ElasticEmployeeService;
+import com.bookitnowv2.appointment_booking.entity.Company;
 import com.bookitnowv2.appointment_booking.entity.Employee;
 import com.bookitnowv2.appointment_booking.entity.dto.employee.*;
 import com.bookitnowv2.appointment_booking.entity.dto.employee.SearchOptionDetails.SpecialistDTO;
+import com.bookitnowv2.appointment_booking.exception.EmployeeNotFoundException;
 import com.bookitnowv2.appointment_booking.mapper.EmployeeMapper;
 import com.bookitnowv2.appointment_booking.service.AppointmentService;
 import com.bookitnowv2.appointment_booking.service.EmployeeService;
@@ -46,7 +49,7 @@ public class EmployeeController {
         return ResponseEntity.ok(topEmployees);
     }
 
-    @GetMapping("/employee/{employeeSlug}")
+    @GetMapping("/{employeeSlug}")
     public ResponseEntity<EmployeePageResponseDTO> getEmployeePage(@PathVariable String employeeSlug) {
         Long employeeId = employeeService.getEmployeeIdFromSlug(employeeSlug);
         Employee foundEmployee = employeeService.getEmployeeById(employeeId);
@@ -77,8 +80,8 @@ public class EmployeeController {
         return ResponseEntity.ok(employeeTableData);
     }
 
-    @GetMapping("employee/{employeeSlug}/previous-booking-stat")
-    @PreAuthorize("hasRole('COMPANY','EMPLOYEE')")
+    @GetMapping("/{employeeSlug}/previous-booking-stat")
+    @PreAuthorize("hasAnyRole('COMPANY','EMPLOYEE')")
     public ResponseEntity<List<EmployeeAppointmentsByDateResponseDTO>> getEmployeePreviousBookingStat(@PathVariable String employeeSlug)
     {
         Long employeeId = employeeService.getEmployeeIdFromSlug(employeeSlug);
@@ -89,8 +92,8 @@ public class EmployeeController {
         return ResponseEntity.ok().body(appointments);
     }
 
-    @DeleteMapping("employee/delete-employee/{employeeSlug}")
-    @PreAuthorize("hasRole('COMPANY','EMPLOYEE')")
+    @DeleteMapping("/{employeeSlug}/delete-employee")
+    @PreAuthorize("hasAnyRole('COMPANY','EMPLOYEE')")
     public ResponseEntity<String> deleteSpecificEmployee(@PathVariable String employeeSlug)
     {
         Long employeeId = employeeService.getEmployeeIdFromSlug(employeeSlug);
@@ -98,6 +101,29 @@ public class EmployeeController {
         employeeService.deleteEmployee(foundEmployee);
         return ResponseEntity.ok().body("Alkalmazott törölve");
     }
+
+    @GetMapping("/company/{employeeSlug}")
+    @PreAuthorize("hasRole('COMPANY')")
+    public ResponseEntity<EmployeePageForCompanyResponseDTO> getEmployeePageDataForCompany(@PathVariable String employeeSlug)
+    {
+        Long employeeId = employeeService.getEmployeeIdFromSlug(employeeSlug);
+        Employee foundEmployee = employeeService.getEmployeeById(employeeId);
+
+        Company currentCompany = SecurityUtils.getCurrentCompany();
+
+        if (foundEmployee.getCompany() == null ||
+                currentCompany == null ||
+                !foundEmployee.getCompany().getId().equals(currentCompany.getId())) {
+            throw new EmployeeNotFoundException(employeeSlug);
+        }
+
+        EmployeePageForCompanyResponseDTO employeePageForCompanyResponseDTO = EmployeeMapper.toEmployeePageForCompanyResponseDTO(foundEmployee);
+
+        return ResponseEntity.ok().body(employeePageForCompanyResponseDTO);
+
+    }
+
+
 
 
 

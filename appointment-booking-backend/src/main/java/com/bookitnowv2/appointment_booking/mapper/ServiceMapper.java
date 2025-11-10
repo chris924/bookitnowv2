@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class ServiceMapper {
 
-    public ServiceGetResponseDTO toGetDTO(ServiceEntity serviceEntity)
+    public static ServiceGetResponseDTO toGetDTO(ServiceEntity serviceEntity)
     {
         return new ServiceGetResponseDTO(serviceEntity.getId(), serviceEntity.getName(), serviceEntity.getDescription(), serviceEntity.getPrice(), serviceEntity.getDuration().toMinutes());
     }

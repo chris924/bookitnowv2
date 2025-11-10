@@ -119,4 +119,6 @@ public class CompanyService {
         return new CompanySectionCardsResponseDTO(totalRevenue, totalActiveAppointments, bestEmployee, newCustomers);
     }
 
+
+
 }

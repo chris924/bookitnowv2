@@ -17,6 +17,7 @@ import * as runtime from '../runtime';
 import type {
   EmployeeAppointmentsByDateResponseDTO,
   EmployeeDataTableResponseDTO,
+  EmployeePageForCompanyResponseDTO,
   EmployeePageResponseDTO,
   EmployeeSearchOptionsResponseDTO,
   EmployeeSearchRequestDTO,
@@ -27,6 +28,8 @@ import {
     EmployeeAppointmentsByDateResponseDTOToJSON,
     EmployeeDataTableResponseDTOFromJSON,
     EmployeeDataTableResponseDTOToJSON,
+    EmployeePageForCompanyResponseDTOFromJSON,
+    EmployeePageForCompanyResponseDTOToJSON,
     EmployeePageResponseDTOFromJSON,
     EmployeePageResponseDTOToJSON,
     EmployeeSearchOptionsResponseDTOFromJSON,
@@ -42,6 +45,10 @@ export interface DeleteSpecificEmployeeRequest {
 }
 
 export interface GetEmployeePageRequest {
+    employeeSlug: string;
+}
+
+export interface GetEmployeePageDataForCompanyRequest {
     employeeSlug: string;
 }
 
@@ -73,7 +80,7 @@ export class EmployeeControllerApi extends runtime.BaseAPI {
         const headerParameters: runtime.HTTPHeaders = {};
 
 
-        let urlPath = `/employees/employee/delete-employee/{employeeSlug}`;
+        let urlPath = `/employees/{employeeSlug}/delete-employee`;
         urlPath = urlPath.replace(`{${"employeeSlug"}}`, encodeURIComponent(String(requestParameters['employeeSlug'])));
 
         const response = await this.request({
@@ -139,7 +146,7 @@ export class EmployeeControllerApi extends runtime.BaseAPI {
         const headerParameters: runtime.HTTPHeaders = {};
 
 
-        let urlPath = `/employees/employee/{employeeSlug}`;
+        let urlPath = `/employees/{employeeSlug}`;
         urlPath = urlPath.replace(`{${"employeeSlug"}}`, encodeURIComponent(String(requestParameters['employeeSlug'])));
 
         const response = await this.request({
@@ -161,6 +168,41 @@ export class EmployeeControllerApi extends runtime.BaseAPI {
 
     /**
      */
+    async getEmployeePageDataForCompanyRaw(requestParameters: GetEmployeePageDataForCompanyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<EmployeePageForCompanyResponseDTO>> {
+        if (requestParameters['employeeSlug'] == null) {
+            throw new runtime.RequiredError(
+                'employeeSlug',
+                'Required parameter "employeeSlug" was null or undefined when calling getEmployeePageDataForCompany().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+
+        let urlPath = `/employees/company/{employeeSlug}`;
+        urlPath = urlPath.replace(`{${"employeeSlug"}}`, encodeURIComponent(String(requestParameters['employeeSlug'])));
+
+        const response = await this.request({
+            path: urlPath,
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => EmployeePageForCompanyResponseDTOFromJSON(jsonValue));
+    }
+
+    /**
+     */
+    async getEmployeePageDataForCompany(requestParameters: GetEmployeePageDataForCompanyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<EmployeePageForCompanyResponseDTO> {
+        const response = await this.getEmployeePageDataForCompanyRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     */
     async getEmployeePreviousBookingStatRaw(requestParameters: GetEmployeePreviousBookingStatRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<EmployeeAppointmentsByDateResponseDTO>>> {
         if (requestParameters['employeeSlug'] == null) {
             throw new runtime.RequiredError(
@@ -174,7 +216,7 @@ export class EmployeeControllerApi extends runtime.BaseAPI {
         const headerParameters: runtime.HTTPHeaders = {};
 
 
-        let urlPath = `/employees/employee/{employeeSlug}/previous-booking-stat`;
+        let urlPath = `/employees/{employeeSlug}/previous-booking-stat`;
         urlPath = urlPath.replace(`{${"employeeSlug"}}`, encodeURIComponent(String(requestParameters['employeeSlug'])));
 
         const response = await this.request({
