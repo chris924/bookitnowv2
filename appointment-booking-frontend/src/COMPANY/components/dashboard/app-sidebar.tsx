@@ -31,6 +31,9 @@ import { NavMain } from "./nav-main"
 import { NavSecondary } from "./nav-secondary"
 import { NavUser } from "./nav-user"
 import { useCompanyStore, useUserStore } from "@/stores/AuthStore"
+import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from "@radix-ui/react-dropdown-menu"
+import { User2, ChevronUp } from "lucide-react"
+import { EmployeeDataTableResponseDTO } from "@/API/models/EmployeeDataTableResponseDTO"
 
 const data = {
 
@@ -120,7 +123,11 @@ const data = {
   ],
 }
 
-export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+type AppSidebarProps = React.ComponentProps<typeof Sidebar> & {
+  employees: EmployeeDataTableResponseDTO[]; 
+};
+
+export function AppSidebar({employees, ...props }: AppSidebarProps) {
 
 const { company } = useCompanyStore();
 
@@ -142,7 +149,8 @@ const { company } = useCompanyStore();
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent>
-        <NavMain items={data.navMain}/>
+        <NavMain items={data.navMain} employees={employees}/>
+         
         <NavDocuments items={data.documents} />
         <NavSecondary items={data.navSecondary} className="mt-auto" />
       </SidebarContent>

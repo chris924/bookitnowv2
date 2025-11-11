@@ -2,10 +2,12 @@ import { EmployeeGetResponseDTO } from "@/API";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
-import { ItemContent, ItemTitle, ItemDescription, ItemActions, ItemMedia, Item } from "@/components/ui/item";
+import { ItemContent, ItemTitle, ItemDescription, Item } from "@/components/ui/item";
 import { Avatar, AvatarImage, AvatarFallback } from "@radix-ui/react-avatar";
 import { Separator } from "@radix-ui/react-separator";
-import { Pencil, Mail, Phone, Medal, Star, Book, BadgeCheckIcon, ChevronRightIcon, ChevronDown } from "lucide-react";
+import { Mail, Phone, Medal, Star, Book, ChevronDown } from "lucide-react";
+import { useState } from "react";
+import EditSimpleData from "./employee-edit-simpledata";
 
 interface EmployeeDetailsCardProps{
     details: EmployeeGetResponseDTO;
@@ -14,6 +16,8 @@ interface EmployeeDetailsCardProps{
 
 export function EmployeeDetailsCard({details}: EmployeeDetailsCardProps)
 {
+
+  const [open, setOpen] = useState(false);
 
     return(
          <Card className="p-6 md:p-8 shadow-md rounded-2xl h-auto">
@@ -32,6 +36,12 @@ export function EmployeeDetailsCard({details}: EmployeeDetailsCardProps)
             {details.company}
           </div>
         </div>
+
+        <div>
+          <Button onClick={() => setOpen(true)}>Alapadatok szerkeztése</Button>
+           <EditSimpleData open={open} onOpenChange={setOpen} />
+        </div>
+
       </CardHeader>
 
       <Separator className="" />
@@ -105,10 +115,7 @@ export function EmployeeDetailsCard({details}: EmployeeDetailsCardProps)
       </Collapsible>
   </div>
  
-</CardContent>
-
- 
-
+  </CardContent>
     </Card>
   
     )

@@ -12,12 +12,7 @@ interface CompanyDetailedEmployeeContentProps
 
 export default function CompanyDetailedEmployeeContent({details, services, workingHours}: CompanyDetailedEmployeeContentProps)
 {
-    console.log(details)
-    console.log(services)
-    console.log(workingHours)
-
     return (
-    <EmployeeDetailsCard details={details}/>
-    
+    <EmployeeDetailsCard details={details}/> 
 )
 }
