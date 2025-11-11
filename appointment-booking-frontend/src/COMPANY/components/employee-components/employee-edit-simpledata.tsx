@@ -1,16 +1,22 @@
+import { EmployeeGetResponseDTO } from "@/API/models/EmployeeGetResponseDTO";
 import { Button } from "@/components/ui/button";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import {SheetContent, SheetHeader, SheetTitle, SheetDescription, SheetFooter, SheetClose, Sheet } from "@/components/ui/sheet";
-import { Label } from "recharts";
+import { Textarea } from "@/components/ui/textarea";
+import { useState } from "react";
 
 interface EditSimpleDataProps{
     open: boolean;
     onOpenChange: (value: boolean) => void;
+    details: EmployeeGetResponseDTO;
 }
 
 
-export default function EditSimpleData({open, onOpenChange}: EditSimpleDataProps)
+export default function EditSimpleData({open, onOpenChange, details}: EditSimpleDataProps)
 {
+    const [category, setCategory] = useState(details.experience)
+
     return (
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent>
@@ -21,12 +27,42 @@ export default function EditSimpleData({open, onOpenChange}: EditSimpleDataProps
         </SheetHeader>
         <div className="grid flex-1 auto-rows-min gap-6 px-4">
           <div className="grid gap-3">
-            <Label>Name</Label>
-            <Input id="sheet-demo-name" defaultValue="Pedro Duarte" />
+            <span>Név</span>
+            <Input id="sheet-demo-name" defaultValue={details.name} />
           </div>
           <div className="grid gap-3">
-            <Label>Username</Label>
-            <Input id="sheet-demo-username" defaultValue="@peduarte" />
+            <span>E-mail</span>
+            <Input id="sheet-demo-email" defaultValue={details.email} />
+          </div>
+           <div className="grid gap-3">
+            <span>Telefonszám</span>
+            <Input id="sheet-demo-phonenumber" defaultValue={details.phoneNumber} />
+          </div>
+          <div className="grid gap-3">
+            <span>Kategória</span>
+            <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                    <Button variant="outline">{category}</Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className="w-56" align="start">
+                    <DropdownMenuLabel>Kategória</DropdownMenuLabel>
+                    <DropdownMenuGroup>
+                    <DropdownMenuItem onClick={(e) => setCategory(e.currentTarget.textContent)}>
+                        Junior
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={(e) => setCategory(e.currentTarget.textContent)}>
+                        Senior
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={(e) => setCategory(e.currentTarget.textContent)}>
+                        Master
+                    </DropdownMenuItem>
+                   </DropdownMenuGroup>
+                </DropdownMenuContent>
+                </DropdownMenu>
+          </div>
+           <div className="grid gap-3">
+            <span>Bio</span>
+             <Textarea placeholder="Bio leírás" maxLength={200} />
           </div>
         </div>
         <SheetFooter>
@@ -36,7 +72,7 @@ export default function EditSimpleData({open, onOpenChange}: EditSimpleDataProps
           </SheetClose>
         </SheetFooter>
       </SheetContent>
-    </Sheet>
+    </Sheet>    
     
     )
 }

@@ -39,7 +39,7 @@ export function EmployeeDetailsCard({details}: EmployeeDetailsCardProps)
 
         <div>
           <Button onClick={() => setOpen(true)}>Alapadatok szerkeztése</Button>
-           <EditSimpleData open={open} onOpenChange={setOpen} />
+           <EditSimpleData open={open} onOpenChange={setOpen} details={details}/>
         </div>
 
       </CardHeader>
