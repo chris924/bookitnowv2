@@ -42,7 +42,7 @@ public class EmployeeMapper {
                 employee.getAvatarUrl(),
                 employee.getEmail(),
                 employee.getPhoneNumber(),
-                employee.getExperience().toString()
+                employee.getExperience()
         );
     }
 

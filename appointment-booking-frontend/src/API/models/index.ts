@@ -10,6 +10,7 @@ export * from './CompanyLoginResponseDTO';
 export * from './CompanySectionCardsResponseDTO';
 export * from './EmployeeAppointmentsByDateResponseDTO';
 export * from './EmployeeDataTableResponseDTO';
+export * from './EmployeeEditDataRequestDTO';
 export * from './EmployeeGetResponseDTO';
 export * from './EmployeePageForCompanyResponseDTO';
 export * from './EmployeePageResponseDTO';

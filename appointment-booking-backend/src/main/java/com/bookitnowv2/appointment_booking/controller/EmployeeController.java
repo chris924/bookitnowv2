@@ -12,6 +12,7 @@ import com.bookitnowv2.appointment_booking.mapper.EmployeeMapper;
 import com.bookitnowv2.appointment_booking.service.AppointmentService;
 import com.bookitnowv2.appointment_booking.service.EmployeeService;
 import com.bookitnowv2.appointment_booking.service.ServiceEntityService;
+import com.bookitnowv2.appointment_booking.utils.EmployeeExperience;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -100,6 +101,14 @@ public class EmployeeController {
         Employee foundEmployee = employeeService.getEmployeeById(employeeId);
         employeeService.deleteEmployee(foundEmployee);
         return ResponseEntity.ok().body("Alkalmazott törölve");
+    }
+
+    @PutMapping("/company{employeeSlug}")
+    @PreAuthorize("hasRole('COMPANY')")
+    public ResponseEntity<String> editEmployeeDataForCompany(@PathVariable String employeeSlug, @Valid @RequestBody EmployeeEditDataRequestDTO employeeEditDataRequestDTO)
+    {
+        employeeService.updateEmployeeDataForCompany(employeeSlug, employeeEditDataRequestDTO);
+        return ResponseEntity.ok().body("Adatok sikeresen módosítva!");
     }
 
     @GetMapping("/company/{employeeSlug}")

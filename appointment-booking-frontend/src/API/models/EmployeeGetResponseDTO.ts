@@ -96,8 +96,20 @@ export interface EmployeeGetResponseDTO {
      * @type {string}
      * @memberof EmployeeGetResponseDTO
      */
-    experience?: string;
+    experience?: EmployeeGetResponseDTOExperienceEnum;
 }
+
+
+/**
+ * @export
+ */
+export const EmployeeGetResponseDTOExperienceEnum = {
+    Junior: 'JUNIOR',
+    Senior: 'SENIOR',
+    Master: 'MASTER'
+} as const;
+export type EmployeeGetResponseDTOExperienceEnum = typeof EmployeeGetResponseDTOExperienceEnum[keyof typeof EmployeeGetResponseDTOExperienceEnum];
+
 
 /**
  * Check if a given object implements the EmployeeGetResponseDTO interface.

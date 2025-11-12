@@ -6,6 +6,7 @@ import com.bookitnowv2.appointment_booking.entity.Company;
 import com.bookitnowv2.appointment_booking.entity.Employee;
 import com.bookitnowv2.appointment_booking.entity.dto.employee.EmployeeAppointmentsByDateResponseDTO;
 import com.bookitnowv2.appointment_booking.entity.dto.employee.EmployeeDataTableResponseDTO;
+import com.bookitnowv2.appointment_booking.entity.dto.employee.EmployeeEditDataRequestDTO;
 import com.bookitnowv2.appointment_booking.entity.dto.employee.EmployeeGetResponseDTO;
 import com.bookitnowv2.appointment_booking.entity.dto.employee.SearchOptionDetails.SpecialistDTO;
 import com.bookitnowv2.appointment_booking.exception.EmployeeNotFoundException;
@@ -15,10 +16,12 @@ import com.bookitnowv2.appointment_booking.utils.AppointmentStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class EmployeeService {
@@ -85,6 +88,33 @@ public class EmployeeService {
     public void deleteEmployee(Employee employee)
     {
         employeeRepository.delete(employee);
+    }
+
+
+    @Transactional
+    public void updateEmployeeDataForCompany(String slug, EmployeeEditDataRequestDTO dto) {
+        Long id = getEmployeeIdFromSlug(slug);
+        Employee employee = getEmployeeById(id);
+        Company company = SecurityUtils.getCurrentCompany();
+
+        if (employee.getCompany() == null ||
+                company == null ||
+                !employee.getCompany().getId().equals(company.getId())) {
+            throw new EmployeeNotFoundException(slug);
+        }
+
+        if (!Objects.equals(employee.getName(), dto.getName()))
+            employee.setName(dto.getName());
+        if (!Objects.equals(employee.getEmail(), dto.getEmail()))
+            employee.setEmail(dto.getEmail());
+        if (!Objects.equals(employee.getPhoneNumber(), dto.getPhoneNumber()))
+            employee.setPhoneNumber(dto.getPhoneNumber());
+        if (!Objects.equals(employee.getExperience(), dto.getExperience()))
+            employee.setExperience(dto.getExperience());
+        if(!Objects.equals(employee.getAbout(), dto.getBio()))
+            employee.setAbout(dto.getBio());
+
+        employeeRepository.save(employee);
     }
 
 

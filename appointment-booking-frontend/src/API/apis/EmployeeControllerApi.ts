@@ -17,6 +17,7 @@ import * as runtime from '../runtime';
 import type {
   EmployeeAppointmentsByDateResponseDTO,
   EmployeeDataTableResponseDTO,
+  EmployeeEditDataRequestDTO,
   EmployeePageForCompanyResponseDTO,
   EmployeePageResponseDTO,
   EmployeeSearchOptionsResponseDTO,
@@ -28,6 +29,8 @@ import {
     EmployeeAppointmentsByDateResponseDTOToJSON,
     EmployeeDataTableResponseDTOFromJSON,
     EmployeeDataTableResponseDTOToJSON,
+    EmployeeEditDataRequestDTOFromJSON,
+    EmployeeEditDataRequestDTOToJSON,
     EmployeePageForCompanyResponseDTOFromJSON,
     EmployeePageForCompanyResponseDTOToJSON,
     EmployeePageResponseDTOFromJSON,
@@ -42,6 +45,11 @@ import {
 
 export interface DeleteSpecificEmployeeRequest {
     employeeSlug: string;
+}
+
+export interface EditEmployeeDataForCompanyRequest {
+    employeeSlug: string;
+    employeeEditDataRequestDTO: EmployeeEditDataRequestDTO;
 }
 
 export interface GetEmployeePageRequest {
@@ -101,6 +109,55 @@ export class EmployeeControllerApi extends runtime.BaseAPI {
      */
     async deleteSpecificEmployee(requestParameters: DeleteSpecificEmployeeRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<string> {
         const response = await this.deleteSpecificEmployeeRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     */
+    async editEmployeeDataForCompanyRaw(requestParameters: EditEmployeeDataForCompanyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<string>> {
+        if (requestParameters['employeeSlug'] == null) {
+            throw new runtime.RequiredError(
+                'employeeSlug',
+                'Required parameter "employeeSlug" was null or undefined when calling editEmployeeDataForCompany().'
+            );
+        }
+
+        if (requestParameters['employeeEditDataRequestDTO'] == null) {
+            throw new runtime.RequiredError(
+                'employeeEditDataRequestDTO',
+                'Required parameter "employeeEditDataRequestDTO" was null or undefined when calling editEmployeeDataForCompany().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
+
+
+        let urlPath = `/employees/company{employeeSlug}`;
+        urlPath = urlPath.replace(`{${"employeeSlug"}}`, encodeURIComponent(String(requestParameters['employeeSlug'])));
+
+        const response = await this.request({
+            path: urlPath,
+            method: 'PUT',
+            headers: headerParameters,
+            query: queryParameters,
+            body: EmployeeEditDataRequestDTOToJSON(requestParameters['employeeEditDataRequestDTO']),
+        }, initOverrides);
+
+        if (this.isJsonMime(response.headers.get('content-type'))) {
+            return new runtime.JSONApiResponse<string>(response);
+        } else {
+            return new runtime.TextApiResponse(response) as any;
+        }
+    }
+
+    /**
+     */
+    async editEmployeeDataForCompany(requestParameters: EditEmployeeDataForCompanyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<string> {
+        const response = await this.editEmployeeDataForCompanyRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
