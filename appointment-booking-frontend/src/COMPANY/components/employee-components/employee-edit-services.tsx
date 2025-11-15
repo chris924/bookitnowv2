@@ -1,18 +1,14 @@
-import { ServiceGetResponseDTO } from "@/API"
-import { EmployeeEditDataRequestDTO, EmployeeEditDataRequestDTOExperienceEnum } from "@/API";
-import { EmployeeGetResponseDTO } from "@/API/models/EmployeeGetResponseDTO";
+import { EditServiceFromCompanyRequest, ServiceEntityModifyRequestDTO, ServiceGetResponseDTO } from "@/API"
 import { Button } from "@/components/ui/button";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import ApproveDialogForm from "@/components/ui/own/ApproveDialogForm";
-import Loader from "@/components/ui/own/Loader";
 import { showToast } from "@/components/ui/own/ShowToast";
 import {SheetContent, SheetHeader, SheetTitle, SheetDescription, SheetFooter, SheetClose, Sheet } from "@/components/ui/sheet";
 import { Textarea } from "@/components/ui/textarea";
 import { useApi } from "@/hooks/useApi";
-import { createSlug, handleAPIError } from "@/lib/utils";
+import { handleAPIError } from "@/lib/utils";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { Delete, Trash2Icon } from "lucide-react";
+import { Trash2Icon } from "lucide-react";
 import { useState } from "react";
 
 
@@ -34,9 +30,39 @@ export default function EmployeeEditServices({service, open, onOpenChange}: Empl
 
     const [approveDeleteForm, setApproveDeleteForm] = useState(false);
 
+
+     const editServiceMutation = useMutation({
+      mutationFn: (requestData: EditServiceFromCompanyRequest) => api.serviceEntity.editServiceFromCompany(requestData),
+      onSuccess: async (response) => {
+        showToast.success(response)
+        onOpenChange(false);
+        await queryClient.invalidateQueries({ queryKey: ["employeeTable"] });
+        
+        await queryClient.invalidateQueries({ queryKey: ["sectionCardStatistics"] });
+
+        await queryClient.invalidateQueries({ queryKey: ["pastAppointments"] });
+
+        await queryClient.invalidateQueries({queryKey: ["employeeDataForCompany"]});
+      },
+      onError: (error) => handleAPIError(error)
+    })
+
     function handleEditClick()
     {
+      const serviceEntityModifyRequestDTO: ServiceEntityModifyRequestDTO = {
+        name: serviceName,
+        duration: serviceDuration,
+        price: servicePrice,
+        description: serviceDescription
+      }
 
+
+      const requestData: EditServiceFromCompanyRequest ={
+        serviceEntityId: service.id,
+        serviceEntityModifyRequestDTO: serviceEntityModifyRequestDTO
+      }
+
+      editServiceMutation.mutate(requestData);
     }
 
 

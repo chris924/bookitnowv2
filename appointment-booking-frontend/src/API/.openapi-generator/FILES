@@ -28,6 +28,7 @@ models/EmployeeSearchRequestDTO.ts
 models/EmployeeWorkingHoursResponseDTO.ts
 models/LoginDTO.ts
 models/PlaceDTO.ts
+models/ServiceEntityModifyRequestDTO.ts
 models/ServiceGetResponseDTO.ts
 models/SlotResponseDTO.ts
 models/SpecialistDTO.ts

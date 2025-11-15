@@ -14,9 +14,21 @@
 
 
 import * as runtime from '../runtime';
+import type {
+  ServiceEntityModifyRequestDTO,
+} from '../models/index';
+import {
+    ServiceEntityModifyRequestDTOFromJSON,
+    ServiceEntityModifyRequestDTOToJSON,
+} from '../models/index';
 
 export interface DeleteServiceFromCompanyRequest {
     serviceEntityId: number;
+}
+
+export interface EditServiceFromCompanyRequest {
+    serviceEntityId: number;
+    serviceEntityModifyRequestDTO: ServiceEntityModifyRequestDTO;
 }
 
 /**
@@ -36,14 +48,11 @@ export class ServiceEntityControllerApi extends runtime.BaseAPI {
 
         const queryParameters: any = {};
 
-        if (requestParameters['serviceEntityId'] != null) {
-            queryParameters['serviceEntityId'] = requestParameters['serviceEntityId'];
-        }
-
         const headerParameters: runtime.HTTPHeaders = {};
 
 
         let urlPath = `/services/{serviceEntityId}`;
+        urlPath = urlPath.replace(`{${"serviceEntityId"}}`, encodeURIComponent(String(requestParameters['serviceEntityId'])));
 
         const response = await this.request({
             path: urlPath,
@@ -63,6 +72,55 @@ export class ServiceEntityControllerApi extends runtime.BaseAPI {
      */
     async deleteServiceFromCompany(requestParameters: DeleteServiceFromCompanyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<string> {
         const response = await this.deleteServiceFromCompanyRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     */
+    async editServiceFromCompanyRaw(requestParameters: EditServiceFromCompanyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<string>> {
+        if (requestParameters['serviceEntityId'] == null) {
+            throw new runtime.RequiredError(
+                'serviceEntityId',
+                'Required parameter "serviceEntityId" was null or undefined when calling editServiceFromCompany().'
+            );
+        }
+
+        if (requestParameters['serviceEntityModifyRequestDTO'] == null) {
+            throw new runtime.RequiredError(
+                'serviceEntityModifyRequestDTO',
+                'Required parameter "serviceEntityModifyRequestDTO" was null or undefined when calling editServiceFromCompany().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
+
+
+        let urlPath = `/services/{serviceEntityId}`;
+        urlPath = urlPath.replace(`{${"serviceEntityId"}}`, encodeURIComponent(String(requestParameters['serviceEntityId'])));
+
+        const response = await this.request({
+            path: urlPath,
+            method: 'PUT',
+            headers: headerParameters,
+            query: queryParameters,
+            body: ServiceEntityModifyRequestDTOToJSON(requestParameters['serviceEntityModifyRequestDTO']),
+        }, initOverrides);
+
+        if (this.isJsonMime(response.headers.get('content-type'))) {
+            return new runtime.JSONApiResponse<string>(response);
+        } else {
+            return new runtime.TextApiResponse(response) as any;
+        }
+    }
+
+    /**
+     */
+    async editServiceFromCompany(requestParameters: EditServiceFromCompanyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<string> {
+        const response = await this.editServiceFromCompanyRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
