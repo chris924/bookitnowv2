@@ -4,6 +4,7 @@ apis/AvatarControllerApi.ts
 apis/CompanyAuthenticationControllerApi.ts
 apis/CompanyControllerApi.ts
 apis/EmployeeControllerApi.ts
+apis/ServiceEntityControllerApi.ts
 apis/UserAuthenticationControllerApi.ts
 apis/UserControllerApi.ts
 apis/index.ts

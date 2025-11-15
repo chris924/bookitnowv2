@@ -4,6 +4,7 @@ import { EmployeeGetResponseDTO } from "@/API/models/EmployeeGetResponseDTO";
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
+import ApproveDialogForm from "@/components/ui/own/ApproveDialogForm";
 import Loader from "@/components/ui/own/Loader";
 import { showToast } from "@/components/ui/own/ShowToast";
 import {SheetContent, SheetHeader, SheetTitle, SheetDescription, SheetFooter, SheetClose, Sheet } from "@/components/ui/sheet";
@@ -28,17 +29,43 @@ export default function EmployeeEditServices({service, open, onOpenChange}: Empl
     const [servicePrice, setServicePrice] = useState(service.price);
     const [serviceDescription ,setServiceDescription] = useState(service.description);
 
+    const api = useApi();
+    const queryClient = useQueryClient();
+
+    const [approveDeleteForm, setApproveDeleteForm] = useState(false);
 
     function handleEditClick()
     {
 
     }
-    function handleDeleteClick()
-    {
 
+
+    const deleteServiceMutation = useMutation({
+
+      mutationFn: (serviceEntityId: number) => api.serviceEntity.deleteServiceFromCompany({serviceEntityId}),
+      onSuccess: async (response) => {
+        showToast.success(response)
+        setApproveDeleteForm(false);
+        onOpenChange(false);
+        await queryClient.invalidateQueries({ queryKey: ["employeeTable"] });
+        
+        await queryClient.invalidateQueries({ queryKey: ["sectionCardStatistics"] });
+
+        await queryClient.invalidateQueries({ queryKey: ["pastAppointments"] });
+
+        await queryClient.invalidateQueries({queryKey: ["employeeDataForCompany"]});
+      },
+      onError: (error) => handleAPIError(error)
+    })
+
+
+    function handleDeleteClick(serviceEntityId: string)
+    {
+      deleteServiceMutation.mutate(Number(serviceEntityId));
     }
 
     return(
+      <>
         <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent >
         <SheetHeader>
@@ -67,7 +94,7 @@ export default function EmployeeEditServices({service, open, onOpenChange}: Empl
 
         <div className="my-1">
                
-        <Button type="submit" variant="destructive" onClick={() => handleDeleteClick()}>
+        <Button type="submit" variant="destructive" onClick={() => setApproveDeleteForm(true)}>
          <Trash2Icon />
         {"Szolgáltatás törlés"}
         </Button>
@@ -82,6 +109,10 @@ export default function EmployeeEditServices({service, open, onOpenChange}: Empl
           </SheetClose>
         </SheetFooter>
       </SheetContent>
-    </Sheet>   
+    </Sheet>
+    
+    {approveDeleteForm && <ApproveDialogForm open={approveDeleteForm} onOpenChange={setApproveDeleteForm} key={service.id} title="Szolgáltatás törlés" buttonVariant="destructive" description="Biztosan szeretnéd törölni a szolgáltatást?" value={service.id.toString()} onButtonClick={handleDeleteClick} isLoading={deleteServiceMutation.isPending}/>}
+
+    </>
     )
 }
