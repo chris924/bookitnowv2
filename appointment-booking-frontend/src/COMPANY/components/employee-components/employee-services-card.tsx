@@ -38,11 +38,24 @@ export default function EmployeeServicesCard({services}: EmployeeServicesCardPro
           <ItemTitle className="text-xl">{service.name}</ItemTitle>
           <ItemDescription className="text-lg">
            
-           <div className="flex justify-between flex-wrap gap-2 ">
-            {service.description || "-"}
-           <Button onClick={() => setOpenEditServices(true)}>Szerkesztés</Button>
-           <EmployeeEditServices service={service} open={openEditServices} onOpenChange={setOpenEditServices} />
-           </div>
+           <div className="flex flex-col gap-3">
+            <div className="flex flex-col gap-1 text-md text-gray-700">
+              <p><span className="font-medium">Leírás:</span> {service.description || "-"}</p>
+              <p><span className="font-medium">Ár:</span> {service.price ? `${service.price} Ft` : "-"}</p>
+              <p><span className="font-medium">Időtartam:</span> {service.duration || "-"}</p>
+            </div>
+
+            <div className="flex justify-center">
+            <Button className="self-start" onClick={() => setOpenEditServices(true)}>
+              Szerkesztés
+            </Button>
+            </div>
+            <EmployeeEditServices
+              service={service}
+              open={openEditServices}
+              onOpenChange={setOpenEditServices}
+            />
+          </div>
           </ItemDescription>
         </ItemContent>   
       </Item>
