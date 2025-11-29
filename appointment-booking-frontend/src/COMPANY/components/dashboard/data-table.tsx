@@ -707,69 +707,10 @@ const chartConfig = {
               </ChartContainer>
               <Separator />
             </>
-          
-          <form className="flex flex-col gap-4">
-            <div className="flex flex-col gap-3">
-              <Label htmlFor="header">Header</Label>
-              <Input id="header" defaultValue={item.name} />
-            </div>
-            <div className="grid grid-cols-2 gap-4">
-              <div className="flex flex-col gap-3">
-                <Label htmlFor="Besorolás">Type</Label>
-                <Select defaultValue={item.status}>
-                  <SelectTrigger id="Besorolás" className="w-full">
-                    <SelectValue placeholder="Select a type" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="Table of Contents">
-                      Table of Contents
-                    </SelectItem>
-                    <SelectItem value="Executive Summary">
-                      Executive Summary
-                    </SelectItem>
-                    <SelectItem value="Technical Approach">
-                      Technical Approach
-                    </SelectItem>
-                    <SelectItem value="Design">Design</SelectItem>
-                    <SelectItem value="Capabilities">Capabilities</SelectItem>
-                    <SelectItem value="Focus Documents">
-                      Focus Documents
-                    </SelectItem>
-                    <SelectItem value="Narrative">Narrative</SelectItem>
-                    <SelectItem value="Cover Page">Cover Page</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              <div className="flex flex-col gap-3">
-                <Label htmlFor="Státsu">Status</Label>
-                <Select defaultValue={item.status}>
-                  <SelectTrigger id="Státusz" className="w-full">
-                    <SelectValue placeholder="Select a status" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="Done">Done</SelectItem>
-                    <SelectItem value="In Progress">In Progress</SelectItem>
-                    <SelectItem value="Not Started">Not Started</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
-            <div className="grid grid-cols-2 gap-4">
-              <div className="flex flex-col gap-3">
-                <Label htmlFor="lefoglalt időpontok">Lefoglalt időpontok</Label>
-                <Input id="lefoglalt időpontok" defaultValue={item.bookedAppointments} />
-              </div>
-              <div className="flex flex-col gap-3">
-                <Label htmlFor="értékelés">Értékelés</Label>
-                <Input id="értékelés" defaultValue={item.rating} />
-              </div>
-            </div>
-          </form>
         </div>
         <DrawerFooter>
-          <Button>Submit</Button>
           <DrawerClose asChild>
-            <Button variant="outline">Done</Button>
+            <Button variant="outline">Bezárás</Button>
           </DrawerClose>
         </DrawerFooter>
       </DrawerContent>
