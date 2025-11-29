@@ -6,6 +6,7 @@ export const apiConfig = new Configuration({
   credentials: "include", // HttpOnly JWT cookies
 });
 
+//This needs in AuthStore.tsx, since it is not a function, it can be used in the auth infos
 export const api = {
   user: new UserControllerApi(apiConfig),
   employee: new EmployeeControllerApi(apiConfig),

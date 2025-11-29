@@ -19,6 +19,7 @@ export * from './EmployeeSearchRequestDTO';
 export * from './EmployeeWorkingHoursResponseDTO';
 export * from './LoginDTO';
 export * from './PlaceDTO';
+export * from './ServiceEntityModifyRequestDTO';
 export * from './ServiceGetResponseDTO';
 export * from './SlotResponseDTO';
 export * from './SpecialistDTO';

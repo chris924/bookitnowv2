@@ -7,6 +7,7 @@ import {
   CompanyAuthenticationControllerApi,
   UserAuthenticationControllerApi,
   AuthInfoControllerApi,
+  ServiceEntityControllerApi,
 } from "@/API";
 import { apiConfig } from "@/lib/apiClient";
 
@@ -18,6 +19,7 @@ export function useApi() {
       employee: new EmployeeControllerApi(apiConfig),
       company: new CompanyControllerApi(apiConfig),
       appointment: new AppointmentControllerApi(apiConfig),
+      serviceEntity: new ServiceEntityControllerApi(apiConfig),
       companyAuth: new CompanyAuthenticationControllerApi(apiConfig),
       userAuth: new UserAuthenticationControllerApi(apiConfig),
       authInfo: new AuthInfoControllerApi(apiConfig)
