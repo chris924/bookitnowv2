@@ -2,11 +2,38 @@ import { EmployeeWorkingHoursResponseDTO } from "@/API/models/EmployeeWorkingHou
 import FullCalendar from "@fullcalendar/react";
 import timeGridPlugin from '@fullcalendar/timegrid';
 import dayGridPlugin from '@fullcalendar/daygrid';
-import interactionPlugin from '@fullcalendar/interaction'; 
+import interactionPlugin from '@fullcalendar/interaction';
+import { useState } from "react";
+import { EventInput } from "@fullcalendar/core/index.js";
 
-export default function EmployeeWorkingHoursCard({workingHours}: EmployeeWorkingHoursResponseDTO[])
+interface EmployeeWorkingHoursCardProps
 {
+  workingHours: EmployeeWorkingHoursResponseDTO[]
+}
 
+function toFullCalendarEvent(slot: EmployeeWorkingHoursResponseDTO, _index: number): EventInput {
+  const startTime = slot.startTime.slice(0, 5); // 'HH:mm'
+  const endTime = slot.endTime.slice(0, 5);
+
+  return {
+    id: slot.id.toString(),
+    title: "",
+    start: `${slot.date}T${startTime}`,
+    end: `${slot.date}T${endTime}`,
+    color: "grey",
+    className: "cursor-pointer",
+  };
+}
+
+export default function EmployeeWorkingHoursCard({workingHours}: EmployeeWorkingHoursCardProps)
+{
+  const [events, setEvents] = useState<EventInput[]>([]);
+
+  const latestVisibleRange = Math.max(
+  ...workingHours
+    .filter(w => w.date != null)
+    .map(w => new Date(w.date!).getTime())
+);
 
 
     return(
@@ -16,19 +43,19 @@ export default function EmployeeWorkingHoursCard({workingHours}: EmployeeWorking
         initialDate={new Date().toISOString().split('T')[0]}
         visibleRange={{
           start: new Date().toISOString().split("T")[0], // today
-          end: appointmentSlots?.lastDate || new Date().toISOString().split("T")[0],
+          end: new Date(latestVisibleRange).toISOString().split("T")[0],
         }}
         validRange={{
-          start: appointmentSlots?.firstDate || new Date().toISOString().split('T')[0],
-          end: appointmentSlots?.lastDate || new Date().toISOString().split('T')[0],
+          start: new Date().toISOString().split('T')[0],
+          end:  new Date().toISOString().split('T')[0] + 60,
         }}
         events={events}
-        slotMinTime={appointmentSlots?.firstHour ? appointmentSlots?.firstHour : "8:00"}   // start hour
-        slotMaxTime={appointmentSlots?.lastHour ? appointmentSlots?.lastHour : "16:00"} // end hour
+        slotMinTime="8:00"   // start hour
+        slotMaxTime="16:00" // end hour
         height="auto"
         allDaySlot={false}
         slotDuration="00:20:00"
-        firstDay={appointmentSlots?.firstDate ? new Date(appointmentSlots.firstDate).getDay() : 0}  // 0=Sun ... 6=Sat
+        firstDay= {new Date().getDate()}  // 0=Sun ... 6=Sat
          slotLabelFormat={{
           hour: "numeric",
           minute: "2-digit",
@@ -39,20 +66,6 @@ export default function EmployeeWorkingHoursCard({workingHours}: EmployeeWorking
         info.jsEvent.preventDefault();
 
         console.log("Event clicked:", info.event);
-        setClickedAppointment(info.event);
-        
-        if(isAuthenticated && info.event.backgroundColor == "green")
-        {
-          console.log("auth true");
-          setShowLoginForm(false);
-          setShowApproveBooking(true);
-        }
-        else if(info.event.backgroundColor == "green")
-        {
-          console.log("auth false");
-          setShowLoginForm(true);
-          setShowApproveBooking(false);
-        }
   }}
       />  
     )

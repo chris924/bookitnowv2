@@ -21,28 +21,38 @@ import { mapValues } from '../runtime';
 export interface EmployeeWorkingHoursResponseDTO {
     /**
      * 
+     * @type {number}
+     * @memberof EmployeeWorkingHoursResponseDTO
+     */
+    id: number;
+    /**
+     * 
      * @type {Date}
      * @memberof EmployeeWorkingHoursResponseDTO
      */
-    date?: Date;
+    date: Date;
     /**
      * 
      * @type {string}
      * @memberof EmployeeWorkingHoursResponseDTO
      */
-    startTime?: string;
+    startTime: string;
     /**
      * 
      * @type {string}
      * @memberof EmployeeWorkingHoursResponseDTO
      */
-    endTime?: string;
+    endTime: string;
 }
 
 /**
  * Check if a given object implements the EmployeeWorkingHoursResponseDTO interface.
  */
 export function instanceOfEmployeeWorkingHoursResponseDTO(value: object): value is EmployeeWorkingHoursResponseDTO {
+    if (!('id' in value) || value['id'] === undefined) return false;
+    if (!('date' in value) || value['date'] === undefined) return false;
+    if (!('startTime' in value) || value['startTime'] === undefined) return false;
+    if (!('endTime' in value) || value['endTime'] === undefined) return false;
     return true;
 }
 
@@ -56,9 +66,10 @@ export function EmployeeWorkingHoursResponseDTOFromJSONTyped(json: any, ignoreDi
     }
     return {
         
-        'date': json['date'] == null ? undefined : (new Date(json['date'])),
-        'startTime': json['startTime'] == null ? undefined : json['startTime'],
-        'endTime': json['endTime'] == null ? undefined : json['endTime'],
+        'id': json['id'],
+        'date': (new Date(json['date'])),
+        'startTime': json['startTime'],
+        'endTime': json['endTime'],
     };
 }
 
@@ -73,7 +84,8 @@ export function EmployeeWorkingHoursResponseDTOToJSONTyped(value?: EmployeeWorki
 
     return {
         
-        'date': value['date'] == null ? value['date'] : value['date'].toISOString().substring(0,10),
+        'id': value['id'],
+        'date': value['date'].toISOString().substring(0,10),
         'startTime': value['startTime'],
         'endTime': value['endTime'],
     };

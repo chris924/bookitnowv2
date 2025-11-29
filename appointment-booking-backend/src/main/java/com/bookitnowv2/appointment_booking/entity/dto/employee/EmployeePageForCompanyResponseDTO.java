@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDate;
 import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
@@ -19,5 +20,4 @@ public class EmployeePageForCompanyResponseDTO {
         List<ServiceGetResponseDTO> employeeServices;
         @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
         List<EmployeeWorkingHoursResponseDTO> employeeWorkingHours;
-
 }
