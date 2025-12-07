@@ -241,6 +241,9 @@ public class AppointmentService {
                     continue;
                 }
 
+                // Skip if there is
+
+
                 // Find if there's a conflict
                 Optional<Appointment> conflict = currentExistingAppointments.stream()
                         .filter(i -> slotStart.isBefore(i.getEndTime()) && slotEnd.isAfter(i.getStartTime()))

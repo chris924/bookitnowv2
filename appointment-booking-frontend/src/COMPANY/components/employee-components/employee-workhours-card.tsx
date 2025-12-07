@@ -6,10 +6,35 @@ import interactionPlugin from '@fullcalendar/interaction';
 import { useEffect, useState } from "react";
 import { EventInput } from "@fullcalendar/core/index.js";
 import { Button } from "@/components/ui/button";
+import { EmployeeBreakTimes } from "@/API/models";
 
 interface EmployeeWorkingHoursCardProps
 {
   workingHours: EmployeeWorkingHoursResponseDTO[]
+}
+
+function getBreakTimeEvents(breakSlot: EmployeeBreakTimes): EventInput
+{
+
+    const breakStartTime = breakSlot.breakStartTime!.slice(0, 5);
+    const breakEndTime = breakSlot.breakEndTime!.slice(0, 5);
+    const workingHourSlot = breakSlot.workingHours
+   
+       const dateStr = new Date(workingHourSlot!.date!).toISOString().split("T")[0];
+    const event = {
+      title: "Szünet",
+      start: `${dateStr}T${breakStartTime}`,
+      end: `${dateStr}T${breakEndTime}`,
+      color: "green",
+      className: "cursor-pointer",
+    };
+
+      console.log("BREAK: ", event);
+      return event;
+    
+   
+  
+
 }
 
 function toFullCalendarEvent(slot: EmployeeWorkingHoursResponseDTO, _index: number): EventInput {
@@ -19,8 +44,7 @@ function toFullCalendarEvent(slot: EmployeeWorkingHoursResponseDTO, _index: numb
   const dateStr = new Date(slot.date).toISOString().split("T")[0];
 
   const event = {
-    id: slot.id.toString(),
-    title: "TEST",
+    title: "TEST1",
     start: `${dateStr}T${startTime}`,
     end: `${dateStr}T${endTime}`,
     color: "red",
@@ -45,13 +69,24 @@ export default function EmployeeWorkingHoursCard({workingHours}: EmployeeWorking
 const today = new Date();
 const todayStr = today.toISOString().split("T")[0];
 
+  console.log("WORKING HOURS: ", workingHours)
 
 // day of week: 0=Sun .. 6=Sat
 const firstDayOfWeek = today.getDay();
 
   useEffect(() => {
 
-    setEvents(workingHours.map((workinghour) => (toFullCalendarEvent(workinghour, workinghour.id))))
+   let events = [
+  // Working hour events
+  ...workingHours.map((wh) => toFullCalendarEvent(wh, wh.id)),
+
+  // Break time events
+  ...workingHours.flatMap((wh) =>
+    wh.breakTimes?.map((bt) => getBreakTimeEvents(bt)) || []
+  )
+];
+
+    setEvents(events)
 
   }, [workingHours])
 
