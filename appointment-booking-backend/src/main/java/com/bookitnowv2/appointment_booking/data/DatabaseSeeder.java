@@ -117,9 +117,10 @@ public class DatabaseSeeder implements CommandLineRunner {
         userRepository.save(admin);
     }
 
-    private EmployeeBreakTimes createEmployeeBreakTimes(LocalTime start, LocalTime end, EmployeeWorkingHours workingHours)
+    private EmployeeBreakTimes createEmployeeBreakTimes(LocalDate date, LocalTime start, LocalTime end, EmployeeWorkingHours workingHours)
     {
         EmployeeBreakTimes breakTime = new EmployeeBreakTimes();
+        breakTime.setDate(date);
         breakTime.setBreakStartTime(start);
         breakTime.setBreakEndTime(end);
         breakTime.setWorkingHours(workingHours);
@@ -164,13 +165,13 @@ public class DatabaseSeeder implements CommandLineRunner {
 
 
 
-        EmployeeWorkingHours employee1WorkingHours = createEmployeeWorkingHours(employee1, LocalTime.of(12, 0), LocalTime.of(22, 0), LocalDate.now() );
+        EmployeeWorkingHours employee1WorkingHours = createEmployeeWorkingHours(employee1, LocalTime.of(12, 0), LocalTime.of(23, 0), LocalDate.now() );
         employee1WorkingHours.setBreakTimes(employee1breakTimes);
 
 
         employee1WorkingHoursList.add(employee1WorkingHours);
 
-       EmployeeBreakTimes breakTime1 = createEmployeeBreakTimes(LocalTime.of(14, 0), LocalTime.of(16, 30), employee1WorkingHours);
+       EmployeeBreakTimes breakTime1 = createEmployeeBreakTimes(LocalDate.now(), LocalTime.of(14, 0), LocalTime.of(22, 30), employee1WorkingHours);
         employee1breakTimes.add(breakTime1);
         employee1WorkingHours.setBreakTimes(employee1breakTimes);
         ServiceEntity service1 = createService("Shave", "Shaving",  15, employee1, company1, Duration.ofMinutes(30));

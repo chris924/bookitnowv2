@@ -1,6 +1,6 @@
 package com.bookitnowv2.appointment_booking.entity.dto.employee;
 
-import com.bookitnowv2.appointment_booking.entity.EmployeeBreakTimes;
+import com.bookitnowv2.appointment_booking.entity.dto.EmployeeBreakTimesResponseDTO;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -28,6 +28,6 @@ public class EmployeeWorkingHoursResponseDTO {
     @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     private LocalTime endTime;
 
-    private List<EmployeeBreakTimes> breakTimes;
+    private List<EmployeeBreakTimesResponseDTO> breakTimes;
 
 }

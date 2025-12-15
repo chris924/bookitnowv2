@@ -5,22 +5,22 @@ import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import { useEffect, useState } from "react";
 import { EventInput } from "@fullcalendar/core/index.js";
-import { Button } from "@/components/ui/button";
-import { EmployeeBreakTimes } from "@/API/models";
+import { Button } from "@/components/ui/button"
+import { EmployeeBreakTimesResponseDTO } from "@/API";
 
 interface EmployeeWorkingHoursCardProps
 {
   workingHours: EmployeeWorkingHoursResponseDTO[]
 }
 
-function getBreakTimeEvents(breakSlot: EmployeeBreakTimes): EventInput
+function getBreakTimeEvents(breakSlot: EmployeeBreakTimesResponseDTO): EventInput
 {
 
     const breakStartTime = breakSlot.breakStartTime!.slice(0, 5);
     const breakEndTime = breakSlot.breakEndTime!.slice(0, 5);
-    const workingHourSlot = breakSlot.workingHours
+    const workingHourSlot = breakSlot.date;
    
-       const dateStr = new Date(workingHourSlot!.date!).toISOString().split("T")[0];
+       const dateStr = new Date(workingHourSlot!).toISOString().split("T")[0];
     const event = {
       title: "Szünet",
       start: `${dateStr}T${breakStartTime}`,
@@ -31,9 +31,6 @@ function getBreakTimeEvents(breakSlot: EmployeeBreakTimes): EventInput
 
       console.log("BREAK: ", event);
       return event;
-    
-   
-  
 
 }
 
@@ -69,7 +66,6 @@ export default function EmployeeWorkingHoursCard({workingHours}: EmployeeWorking
 const today = new Date();
 const todayStr = today.toISOString().split("T")[0];
 
-  console.log("WORKING HOURS: ", workingHours)
 
 // day of week: 0=Sun .. 6=Sat
 const firstDayOfWeek = today.getDay();

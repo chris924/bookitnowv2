@@ -3,6 +3,7 @@ package com.bookitnowv2.appointment_booking.entity;
 
 import com.bookitnowv2.appointment_booking.utils.AppointmentStatus;
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -44,6 +45,7 @@ public class Appointment {
     @JsonBackReference
     private ServiceEntity service;
 
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate date;
     private LocalTime startTime;
     private LocalTime endTime;

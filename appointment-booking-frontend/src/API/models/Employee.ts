@@ -159,18 +159,6 @@ export interface Employee {
     enabled?: boolean;
     /**
      * 
-     * @type {boolean}
-     * @memberof Employee
-     */
-    credentialsNonExpired?: boolean;
-    /**
-     * 
-     * @type {boolean}
-     * @memberof Employee
-     */
-    accountNonExpired?: boolean;
-    /**
-     * 
      * @type {Array<Appointment>}
      * @memberof Employee
      */
@@ -181,6 +169,18 @@ export interface Employee {
      * @memberof Employee
      */
     accountNonLocked?: boolean;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof Employee
+     */
+    credentialsNonExpired?: boolean;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof Employee
+     */
+    accountNonExpired?: boolean;
 }
 
 
@@ -238,10 +238,10 @@ export function EmployeeFromJSONTyped(json: any, ignoreDiscriminator: boolean): 
         'avatarUrl': json['avatarUrl'] == null ? undefined : json['avatarUrl'],
         'authorities': json['authorities'] == null ? undefined : (new Set((json['authorities'] as Array<any>).map(RoleFromJSON))),
         'enabled': json['enabled'] == null ? undefined : json['enabled'],
-        'credentialsNonExpired': json['credentialsNonExpired'] == null ? undefined : json['credentialsNonExpired'],
-        'accountNonExpired': json['accountNonExpired'] == null ? undefined : json['accountNonExpired'],
         'appointments': json['appointments'] == null ? undefined : ((json['appointments'] as Array<any>).map(AppointmentFromJSON)),
         'accountNonLocked': json['accountNonLocked'] == null ? undefined : json['accountNonLocked'],
+        'credentialsNonExpired': json['credentialsNonExpired'] == null ? undefined : json['credentialsNonExpired'],
+        'accountNonExpired': json['accountNonExpired'] == null ? undefined : json['accountNonExpired'],
     };
 }
 
@@ -273,10 +273,10 @@ export function EmployeeToJSONTyped(value?: Employee | null, ignoreDiscriminator
         'avatarUrl': value['avatarUrl'],
         'authorities': value['authorities'] == null ? undefined : (Array.from(value['authorities'] as Set<any>).map(RoleToJSON)),
         'enabled': value['enabled'],
-        'credentialsNonExpired': value['credentialsNonExpired'],
-        'accountNonExpired': value['accountNonExpired'],
         'appointments': value['appointments'] == null ? undefined : ((value['appointments'] as Array<any>).map(AppointmentToJSON)),
         'accountNonLocked': value['accountNonLocked'],
+        'credentialsNonExpired': value['credentialsNonExpired'],
+        'accountNonExpired': value['accountNonExpired'],
     };
 }
 

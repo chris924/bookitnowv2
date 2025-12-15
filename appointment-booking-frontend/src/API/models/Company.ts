@@ -127,18 +127,6 @@ export interface Company {
     services?: Set<ServiceEntity>;
     /**
      * 
-     * @type {boolean}
-     * @memberof Company
-     */
-    credentialsNonExpired?: boolean;
-    /**
-     * 
-     * @type {boolean}
-     * @memberof Company
-     */
-    accountNonExpired?: boolean;
-    /**
-     * 
      * @type {string}
      * @memberof Company
      */
@@ -149,6 +137,18 @@ export interface Company {
      * @memberof Company
      */
     accountNonLocked?: boolean;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof Company
+     */
+    credentialsNonExpired?: boolean;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof Company
+     */
+    accountNonExpired?: boolean;
 }
 
 /**
@@ -182,10 +182,10 @@ export function CompanyFromJSONTyped(json: any, ignoreDiscriminator: boolean): C
         'authorities': json['authorities'] == null ? undefined : (new Set((json['authorities'] as Array<any>).map(RoleFromJSON))),
         'enabled': json['enabled'] == null ? undefined : json['enabled'],
         'services': json['services'] == null ? undefined : (new Set((json['services'] as Array<any>).map(ServiceEntityFromJSON))),
-        'credentialsNonExpired': json['credentialsNonExpired'] == null ? undefined : json['credentialsNonExpired'],
-        'accountNonExpired': json['accountNonExpired'] == null ? undefined : json['accountNonExpired'],
         'username': json['username'] == null ? undefined : json['username'],
         'accountNonLocked': json['accountNonLocked'] == null ? undefined : json['accountNonLocked'],
+        'credentialsNonExpired': json['credentialsNonExpired'] == null ? undefined : json['credentialsNonExpired'],
+        'accountNonExpired': json['accountNonExpired'] == null ? undefined : json['accountNonExpired'],
     };
 }
 
@@ -214,10 +214,10 @@ export function CompanyToJSONTyped(value?: Company | null, ignoreDiscriminator: 
         'authorities': value['authorities'] == null ? undefined : (Array.from(value['authorities'] as Set<any>).map(RoleToJSON)),
         'enabled': value['enabled'],
         'services': value['services'] == null ? undefined : (Array.from(value['services'] as Set<any>).map(ServiceEntityToJSON)),
-        'credentialsNonExpired': value['credentialsNonExpired'],
-        'accountNonExpired': value['accountNonExpired'],
         'username': value['username'],
         'accountNonLocked': value['accountNonLocked'],
+        'credentialsNonExpired': value['credentialsNonExpired'],
+        'accountNonExpired': value['accountNonExpired'],
     };
 }
 

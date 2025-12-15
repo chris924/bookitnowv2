@@ -21,11 +21,12 @@ function toFullCalendarEvent(slot: SlotResponseDTO, _index: number): EventInput 
   const startTime = slot.start.slice(0, 5); // 'HH:mm'
   const endTime = slot.end.slice(0, 5);
 
+  const isoDate = new Date(slot.date).toISOString().split("T")[0];
   return {
     id: String(slot.id),
     title: "",
-    start: `${slot.date}T${startTime}`,
-    end: `${slot.date}T${endTime}`,
+    start: `${isoDate}T${startTime}`,
+    end: `${isoDate}T${endTime}`,
     color: (slot.status === "FREE" || slot.status === "CANCELLED") ? "green" : "grey",
     className: slot.status == "FREE" ? "cursor-pointer" : "",
   };
@@ -47,6 +48,7 @@ export default function EmployeeBookingTable({ appointmentSlots }: EmployeeBooki
     if (appointmentSlots && appointmentSlots.slotResponseDTO.length > 0) {
       const fcEvents = appointmentSlots.slotResponseDTO.map(toFullCalendarEvent);
       setEvents(fcEvents);
+
     }
   }, [appointmentSlots]);
 
@@ -61,6 +63,8 @@ export default function EmployeeBookingTable({ appointmentSlots }: EmployeeBooki
     );
   }
 
+
+  
   return (
     <>
      

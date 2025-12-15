@@ -241,7 +241,24 @@ public class AppointmentService {
                     continue;
                 }
 
-                // Skip if there is
+                // Skip if there is break time
+                List<EmployeeBreakTimes> breakTimes = x.getBreakTimes();
+                boolean breakTimeConflict = false;
+
+                for (EmployeeBreakTimes breakTime : breakTimes) {
+                    if (slotStart.isBefore(breakTime.getBreakEndTime()) &&
+                            slotEnd.isAfter(breakTime.getBreakStartTime())) {
+
+                        breakTimeConflict = true;
+                        break;
+                    }
+                }
+
+                if (breakTimeConflict) {
+                    current = slotEnd;
+                    continue;
+                }
+
 
 
                 // Find if there's a conflict

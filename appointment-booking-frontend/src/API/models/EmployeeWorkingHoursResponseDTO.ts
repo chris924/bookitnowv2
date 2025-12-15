@@ -13,13 +13,13 @@
  */
 
 import { mapValues } from '../runtime';
-import type { EmployeeBreakTimes } from './EmployeeBreakTimes';
+import type { EmployeeBreakTimesResponseDTO } from './EmployeeBreakTimesResponseDTO';
 import {
-    EmployeeBreakTimesFromJSON,
-    EmployeeBreakTimesFromJSONTyped,
-    EmployeeBreakTimesToJSON,
-    EmployeeBreakTimesToJSONTyped,
-} from './EmployeeBreakTimes';
+    EmployeeBreakTimesResponseDTOFromJSON,
+    EmployeeBreakTimesResponseDTOFromJSONTyped,
+    EmployeeBreakTimesResponseDTOToJSON,
+    EmployeeBreakTimesResponseDTOToJSONTyped,
+} from './EmployeeBreakTimesResponseDTO';
 
 /**
  * 
@@ -53,10 +53,10 @@ export interface EmployeeWorkingHoursResponseDTO {
     endTime: string;
     /**
      * 
-     * @type {Array<EmployeeBreakTimes>}
+     * @type {Array<EmployeeBreakTimesResponseDTO>}
      * @memberof EmployeeWorkingHoursResponseDTO
      */
-    breakTimes?: Array<EmployeeBreakTimes>;
+    breakTimes?: Array<EmployeeBreakTimesResponseDTO>;
 }
 
 /**
@@ -84,7 +84,7 @@ export function EmployeeWorkingHoursResponseDTOFromJSONTyped(json: any, ignoreDi
         'date': (new Date(json['date'])),
         'startTime': json['startTime'],
         'endTime': json['endTime'],
-        'breakTimes': json['breakTimes'] == null ? undefined : ((json['breakTimes'] as Array<any>).map(EmployeeBreakTimesFromJSON)),
+        'breakTimes': json['breakTimes'] == null ? undefined : ((json['breakTimes'] as Array<any>).map(EmployeeBreakTimesResponseDTOFromJSON)),
     };
 }
 
@@ -103,7 +103,7 @@ export function EmployeeWorkingHoursResponseDTOToJSONTyped(value?: EmployeeWorki
         'date': value['date'].toISOString().substring(0,10),
         'startTime': value['startTime'],
         'endTime': value['endTime'],
-        'breakTimes': value['breakTimes'] == null ? undefined : ((value['breakTimes'] as Array<any>).map(EmployeeBreakTimesToJSON)),
+        'breakTimes': value['breakTimes'] == null ? undefined : ((value['breakTimes'] as Array<any>).map(EmployeeBreakTimesResponseDTOToJSON)),
     };
 }
 

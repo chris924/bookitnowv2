@@ -105,6 +105,12 @@ export interface User {
      * @type {boolean}
      * @memberof User
      */
+    accountNonLocked?: boolean;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof User
+     */
     credentialsNonExpired?: boolean;
     /**
      * 
@@ -112,12 +118,6 @@ export interface User {
      * @memberof User
      */
     accountNonExpired?: boolean;
-    /**
-     * 
-     * @type {boolean}
-     * @memberof User
-     */
-    accountNonLocked?: boolean;
 }
 
 /**
@@ -148,9 +148,9 @@ export function UserFromJSONTyped(json: any, ignoreDiscriminator: boolean): User
         'firstBookingDate': json['firstBookingDate'] == null ? undefined : (new Date(json['firstBookingDate'])),
         'enabled': json['enabled'] == null ? undefined : json['enabled'],
         'userId': json['userId'] == null ? undefined : json['userId'],
+        'accountNonLocked': json['accountNonLocked'] == null ? undefined : json['accountNonLocked'],
         'credentialsNonExpired': json['credentialsNonExpired'] == null ? undefined : json['credentialsNonExpired'],
         'accountNonExpired': json['accountNonExpired'] == null ? undefined : json['accountNonExpired'],
-        'accountNonLocked': json['accountNonLocked'] == null ? undefined : json['accountNonLocked'],
     };
 }
 
@@ -176,9 +176,9 @@ export function UserToJSONTyped(value?: User | null, ignoreDiscriminator: boolea
         'firstBookingDate': value['firstBookingDate'] == null ? value['firstBookingDate'] : value['firstBookingDate'].toISOString().substring(0,10),
         'enabled': value['enabled'],
         'userId': value['userId'],
+        'accountNonLocked': value['accountNonLocked'],
         'credentialsNonExpired': value['credentialsNonExpired'],
         'accountNonExpired': value['accountNonExpired'],
-        'accountNonLocked': value['accountNonLocked'],
     };
 }
 
