@@ -28,15 +28,17 @@ public class AppointmentService {
     private final ICompanyRepository companyRepository;
     private final IUserRepository userRepository;
     private final IServiceEntityRepository serviceRepository;
+    private final IEmployeeWorkingHoursRepository employeeWorkingHoursRepository;
     private final AppointmentMapper appointmentMapper;
 
     @Autowired
-    AppointmentService(IAppointmentRepository appointmentRepository, ICompanyRepository companyRepository, IUserRepository userRepository, IServiceEntityRepository serviceRepository, AppointmentMapper appointmentMapper)
+    AppointmentService(IAppointmentRepository appointmentRepository, ICompanyRepository companyRepository, IUserRepository userRepository, IServiceEntityRepository serviceRepository, IEmployeeWorkingHoursRepository employeeWorkingHoursRepository, AppointmentMapper appointmentMapper)
     {
         this.appointmentRepository = appointmentRepository;
         this.companyRepository = companyRepository;
         this.userRepository = userRepository;
         this.serviceRepository = serviceRepository;
+        this.employeeWorkingHoursRepository = employeeWorkingHoursRepository;
         this.appointmentMapper = appointmentMapper;
     }
 
@@ -263,7 +265,10 @@ public class AppointmentService {
                     newAppointment.setStartTime(slotStart);
                     newAppointment.setEndTime(slotEnd);
                     newAppointment.setAppointmentStatus(AppointmentStatus.FREE);
+                    newAppointment.setWorkingHours(x); // Workinghour is MANDATORY!
+                    x.getAppointments().add(newAppointment);
 
+                    employeeWorkingHoursRepository.save(x);
                     appointmentRepository.save(newAppointment);
 
                     // move to next slot
@@ -277,9 +282,9 @@ public class AppointmentService {
 
     }
 
-    public void deleteOccupiedAppointmentsByWorkhour(Long employeeWorkingHourId, Long employeeId)
+    public void deleteAppointmentsByWorkhour(Long employeeWorkingHourId, Long employeeId)
     {
-       List<Appointment> appointments = appointmentRepository.findUpcomingAppointmentsForWorkingHour(employeeId, employeeWorkingHourId, LocalDate.now(), LocalTime.now());
+       List<Appointment> appointments = appointmentRepository.findUpcomingAppointmentsForWorkingHour(employeeId, employeeWorkingHourId);
 
        appointmentRepository.deleteAll(appointments);
 

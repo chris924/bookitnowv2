@@ -2,20 +2,26 @@ package com.bookitnowv2.appointment_booking.service;
 
 import com.bookitnowv2.appointment_booking.entity.Appointment;
 import com.bookitnowv2.appointment_booking.entity.EmployeeWorkingHours;
+import com.bookitnowv2.appointment_booking.repository.IAppointmentRepository;
 import com.bookitnowv2.appointment_booking.repository.IEmployeeWorkingHoursRepository;
+import com.bookitnowv2.appointment_booking.utils.AppointmentStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 public class EmployeeWorkingHoursService
 {
     private final IEmployeeWorkingHoursRepository employeeWorkingHoursRepository;
     private final AppointmentService appointmentService;
+    private final IAppointmentRepository appointmentRepository;
 
-    public EmployeeWorkingHoursService(IEmployeeWorkingHoursRepository employeeWorkingHoursRepository, AppointmentService appointmentService)
+    public EmployeeWorkingHoursService(IEmployeeWorkingHoursRepository employeeWorkingHoursRepository, AppointmentService appointmentService, IAppointmentRepository appointmentRepository)
     {
         this.employeeWorkingHoursRepository = employeeWorkingHoursRepository;
         this.appointmentService = appointmentService;
+        this.appointmentRepository = appointmentRepository;
     }
 
     public EmployeeWorkingHours saveEmployeeWorkingHours(EmployeeWorkingHours employeeWorkingHours)
@@ -25,8 +31,20 @@ public class EmployeeWorkingHoursService
 
     @Transactional
     public void delete(Long id, Long employeeId) {
-        employeeWorkingHoursRepository.deleteByIdAndEmployee(id, employeeId);
-        appointmentService.deleteOccupiedAppointmentsByWorkhour(id, employeeId);
+        EmployeeWorkingHours wh = employeeWorkingHoursRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Working hour not found"));
+
+        if (!wh.getEmployee().getId().equals(employeeId)) {
+            throw new RuntimeException("Not allowed");
+        }
+        for (Appointment app : wh.getAppointments()) {
+            app.setAppointmentStatus(AppointmentStatus.CANCELLED);
+            app.setWorkingHours(null);
+        }
+        appointmentRepository.saveAll(wh.getAppointments());
+
+        //!! This automatically deletes all appointments via orphanRemoval if it is true!!
+        employeeWorkingHoursRepository.delete(wh);
     }
 
 }

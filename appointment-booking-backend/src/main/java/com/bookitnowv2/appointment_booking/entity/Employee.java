@@ -63,7 +63,11 @@ public class Employee implements UserDetails {
                 .toList();
     }
 
-    @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL)
+    @OneToMany(
+            mappedBy = "employee",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
     @JsonManagedReference
     private List<EmployeeWorkingHours> workingHours;
 

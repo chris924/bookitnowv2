@@ -152,7 +152,7 @@ public class DatabaseSeeder implements CommandLineRunner {
 
 
 
-        EmployeeWorkingHours employee1WorkingHours = createEmployeeWorkingHours(employee1, LocalTime.of(12, 0), LocalTime.of(23, 0), LocalDate.now() );
+        EmployeeWorkingHours employee1WorkingHours = createEmployeeWorkingHours(employee1, LocalTime.of(8, 0), LocalTime.of(23, 0), LocalDate.now() );
 
 
 
@@ -176,11 +176,11 @@ public class DatabaseSeeder implements CommandLineRunner {
         LocalDate yesterday = now.minusDays(1);
         LocalDate anotherDate = yesterday.minusDays(4);
 
-        Appointment appointment1 = createAppointment( service1, LocalDate.now(), user1, LocalTime.of(9, 25), LocalTime.of(11, 10), AppointmentStatus.BOOKED);
-        Appointment appointment2 = createAppointment( service1, yesterday, user1, LocalTime.of(9, 25), LocalTime.of(11, 10), AppointmentStatus.BOOKED);
-        Appointment appointment3 = createAppointment( service1, yesterday, user1, LocalTime.of(13, 25), LocalTime.of(14, 10), AppointmentStatus.BOOKED);
-        Appointment appointment4 = createAppointment( service1, yesterday, user1, LocalTime.of(14, 25), LocalTime.of(15, 10), AppointmentStatus.BOOKED);
-        Appointment appointment5 = createAppointment( service1, anotherDate, user1, LocalTime.of(14, 25), LocalTime.of(15, 10), AppointmentStatus.BOOKED);
+        Appointment appointment1 = createAppointment( service1, LocalDate.now(), user1, LocalTime.of(9, 25), LocalTime.of(11, 10), AppointmentStatus.BOOKED, employee1WorkingHours);
+        Appointment appointment2 = createAppointment( service1, yesterday, user1, LocalTime.of(9, 25), LocalTime.of(11, 10), AppointmentStatus.BOOKED, employee1WorkingHours);
+        Appointment appointment3 = createAppointment( service1, yesterday, user1, LocalTime.of(13, 25), LocalTime.of(14, 10), AppointmentStatus.BOOKED, employee1WorkingHours);
+        Appointment appointment4 = createAppointment( service1, yesterday, user1, LocalTime.of(14, 25), LocalTime.of(15, 10), AppointmentStatus.BOOKED, employee1WorkingHours);
+        Appointment appointment5 = createAppointment( service1, anotherDate, user1, LocalTime.of(14, 25), LocalTime.of(15, 10), AppointmentStatus.BOOKED, employee1WorkingHours);
 
 
         appointmentList.add(appointment1);
@@ -271,7 +271,7 @@ public class DatabaseSeeder implements CommandLineRunner {
         return company;
     }
 
-    private Appointment createAppointment( ServiceEntity serviceEntity, LocalDate date, User user, LocalTime startTime, LocalTime endTime, AppointmentStatus status) {
+    private Appointment createAppointment( ServiceEntity serviceEntity, LocalDate date, User user, LocalTime startTime, LocalTime endTime, AppointmentStatus status, EmployeeWorkingHours workingHours) {
 
         Appointment appointment = new Appointment();
 
@@ -280,6 +280,7 @@ public class DatabaseSeeder implements CommandLineRunner {
         appointment.setDate(date);
         appointment.setStartTime(startTime);
         appointment.setEndTime(endTime);
+        appointment.setWorkingHours(workingHours);
 
         appointment.setAppointmentStatus(status);
 

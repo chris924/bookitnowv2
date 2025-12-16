@@ -40,6 +40,10 @@ public class Appointment {
     @JsonBackReference
     private Company company;*/
 
+    @ManyToOne(optional = true) // Set to true, because it will be cancelled if the corresponding workingHour gets deleted
+    @JoinColumn(name = "employee_working_hours_id", nullable = true)
+    private EmployeeWorkingHours workingHours;
+
     @ManyToOne
     @JoinColumn(name = "service_id")
     @JsonBackReference

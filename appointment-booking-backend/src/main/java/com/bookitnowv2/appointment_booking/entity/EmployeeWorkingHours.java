@@ -30,6 +30,11 @@ public class EmployeeWorkingHours {
     private LocalTime startTime;
     private LocalTime endTime;
 
-
+    @OneToMany(
+            mappedBy = "workingHours",
+            cascade = {CascadeType.PERSIST, CascadeType.MERGE}, // no REMOVE, because .ALL will remove every appointment on delete, instead of CANCELLED
+            orphanRemoval = false
+    )
+    private List<Appointment> appointments = new ArrayList<>();
 
 }
