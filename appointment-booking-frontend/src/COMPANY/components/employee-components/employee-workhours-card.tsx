@@ -7,32 +7,19 @@ import { useEffect, useState } from "react";
 import { EventInput } from "@fullcalendar/core/index.js";
 import { Button } from "@/components/ui/button"
 import { EmployeeBreakTimesResponseDTO } from "@/API";
+import { EventImpl } from "@fullcalendar/core/internal";
+import EditSlotDialogForm from "@/components/ui/own/EditSlotDialogForm";
+import { showToast } from "@/components/ui/own/ShowToast";
+import { useApi } from "@/hooks/useApi";
+import { handleAPIError } from "@/lib/utils";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 interface EmployeeWorkingHoursCardProps
 {
   workingHours: EmployeeWorkingHoursResponseDTO[]
+  employeeSlug: string
 }
 
-function getBreakTimeEvents(breakSlot: EmployeeBreakTimesResponseDTO): EventInput
-{
-
-    const breakStartTime = breakSlot.breakStartTime!.slice(0, 5);
-    const breakEndTime = breakSlot.breakEndTime!.slice(0, 5);
-    const workingHourSlot = breakSlot.date;
-   
-       const dateStr = new Date(workingHourSlot!).toISOString().split("T")[0];
-    const event = {
-      title: "Szünet",
-      start: `${dateStr}T${breakStartTime}`,
-      end: `${dateStr}T${breakEndTime}`,
-      color: "green",
-      className: "cursor-pointer",
-    };
-
-      console.log("BREAK: ", event);
-      return event;
-
-}
 
 function toFullCalendarEvent(slot: EmployeeWorkingHoursResponseDTO, _index: number): EventInput {
   const startTime = slot.startTime.slice(0, 5); // 'HH:mm'
@@ -41,6 +28,7 @@ function toFullCalendarEvent(slot: EmployeeWorkingHoursResponseDTO, _index: numb
   const dateStr = new Date(slot.date).toISOString().split("T")[0];
 
   const event = {
+    id: slot.id.toString(),
     title: "TEST1",
     start: `${dateStr}T${startTime}`,
     end: `${dateStr}T${endTime}`,
@@ -53,18 +41,21 @@ function toFullCalendarEvent(slot: EmployeeWorkingHoursResponseDTO, _index: numb
 
 }
 
-export default function EmployeeWorkingHoursCard({workingHours}: EmployeeWorkingHoursCardProps)
+export default function EmployeeWorkingHoursCard({workingHours, employeeSlug}: EmployeeWorkingHoursCardProps)
 {
   const [events, setEvents] = useState<EventInput[]>([]);
+  const [showEditForm, setShowEditForm] = useState(false);
+  const [selectedEvent, setSelectedEvent] = useState<EventImpl>();
 
-  const latestVisibleRange = Math.max(
+  const latestVisibleRange = workingHours.length > 0 ? Math.max(
   ...workingHours
     .filter(w => w.date != null)
-    .map(w => new Date(w.date!).getTime())
-);
+    .map(w => new Date(w.date!).getTime()) 
+): 0;
 
 const today = new Date();
 const todayStr = today.toISOString().split("T")[0];
+
 
 
 // day of week: 0=Sun .. 6=Sat
@@ -75,16 +66,36 @@ const firstDayOfWeek = today.getDay();
    let events = [
   // Working hour events
   ...workingHours.map((wh) => toFullCalendarEvent(wh, wh.id)),
-
-  // Break time events
-  ...workingHours.flatMap((wh) =>
-    wh.breakTimes?.map((bt) => getBreakTimeEvents(bt)) || []
-  )
 ];
 
     setEvents(events)
 
   }, [workingHours])
+
+
+    const queryClient = useQueryClient();
+    const api = useApi();
+
+     const deleteSlotMutation = useMutation({
+      mutationFn: ({ employeeSlug, workhourId }: { employeeSlug: string, workhourId: number }) =>
+          api.employee.deleteEmployeeWorkhour({employeeSlug, workhourId}), 
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: ["appointments"] });
+        showToast.success("Esemény törölve!");
+      },
+      onError: (error) => handleAPIError(error)
+    });
+
+    function handleEditSlot(event: EventImpl)
+    {
+
+    }
+
+    function handleDeleteSlot(event: EventImpl)
+    {
+      const workhourId = parseInt(event.id); 
+      deleteSlotMutation.mutate({employeeSlug, workhourId})
+    }
 
 
     return(
@@ -102,11 +113,11 @@ const firstDayOfWeek = today.getDay();
         initialDate={new Date().toISOString().split('T')[0]}
         visibleRange={{
           start: todayStr, // today
-          end: new Date(latestVisibleRange).toISOString().split("T")[0],
+          end: latestVisibleRange ? new Date(latestVisibleRange).toISOString().split("T")[0] : new Date().toISOString().split('T')[0],
         }}
         validRange={{
           start: todayStr,
-          end:  new Date(latestVisibleRange).toISOString().split("T")[0],
+          end:  latestVisibleRange ? new Date(latestVisibleRange).toISOString().split("T")[0] : new Date().toISOString().split('T')[0],
         }}
         events={events}
         slotMinTime="0:00"   // start hour
@@ -123,10 +134,12 @@ const firstDayOfWeek = today.getDay();
         eventClick={(info) => {
         // prevent navigation if the event has a url
         info.jsEvent.preventDefault();
-
-        console.log("Event clicked:", info.event);
-  }}
+          setSelectedEvent(info.event); 
+          setShowEditForm(true);
+        
+  }}  
       />  
+      {showEditForm && selectedEvent && <EditSlotDialogForm value={selectedEvent} onEditClick={handleEditSlot} onDeleteClick={handleDeleteSlot} open={showEditForm} onOpenChange={setShowEditForm} isLoading={false}/>}
       </>
     )
 }

@@ -20,7 +20,7 @@ public class EmployeeWorkingHours {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="employee_working_hours_id")
-    private int id;
+    private Long id;
 
     @ManyToOne
     private Employee employee;
@@ -30,7 +30,6 @@ public class EmployeeWorkingHours {
     private LocalTime startTime;
     private LocalTime endTime;
 
-    @OneToMany(mappedBy = "workingHours", cascade = CascadeType.ALL)
-    private List<EmployeeBreakTimes> breakTimes = new ArrayList<>();
+
 
 }

@@ -43,6 +43,11 @@ import {
     SpecialistDTOToJSON,
 } from '../models/index';
 
+export interface DeleteEmployeeWorkhourRequest {
+    employeeSlug: string;
+    workhourId: number;
+}
+
 export interface DeleteSpecificEmployeeRequest {
     employeeSlug: string;
 }
@@ -72,6 +77,53 @@ export interface GetSearchEmployeeRequest {
  * 
  */
 export class EmployeeControllerApi extends runtime.BaseAPI {
+
+    /**
+     */
+    async deleteEmployeeWorkhourRaw(requestParameters: DeleteEmployeeWorkhourRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<string>> {
+        if (requestParameters['employeeSlug'] == null) {
+            throw new runtime.RequiredError(
+                'employeeSlug',
+                'Required parameter "employeeSlug" was null or undefined when calling deleteEmployeeWorkhour().'
+            );
+        }
+
+        if (requestParameters['workhourId'] == null) {
+            throw new runtime.RequiredError(
+                'workhourId',
+                'Required parameter "workhourId" was null or undefined when calling deleteEmployeeWorkhour().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+
+        let urlPath = `/employees/{employeeSlug}/delete-workhour/{workhourId}`;
+        urlPath = urlPath.replace(`{${"employeeSlug"}}`, encodeURIComponent(String(requestParameters['employeeSlug'])));
+        urlPath = urlPath.replace(`{${"workhourId"}}`, encodeURIComponent(String(requestParameters['workhourId'])));
+
+        const response = await this.request({
+            path: urlPath,
+            method: 'DELETE',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        if (this.isJsonMime(response.headers.get('content-type'))) {
+            return new runtime.JSONApiResponse<string>(response);
+        } else {
+            return new runtime.TextApiResponse(response) as any;
+        }
+    }
+
+    /**
+     */
+    async deleteEmployeeWorkhour(requestParameters: DeleteEmployeeWorkhourRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<string> {
+        const response = await this.deleteEmployeeWorkhourRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
 
     /**
      */

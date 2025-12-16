@@ -4,6 +4,7 @@ import com.bookitnowv2.appointment_booking.configuration.SecurityUtils;
 import com.bookitnowv2.appointment_booking.elasticSearch.service.ElasticEmployeeService;
 import com.bookitnowv2.appointment_booking.entity.Company;
 import com.bookitnowv2.appointment_booking.entity.Employee;
+import com.bookitnowv2.appointment_booking.entity.EmployeeWorkingHours;
 import com.bookitnowv2.appointment_booking.entity.dto.employee.EmployeeAppointmentsByDateResponseDTO;
 import com.bookitnowv2.appointment_booking.entity.dto.employee.EmployeeDataTableResponseDTO;
 import com.bookitnowv2.appointment_booking.entity.dto.employee.EmployeeEditDataRequestDTO;
@@ -29,14 +30,16 @@ public class EmployeeService {
 
     private final IEmployeeRepository employeeRepository;
     private final ElasticEmployeeService elasticEmployeeService;
+    private final EmployeeWorkingHoursService workingHoursService;
 
 
     @Autowired
-    EmployeeService( IEmployeeRepository employeeRepository, ElasticEmployeeService elasticEmployeeService)
+    EmployeeService( IEmployeeRepository employeeRepository, ElasticEmployeeService elasticEmployeeService, EmployeeWorkingHoursService workingHoursService)
     {
 
         this.employeeRepository = employeeRepository;
         this.elasticEmployeeService = elasticEmployeeService;
+        this.workingHoursService = workingHoursService;
     }
 
     public Employee saveEmployee(Employee employee)
@@ -117,7 +120,11 @@ public class EmployeeService {
         employeeRepository.save(employee);
     }
 
+    public void deleteEmployeeWorkhourById(Long employeeId, String workhourId)
+    {
+        workingHoursService.delete(Long.parseLong(workhourId), employeeId);
 
+    }
 
 
 }

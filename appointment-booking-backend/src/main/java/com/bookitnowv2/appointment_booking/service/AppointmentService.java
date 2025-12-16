@@ -241,25 +241,6 @@ public class AppointmentService {
                     continue;
                 }
 
-                // Skip if there is break time
-                List<EmployeeBreakTimes> breakTimes = x.getBreakTimes();
-                boolean breakTimeConflict = false;
-
-                for (EmployeeBreakTimes breakTime : breakTimes) {
-                    if (slotStart.isBefore(breakTime.getBreakEndTime()) &&
-                            slotEnd.isAfter(breakTime.getBreakStartTime())) {
-
-                        breakTimeConflict = true;
-                        break;
-                    }
-                }
-
-                if (breakTimeConflict) {
-                    current = slotEnd;
-                    continue;
-                }
-
-
 
                 // Find if there's a conflict
                 Optional<Appointment> conflict = currentExistingAppointments.stream()
@@ -295,6 +276,15 @@ public class AppointmentService {
         };
 
     }
+
+    public void deleteOccupiedAppointmentsByWorkhour(Long employeeWorkingHourId, Long employeeId)
+    {
+       List<Appointment> appointments = appointmentRepository.findUpcomingAppointmentsForWorkingHour(employeeId, employeeWorkingHourId, LocalDate.now(), LocalTime.now());
+
+       appointmentRepository.deleteAll(appointments);
+
+    }
+
 
     @Transactional
     public List<CompanyAppointmentsByDateResponseDTO> getCompanyTotalAppointmentsByMonth(Integer monthCount)

@@ -42,7 +42,6 @@ public class DatabaseSeeder implements CommandLineRunner {
     private final ICompanyRepository companyRepository;
     private final IAppointmentRepository appointmentRepository;
     private final IEmployeeWorkingHoursRepository employeeWorkingHoursRepository;
-    private final IEmployeeBreakTimesRepository employeeBreakTimesRepository;
 
     private final AppointmentService appointmentService;
 
@@ -57,7 +56,7 @@ public class DatabaseSeeder implements CommandLineRunner {
 
     public DatabaseSeeder(IAppointmentRepository appointmentRepository, ICompanyRepository companyRepository, IRoleRepository roleRepository, IUserRepository userRepository, PasswordEncoder passwordEncoder,
                           IServiceEntityRepository serviceRepository, IEmployeeRepository employeeRepository, IElasticEmployeeRepository elasticEmployeeRepository, IEmployeeWorkingHoursRepository employeeWorkingHoursRepository, EmployeeMapper employeeMapper, @Value("${frontend.ip.address}") String serverAddress, AppointmentService appointmentService,
-                          IElasticUserRepository elasticUserRepository, UserMapper userMapper, IEmployeeBreakTimesRepository employeeBreakTimesRepository) {
+                          IElasticUserRepository elasticUserRepository, UserMapper userMapper) {
         this.appointmentRepository = appointmentRepository;
         this.companyRepository = companyRepository;
 
@@ -74,7 +73,6 @@ public class DatabaseSeeder implements CommandLineRunner {
         this.serverAddress = serverAddress;
 
         this.appointmentService = appointmentService;
-        this.employeeBreakTimesRepository = employeeBreakTimesRepository;
     }
 
     @Override
@@ -117,18 +115,7 @@ public class DatabaseSeeder implements CommandLineRunner {
         userRepository.save(admin);
     }
 
-    private EmployeeBreakTimes createEmployeeBreakTimes(LocalDate date, LocalTime start, LocalTime end, EmployeeWorkingHours workingHours)
-    {
-        EmployeeBreakTimes breakTime = new EmployeeBreakTimes();
-        breakTime.setDate(date);
-        breakTime.setBreakStartTime(start);
-        breakTime.setBreakEndTime(end);
-        breakTime.setWorkingHours(workingHours);
 
-        employeeBreakTimesRepository.save(breakTime);
-
-        return breakTime;
-    }
 
 
     private void createEntities() {
@@ -161,19 +148,17 @@ public class DatabaseSeeder implements CommandLineRunner {
         Employee employee3 = createEmployee("John XD", "sad", "edwdwd@gmail.com", "jdavidpass", new Timestamp(System.currentTimeMillis()), employeeRoles, company1, 4.5, serverAddress + "/avatar/employee/default-avatar.jpg", "This is the about section. This is the about section. This is the about section.", EmployeeStatus.ACTIVE, EmployeeExperience.SENIOR, "+363053422");
 
         List<EmployeeWorkingHours> employee1WorkingHoursList = new ArrayList<>();
-        List<EmployeeBreakTimes> employee1breakTimes = new ArrayList<>();
+
 
 
 
         EmployeeWorkingHours employee1WorkingHours = createEmployeeWorkingHours(employee1, LocalTime.of(12, 0), LocalTime.of(23, 0), LocalDate.now() );
-        employee1WorkingHours.setBreakTimes(employee1breakTimes);
+
 
 
         employee1WorkingHoursList.add(employee1WorkingHours);
 
-       EmployeeBreakTimes breakTime1 = createEmployeeBreakTimes(LocalDate.now(), LocalTime.of(14, 0), LocalTime.of(22, 30), employee1WorkingHours);
-        employee1breakTimes.add(breakTime1);
-        employee1WorkingHours.setBreakTimes(employee1breakTimes);
+
         ServiceEntity service1 = createService("Shave", "Shaving",  15, employee1, company1, Duration.ofMinutes(30));
 
         List<ServiceEntity> serviceList = new ArrayList<>();

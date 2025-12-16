@@ -11,6 +11,7 @@ import com.bookitnowv2.appointment_booking.exception.EmployeeNotFoundException;
 import com.bookitnowv2.appointment_booking.mapper.EmployeeMapper;
 import com.bookitnowv2.appointment_booking.service.AppointmentService;
 import com.bookitnowv2.appointment_booking.service.EmployeeService;
+import com.bookitnowv2.appointment_booking.service.EmployeeWorkingHoursService;
 import com.bookitnowv2.appointment_booking.service.ServiceEntityService;
 import com.bookitnowv2.appointment_booking.utils.EmployeeExperience;
 import jakarta.validation.Valid;
@@ -30,15 +31,17 @@ public class EmployeeController {
     private final EmployeeService employeeService;
     private final AppointmentService appointmentService;
     private final ServiceEntityService serviceEntityService;
+    private final EmployeeWorkingHoursService employeeWorkingHoursService;
     private final ElasticEmployeeService elasticEmployeeService;
     private final EmployeeMapper employeeMapper;
 
-    public EmployeeController(EmployeeService employeeService, ElasticEmployeeService elasticEmployeeService, ServiceEntityService serviceEntityService, AppointmentService appointmentService, EmployeeMapper employeeMapper)
+    public EmployeeController(EmployeeService employeeService, ElasticEmployeeService elasticEmployeeService, ServiceEntityService serviceEntityService, AppointmentService appointmentService, EmployeeWorkingHoursService employeeWorkingHoursService, EmployeeMapper employeeMapper)
     {
         this.employeeService = employeeService;
         this.elasticEmployeeService = elasticEmployeeService;
         this.serviceEntityService = serviceEntityService;
         this.appointmentService = appointmentService;
+        this.employeeWorkingHoursService = employeeWorkingHoursService;
         this.employeeMapper = employeeMapper;
     }
 
@@ -132,6 +135,18 @@ public class EmployeeController {
 
     }
 
+
+    @DeleteMapping("/{employeeSlug}/delete-workhour/{workhourId}")
+    @PreAuthorize("hasAnyRole('COMPANY','EMPLOYEE')")
+    public ResponseEntity<String> deleteEmployeeWorkhour(@PathVariable String employeeSlug, @PathVariable Long workhourId)
+    {
+        Long employeeId = employeeService.getEmployeeIdFromSlug(employeeSlug);
+        Employee foundEmployee = employeeService.getEmployeeById(employeeId);
+
+        employeeWorkingHoursService.delete(workhourId, foundEmployee.getId());
+
+        return ResponseEntity.ok().body("Esemény törölve");
+    }
 
 
 

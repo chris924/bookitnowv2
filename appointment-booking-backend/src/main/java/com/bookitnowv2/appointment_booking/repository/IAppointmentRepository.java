@@ -28,6 +28,25 @@ public interface IAppointmentRepository extends JpaRepository<Appointment, Long>
             @Param("now") LocalTime now
     );
 
+    @Query("""
+    SELECT DISTINCT a
+    FROM Appointment a
+    JOIN a.service s
+    JOIN s.employee e
+    JOIN e.workingHours wh
+    WHERE wh.id = :workingHourId
+      AND e.id = :employeeId
+      AND (
+           a.date > :today
+        OR (a.date = :today AND a.startTime >= :now)
+      )
+""")
+    List<Appointment> findUpcomingAppointmentsForWorkingHour(
+            @Param("employeeId") Long employeeId,
+            @Param("workingHourId") Long workingHourId,
+            @Param("today") LocalDate today,
+            @Param("now") LocalTime now
+    );
 
     @Query("""
     SELECT new com.bookitnowv2.appointment_booking.entity.dto.company.CompanyAppointmentsByDateResponseDTO(a.date, COUNT(DISTINCT a.id), SUM(a.service.price))
