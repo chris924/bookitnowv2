@@ -266,9 +266,9 @@ public class AppointmentService {
                     newAppointment.setEndTime(slotEnd);
                     newAppointment.setAppointmentStatus(AppointmentStatus.FREE);
                     newAppointment.setWorkingHours(x); // Workinghour is MANDATORY!
-                    x.getAppointments().add(newAppointment);
+               //     x.getAppointments().add(newAppointment); <- DOES NOT NEEDED ??
 
-                    employeeWorkingHoursRepository.save(x);
+
                     appointmentRepository.save(newAppointment);
 
                     // move to next slot

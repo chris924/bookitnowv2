@@ -82,6 +82,7 @@ export const useEmployeeStore = create<EmployeeState>((set) => ({
   checkEmployeeAuth: async () => {
     try {
         const res = await api.authInfo.checkAuth();
+        
       if (res.employeeGetResponseDTO) {
         set({ employee: res.employeeGetResponseDTO, isAuthenticated: true, employeeLoading: false });
       }

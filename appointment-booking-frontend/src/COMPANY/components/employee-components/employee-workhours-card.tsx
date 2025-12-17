@@ -6,7 +6,6 @@ import interactionPlugin from '@fullcalendar/interaction';
 import { useEffect, useState } from "react";
 import { EventInput } from "@fullcalendar/core/index.js";
 import { Button } from "@/components/ui/button"
-import { EmployeeBreakTimesResponseDTO } from "@/API";
 import { EventImpl } from "@fullcalendar/core/internal";
 import EditSlotDialogForm from "@/components/ui/own/EditSlotDialogForm";
 import { showToast } from "@/components/ui/own/ShowToast";
@@ -81,7 +80,10 @@ const firstDayOfWeek = today.getDay();
           api.employee.deleteEmployeeWorkhour({employeeSlug, workhourId}), 
       onSuccess: () => {
         queryClient.invalidateQueries({ queryKey: ["appointments"] });
+         queryClient.invalidateQueries({ queryKey: ["employeeDataForCompany"] });
         showToast.success("Esemény törölve!");
+        setShowEditForm(false);
+        
       },
       onError: (error) => handleAPIError(error)
     });

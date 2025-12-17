@@ -9,7 +9,6 @@ export * from './CompanyGetResponseDTO';
 export * from './CompanyLoginResponseDTO';
 export * from './CompanySectionCardsResponseDTO';
 export * from './EmployeeAppointmentsByDateResponseDTO';
-export * from './EmployeeBreakTimesResponseDTO';
 export * from './EmployeeDataTableResponseDTO';
 export * from './EmployeeEditDataRequestDTO';
 export * from './EmployeeGetResponseDTO';

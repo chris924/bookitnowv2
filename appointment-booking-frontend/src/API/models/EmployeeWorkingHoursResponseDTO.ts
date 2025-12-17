@@ -13,14 +13,6 @@
  */
 
 import { mapValues } from '../runtime';
-import type { EmployeeBreakTimesResponseDTO } from './EmployeeBreakTimesResponseDTO';
-import {
-    EmployeeBreakTimesResponseDTOFromJSON,
-    EmployeeBreakTimesResponseDTOFromJSONTyped,
-    EmployeeBreakTimesResponseDTOToJSON,
-    EmployeeBreakTimesResponseDTOToJSONTyped,
-} from './EmployeeBreakTimesResponseDTO';
-
 /**
  * 
  * @export
@@ -51,12 +43,6 @@ export interface EmployeeWorkingHoursResponseDTO {
      * @memberof EmployeeWorkingHoursResponseDTO
      */
     endTime: string;
-    /**
-     * 
-     * @type {Array<EmployeeBreakTimesResponseDTO>}
-     * @memberof EmployeeWorkingHoursResponseDTO
-     */
-    breakTimes?: Array<EmployeeBreakTimesResponseDTO>;
 }
 
 /**
@@ -84,7 +70,6 @@ export function EmployeeWorkingHoursResponseDTOFromJSONTyped(json: any, ignoreDi
         'date': (new Date(json['date'])),
         'startTime': json['startTime'],
         'endTime': json['endTime'],
-        'breakTimes': json['breakTimes'] == null ? undefined : ((json['breakTimes'] as Array<any>).map(EmployeeBreakTimesResponseDTOFromJSON)),
     };
 }
 
@@ -103,7 +88,6 @@ export function EmployeeWorkingHoursResponseDTOToJSONTyped(value?: EmployeeWorki
         'date': value['date'].toISOString().substring(0,10),
         'startTime': value['startTime'],
         'endTime': value['endTime'],
-        'breakTimes': value['breakTimes'] == null ? undefined : ((value['breakTimes'] as Array<any>).map(EmployeeBreakTimesResponseDTOToJSON)),
     };
 }
 
