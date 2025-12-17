@@ -46,6 +46,8 @@ export default function EmployeeWorkingHoursCard({workingHours, employeeSlug}: E
   const [showEditForm, setShowEditForm] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState<EventImpl>();
 
+
+
   const latestVisibleRange = workingHours.length > 0 ? Math.max(
   ...workingHours
     .filter(w => w.date != null)
@@ -88,7 +90,7 @@ const firstDayOfWeek = today.getDay();
       onError: (error) => handleAPIError(error)
     });
 
-    function handleEditSlot(event: EventImpl)
+    function handleEditSlot(newStartValue: string, newEndValue: string)
     {
 
     }

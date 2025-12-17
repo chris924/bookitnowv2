@@ -8,7 +8,7 @@ import { useState } from "react";
 import ApproveDialogForm from "./ApproveDialogForm";
 
 type EditSlotDialogFormProps = {
-    onEditClick: (event: EventImpl) => void;
+    onEditClick: (newStartValue: string, newEndValue: string) => void;
     onDeleteClick: (event: EventImpl) => void;
     open?: boolean
     onOpenChange: (open: boolean) => void
@@ -21,6 +21,9 @@ export default function EditSlotDialogForm({onEditClick, onDeleteClick, open, on
 {
 
   const [deleteClicked, setDeleteClicked] = useState(false);
+
+  const [newStartValue, setNewStartValue] = useState("");
+  const [newEndValue, setNewEndValue] = useState("");
 
    return (
     <>
@@ -36,12 +39,12 @@ export default function EditSlotDialogForm({onEditClick, onDeleteClick, open, on
       <div className="flex flex-row gap-4 mt-4">
         <div className="flex flex-col gap-2 flex-1">
           <Label>Kezdés</Label>
-          <Input type="time" step="1" defaultValue="08:00:00" />
+          <Input type="time" step="1" defaultValue="08:00:00" onChange={(e) => setNewStartValue(e.target.value)} />
         </div>
 
         <div className="flex flex-col gap-2 flex-1">
           <Label>Vége</Label>
-          <Input type="time" step="1" defaultValue="16:00:00" />
+          <Input type="time" step="1" defaultValue="16:00:00" onChange={(e) => setNewEndValue(e.target.value)}/>
         </div>
       </div>
 
@@ -51,17 +54,17 @@ export default function EditSlotDialogForm({onEditClick, onDeleteClick, open, on
           <Button
             className="w-full"
             disabled={isLoading}
-            onClick={() => onEditClick(value)}
+            onClick={() => onEditClick(newStartValue, newEndValue )}
           >
             {isLoading && <Loader />}
-            {isLoading ? "Folyamatban..." : "Igen"}
+            {isLoading ? "Folyamatban..." : "Módosítás"}
           </Button>
 
           <Button variant="outline" onClick={() => onOpenChange(false)}>
             Mégse
           </Button>
 
-          <Button variant="destructive" onClick={() => setDeleteClicked(true)}>
+          <Button variant="destructive" onClick={() => setDeleteClicked(true)} className="my-8">
             Esemény törlés
           </Button>
         </div>
