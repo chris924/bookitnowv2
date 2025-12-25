@@ -29,3 +29,4 @@ export * from './UserDetailsChangeDTO';
 export * from './UserLoginResponseDTO';
 export * from './UserRegistrationDTO';
 export * from './UserRegistrationResponseDTO';
+export * from './WorkhourEditDTO';

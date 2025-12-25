@@ -166,6 +166,13 @@ public class AppointmentService {
 
         for(Appointment x : existingAppointments)
         {
+          EmployeeWorkingHours workingHours = x.getWorkingHours();
+
+          if(x.getStartTime().isBefore(workingHours.getStartTime()) || x.getEndTime().isAfter(workingHours.getEndTime()))
+          {
+              continue;  // This needs, so if the workhour changes, existing appointments gets into Cancelled, so it will be free, but it should not be bookable if not in range
+          }
+
 
            LocalTime dayStartTime = x.getStartTime();
            LocalTime dayEndTime = x.getEndTime();
@@ -281,6 +288,32 @@ public class AppointmentService {
         };
 
     }
+
+    public void deleteAppointmentsAfterWorkhourChange(ServiceEntity serviceEntity)
+    {
+        Employee employee = serviceEntity.getEmployee();
+        List<EmployeeWorkingHours> employeeWorkingHours = employee.getWorkingHours();
+        List<Appointment> existingAppointments = serviceEntity.getAppointments();
+
+        for(EmployeeWorkingHours x : employeeWorkingHours) {
+
+            LocalDate workingHourDate = x.getDate();
+
+            List<Appointment> currentExistingAppointments = existingAppointments.stream().filter(z -> z.getDate().equals(workingHourDate)).toList();
+
+            for(Appointment appointment : currentExistingAppointments)
+            {
+                if(x.getStartTime().isAfter(appointment.getStartTime()) || x.getEndTime().isBefore(appointment.getEndTime()))
+                {
+                    appointment.setAppointmentStatus(AppointmentStatus.CANCELLED);
+                  //  appointmentRepository.delete(appointment);
+                    appointmentRepository.save(appointment);
+                }
+
+            }
+        }
+    }
+
 
     public void deleteAppointmentsByWorkhour(Long employeeWorkingHourId, Long employeeId)
     {

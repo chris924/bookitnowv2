@@ -22,8 +22,8 @@ export default function EditSlotDialogForm({onEditClick, onDeleteClick, open, on
 
   const [deleteClicked, setDeleteClicked] = useState(false);
 
-  const [newStartValue, setNewStartValue] = useState("");
-  const [newEndValue, setNewEndValue] = useState("");
+  const [newStartValue, setNewStartValue] = useState("08:00:00");
+  const [newEndValue, setNewEndValue] = useState("16:00:00");
 
    return (
     <>

@@ -152,7 +152,7 @@ public class DatabaseSeeder implements CommandLineRunner {
 
 
 
-        EmployeeWorkingHours employee1WorkingHours = createEmployeeWorkingHours(employee1, LocalTime.of(8, 0), LocalTime.of(23, 0), LocalDate.now() );
+        EmployeeWorkingHours employee1WorkingHours = createEmployeeWorkingHours(employee1, LocalTime.of(8, 0), LocalTime.of(23, 0), LocalDate.now().plusDays(1) );
 
 
 

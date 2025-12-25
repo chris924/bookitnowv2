@@ -1,13 +1,17 @@
 package com.bookitnowv2.appointment_booking.service;
 
+import co.elastic.clients.util.DateTime;
 import com.bookitnowv2.appointment_booking.entity.Appointment;
+import com.bookitnowv2.appointment_booking.entity.Employee;
 import com.bookitnowv2.appointment_booking.entity.EmployeeWorkingHours;
+import com.bookitnowv2.appointment_booking.entity.ServiceEntity;
 import com.bookitnowv2.appointment_booking.repository.IAppointmentRepository;
 import com.bookitnowv2.appointment_booking.repository.IEmployeeWorkingHoursRepository;
 import com.bookitnowv2.appointment_booking.utils.AppointmentStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalTime;
 import java.util.List;
 
 @Service
@@ -45,6 +49,28 @@ public class EmployeeWorkingHoursService
 
         //!! This automatically deletes all appointments via orphanRemoval if it is true!!
         employeeWorkingHoursRepository.delete(wh);
+    }
+
+    @Transactional
+    public void edit(Long id, Employee employee, LocalTime newStart, LocalTime newEnd)
+    {
+        EmployeeWorkingHours wh = employeeWorkingHoursRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Working hour not found"));
+
+        if (!wh.getEmployee().getId().equals(employee.getId())) {
+            throw new RuntimeException("Not allowed");
+        }
+
+        wh.setStartTime(newStart);
+        wh.setEndTime(newEnd);
+
+        List<ServiceEntity> serviceEntities = employee.getServices();
+
+        for(ServiceEntity service : serviceEntities)
+        {
+            appointmentService.deleteAppointmentsAfterWorkhourChange(service);
+            appointmentService.createFreeAppointmentSlotsFromService(service);
+        }
     }
 
 }

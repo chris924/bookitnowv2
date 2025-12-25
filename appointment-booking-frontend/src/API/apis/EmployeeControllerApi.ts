@@ -23,6 +23,7 @@ import type {
   EmployeeSearchOptionsResponseDTO,
   EmployeeSearchRequestDTO,
   SpecialistDTO,
+  WorkhourEditDTO,
 } from '../models/index';
 import {
     EmployeeAppointmentsByDateResponseDTOFromJSON,
@@ -41,6 +42,8 @@ import {
     EmployeeSearchRequestDTOToJSON,
     SpecialistDTOFromJSON,
     SpecialistDTOToJSON,
+    WorkhourEditDTOFromJSON,
+    WorkhourEditDTOToJSON,
 } from '../models/index';
 
 export interface DeleteEmployeeWorkhourRequest {
@@ -55,6 +58,12 @@ export interface DeleteSpecificEmployeeRequest {
 export interface EditEmployeeDataForCompanyRequest {
     employeeSlug: string;
     employeeEditDataRequestDTO: EmployeeEditDataRequestDTO;
+}
+
+export interface EditEmployeeWorkhourRequest {
+    employeeSlug: string;
+    workhourId: number;
+    workhourEditDTO: WorkhourEditDTO;
 }
 
 export interface GetEmployeePageRequest {
@@ -210,6 +219,63 @@ export class EmployeeControllerApi extends runtime.BaseAPI {
      */
     async editEmployeeDataForCompany(requestParameters: EditEmployeeDataForCompanyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<string> {
         const response = await this.editEmployeeDataForCompanyRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     */
+    async editEmployeeWorkhourRaw(requestParameters: EditEmployeeWorkhourRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<string>> {
+        if (requestParameters['employeeSlug'] == null) {
+            throw new runtime.RequiredError(
+                'employeeSlug',
+                'Required parameter "employeeSlug" was null or undefined when calling editEmployeeWorkhour().'
+            );
+        }
+
+        if (requestParameters['workhourId'] == null) {
+            throw new runtime.RequiredError(
+                'workhourId',
+                'Required parameter "workhourId" was null or undefined when calling editEmployeeWorkhour().'
+            );
+        }
+
+        if (requestParameters['workhourEditDTO'] == null) {
+            throw new runtime.RequiredError(
+                'workhourEditDTO',
+                'Required parameter "workhourEditDTO" was null or undefined when calling editEmployeeWorkhour().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
+
+
+        let urlPath = `/employees/{employeeSlug}/edit-workhour/{workhourId}`;
+        urlPath = urlPath.replace(`{${"employeeSlug"}}`, encodeURIComponent(String(requestParameters['employeeSlug'])));
+        urlPath = urlPath.replace(`{${"workhourId"}}`, encodeURIComponent(String(requestParameters['workhourId'])));
+
+        const response = await this.request({
+            path: urlPath,
+            method: 'PUT',
+            headers: headerParameters,
+            query: queryParameters,
+            body: WorkhourEditDTOToJSON(requestParameters['workhourEditDTO']),
+        }, initOverrides);
+
+        if (this.isJsonMime(response.headers.get('content-type'))) {
+            return new runtime.JSONApiResponse<string>(response);
+        } else {
+            return new runtime.TextApiResponse(response) as any;
+        }
+    }
+
+    /**
+     */
+    async editEmployeeWorkhour(requestParameters: EditEmployeeWorkhourRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<string> {
+        const response = await this.editEmployeeWorkhourRaw(requestParameters, initOverrides);
         return await response.value();
     }
 

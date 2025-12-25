@@ -12,6 +12,7 @@ import { showToast } from "@/components/ui/own/ShowToast";
 import { useApi } from "@/hooks/useApi";
 import { handleAPIError } from "@/lib/utils";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { WorkhourEditDTO } from "@/API/models/WorkhourEditDTO";
 
 interface EmployeeWorkingHoursCardProps
 {
@@ -54,9 +55,12 @@ export default function EmployeeWorkingHoursCard({workingHours, employeeSlug}: E
     .map(w => new Date(w.date!).getTime()) 
 ): 0;
 
+
 const today = new Date();
 const todayStr = today.toISOString().split("T")[0];
 
+const endDate = new Date(latestVisibleRange);
+endDate.setDate(endDate.getDate() + 1);
 
 
 // day of week: 0=Sun .. 6=Sat
@@ -90,9 +94,34 @@ const firstDayOfWeek = today.getDay();
       onError: (error) => handleAPIError(error)
     });
 
+
+     const editSlotMutation = useMutation({
+      mutationFn: ({ employeeSlug, workhourId, workhourEditDTO }: { employeeSlug: string, workhourId: number, workhourEditDTO: WorkhourEditDTO }) =>
+          api.employee.editEmployeeWorkhour({employeeSlug, workhourId, workhourEditDTO}), 
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: ["appointments"] });
+         queryClient.invalidateQueries({ queryKey: ["employeeDataForCompany"] });
+        showToast.success("Esemény módosítva!");
+        setShowEditForm(false);
+        
+      },
+      onError: (error) => handleAPIError(error)
+    });
+
     function handleEditSlot(newStartValue: string, newEndValue: string)
     {
+      if(selectedEvent)
+      {
+        const workhourId = parseInt(selectedEvent?.id);
 
+        const workhourEditDTO = {
+          newStart: newStartValue,
+          newEnd: newEndValue
+        }
+
+          editSlotMutation.mutate({employeeSlug, workhourId, workhourEditDTO})
+      }
+      
     }
 
     function handleDeleteSlot(event: EventImpl)
@@ -117,11 +146,11 @@ const firstDayOfWeek = today.getDay();
         initialDate={new Date().toISOString().split('T')[0]}
         visibleRange={{
           start: todayStr, // today
-          end: latestVisibleRange ? new Date(latestVisibleRange).toISOString().split("T")[0] : new Date().toISOString().split('T')[0],
+          end: latestVisibleRange ? endDate.toISOString().split("T")[0] : new Date().toISOString().split('T')[0],
         }}
         validRange={{
           start: todayStr,
-          end:  latestVisibleRange ? new Date(latestVisibleRange).toISOString().split("T")[0] : new Date().toISOString().split('T')[0],
+          end:  latestVisibleRange ? endDate.toISOString().split("T")[0] : new Date().toISOString().split('T')[0],
         }}
         events={events}
         slotMinTime="0:00"   // start hour
