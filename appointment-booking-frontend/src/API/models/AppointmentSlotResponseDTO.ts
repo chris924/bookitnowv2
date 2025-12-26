@@ -47,16 +47,16 @@ export interface AppointmentSlotResponseDTO {
     lastHour?: string;
     /**
      * 
-     * @type {Date}
+     * @type {string}
      * @memberof AppointmentSlotResponseDTO
      */
-    firstDate?: Date;
+    firstDate?: string;
     /**
      * 
-     * @type {Date}
+     * @type {string}
      * @memberof AppointmentSlotResponseDTO
      */
-    lastDate?: Date;
+    lastDate?: string;
 }
 
 /**
@@ -80,8 +80,8 @@ export function AppointmentSlotResponseDTOFromJSONTyped(json: any, ignoreDiscrim
         'slotResponseDTO': ((json['slotResponseDTO'] as Array<any>).map(SlotResponseDTOFromJSON)),
         'firstHour': json['firstHour'] == null ? undefined : json['firstHour'],
         'lastHour': json['lastHour'] == null ? undefined : json['lastHour'],
-        'firstDate': json['firstDate'] == null ? undefined : (new Date(json['firstDate'])),
-        'lastDate': json['lastDate'] == null ? undefined : (new Date(json['lastDate'])),
+        'firstDate': json['firstDate'] == null ? undefined : json['firstDate'],
+        'lastDate': json['lastDate'] == null ? undefined : json['lastDate'],
     };
 }
 
@@ -99,8 +99,8 @@ export function AppointmentSlotResponseDTOToJSONTyped(value?: AppointmentSlotRes
         'slotResponseDTO': ((value['slotResponseDTO'] as Array<any>).map(SlotResponseDTOToJSON)),
         'firstHour': value['firstHour'],
         'lastHour': value['lastHour'],
-        'firstDate': value['firstDate'] == null ? value['firstDate'] : value['firstDate'].toISOString().substring(0,10),
-        'lastDate': value['lastDate'] == null ? value['lastDate'] : value['lastDate'].toISOString().substring(0,10),
+        'firstDate': value['firstDate'],
+        'lastDate': value['lastDate'],
     };
 }
 

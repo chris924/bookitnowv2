@@ -7,6 +7,7 @@ import com.bookitnowv2.appointment_booking.entity.Company;
 import com.bookitnowv2.appointment_booking.entity.Employee;
 import com.bookitnowv2.appointment_booking.entity.dto.employee.*;
 import com.bookitnowv2.appointment_booking.entity.dto.employee.SearchOptionDetails.SpecialistDTO;
+import com.bookitnowv2.appointment_booking.entity.dto.workhour.WorkhourAddDTO;
 import com.bookitnowv2.appointment_booking.entity.dto.workhour.WorkhourEditDTO;
 import com.bookitnowv2.appointment_booking.exception.EmployeeNotFoundException;
 import com.bookitnowv2.appointment_booking.mapper.EmployeeMapper;
@@ -159,6 +160,19 @@ public class EmployeeController {
         employeeWorkingHoursService.edit(workhourId, foundEmployee, workhourEditDTO.getNewStart(), workhourEditDTO.getNewEnd());
 
         return ResponseEntity.ok().body("Esemény módosítva");
+    }
+
+
+    @PostMapping("/{employeeSlug}/create-workhour")
+    @PreAuthorize("hasAnyRole('COMPANY','EMPLOYEE')")
+    public  ResponseEntity<String> createEmployeeWorkhour(@PathVariable String employeeSlug, @RequestBody WorkhourAddDTO workhourAddDTO)
+    {
+        Long employeeId = employeeService.getEmployeeIdFromSlug(employeeSlug);
+        Employee foundEmployee = employeeService.getEmployeeById(employeeId);
+
+        employeeWorkingHoursService.createWorkhourForEmployee(foundEmployee, workhourAddDTO);
+
+        return ResponseEntity.ok().body("Munkaidő létrehozva!");
     }
 
 

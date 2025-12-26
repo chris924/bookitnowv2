@@ -48,7 +48,7 @@ async function main() {
 
     console.log("⚙️  Generating API client...");
     execSync(
-        `npx openapi-generator-cli generate -i ${SPEC_FILE} -g typescript-fetch -o src/API --skip-validate-spec`,
+        `npx openapi-generator-cli generate -i ${SPEC_FILE} -g typescript-fetch -o src/API --skip-validate-spec --type-mappings=date=string`,
         { stdio: "inherit" }
     );
 

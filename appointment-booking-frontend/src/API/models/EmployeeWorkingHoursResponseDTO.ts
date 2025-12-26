@@ -27,10 +27,10 @@ export interface EmployeeWorkingHoursResponseDTO {
     id: number;
     /**
      * 
-     * @type {Date}
+     * @type {string}
      * @memberof EmployeeWorkingHoursResponseDTO
      */
-    date: Date;
+    date: string;
     /**
      * 
      * @type {string}
@@ -67,7 +67,7 @@ export function EmployeeWorkingHoursResponseDTOFromJSONTyped(json: any, ignoreDi
     return {
         
         'id': json['id'],
-        'date': (new Date(json['date'])),
+        'date': json['date'],
         'startTime': json['startTime'],
         'endTime': json['endTime'],
     };
@@ -85,7 +85,7 @@ export function EmployeeWorkingHoursResponseDTOToJSONTyped(value?: EmployeeWorki
     return {
         
         'id': value['id'],
-        'date': value['date'].toISOString().substring(0,10),
+        'date': value['date'],
         'startTime': value['startTime'],
         'endTime': value['endTime'],
     };

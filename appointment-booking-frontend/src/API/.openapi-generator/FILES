@@ -38,6 +38,7 @@ models/UserDetailsChangeDTO.ts
 models/UserLoginResponseDTO.ts
 models/UserRegistrationDTO.ts
 models/UserRegistrationResponseDTO.ts
+models/WorkhourAddDTO.ts
 models/WorkhourEditDTO.ts
 models/index.ts
 runtime.ts

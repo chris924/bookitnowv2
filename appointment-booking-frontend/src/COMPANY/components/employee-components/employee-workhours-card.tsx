@@ -13,6 +13,8 @@ import { useApi } from "@/hooks/useApi";
 import { handleAPIError } from "@/lib/utils";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { WorkhourEditDTO } from "@/API/models/WorkhourEditDTO";
+import AddSlotDialogForm from "@/components/ui/own/AddSlotDialogForm";
+import { WorkhourAddDTO } from "@/API/models/WorkhourAddDTO";
 
 interface EmployeeWorkingHoursCardProps
 {
@@ -45,6 +47,7 @@ export default function EmployeeWorkingHoursCard({workingHours, employeeSlug}: E
 {
   const [events, setEvents] = useState<EventInput[]>([]);
   const [showEditForm, setShowEditForm] = useState(false);
+  const [showAddForm, setShowAddForm] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState<EventImpl>();
 
 
@@ -108,6 +111,19 @@ const firstDayOfWeek = today.getDay();
       onError: (error) => handleAPIError(error)
     });
 
+     const addSlotMutation = useMutation({
+      mutationFn: ({ employeeSlug, workhourAddDTO }: { employeeSlug: string, workhourAddDTO: WorkhourAddDTO }) =>
+          api.employee.createEmployeeWorkhour({employeeSlug, workhourAddDTO}), 
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: ["appointments"] });
+         queryClient.invalidateQueries({ queryKey: ["employeeDataForCompany"] });
+        showToast.success("Esemény létrehozva!");
+        setShowAddForm(false);
+        
+      },
+      onError: (error) => handleAPIError(error)
+    });
+
     function handleEditSlot(newStartValue: string, newEndValue: string)
     {
       if(selectedEvent)
@@ -130,6 +146,21 @@ const firstDayOfWeek = today.getDay();
       deleteSlotMutation.mutate({employeeSlug, workhourId})
     }
 
+    function handleAddSlot(data:  {fromDate: string, toDate: string, startTime: string, endTime: string; })
+    {
+      const workhourAddDTO = {
+        start: data.startTime,
+        end: data.endTime,
+        fromDate: data.fromDate,
+        toDate: data.toDate
+
+      }
+
+
+      addSlotMutation.mutate({employeeSlug, workhourAddDTO})
+
+    }
+
 
     return(
       <>
@@ -137,7 +168,7 @@ const firstDayOfWeek = today.getDay();
       <p className="text-4xl">Munkarend</p>
       </div>
       <div className="">
-        <Button className=" m-5">Munakrend beállítás</Button>
+        <Button className=" m-5" onClick={() => {setShowAddForm(true)}}>Munakrend beállítás</Button>
         <Button>Munakrendek törlése</Button>
       </div>
         <FullCalendar
@@ -173,6 +204,7 @@ const firstDayOfWeek = today.getDay();
   }}  
       />  
       {showEditForm && selectedEvent && <EditSlotDialogForm value={selectedEvent} onEditClick={handleEditSlot} onDeleteClick={handleDeleteSlot} open={showEditForm} onOpenChange={setShowEditForm} isLoading={false}/>}
+      {showAddForm && <AddSlotDialogForm onSubmit={(data) => handleAddSlot(data)} open={showAddForm} onOpenChange={setShowAddForm} isLoading={false} />}
       </>
     )
 }

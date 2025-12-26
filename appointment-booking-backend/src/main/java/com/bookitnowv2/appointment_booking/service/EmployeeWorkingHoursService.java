@@ -5,12 +5,14 @@ import com.bookitnowv2.appointment_booking.entity.Appointment;
 import com.bookitnowv2.appointment_booking.entity.Employee;
 import com.bookitnowv2.appointment_booking.entity.EmployeeWorkingHours;
 import com.bookitnowv2.appointment_booking.entity.ServiceEntity;
+import com.bookitnowv2.appointment_booking.entity.dto.workhour.WorkhourAddDTO;
 import com.bookitnowv2.appointment_booking.repository.IAppointmentRepository;
 import com.bookitnowv2.appointment_booking.repository.IEmployeeWorkingHoursRepository;
 import com.bookitnowv2.appointment_booking.utils.AppointmentStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 
@@ -73,4 +75,37 @@ public class EmployeeWorkingHoursService
         }
     }
 
+    @Transactional
+    public void createWorkhourForEmployee(Employee employee, WorkhourAddDTO workhourAddDTO)
+    {
+        List<EmployeeWorkingHours> existingWorkinghours = employee.getWorkingHours();
+
+        LocalDate startDate = workhourAddDTO.getFromDate();
+        LocalDate endDate = workhourAddDTO.getToDate();
+
+        for (LocalDate date = startDate; !date.isAfter(endDate);  date = date.plusDays(1))
+        {
+            LocalDate finalDate = date;
+
+            boolean hasOverlap =
+                    existingWorkinghours.stream()
+                            .anyMatch(workingHour ->
+                                    workingHour.getDate().equals(finalDate) &&
+                                            workhourAddDTO.getStart().isBefore(workingHour.getEndTime()) &&
+                                            workhourAddDTO.getEnd().isAfter(workingHour.getStartTime())
+                            );
+
+            if (hasOverlap) {
+                throw new IllegalStateException("Overlapping working hour exists!");
+            }
+
+            EmployeeWorkingHours newWorkingHour = new EmployeeWorkingHours();
+            newWorkingHour.setEmployee(employee);
+            newWorkingHour.setDate(date);
+            newWorkingHour.setStartTime(workhourAddDTO.getStart());
+            newWorkingHour.setEndTime(workhourAddDTO.getEnd());
+
+            employeeWorkingHoursRepository.save(newWorkingHour);
+        }
+    }
 }

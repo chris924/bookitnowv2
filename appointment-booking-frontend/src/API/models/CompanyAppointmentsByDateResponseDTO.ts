@@ -21,10 +21,10 @@ import { mapValues } from '../runtime';
 export interface CompanyAppointmentsByDateResponseDTO {
     /**
      * 
-     * @type {Date}
+     * @type {string}
      * @memberof CompanyAppointmentsByDateResponseDTO
      */
-    date: Date;
+    date: string;
     /**
      * 
      * @type {number}
@@ -57,7 +57,7 @@ export function CompanyAppointmentsByDateResponseDTOFromJSONTyped(json: any, ign
     }
     return {
         
-        'date': (new Date(json['date'])),
+        'date': json['date'],
         'count': json['count'] == null ? undefined : json['count'],
         'income': json['income'] == null ? undefined : json['income'],
     };
@@ -74,7 +74,7 @@ export function CompanyAppointmentsByDateResponseDTOToJSONTyped(value?: CompanyA
 
     return {
         
-        'date': value['date'].toISOString().substring(0,10),
+        'date': value['date'],
         'count': value['count'],
         'income': value['income'],
     };

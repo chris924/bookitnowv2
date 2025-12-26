@@ -23,6 +23,7 @@ import type {
   EmployeeSearchOptionsResponseDTO,
   EmployeeSearchRequestDTO,
   SpecialistDTO,
+  WorkhourAddDTO,
   WorkhourEditDTO,
 } from '../models/index';
 import {
@@ -42,9 +43,16 @@ import {
     EmployeeSearchRequestDTOToJSON,
     SpecialistDTOFromJSON,
     SpecialistDTOToJSON,
+    WorkhourAddDTOFromJSON,
+    WorkhourAddDTOToJSON,
     WorkhourEditDTOFromJSON,
     WorkhourEditDTOToJSON,
 } from '../models/index';
+
+export interface CreateEmployeeWorkhourRequest {
+    employeeSlug: string;
+    workhourAddDTO: WorkhourAddDTO;
+}
 
 export interface DeleteEmployeeWorkhourRequest {
     employeeSlug: string;
@@ -86,6 +94,55 @@ export interface GetSearchEmployeeRequest {
  * 
  */
 export class EmployeeControllerApi extends runtime.BaseAPI {
+
+    /**
+     */
+    async createEmployeeWorkhourRaw(requestParameters: CreateEmployeeWorkhourRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<string>> {
+        if (requestParameters['employeeSlug'] == null) {
+            throw new runtime.RequiredError(
+                'employeeSlug',
+                'Required parameter "employeeSlug" was null or undefined when calling createEmployeeWorkhour().'
+            );
+        }
+
+        if (requestParameters['workhourAddDTO'] == null) {
+            throw new runtime.RequiredError(
+                'workhourAddDTO',
+                'Required parameter "workhourAddDTO" was null or undefined when calling createEmployeeWorkhour().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
+
+
+        let urlPath = `/employees/{employeeSlug}/create-workhour`;
+        urlPath = urlPath.replace(`{${"employeeSlug"}}`, encodeURIComponent(String(requestParameters['employeeSlug'])));
+
+        const response = await this.request({
+            path: urlPath,
+            method: 'POST',
+            headers: headerParameters,
+            query: queryParameters,
+            body: WorkhourAddDTOToJSON(requestParameters['workhourAddDTO']),
+        }, initOverrides);
+
+        if (this.isJsonMime(response.headers.get('content-type'))) {
+            return new runtime.JSONApiResponse<string>(response);
+        } else {
+            return new runtime.TextApiResponse(response) as any;
+        }
+    }
+
+    /**
+     */
+    async createEmployeeWorkhour(requestParameters: CreateEmployeeWorkhourRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<string> {
+        const response = await this.createEmployeeWorkhourRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
 
     /**
      */
