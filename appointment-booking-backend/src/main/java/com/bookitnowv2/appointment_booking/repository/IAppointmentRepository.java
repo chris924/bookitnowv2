@@ -21,11 +21,13 @@ public interface IAppointmentRepository extends JpaRepository<Appointment, Long>
     SELECT a FROM Appointment a
     WHERE a.service.id = :serviceId
       AND (a.date > :today OR (a.date = :today AND a.startTime >= :now))
+      AND a.appointmentStatus = :status
 """)
     List<Appointment> findUpcomingAppointments(
             @Param("serviceId") Long serviceId,
             @Param("today") LocalDate today,
-            @Param("now") LocalTime now
+            @Param("now") LocalTime now,
+            @Param("status") AppointmentStatus status
     );
 
     @Query("""

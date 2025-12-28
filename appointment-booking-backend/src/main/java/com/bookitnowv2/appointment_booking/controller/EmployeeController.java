@@ -175,6 +175,18 @@ public class EmployeeController {
         return ResponseEntity.ok().body("Munkaidő létrehozva!");
     }
 
+    @DeleteMapping("/{employeeSlug}/delete-workhours")
+    @PreAuthorize("hasAnyRole('COMPANY','EMPLOYEE')")
+    public ResponseEntity<String> deleteEmployeeWorkhours(@PathVariable String employeeSlug)
+    {
+        Long employeeId = employeeService.getEmployeeIdFromSlug(employeeSlug);
+        Employee foundEmployee = employeeService.getEmployeeById(employeeId);
+
+        employeeWorkingHoursService.deleteWorkhoursForEmployee(foundEmployee);
+
+        return ResponseEntity.ok().body("Munkaidők törölve!");
+    }
+
 
 
 

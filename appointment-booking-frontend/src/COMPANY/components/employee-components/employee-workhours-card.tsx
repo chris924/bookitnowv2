@@ -15,6 +15,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { WorkhourEditDTO } from "@/API/models/WorkhourEditDTO";
 import AddSlotDialogForm from "@/components/ui/own/AddSlotDialogForm";
 import { WorkhourAddDTO } from "@/API/models/WorkhourAddDTO";
+import ApproveDialogForm from "@/components/ui/own/ApproveDialogForm";
 
 interface EmployeeWorkingHoursCardProps
 {
@@ -48,6 +49,7 @@ export default function EmployeeWorkingHoursCard({workingHours, employeeSlug}: E
   const [events, setEvents] = useState<EventInput[]>([]);
   const [showEditForm, setShowEditForm] = useState(false);
   const [showAddForm, setShowAddForm] = useState(false);
+  const [showApproveDeleteAll, setShowApproveDeleteAll] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState<EventImpl>();
 
 
@@ -124,6 +126,19 @@ const firstDayOfWeek = today.getDay();
       onError: (error) => handleAPIError(error)
     });
 
+     const deleteAllSlotMutation = useMutation({
+      mutationFn: ({ employeeSlug }: { employeeSlug: string }) =>
+          api.employee.deleteEmployeeWorkhours({employeeSlug}), 
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: ["appointments"] });
+         queryClient.invalidateQueries({ queryKey: ["employeeDataForCompany"] });
+        showToast.success("Események törölve!");
+        setShowApproveDeleteAll(false);
+        
+      },
+      onError: (error) => handleAPIError(error)
+    });
+
     function handleEditSlot(newStartValue: string, newEndValue: string)
     {
       if(selectedEvent)
@@ -155,10 +170,12 @@ const firstDayOfWeek = today.getDay();
         toDate: data.toDate
 
       }
-
-
       addSlotMutation.mutate({employeeSlug, workhourAddDTO})
+    }
 
+    function handleDeleteAllSlot()
+    {
+      deleteAllSlotMutation.mutate({employeeSlug});
     }
 
 
@@ -169,7 +186,7 @@ const firstDayOfWeek = today.getDay();
       </div>
       <div className="">
         <Button className=" m-5" onClick={() => {setShowAddForm(true)}}>Munakrend beállítás</Button>
-        <Button>Munakrendek törlése</Button>
+        <Button variant="destructive" onClick={() => {setShowApproveDeleteAll(true)}}>Munakrendek törlése</Button>
       </div>
         <FullCalendar
         plugins={[timeGridPlugin, dayGridPlugin, interactionPlugin]}
@@ -205,6 +222,20 @@ const firstDayOfWeek = today.getDay();
       />  
       {showEditForm && selectedEvent && <EditSlotDialogForm value={selectedEvent} onEditClick={handleEditSlot} onDeleteClick={handleDeleteSlot} open={showEditForm} onOpenChange={setShowEditForm} isLoading={false}/>}
       {showAddForm && <AddSlotDialogForm onSubmit={(data) => handleAddSlot(data)} open={showAddForm} onOpenChange={setShowAddForm} isLoading={false} />}
+      {showApproveDeleteAll &&  <ApproveDialogForm
+              open={showApproveDeleteAll}
+              onOpenChange={setShowApproveDeleteAll}
+              title="Események törlése"
+              description="Biztosan törölni szeretné az összes eseményt? A lefogalt időpontok automatikusan törlésre kerülnek!"
+              buttonVariant="destructive"
+              isLoading={false}
+              onButtonClick={() => {
+                handleDeleteAllSlot();
+             //   setShowApproveDelete(false); // close approve dialog
+               
+              }}
+            />
+        }
       </>
     )
 }

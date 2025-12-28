@@ -64,6 +64,9 @@ export default function EmployeeBookingTable({ appointmentSlots }: EmployeeBooki
   }
 
 
+  const endDate = new Date(appointmentSlots?.lastDate!);
+  endDate.setDate(endDate.getDate() + 1);
+
   
   return (
     <>
@@ -79,7 +82,7 @@ export default function EmployeeBookingTable({ appointmentSlots }: EmployeeBooki
         }}
         validRange={{
           start: appointmentSlots?.firstDate || new Date().toISOString().split('T')[0],
-          end: appointmentSlots?.lastDate || new Date().toISOString().split('T')[0],
+          end: endDate || new Date().toISOString().split('T')[0],
         }}
         events={events}
         slotMinTime={appointmentSlots?.firstHour ? appointmentSlots?.firstHour : "8:00"}   // start hour

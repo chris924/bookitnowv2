@@ -7,6 +7,7 @@ import com.bookitnowv2.appointment_booking.entity.EmployeeWorkingHours;
 import com.bookitnowv2.appointment_booking.entity.ServiceEntity;
 import com.bookitnowv2.appointment_booking.entity.dto.workhour.WorkhourAddDTO;
 import com.bookitnowv2.appointment_booking.repository.IAppointmentRepository;
+import com.bookitnowv2.appointment_booking.repository.IEmployeeRepository;
 import com.bookitnowv2.appointment_booking.repository.IEmployeeWorkingHoursRepository;
 import com.bookitnowv2.appointment_booking.utils.AppointmentStatus;
 import org.springframework.stereotype.Service;
@@ -14,20 +15,23 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class EmployeeWorkingHoursService
 {
     private final IEmployeeWorkingHoursRepository employeeWorkingHoursRepository;
+    private final IEmployeeRepository employeeRepository;
     private final AppointmentService appointmentService;
     private final IAppointmentRepository appointmentRepository;
 
-    public EmployeeWorkingHoursService(IEmployeeWorkingHoursRepository employeeWorkingHoursRepository, AppointmentService appointmentService, IAppointmentRepository appointmentRepository)
+    public EmployeeWorkingHoursService(IEmployeeWorkingHoursRepository employeeWorkingHoursRepository, AppointmentService appointmentService, IAppointmentRepository appointmentRepository, IEmployeeRepository employeeRepository)
     {
         this.employeeWorkingHoursRepository = employeeWorkingHoursRepository;
         this.appointmentService = appointmentService;
         this.appointmentRepository = appointmentRepository;
+        this.employeeRepository = employeeRepository;
     }
 
     public EmployeeWorkingHours saveEmployeeWorkingHours(EmployeeWorkingHours employeeWorkingHours)
@@ -105,7 +109,37 @@ public class EmployeeWorkingHoursService
             newWorkingHour.setStartTime(workhourAddDTO.getStart());
             newWorkingHour.setEndTime(workhourAddDTO.getEnd());
 
+            employee.getWorkingHours().add(newWorkingHour);
             employeeWorkingHoursRepository.save(newWorkingHour);
+
+            for(ServiceEntity service : employee.getServices())
+            {
+                appointmentService.createFreeAppointmentSlotsFromService(service);
+            }
+
         }
     }
+    @Transactional
+    public void deleteWorkhoursForEmployee(Employee employee) {
+
+        List<EmployeeWorkingHours> workhoursCopy =
+                new ArrayList<>(employee.getWorkingHours());
+
+        for (EmployeeWorkingHours workinghour : workhoursCopy) {
+
+            for (Appointment appointment : workinghour.getAppointments()) {
+                if (!appointment.getDate().isBefore(LocalDate.now())) {
+                    appointment.setAppointmentStatus(AppointmentStatus.CANCELLED);
+                }
+                appointment.setWorkingHours(null);
+            }
+
+            appointmentRepository.saveAll(workinghour.getAppointments());
+
+            employee.getWorkingHours().remove(workinghour);
+
+            employeeWorkingHoursRepository.delete(workinghour);
+        }
+    }
+
 }

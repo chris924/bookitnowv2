@@ -6,10 +6,10 @@ import Loader from "./Loader";
 type ApproveDialogFormProps = {
     title: string;
     description: string;
-    onButtonClick: (id: string) => void;
+    onButtonClick: (id?: string) => void;
     open?: boolean
     onOpenChange: (open: boolean) => void
-    value: string;
+    value?: string;
     buttonVariant: "default" | "destructive" | "outline" | "secondary" | "ghost" | "link"; 
     isLoading: boolean;
 }

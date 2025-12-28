@@ -157,7 +157,7 @@ public class AppointmentService {
         Employee employee = serviceEntity.getEmployee();
         List<EmployeeWorkingHours> employeeWorkingHours = employee.getWorkingHours();
 
-        List<Appointment> existingAppointments = appointmentRepository.findUpcomingAppointments(serviceEntity.getId(), LocalDate.now(), LocalTime.now());
+        List<Appointment> existingAppointments = appointmentRepository.findUpcomingAppointments(serviceEntity.getId(), LocalDate.now(), LocalTime.now(), AppointmentStatus.FREE);
 
         LocalTime smallestStart = null;
         LocalTime largestEnd = null;
@@ -167,6 +167,8 @@ public class AppointmentService {
         for(Appointment x : existingAppointments)
         {
           EmployeeWorkingHours workingHours = x.getWorkingHours();
+
+
 
           if(x.getStartTime().isBefore(workingHours.getStartTime()) || x.getEndTime().isAfter(workingHours.getEndTime()))
           {

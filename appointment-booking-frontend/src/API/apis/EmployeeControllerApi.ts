@@ -59,6 +59,10 @@ export interface DeleteEmployeeWorkhourRequest {
     workhourId: number;
 }
 
+export interface DeleteEmployeeWorkhoursRequest {
+    employeeSlug: string;
+}
+
 export interface DeleteSpecificEmployeeRequest {
     employeeSlug: string;
 }
@@ -188,6 +192,45 @@ export class EmployeeControllerApi extends runtime.BaseAPI {
      */
     async deleteEmployeeWorkhour(requestParameters: DeleteEmployeeWorkhourRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<string> {
         const response = await this.deleteEmployeeWorkhourRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     */
+    async deleteEmployeeWorkhoursRaw(requestParameters: DeleteEmployeeWorkhoursRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<string>> {
+        if (requestParameters['employeeSlug'] == null) {
+            throw new runtime.RequiredError(
+                'employeeSlug',
+                'Required parameter "employeeSlug" was null or undefined when calling deleteEmployeeWorkhours().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+
+        let urlPath = `/employees/{employeeSlug}/delete-workhours`;
+        urlPath = urlPath.replace(`{${"employeeSlug"}}`, encodeURIComponent(String(requestParameters['employeeSlug'])));
+
+        const response = await this.request({
+            path: urlPath,
+            method: 'DELETE',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        if (this.isJsonMime(response.headers.get('content-type'))) {
+            return new runtime.JSONApiResponse<string>(response);
+        } else {
+            return new runtime.TextApiResponse(response) as any;
+        }
+    }
+
+    /**
+     */
+    async deleteEmployeeWorkhours(requestParameters: DeleteEmployeeWorkhoursRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<string> {
+        const response = await this.deleteEmployeeWorkhoursRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
