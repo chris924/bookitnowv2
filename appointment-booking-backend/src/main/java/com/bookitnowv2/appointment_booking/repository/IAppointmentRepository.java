@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
@@ -64,4 +65,38 @@ public interface IAppointmentRepository extends JpaRepository<Appointment, Long>
     GROUP BY a.date
 """)
     List<EmployeeAppointmentsByDateResponseDTO> getEmployeePreviousBookings(@Param("employeeId") Long employeeId, @Param("startDate")LocalDate startDate, @Param("appointmentStatus") AppointmentStatus appointmentStatus);
+
+    @Query("""
+    SELECT SUM(a.service.price)
+    FROM Appointment a
+    WHERE a.service.employee.id = :employeeId
+      AND a.appointmentStatus = 'BOOKED'
+      AND a.date <= :currentDate
+""")
+    BigDecimal getEmployeeTotalRevenue(@Param("employeeId") Long employeeId, @Param("currentDate") LocalDate currentDate);
+
+
+    @Query("""
+    SELECT COUNT(a)
+    FROM Appointment a
+    WHERE a.service.employee.id = :employeeId
+      AND a.appointmentStatus = :status
+      AND a.user.firstBookingDate >= :startMonthDate
+""")
+    Long getEmployeeMonthlyNewCustomers(@Param("employeeId") Long employeeId, @Param("status") AppointmentStatus status, @Param("startMonthDate") LocalDate startMonthDate);
+
+
+    @Query("""
+    SELECT COUNT(a) FROM Appointment a
+    WHERE a.service.employee.id = :employeeId
+      AND (a.date > :today OR (a.date = :today AND a.startTime >= :now))
+      AND a.appointmentStatus = :status
+""")
+    Long getEmployeeActiveAppointmentsCount(
+            @Param("employeeId") Long employeeId,
+            @Param("today") LocalDate today,
+            @Param("now") LocalTime now,
+            @Param("status") AppointmentStatus status
+    );
+
 }

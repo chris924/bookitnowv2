@@ -187,6 +187,20 @@ public class EmployeeController {
         return ResponseEntity.ok().body("Munkaidők törölve!");
     }
 
+    @GetMapping("/section-cards-statistics")
+    @PreAuthorize("hasAnyRole('EMPLOYEE')")
+    public ResponseEntity<EmployeeSectionCardsResponseDTO> getEmployeeSectionCardsData()
+    {
+        Employee currentEmployee = SecurityUtils.getCurrentEmployee();
+
+        EmployeeSectionCardsResponseDTO responseDTO = employeeService.getEmployeeSectionCardsData(currentEmployee);
+
+        return ResponseEntity.ok(responseDTO);
+
+    }
+
+
+
 
 
 

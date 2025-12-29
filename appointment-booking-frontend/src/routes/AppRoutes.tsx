@@ -4,6 +4,7 @@ import CompanyStatisticsPage from '@/COMPANY/pages/CompanyStatisticsPage';
 import CompanyLayout from '@/components/layout/CompanyLayout';
 import MainLayout from '@/components/layout/MainLayout';
 import Loader from '@/components/ui/own/Loader';
+import EmployeeHomePage from '@/EMPLOYEE/pages/EmployeeHomePage';
 import { useCompanyStore, useEmployeeStore, useUserStore } from '@/stores/AuthStore';
 import DedicatedEmployeePage from '@/USER/pages/DedicatedEmployeePage';
 import DedicatedUserPage from '@/USER/pages/DedicatedUserPage';
@@ -22,7 +23,7 @@ export default function AppRoutes() {
   function DetermineHomePage() {
     if (user) return <HomePage />;
     if (company) return <CompanyHomePage />;
-    if (employee) return  ""  //<EmployeeHomePage />;
+    if (employee) return <EmployeeHomePage />;
     return <HomePage />;
   }
 

@@ -26,6 +26,7 @@ models/EmployeePageForCompanyResponseDTO.ts
 models/EmployeePageResponseDTO.ts
 models/EmployeeSearchOptionsResponseDTO.ts
 models/EmployeeSearchRequestDTO.ts
+models/EmployeeSectionCardsResponseDTO.ts
 models/EmployeeWorkingHoursResponseDTO.ts
 models/LoginDTO.ts
 models/PlaceDTO.ts

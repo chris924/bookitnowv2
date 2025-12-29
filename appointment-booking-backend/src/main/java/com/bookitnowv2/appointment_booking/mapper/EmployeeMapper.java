@@ -4,16 +4,14 @@ import com.bookitnowv2.appointment_booking.elasticSearch.document.EmployeeDocume
 import com.bookitnowv2.appointment_booking.entity.Employee;
 import com.bookitnowv2.appointment_booking.entity.EmployeeWorkingHours;
 import com.bookitnowv2.appointment_booking.entity.ServiceEntity;
-import com.bookitnowv2.appointment_booking.entity.dto.employee.EmployeeDataTableResponseDTO;
-import com.bookitnowv2.appointment_booking.entity.dto.employee.EmployeeGetResponseDTO;
-import com.bookitnowv2.appointment_booking.entity.dto.employee.EmployeePageForCompanyResponseDTO;
-import com.bookitnowv2.appointment_booking.entity.dto.employee.EmployeePageResponseDTO;
+import com.bookitnowv2.appointment_booking.entity.dto.employee.*;
 import com.bookitnowv2.appointment_booking.entity.dto.employee.SearchOptionDetails.CompanyDTO;
 import com.bookitnowv2.appointment_booking.entity.dto.employee.SearchOptionDetails.PlaceDTO;
 import com.bookitnowv2.appointment_booking.entity.dto.employee.SearchOptionDetails.SpecialistDTO;
 import com.bookitnowv2.appointment_booking.utils.AppointmentStatus;
 import org.springframework.stereotype.Component;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.List;
@@ -106,4 +104,9 @@ public class EmployeeMapper {
         return new EmployeePageForCompanyResponseDTO(toGetDTO(employee),  services.stream().map(ServiceMapper::toGetDTO).toList(), workingHours.stream().map(EmployeeWorkingHoursMapper::toEmployeeWorkingHoursResponseDTO).toList());
     }
 
+    public static EmployeeSectionCardsResponseDTO toEmployeeSectionCardsResponseDTO(BigDecimal totalRevenue, Long totalActiveAppointments, Long monthlyNewCustomers, Double currentRating)
+    {
+
+        return new EmployeeSectionCardsResponseDTO(totalRevenue, totalActiveAppointments, monthlyNewCustomers, currentRating);
+    }
 }

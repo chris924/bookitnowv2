@@ -16,6 +16,7 @@ export * from './EmployeePageForCompanyResponseDTO';
 export * from './EmployeePageResponseDTO';
 export * from './EmployeeSearchOptionsResponseDTO';
 export * from './EmployeeSearchRequestDTO';
+export * from './EmployeeSectionCardsResponseDTO';
 export * from './EmployeeWorkingHoursResponseDTO';
 export * from './LoginDTO';
 export * from './PlaceDTO';

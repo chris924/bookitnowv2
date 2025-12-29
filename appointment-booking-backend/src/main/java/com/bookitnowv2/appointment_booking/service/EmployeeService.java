@@ -5,10 +5,7 @@ import com.bookitnowv2.appointment_booking.elasticSearch.service.ElasticEmployee
 import com.bookitnowv2.appointment_booking.entity.Company;
 import com.bookitnowv2.appointment_booking.entity.Employee;
 import com.bookitnowv2.appointment_booking.entity.EmployeeWorkingHours;
-import com.bookitnowv2.appointment_booking.entity.dto.employee.EmployeeAppointmentsByDateResponseDTO;
-import com.bookitnowv2.appointment_booking.entity.dto.employee.EmployeeDataTableResponseDTO;
-import com.bookitnowv2.appointment_booking.entity.dto.employee.EmployeeEditDataRequestDTO;
-import com.bookitnowv2.appointment_booking.entity.dto.employee.EmployeeGetResponseDTO;
+import com.bookitnowv2.appointment_booking.entity.dto.employee.*;
 import com.bookitnowv2.appointment_booking.entity.dto.employee.SearchOptionDetails.SpecialistDTO;
 import com.bookitnowv2.appointment_booking.exception.EmployeeNotFoundException;
 import com.bookitnowv2.appointment_booking.mapper.EmployeeMapper;
@@ -19,7 +16,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -31,15 +30,17 @@ public class EmployeeService {
     private final IEmployeeRepository employeeRepository;
     private final ElasticEmployeeService elasticEmployeeService;
     private final EmployeeWorkingHoursService workingHoursService;
+    private final IAppointmentRepository appointmentRepository;
 
 
     @Autowired
-    EmployeeService( IEmployeeRepository employeeRepository, ElasticEmployeeService elasticEmployeeService, EmployeeWorkingHoursService workingHoursService)
+    EmployeeService( IEmployeeRepository employeeRepository, ElasticEmployeeService elasticEmployeeService, EmployeeWorkingHoursService workingHoursService, IAppointmentRepository appointmentRepository)
     {
 
         this.employeeRepository = employeeRepository;
         this.elasticEmployeeService = elasticEmployeeService;
         this.workingHoursService = workingHoursService;
+        this.appointmentRepository = appointmentRepository;
     }
 
     public Employee saveEmployee(Employee employee)
@@ -125,6 +126,19 @@ public class EmployeeService {
         workingHoursService.delete(Long.parseLong(workhourId), employeeId);
 
     }
+
+    public EmployeeSectionCardsResponseDTO getEmployeeSectionCardsData(Employee employee)
+    {
+        BigDecimal totalRevenue = appointmentRepository.getEmployeeTotalRevenue(employee.getId(), LocalDate.now());
+        Double currentRating = employee.getRating();
+        Long monthlyNewCustomers = appointmentRepository.getEmployeeMonthlyNewCustomers(employee.getId(), AppointmentStatus.BOOKED, LocalDate.now().withDayOfMonth(1));
+        Long totalActiveAppointments = appointmentRepository.getEmployeeActiveAppointmentsCount(employee.getId(), LocalDate.now(), LocalTime.now(), AppointmentStatus.BOOKED);
+
+
+        return EmployeeMapper.toEmployeeSectionCardsResponseDTO(totalRevenue, totalActiveAppointments, monthlyNewCustomers, currentRating);
+
+    }
+
 
 
 }

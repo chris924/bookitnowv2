@@ -22,6 +22,7 @@ import type {
   EmployeePageResponseDTO,
   EmployeeSearchOptionsResponseDTO,
   EmployeeSearchRequestDTO,
+  EmployeeSectionCardsResponseDTO,
   SpecialistDTO,
   WorkhourAddDTO,
   WorkhourEditDTO,
@@ -41,6 +42,8 @@ import {
     EmployeeSearchOptionsResponseDTOToJSON,
     EmployeeSearchRequestDTOFromJSON,
     EmployeeSearchRequestDTOToJSON,
+    EmployeeSectionCardsResponseDTOFromJSON,
+    EmployeeSectionCardsResponseDTOToJSON,
     SpecialistDTOFromJSON,
     SpecialistDTOToJSON,
     WorkhourAddDTOFromJSON,
@@ -508,6 +511,33 @@ export class EmployeeControllerApi extends runtime.BaseAPI {
      */
     async getEmployeePreviousBookingStat(requestParameters: GetEmployeePreviousBookingStatRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<EmployeeAppointmentsByDateResponseDTO>> {
         const response = await this.getEmployeePreviousBookingStatRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     */
+    async getEmployeeSectionCardsDataRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<EmployeeSectionCardsResponseDTO>> {
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+
+        let urlPath = `/employees/section-cards-statistics`;
+
+        const response = await this.request({
+            path: urlPath,
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => EmployeeSectionCardsResponseDTOFromJSON(jsonValue));
+    }
+
+    /**
+     */
+    async getEmployeeSectionCardsData(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<EmployeeSectionCardsResponseDTO> {
+        const response = await this.getEmployeeSectionCardsDataRaw(initOverrides);
         return await response.value();
     }
 
