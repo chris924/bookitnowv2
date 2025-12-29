@@ -1,4 +1,4 @@
-import { AppointmentControllerApi, AuthInfoControllerApi, CompanyAuthenticationControllerApi, CompanyControllerApi, Configuration, EmployeeControllerApi, UserAuthenticationControllerApi, UserControllerApi } from "@/API"; 
+import { AppointmentControllerApi, AuthInfoControllerApi, CompanyAuthenticationControllerApi, CompanyControllerApi, Configuration, EmployeeAuthenticationControllerApi, EmployeeControllerApi, UserAuthenticationControllerApi, UserControllerApi } from "@/API"; 
 
 // Create a shared configuration for all controllers
 export const apiConfig = new Configuration({
@@ -13,6 +13,7 @@ export const api = {
   company: new CompanyControllerApi(apiConfig),
   appointment: new AppointmentControllerApi(apiConfig),
   companyAuth: new CompanyAuthenticationControllerApi(apiConfig),
+  employeeAuth: new EmployeeAuthenticationControllerApi(apiConfig),
   userAuth: new UserAuthenticationControllerApi(apiConfig),
   authInfo: new AuthInfoControllerApi(apiConfig),
 };

@@ -31,7 +31,7 @@ export default function ProviderLoginFormWrapper({open, onOpenChange}: ProviderL
         {/* Conditional form */}
         <div className="min-h-[400px]">
          {switchLoginForm ? (
-          <ProviderEmployeeLoginForm />
+          <ProviderEmployeeLoginForm onOpenChange={onOpenChange}/>
         ) : (
           <ProviderCompanyLoginForm onOpenChange={onOpenChange}/>
         )}

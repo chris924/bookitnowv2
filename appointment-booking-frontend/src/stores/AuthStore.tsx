@@ -105,7 +105,7 @@ export const useEmployeeStore = create<EmployeeState>((set) => ({
 
   logoutEmployee: async () => {
     try {
-   //   await api.employeeAuth.logoutEmployee(); //TODO
+     await api.employeeAuth.logoutEmployee(); 
     showToast.success("Kijelentkezve")
     } finally {
       set({ employee: null, isAuthenticated: false, employeeLoading: false });

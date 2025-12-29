@@ -1,5 +1,6 @@
 package com.bookitnowv2.appointment_booking.configuration;
 
+import com.bookitnowv2.appointment_booking.entity.Employee;
 import com.bookitnowv2.appointment_booking.entity.User;
 import com.bookitnowv2.appointment_booking.entity.dto.company.CompanyGetResponseDTO;
 import com.bookitnowv2.appointment_booking.service.*;
@@ -32,14 +33,19 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     private final CompanyAuthService companyAuthService;
     private final CompanyService companyService;
 
+    private final EmployeeAuthService employeeAuthService;
+    private final EmployeeService employeeService;
 
-    public JwtAuthFilter(TokenService tokenService, UserAuthService userAuthService, UserService userService, CompanyAuthService companyAuthService, CompanyService companyService)
+
+    public JwtAuthFilter(TokenService tokenService, UserAuthService userAuthService, UserService userService, CompanyAuthService companyAuthService, CompanyService companyService, EmployeeAuthService employeeAuthService, EmployeeService employeeService)
     {
         this.tokenService = tokenService;
         this.userAuthService = userAuthService;
         this.userService = userService;
         this.companyAuthService = companyAuthService;
         this.companyService = companyService;
+        this.employeeAuthService = employeeAuthService;
+        this.employeeService = employeeService;
     }
 
     @Override
@@ -76,6 +82,10 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                     } else if (roles.contains("COMPANY")) {
                         CompanyGetResponseDTO foundCompany = companyService.getCompanyById(Long.parseLong(id));
                         userDetails = companyAuthService.loadUserByUsername(foundCompany.email);
+                    } else if (roles.contains("EMPLOYEE"))
+                    {
+                       Employee foundEmployee = employeeService.getEmployeeById(Long.parseLong(id));
+                       userDetails = employeeAuthService.loadUserByUsername(foundEmployee.getEmail());
                     }
 
                     if (userDetails != null) {

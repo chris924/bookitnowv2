@@ -3,6 +3,7 @@ apis/AuthInfoControllerApi.ts
 apis/AvatarControllerApi.ts
 apis/CompanyAuthenticationControllerApi.ts
 apis/CompanyControllerApi.ts
+apis/EmployeeAuthenticationControllerApi.ts
 apis/EmployeeControllerApi.ts
 apis/ServiceEntityControllerApi.ts
 apis/UserAuthenticationControllerApi.ts

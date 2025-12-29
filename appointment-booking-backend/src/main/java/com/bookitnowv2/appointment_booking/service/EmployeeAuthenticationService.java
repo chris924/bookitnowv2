@@ -3,6 +3,7 @@ package com.bookitnowv2.appointment_booking.service;
 import com.bookitnowv2.appointment_booking.entity.*;
 import com.bookitnowv2.appointment_booking.entity.dto.employee.EmployeeGetResponseDTO;
 import com.bookitnowv2.appointment_booking.mapper.EmployeeMapper;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -23,17 +24,17 @@ public class EmployeeAuthenticationService {
     private final EmployeeService employeeService;
     private final RoleService roleService;
     private final PasswordEncoder passwordEncoder;
-    private final AuthenticationManager authenticationManager;
+    private final AuthenticationManager employeeAuthManager;
     private final TokenService tokenService;
     private final EmployeeMapper employeeMapper;
 
-    public EmployeeAuthenticationService(EmployeeService employeeService, RoleService roleService, PasswordEncoder passwordEncoder, AuthenticationManager authenticationManager, TokenService tokenService,
+    public EmployeeAuthenticationService(EmployeeService employeeService, RoleService roleService, PasswordEncoder passwordEncoder, @Qualifier("employeeAuthManager") AuthenticationManager employeeAuthManager, TokenService tokenService,
                                          EmployeeMapper employeeMapper)
     {
         this.employeeService = employeeService;
         this.roleService =  roleService;
         this.passwordEncoder = passwordEncoder;
-        this.authenticationManager = authenticationManager;
+        this.employeeAuthManager = employeeAuthManager;
         this.tokenService = tokenService;
         this.employeeMapper = employeeMapper;
     }
@@ -67,7 +68,7 @@ public class EmployeeAuthenticationService {
         Employee employee = employeeService.getEmployeeByEmail(email);
         String employeeEmail = employee.getEmail();
 
-        Authentication auth = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(employeeEmail, password));
+        Authentication auth = employeeAuthManager.authenticate(new UsernamePasswordAuthenticationToken(employeeEmail, password));
 
         return tokenService.generateJwt(auth, employee.getId());
     }

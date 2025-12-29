@@ -23,9 +23,13 @@ import org.springframework.security.web.authentication.logout.SecurityContextLog
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.time.Duration;
 
+@RestController
+@RequestMapping("/auth/employee")
 public class EmployeeAuthenticationController {
 
     private final EmployeeAuthenticationService employeeAuthenticationService;
@@ -35,7 +39,7 @@ public class EmployeeAuthenticationController {
         this.employeeAuthenticationService = employeeAuthenticationService;
     }
 
-    @PostMapping
+    @PostMapping("/login")
     public ResponseEntity<String> loginEmployee(@Valid @RequestBody LoginDTO loginDTO, @NotNull BindingResult bindingResult, HttpServletResponse servletResponse)
     {
         if (bindingResult.hasErrors()) {
@@ -66,7 +70,7 @@ public class EmployeeAuthenticationController {
 
     @PostMapping("/logout")
     @Transactional //TODO: Add Redis blacklist JWT for more security?
-    public ResponseEntity<String> logoutCompany(Authentication authentication, HttpServletRequest request, HttpServletResponse response)
+    public ResponseEntity<String> logoutEmployee(Authentication authentication, HttpServletRequest request, HttpServletResponse response)
     {
 
         if(authentication == null || !authentication.isAuthenticated())

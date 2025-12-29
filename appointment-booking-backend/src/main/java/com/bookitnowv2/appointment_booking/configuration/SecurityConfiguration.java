@@ -61,6 +61,17 @@ public class SecurityConfiguration {
     }
 
     @Bean
+    public AuthenticationManager employeeAuthManager(
+            @Qualifier("employeeAuthService") UserDetailsService userDetailsService,
+            PasswordEncoder passwordEncoder
+    ) {
+        DaoAuthenticationProvider daoProvider = new DaoAuthenticationProvider();
+        daoProvider.setPasswordEncoder(passwordEncoder);
+        daoProvider.setUserDetailsService(userDetailsService);
+        return new ProviderManager(daoProvider);
+    }
+
+    @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(AbstractHttpConfigurer::disable)
