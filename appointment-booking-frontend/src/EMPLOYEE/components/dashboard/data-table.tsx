@@ -165,11 +165,9 @@ export function DataTable({
   data: z.infer<typeof schema>[]
 }) {
 
-  const [selectedEmployee, setSelectedEmployee] = useState<{
-  name: string
-  id: number
-} | null>(null);
- const [showDeleteEmployee, setShowDeleteEmployee] = useState(false);
+  const [selectedAppointmentId, setSelectedAppointmentId] = useState(0);
+
+ const [showCancelAppointment, setShowCancelAppointment] = useState(false);
 
   const api = useApi();
   const queryClient = useQueryClient();
@@ -177,29 +175,26 @@ export function DataTable({
 
    const {mutate, isPending, isError, error} = useMutation({
 
-    mutationFn: (employeeSlug: string) => api.employee.deleteSpecificEmployee({employeeSlug}),
+    mutationFn: (appointmentId: number) => api.appointment.employeeCancelAppointment({appointmentId}),
     onSuccess: async () => {
-      showToast.success("Alkalmazott törölve!");
-      setShowDeleteEmployee(false);
-      setSelectedEmployee(null);
-      await queryClient.invalidateQueries({ queryKey: ["employeeTable"] });
-      
-      await queryClient.invalidateQueries({ queryKey: ["sectionCardStatistics"] });
-
-      await queryClient.invalidateQueries({ queryKey: ["pastAppointments"] });
+      showToast.success("Foglalás lemondva!");
+      setShowCancelAppointment(false);
+      setSelectedAppointmentId(0);
+      await queryClient.invalidateQueries({ queryKey: ["EmployeeAppointments"] });
+      await queryClient.invalidateQueries({ queryKey: ["pastEmployeeAppointments"] });
     },
     onError: (error) => handleAPIError(error)
   })
 
-function deleteEmployee(employeeSlug : string)
+function cancelAppointment(appointmentId : number)
 {
-  mutate(employeeSlug);
+  mutate(appointmentId);
 }
 
 
-function handleDeleteClick(name: string, id: number) {
-  setSelectedEmployee({ name, id });
-  setShowDeleteEmployee(true);
+function handleCancelClick(id: number) {
+  setSelectedAppointmentId(id);
+  setShowCancelAppointment(true);
 }
 
   const data = initialData
@@ -328,7 +323,7 @@ function handleDeleteClick(name: string, id: number) {
         <DropdownMenuContent align="end" className="w-32">
           <DropdownMenuItem onClick={() => navigate(`company/employees/${createSlug(row.original.customerName, row.original.appointmentId)}`)}>Kezelés</DropdownMenuItem>
           <DropdownMenuSeparator />
-          <DropdownMenuItem variant="destructive" onClick={() => handleDeleteClick(row.original.customerName, row.original.appointmentId)}>Törlés</DropdownMenuItem>
+          <DropdownMenuItem variant="destructive" onClick={() => handleCancelClick(row.original.appointmentId)}>Törlés</DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
     ),
@@ -571,14 +566,13 @@ function handleDeleteClick(name: string, id: number) {
         <div className="aspect-video w-full flex-1 rounded-lg border border-dashed"></div>
       </TabsContent>
     </Tabs>
-   {showDeleteEmployee && selectedEmployee && (
+   {showCancelAppointment && selectedAppointmentId && (
   <ApproveDialogForm
-    title="Alkalmazott törlése"
-    description="Biztosan törölni szeretné az alkalmazottat és az összes hozzá tartozó adatot?"
-    onButtonClick={() => deleteEmployee(createSlug(selectedEmployee.name, selectedEmployee.id))}
-    onOpenChange={setShowDeleteEmployee}
-    open={showDeleteEmployee}
-    value={createSlug(selectedEmployee.name, selectedEmployee.id)}
+    title="Foglalás lemondás"
+    description="Biztosan lemondod a foglalást? Az időpont újra foglalható lesz amíg a munakarend nincs átállítva!"
+    onButtonClick={() => cancelAppointment(selectedAppointmentId)}
+    onOpenChange={setShowCancelAppointment}
+    open={showCancelAppointment}
     buttonVariant="destructive"
     isLoading={isPending}
   />

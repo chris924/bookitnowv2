@@ -2,6 +2,7 @@ package com.bookitnowv2.appointment_booking.controller;
 
 import com.bookitnowv2.appointment_booking.configuration.SecurityUtils;
 import com.bookitnowv2.appointment_booking.entity.Appointment;
+import com.bookitnowv2.appointment_booking.entity.Employee;
 import com.bookitnowv2.appointment_booking.entity.ServiceEntity;
 import com.bookitnowv2.appointment_booking.entity.User;
 import com.bookitnowv2.appointment_booking.entity.dto.appointment.AppointmentGetResponseDTO;
@@ -9,11 +10,13 @@ import com.bookitnowv2.appointment_booking.entity.dto.appointment.AppointmentSlo
 import com.bookitnowv2.appointment_booking.entity.dto.company.AppointmentsByDateResponseDTO;
 import com.bookitnowv2.appointment_booking.entity.dto.employee.EmployeeAppointmentTableDataResponseDTO;
 import com.bookitnowv2.appointment_booking.mapper.AppointmentMapper;
+import com.bookitnowv2.appointment_booking.repository.IEmployeeRepository;
 import com.bookitnowv2.appointment_booking.service.AppointmentService;
 import com.bookitnowv2.appointment_booking.service.ServiceEntityService;
 import com.bookitnowv2.appointment_booking.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
@@ -26,13 +29,15 @@ public class AppointmentController {
 
     private final ServiceEntityService serviceEntityService;
     private final AppointmentService appointmentService;
+    private final IEmployeeRepository employeeRepository;
     private final UserService userService;
 
 
-    public AppointmentController(ServiceEntityService serviceEntityService, AppointmentService appointmentService, UserService userService) {
+    public AppointmentController(ServiceEntityService serviceEntityService, IEmployeeRepository employeeRepository, AppointmentService appointmentService, UserService userService) {
         this.serviceEntityService = serviceEntityService;
         this.appointmentService = appointmentService;
         this.userService = userService;
+        this.employeeRepository = employeeRepository;
     }
 
     @GetMapping("/employee/{serviceId}")
@@ -84,6 +89,28 @@ public class AppointmentController {
 
         return ResponseEntity.ok("A foglalás lemondva.");
     }
+
+
+    @PostMapping("/employee/cancel-appointment/{appointmentId}")
+    @PreAuthorize("hasAnyRole('EMPLOYEE')")
+    public ResponseEntity<String> employeeCancelAppointment(@PathVariable Long appointmentId) {
+
+        Employee authEmployee = SecurityUtils.getCurrentEmployee();
+
+        Employee foundEmployee = employeeRepository.findById(authEmployee.getId()).orElseThrow();
+
+
+        Appointment foundAppointment = appointmentService.getAppointmentById(appointmentId);
+
+        if (!foundAppointment.getService().getEmployee().equals(foundEmployee)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Nem a te foglalásod!");
+        }
+
+        appointmentService.cancelBookedAppointment(foundAppointment);
+
+        return ResponseEntity.ok("A foglalás lemondva.");
+    }
+
 
 
     @GetMapping("/company-total-month-data") //TODO: Replace into CompanyController, The service can stay in Appointment

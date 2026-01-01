@@ -39,6 +39,10 @@ export interface CancelUserAppointmentRequest {
     appointmentId: number;
 }
 
+export interface EmployeeCancelAppointmentRequest {
+    appointmentId: number;
+}
+
 export interface GetEmployeeMonthlyAppointmentsRequest {
     serviceId: number;
 }
@@ -123,6 +127,45 @@ export class AppointmentControllerApi extends runtime.BaseAPI {
      */
     async cancelUserAppointment(requestParameters: CancelUserAppointmentRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<string> {
         const response = await this.cancelUserAppointmentRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     */
+    async employeeCancelAppointmentRaw(requestParameters: EmployeeCancelAppointmentRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<string>> {
+        if (requestParameters['appointmentId'] == null) {
+            throw new runtime.RequiredError(
+                'appointmentId',
+                'Required parameter "appointmentId" was null or undefined when calling employeeCancelAppointment().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+
+        let urlPath = `/appointments/employee/cancel-appointment/{appointmentId}`;
+        urlPath = urlPath.replace(`{${"appointmentId"}}`, encodeURIComponent(String(requestParameters['appointmentId'])));
+
+        const response = await this.request({
+            path: urlPath,
+            method: 'POST',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        if (this.isJsonMime(response.headers.get('content-type'))) {
+            return new runtime.JSONApiResponse<string>(response);
+        } else {
+            return new runtime.TextApiResponse(response) as any;
+        }
+    }
+
+    /**
+     */
+    async employeeCancelAppointment(requestParameters: EmployeeCancelAppointmentRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<string> {
+        const response = await this.employeeCancelAppointmentRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
