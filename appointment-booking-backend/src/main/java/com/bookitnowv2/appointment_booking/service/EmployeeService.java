@@ -4,9 +4,9 @@ import com.bookitnowv2.appointment_booking.configuration.SecurityUtils;
 import com.bookitnowv2.appointment_booking.elasticSearch.service.ElasticEmployeeService;
 import com.bookitnowv2.appointment_booking.entity.Company;
 import com.bookitnowv2.appointment_booking.entity.Employee;
-import com.bookitnowv2.appointment_booking.entity.EmployeeWorkingHours;
 import com.bookitnowv2.appointment_booking.entity.dto.employee.*;
 import com.bookitnowv2.appointment_booking.entity.dto.employee.SearchOptionDetails.SpecialistDTO;
+import com.bookitnowv2.appointment_booking.exception.CompanyNotFoundException;
 import com.bookitnowv2.appointment_booking.exception.EmployeeNotFoundException;
 import com.bookitnowv2.appointment_booking.mapper.EmployeeMapper;
 import com.bookitnowv2.appointment_booking.repository.*;
@@ -31,12 +31,13 @@ public class EmployeeService {
     private final ElasticEmployeeService elasticEmployeeService;
     private final EmployeeWorkingHoursService workingHoursService;
     private final IAppointmentRepository appointmentRepository;
+    private final ICompanyRepository companyRepository;
 
 
     @Autowired
-    EmployeeService( IEmployeeRepository employeeRepository, ElasticEmployeeService elasticEmployeeService, EmployeeWorkingHoursService workingHoursService, IAppointmentRepository appointmentRepository)
+    EmployeeService( IEmployeeRepository employeeRepository,ICompanyRepository companyRepository,  ElasticEmployeeService elasticEmployeeService, EmployeeWorkingHoursService workingHoursService, IAppointmentRepository appointmentRepository)
     {
-
+        this.companyRepository = companyRepository;
         this.employeeRepository = employeeRepository;
         this.elasticEmployeeService = elasticEmployeeService;
         this.workingHoursService = workingHoursService;
@@ -83,10 +84,11 @@ public class EmployeeService {
     {
         List<EmployeeDataTableResponseDTO> employeeTable = new ArrayList<>();
 
-        Company authCompany = SecurityUtils.getCurrentCompany();
-        List<Employee> employees = employeeRepository.findByCompanyId(authCompany.getId());
+        Long authCompanyId = SecurityUtils.getCurrentCompanyId();
+        Company foundCompany = companyRepository.findById(authCompanyId).orElseThrow(() -> new CompanyNotFoundException(authCompanyId.toString()));
+        List<Employee> employees = employeeRepository.findByCompanyId(foundCompany.getId());
 
-        return employeeRepository.findByCompanyId(authCompany.getId()).stream().map(EmployeeMapper::toDataTableResponseDTO).toList();
+        return employeeRepository.findByCompanyId(foundCompany.getId()).stream().map(EmployeeMapper::toDataTableResponseDTO).toList();
     }
 
     public void deleteEmployee(Employee employee)
@@ -99,11 +101,13 @@ public class EmployeeService {
     public void updateEmployeeDataForCompany(String slug, EmployeeEditDataRequestDTO dto) {
         Long id = getEmployeeIdFromSlug(slug);
         Employee employee = getEmployeeById(id);
-        Company company = SecurityUtils.getCurrentCompany();
+
+        Long authCompanyId = SecurityUtils.getCurrentCompanyId();
+        Company foundCompany = companyRepository.findById(authCompanyId).orElseThrow(() -> new CompanyNotFoundException(authCompanyId.toString()));
 
         if (employee.getCompany() == null ||
-                company == null ||
-                !employee.getCompany().getId().equals(company.getId())) {
+                foundCompany == null ||
+                !employee.getCompany().getId().equals(foundCompany.getId())) {
             throw new EmployeeNotFoundException(slug);
         }
 

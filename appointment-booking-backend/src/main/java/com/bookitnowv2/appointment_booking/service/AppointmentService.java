@@ -8,6 +8,8 @@ import com.bookitnowv2.appointment_booking.entity.dto.appointment.SlotResponseDT
 import com.bookitnowv2.appointment_booking.entity.dto.company.AppointmentsByDateResponseDTO;
 import com.bookitnowv2.appointment_booking.entity.dto.employee.EmployeeAppointmentTableDataResponseDTO;
 import com.bookitnowv2.appointment_booking.entity.dto.employee.EmployeeAppointmentsByDateResponseDTO;
+import com.bookitnowv2.appointment_booking.exception.CompanyNotFoundException;
+import com.bookitnowv2.appointment_booking.exception.EmployeeNotFoundException;
 import com.bookitnowv2.appointment_booking.exception.appointment.AppointmentNotBookedException;
 import com.bookitnowv2.appointment_booking.exception.appointment.AppointmentNotFreeException;
 import com.bookitnowv2.appointment_booking.mapper.AppointmentMapper;
@@ -334,26 +336,28 @@ public class AppointmentService {
     public List<AppointmentsByDateResponseDTO> getCompanyTotalAppointmentsByMonth(Integer monthCount)
     {
 
-
-        Company authCompany = SecurityUtils.getCurrentCompany();
+        Long authCompanyId = SecurityUtils.getCurrentCompanyId();
+        Company foundCompany = companyRepository.findById(authCompanyId).orElseThrow(() -> new CompanyNotFoundException(authCompanyId.toString()));
 
         LocalDate currentDate = LocalDate.now();
 
         LocalDate startDate = currentDate.minusMonths(monthCount);
 
-        return appointmentRepository.countCompanyTotalAppointmentsByDate(authCompany.getId(), startDate, AppointmentStatus.BOOKED);
+        return appointmentRepository.countCompanyTotalAppointmentsByDate(foundCompany.getId(), startDate, AppointmentStatus.BOOKED);
     }
 
     @Transactional
     public List<AppointmentsByDateResponseDTO> getEmployeeTotalAppointmentsByMonth(Integer monthCount)
     {
-        Employee authEmployee = SecurityUtils.getCurrentEmployee();
+        Long authEmployeeId = SecurityUtils.getCurrentEmployeeId();
+        Employee foundEmployee = employeeRepository.findById(authEmployeeId).orElseThrow(() -> new EmployeeNotFoundException(authEmployeeId.toString()));
+
 
         LocalDate currentDate = LocalDate.now();
 
         LocalDate startDate = currentDate.minusMonths(monthCount);
 
-        return appointmentRepository.countEmployeeTotalAppointmentsByDate(authEmployee.getId(), startDate, AppointmentStatus.BOOKED);
+        return appointmentRepository.countEmployeeTotalAppointmentsByDate(foundEmployee.getId(), startDate, AppointmentStatus.BOOKED);
     }
 
     public List<EmployeeAppointmentsByDateResponseDTO> getEmployeePreviousBookingsByMonth(Employee employee)
@@ -369,8 +373,8 @@ public class AppointmentService {
     @Transactional
     public List<EmployeeAppointmentTableDataResponseDTO> getEmployeeAppointmentsDataForTable()
     {
-        Employee authEmployee = SecurityUtils.getCurrentEmployee();
-        Employee foundEmployee = employeeRepository.findById(authEmployee.getId()).orElseThrow();
+        Long authEmployeeId = SecurityUtils.getCurrentEmployeeId();
+        Employee foundEmployee = employeeRepository.findById(authEmployeeId).orElseThrow(() -> new EmployeeNotFoundException(authEmployeeId.toString()));
 
         List<Appointment> employeeAppointments = foundEmployee.getAppointments().stream().filter((appointment -> appointment.getAppointmentStatus() == AppointmentStatus.BOOKED)).toList();
 

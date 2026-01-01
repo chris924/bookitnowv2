@@ -2,10 +2,11 @@ package com.bookitnowv2.appointment_booking.controller;
 
 import com.bookitnowv2.appointment_booking.configuration.SecurityUtils;
 import com.bookitnowv2.appointment_booking.entity.Company;
-import com.bookitnowv2.appointment_booking.entity.User;
 import com.bookitnowv2.appointment_booking.entity.dto.LoginDTO;
 import com.bookitnowv2.appointment_booking.entity.dto.company.CompanyLoginResponseDTO;
 import com.bookitnowv2.appointment_booking.exception.BadCredentialException;
+import com.bookitnowv2.appointment_booking.exception.CompanyNotFoundException;
+import com.bookitnowv2.appointment_booking.repository.ICompanyRepository;
 import com.bookitnowv2.appointment_booking.service.CompanyAuthService;
 import com.bookitnowv2.appointment_booking.service.CompanyAuthenticationService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -33,10 +34,13 @@ public class CompanyAuthenticationController {
 
     private final CompanyAuthenticationService companyAuthenticationService;
     private final CompanyAuthService companyAuthService;
-    public CompanyAuthenticationController(CompanyAuthenticationService companyAuthenticationService, CompanyAuthService companyAuthService)
+    private final ICompanyRepository companyRepository;
+
+    public CompanyAuthenticationController(CompanyAuthenticationService companyAuthenticationService, ICompanyRepository companyRepository, CompanyAuthService companyAuthService)
     {
         this.companyAuthenticationService = companyAuthenticationService;
         this.companyAuthService = companyAuthService;
+        this.companyRepository = companyRepository;
     }
 
     @PostMapping("/login")
@@ -77,7 +81,8 @@ public class CompanyAuthenticationController {
     @Transactional //TODO: Add Redis blacklist JWT for more security?
     public ResponseEntity<String> logoutCompany(Authentication authentication, HttpServletRequest request, HttpServletResponse response)
     {
-        Company foundCompany = SecurityUtils.getCurrentCompany();
+        Long authCompanyId = SecurityUtils.getCurrentCompanyId();
+        Company foundCompany = companyRepository.findById(authCompanyId).orElseThrow(() -> new CompanyNotFoundException(authCompanyId.toString()));
 
         if(authentication == null || !authentication.isAuthenticated())
             return ResponseEntity.notFound().build();

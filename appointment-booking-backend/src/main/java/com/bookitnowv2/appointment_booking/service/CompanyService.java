@@ -92,23 +92,23 @@ public class CompanyService {
     @Transactional
     public CompanySectionCardsResponseDTO getCompanySectionCardsData()
     {
-        Company authCompany = SecurityUtils.getCurrentCompany();
-        Company currentCompany = this.getCompanyByIdTemp(authCompany.getId());
+        Long authCompanyId = SecurityUtils.getCurrentCompanyId();
+        Company foundCompany = companyRepository.findById(authCompanyId).orElseThrow(() -> new CompanyNotFoundException(authCompanyId.toString()));
         LocalDate firstDayOfMonth = LocalDate.now().withDayOfMonth(1);
 
         Long totalRevenue = Optional.ofNullable(
-                companyRepository.getCompanyTotalRevenue(currentCompany.getId(), AppointmentStatus.BOOKED)
+                companyRepository.getCompanyTotalRevenue(foundCompany.getId(), AppointmentStatus.BOOKED)
         ).orElse(0L);
 
         Long totalActiveAppointments = Optional.ofNullable(
-                companyRepository.getCompanyTotalActiveAppointments(currentCompany.getId(), AppointmentStatus.BOOKED, LocalDate.now())
+                companyRepository.getCompanyTotalActiveAppointments(foundCompany.getId(), AppointmentStatus.BOOKED, LocalDate.now())
         ).orElse(0L);
 
         Long newCustomers = Optional.ofNullable(
-                companyRepository.getCompanyMonthlyNewCustomers(currentCompany.getId(), AppointmentStatus.BOOKED, firstDayOfMonth)
+                companyRepository.getCompanyMonthlyNewCustomers(foundCompany.getId(), AppointmentStatus.BOOKED, firstDayOfMonth)
         ).orElse(0L);
         String bestEmployee = companyRepository
-                .getCompanyBestRatedEmployeeName(currentCompany.getId(), PageRequest.of(0, 1))
+                .getCompanyBestRatedEmployeeName(foundCompany.getId(), PageRequest.of(0, 1))
                 .stream()
                 .findFirst()
                 .orElse("—");

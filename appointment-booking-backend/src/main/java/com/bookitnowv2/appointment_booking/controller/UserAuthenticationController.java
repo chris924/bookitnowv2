@@ -1,15 +1,14 @@
 package com.bookitnowv2.appointment_booking.controller;
 
 import com.bookitnowv2.appointment_booking.configuration.SecurityUtils;
-import com.bookitnowv2.appointment_booking.entity.Company;
-import com.bookitnowv2.appointment_booking.entity.Employee;
 import com.bookitnowv2.appointment_booking.entity.User;
-import com.bookitnowv2.appointment_booking.entity.dto.AuthInfoResponseDTO;
 import com.bookitnowv2.appointment_booking.entity.dto.LoginDTO;
 import com.bookitnowv2.appointment_booking.entity.dto.user.UserLoginResponseDTO;
 import com.bookitnowv2.appointment_booking.entity.dto.user.UserRegistrationDTO;
 import com.bookitnowv2.appointment_booking.entity.dto.user.UserRegistrationResponseDTO;
 import com.bookitnowv2.appointment_booking.exception.BadCredentialException;
+import com.bookitnowv2.appointment_booking.exception.UserNotFoundException;
+import com.bookitnowv2.appointment_booking.repository.IUserRepository;
 import com.bookitnowv2.appointment_booking.service.UserAuthenticationService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -17,7 +16,6 @@ import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -26,8 +24,6 @@ import org.springframework.security.web.authentication.logout.SecurityContextLog
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import java.time.Duration;
-import java.util.HashMap;
-import java.util.Map;
 
 
 @RestController
@@ -35,11 +31,12 @@ import java.util.Map;
 public class UserAuthenticationController {
 
     private final UserAuthenticationService userAuthenticationService;
+    private final IUserRepository userRepository;
 
-
-    public UserAuthenticationController(UserAuthenticationService userAuthenticationService)
+    public UserAuthenticationController(UserAuthenticationService userAuthenticationService, IUserRepository userRepository)
     {
         this.userAuthenticationService = userAuthenticationService;
+        this.userRepository = userRepository;
     }
 
     @PostMapping("/login")
@@ -94,7 +91,8 @@ public class UserAuthenticationController {
     @Transactional //TODO: Add Redis blacklist JWT for more security?
     public ResponseEntity<String> logoutUser(Authentication authentication, HttpServletRequest request, HttpServletResponse response)
     {
-        User foundUser = SecurityUtils.getCurrentUser();
+        Long authUserId = SecurityUtils.getCurrentUserId();
+        User foundUser = userRepository.findById(authUserId).orElseThrow(() -> new UserNotFoundException(authUserId.toString()));
 
         if(authentication == null || !authentication.isAuthenticated())
             return ResponseEntity.notFound().build();

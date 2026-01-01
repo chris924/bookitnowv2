@@ -4,6 +4,8 @@ import com.bookitnowv2.appointment_booking.configuration.SecurityUtils;
 import com.bookitnowv2.appointment_booking.entity.Company;
 import com.bookitnowv2.appointment_booking.entity.ServiceEntity;
 import com.bookitnowv2.appointment_booking.entity.dto.service.ServiceEntityModifyRequestDTO;
+import com.bookitnowv2.appointment_booking.exception.CompanyNotFoundException;
+import com.bookitnowv2.appointment_booking.repository.ICompanyRepository;
 import com.bookitnowv2.appointment_booking.service.ServiceEntityService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -18,10 +20,12 @@ import org.springframework.security.access.AccessDeniedException;
 public class ServiceEntityController {
 
     private final ServiceEntityService serviceEntityService;
+    private final ICompanyRepository companyRepository;
 
-    public ServiceEntityController(ServiceEntityService serviceEntityService)
+    public ServiceEntityController(ServiceEntityService serviceEntityService, ICompanyRepository companyRepository)
     {
         this.serviceEntityService = serviceEntityService;
+        this.companyRepository = companyRepository;
     }
 
     @DeleteMapping("/{serviceEntityId}")
@@ -30,10 +34,11 @@ public class ServiceEntityController {
     {
         ServiceEntity foundService = serviceEntityService.getServiceEntityById(serviceEntityId);
 
-        Company currentCompany = SecurityUtils.getCurrentCompany();
+        Long authCompanyId = SecurityUtils.getCurrentCompanyId();
+        Company foundCompany = companyRepository.findById(authCompanyId).orElseThrow(() -> new CompanyNotFoundException(authCompanyId.toString()));
         Company serviceOwnerCompany = foundService.getCompany();
 
-        if(!currentCompany.getId().equals(serviceOwnerCompany.getId()))
+        if(!foundCompany.getId().equals(serviceOwnerCompany.getId()))
         {
             throw new AccessDeniedException("Nincs jogod módosítani ezt a szolgáltatást!");
         }
@@ -48,10 +53,11 @@ public class ServiceEntityController {
     {
         ServiceEntity foundService = serviceEntityService.getServiceEntityById(serviceEntityId);
 
-        Company currentCompany = SecurityUtils.getCurrentCompany();
+        Long authCompanyId = SecurityUtils.getCurrentCompanyId();
+        Company foundCompany = companyRepository.findById(authCompanyId).orElseThrow(() -> new CompanyNotFoundException(authCompanyId.toString()));
         Company serviceOwnerCompany = foundService.getCompany();
 
-        if(!currentCompany.getId().equals(serviceOwnerCompany.getId()))
+        if(!foundCompany.getId().equals(serviceOwnerCompany.getId()))
         {
             throw new AccessDeniedException("Nincs jogod módosítani ezt a szolgáltatást!");
         }

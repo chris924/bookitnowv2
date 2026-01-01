@@ -28,29 +28,29 @@ public class SecurityUtils {
         SecurityUtils.companyAuthService = companyAuthService;
     }
 
-    public static User getCurrentUser()
+    public static Long getCurrentUserId()
     {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        if(auth != null && auth.getPrincipal() instanceof UserDetails userDetails)
+        if(auth != null && auth.getPrincipal() instanceof User user)
         {
-            return userRepository.getUserByUsername(userDetails.getUsername()).orElseThrow(() -> new UserNotFoundException(""));
+            return user.getId();
         }
-        throw new UserNotFoundException("");
+        throw new UserNotFoundException("A felhasználó nem található!");
     }
 
-    public static Company getCurrentCompany() {
+    public static Long getCurrentCompanyId() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth != null && auth.getPrincipal() instanceof Company company) {
-            return company;
+            return company.getId();
         }
         throw new CompanyNotFoundException("A cég nem található!");
     }
 
-    public static Employee getCurrentEmployee()
+    public static Long getCurrentEmployeeId()
     {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth != null && auth.getPrincipal() instanceof Employee employee) {
-            return employee;
+            return employee.getId();
         }
         throw new EmployeeNotFoundException("Az alkalmazott nem található!");
     }

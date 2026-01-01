@@ -9,8 +9,10 @@ import com.bookitnowv2.appointment_booking.entity.dto.appointment.AppointmentGet
 import com.bookitnowv2.appointment_booking.entity.dto.appointment.AppointmentSlotResponseDTO;
 import com.bookitnowv2.appointment_booking.entity.dto.company.AppointmentsByDateResponseDTO;
 import com.bookitnowv2.appointment_booking.entity.dto.employee.EmployeeAppointmentTableDataResponseDTO;
+import com.bookitnowv2.appointment_booking.exception.UserNotFoundException;
 import com.bookitnowv2.appointment_booking.mapper.AppointmentMapper;
 import com.bookitnowv2.appointment_booking.repository.IEmployeeRepository;
+import com.bookitnowv2.appointment_booking.repository.IUserRepository;
 import com.bookitnowv2.appointment_booking.service.AppointmentService;
 import com.bookitnowv2.appointment_booking.service.ServiceEntityService;
 import com.bookitnowv2.appointment_booking.service.UserService;
@@ -29,15 +31,17 @@ public class AppointmentController {
 
     private final ServiceEntityService serviceEntityService;
     private final AppointmentService appointmentService;
+    private final IUserRepository userRepository;
     private final IEmployeeRepository employeeRepository;
     private final UserService userService;
 
 
-    public AppointmentController(ServiceEntityService serviceEntityService, IEmployeeRepository employeeRepository, AppointmentService appointmentService, UserService userService) {
+    public AppointmentController(ServiceEntityService serviceEntityService, IUserRepository userRepository, IEmployeeRepository employeeRepository, AppointmentService appointmentService, UserService userService) {
         this.serviceEntityService = serviceEntityService;
         this.appointmentService = appointmentService;
         this.userService = userService;
         this.employeeRepository = employeeRepository;
+        this.userRepository = userRepository;
     }
 
     @GetMapping("/employee/{serviceId}")
@@ -67,7 +71,8 @@ public class AppointmentController {
     @GetMapping("/user/booked-appointments")
     public ResponseEntity<List<AppointmentGetResponseDTO>> getUserBookedAppointments()
     {
-        User foundUser = SecurityUtils.getCurrentUser();
+        Long authUserId = SecurityUtils.getCurrentUserId();
+        User foundUser = userRepository.findById(authUserId).orElseThrow(() -> new UserNotFoundException(authUserId.toString()));
 
         List<Appointment> appointments = foundUser.getAppointments();
 
@@ -77,7 +82,9 @@ public class AppointmentController {
 
     @PostMapping("/user/cancel-appointment/{appointmentId}")
     public ResponseEntity<String> cancelUserAppointment(@PathVariable Long appointmentId) {
-        User foundUser = SecurityUtils.getCurrentUser();
+
+        Long authUserId = SecurityUtils.getCurrentUserId();
+        User foundUser = userRepository.findById(authUserId).orElseThrow(() -> new UserNotFoundException(authUserId.toString()));
 
         Appointment foundAppointment = appointmentService.getAppointmentById(appointmentId);
 
@@ -95,9 +102,9 @@ public class AppointmentController {
     @PreAuthorize("hasAnyRole('EMPLOYEE')")
     public ResponseEntity<String> employeeCancelAppointment(@PathVariable Long appointmentId) {
 
-        Employee authEmployee = SecurityUtils.getCurrentEmployee();
+        Long authEmployeeId = SecurityUtils.getCurrentEmployeeId();
 
-        Employee foundEmployee = employeeRepository.findById(authEmployee.getId()).orElseThrow();
+        Employee foundEmployee = employeeRepository.findById(authEmployeeId).orElseThrow();
 
 
         Appointment foundAppointment = appointmentService.getAppointmentById(appointmentId);

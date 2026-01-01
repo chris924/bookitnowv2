@@ -7,6 +7,7 @@ import com.bookitnowv2.appointment_booking.elasticSearch.service.ElasticUserServ
 import com.bookitnowv2.appointment_booking.entity.User;
 import com.bookitnowv2.appointment_booking.entity.dto.user.UserDataResponseDTO;
 import com.bookitnowv2.appointment_booking.entity.dto.user.UserDetailsChangeDTO;
+import com.bookitnowv2.appointment_booking.exception.UserNotFoundException;
 import com.bookitnowv2.appointment_booking.mapper.UserMapper;
 import com.bookitnowv2.appointment_booking.repository.IUserRepository;
 import jakarta.validation.Valid;
@@ -50,41 +51,44 @@ public class UserController {
     @GetMapping("/user-data")
     public ResponseEntity<UserDataResponseDTO> getUserData() {
 
-        User currentUser = SecurityUtils.getCurrentUser();
-        return ResponseEntity.ok(UserMapper.toUserDataResponseDTO(currentUser));
+        Long authUserId = SecurityUtils.getCurrentUserId();
+        User foundUser = userRepository.findById(authUserId).orElseThrow(() -> new UserNotFoundException(authUserId.toString()));
+        return ResponseEntity.ok(UserMapper.toUserDataResponseDTO(foundUser));
 
     }
 
     @PostMapping("/change-user-details")
     public ResponseEntity<UserDataResponseDTO> changeUserDetails(@Valid @RequestBody UserDetailsChangeDTO userDetailsChangeDTO)
     {
-        User currentUser = SecurityUtils.getCurrentUser();
+        Long authUserId = SecurityUtils.getCurrentUserId();
+        User foundUser = userRepository.findById(authUserId).orElseThrow(() -> new UserNotFoundException(authUserId.toString()));
 
         boolean changedData = false;
         if(!userDetailsChangeDTO.getName().isEmpty())
         {
-            currentUser.setName(userDetailsChangeDTO.getName());
+            foundUser.setName(userDetailsChangeDTO.getName());
             changedData = true;
         }
         if(!userDetailsChangeDTO.getUsername().isEmpty())
         {
-            currentUser.setUsername(userDetailsChangeDTO.getUsername());
+            foundUser.setUsername(userDetailsChangeDTO.getUsername());
             changedData = true;
         }
         if(changedData)
         {
-            userRepository.save(currentUser);
-            elasticUserRepository.save(UserMapper.toDocument(currentUser));
+            userRepository.save(foundUser);
+            elasticUserRepository.save(UserMapper.toDocument(foundUser));
         }
-        return ResponseEntity.ok(UserMapper.toUserDataResponseDTO(currentUser));
+        return ResponseEntity.ok(UserMapper.toUserDataResponseDTO(foundUser));
     }
 
 
     @PostMapping("/upload-avatar")
     public ResponseEntity<String> uploadUserAvatar(@RequestParam("avatar") MultipartFile file) {
 
-        User currentUser = SecurityUtils.getCurrentUser();
-        UserDocument userDocument = elasticUserService.getUserDocument(currentUser);
+        Long authUserId = SecurityUtils.getCurrentUserId();
+        User foundUser = userRepository.findById(authUserId).orElseThrow(() -> new UserNotFoundException(authUserId.toString()));
+        UserDocument userDocument = elasticUserService.getUserDocument(foundUser);
 
         try {
             // Ensure avatars directory exists
@@ -109,9 +113,9 @@ public class UserController {
             String publicUrl =  frontendAddress +  "/avatar/user/" + filename;
 
             // Update DB + Elastic
-            currentUser.setAvatarUrl(publicUrl);
+            foundUser.setAvatarUrl(publicUrl);
             userDocument.setAvatarUrl(publicUrl);
-            userRepository.save(currentUser);
+            userRepository.save(foundUser);
             elasticUserRepository.save(userDocument);
 
             return ResponseEntity.ok(publicUrl);

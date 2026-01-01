@@ -9,15 +9,16 @@ import com.bookitnowv2.appointment_booking.entity.dto.employee.*;
 import com.bookitnowv2.appointment_booking.entity.dto.employee.SearchOptionDetails.SpecialistDTO;
 import com.bookitnowv2.appointment_booking.entity.dto.workhour.WorkhourAddDTO;
 import com.bookitnowv2.appointment_booking.entity.dto.workhour.WorkhourEditDTO;
+import com.bookitnowv2.appointment_booking.exception.CompanyNotFoundException;
 import com.bookitnowv2.appointment_booking.exception.EmployeeNotFoundException;
 import com.bookitnowv2.appointment_booking.mapper.EmployeeMapper;
+import com.bookitnowv2.appointment_booking.repository.ICompanyRepository;
+import com.bookitnowv2.appointment_booking.repository.IEmployeeRepository;
 import com.bookitnowv2.appointment_booking.service.AppointmentService;
 import com.bookitnowv2.appointment_booking.service.EmployeeService;
 import com.bookitnowv2.appointment_booking.service.EmployeeWorkingHoursService;
 import com.bookitnowv2.appointment_booking.service.ServiceEntityService;
-import com.bookitnowv2.appointment_booking.utils.EmployeeExperience;
 import jakarta.validation.Valid;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
@@ -32,12 +33,14 @@ public class EmployeeController {
 
     private final EmployeeService employeeService;
     private final AppointmentService appointmentService;
+    private final IEmployeeRepository employeeRepository;
     private final ServiceEntityService serviceEntityService;
     private final EmployeeWorkingHoursService employeeWorkingHoursService;
     private final ElasticEmployeeService elasticEmployeeService;
     private final EmployeeMapper employeeMapper;
+    private final ICompanyRepository companyRepository;
 
-    public EmployeeController(EmployeeService employeeService, ElasticEmployeeService elasticEmployeeService, ServiceEntityService serviceEntityService, AppointmentService appointmentService, EmployeeWorkingHoursService employeeWorkingHoursService, EmployeeMapper employeeMapper)
+    public EmployeeController(EmployeeService employeeService, ICompanyRepository companyRepository, IEmployeeRepository employeeRepository, ElasticEmployeeService elasticEmployeeService, ServiceEntityService serviceEntityService, AppointmentService appointmentService, EmployeeWorkingHoursService employeeWorkingHoursService, EmployeeMapper employeeMapper)
     {
         this.employeeService = employeeService;
         this.elasticEmployeeService = elasticEmployeeService;
@@ -45,6 +48,8 @@ public class EmployeeController {
         this.appointmentService = appointmentService;
         this.employeeWorkingHoursService = employeeWorkingHoursService;
         this.employeeMapper = employeeMapper;
+        this.employeeRepository = employeeRepository;
+        this.companyRepository = companyRepository;
     }
 
     @GetMapping("/most-rated")
@@ -123,11 +128,13 @@ public class EmployeeController {
         Long employeeId = employeeService.getEmployeeIdFromSlug(employeeSlug);
         Employee foundEmployee = employeeService.getEmployeeById(employeeId);
 
-        Company currentCompany = SecurityUtils.getCurrentCompany();
+        Long authCompanyId = SecurityUtils.getCurrentCompanyId();
+        Company foundCompany = companyRepository.findById(authCompanyId).orElseThrow(() -> new CompanyNotFoundException(authCompanyId.toString()));
+
 
         if (foundEmployee.getCompany() == null ||
-                currentCompany == null ||
-                !foundEmployee.getCompany().getId().equals(currentCompany.getId())) {
+                foundCompany == null ||
+                !foundEmployee.getCompany().getId().equals(foundCompany.getId())) {
             throw new EmployeeNotFoundException(employeeSlug);
         }
 
@@ -191,9 +198,11 @@ public class EmployeeController {
     @PreAuthorize("hasAnyRole('EMPLOYEE')")
     public ResponseEntity<EmployeeSectionCardsResponseDTO> getEmployeeSectionCardsData()
     {
-        Employee currentEmployee = SecurityUtils.getCurrentEmployee();
+        Long authEmployeeId = SecurityUtils.getCurrentEmployeeId();
 
-        EmployeeSectionCardsResponseDTO responseDTO = employeeService.getEmployeeSectionCardsData(currentEmployee);
+        Employee foundEmployee = employeeRepository.findById(authEmployeeId).orElseThrow(() -> new EmployeeNotFoundException(authEmployeeId.toString()));
+
+        EmployeeSectionCardsResponseDTO responseDTO = employeeService.getEmployeeSectionCardsData(foundEmployee);
 
         return ResponseEntity.ok(responseDTO);
 
