@@ -57,10 +57,19 @@ public class Employee implements UserDetails {
     public List<Appointment> getAppointments() {
         if (services == null) return List.of();
 
-        return services.stream()
+        List<Appointment> appointments = new ArrayList<>(services.stream()
                 .filter(Objects::nonNull)
                 .flatMap(s -> Optional.ofNullable(s.getAppointments()).orElse(List.of()).stream())
-                .toList();
+                .toList());
+
+        appointments.sort(
+                Comparator
+                        .comparing(Appointment::getDate)
+                        .thenComparing(Appointment::getStartTime)
+                        .reversed()
+        );
+
+        return appointments;
     }
 
     @OneToMany(

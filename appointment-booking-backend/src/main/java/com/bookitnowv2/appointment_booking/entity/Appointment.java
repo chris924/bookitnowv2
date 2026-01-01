@@ -24,7 +24,7 @@ public class Appointment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="appointment_id")
-    private Integer id;
+    private Long id;
 
     @JsonBackReference
     @ManyToOne

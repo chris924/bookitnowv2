@@ -6,6 +6,7 @@ import com.bookitnowv2.appointment_booking.entity.dto.appointment.AppointmentGet
 import com.bookitnowv2.appointment_booking.entity.dto.appointment.AppointmentSlotResponseDTO;
 import com.bookitnowv2.appointment_booking.entity.dto.appointment.SlotResponseDTO;
 import com.bookitnowv2.appointment_booking.entity.dto.company.AppointmentsByDateResponseDTO;
+import com.bookitnowv2.appointment_booking.entity.dto.employee.EmployeeAppointmentTableDataResponseDTO;
 import com.bookitnowv2.appointment_booking.entity.dto.employee.EmployeeAppointmentsByDateResponseDTO;
 import com.bookitnowv2.appointment_booking.exception.appointment.AppointmentNotBookedException;
 import com.bookitnowv2.appointment_booking.exception.appointment.AppointmentNotFreeException;
@@ -30,9 +31,11 @@ public class AppointmentService {
     private final IServiceEntityRepository serviceRepository;
     private final IEmployeeWorkingHoursRepository employeeWorkingHoursRepository;
     private final AppointmentMapper appointmentMapper;
+    private final IEmployeeRepository employeeRepository;
 
     @Autowired
-    AppointmentService(IAppointmentRepository appointmentRepository, ICompanyRepository companyRepository, IUserRepository userRepository, IServiceEntityRepository serviceRepository, IEmployeeWorkingHoursRepository employeeWorkingHoursRepository, AppointmentMapper appointmentMapper)
+    AppointmentService(IAppointmentRepository appointmentRepository, ICompanyRepository companyRepository, IUserRepository userRepository, IServiceEntityRepository serviceRepository, IEmployeeWorkingHoursRepository employeeWorkingHoursRepository, AppointmentMapper appointmentMapper,
+                       IEmployeeRepository employeeRepository)
     {
         this.appointmentRepository = appointmentRepository;
         this.companyRepository = companyRepository;
@@ -40,6 +43,7 @@ public class AppointmentService {
         this.serviceRepository = serviceRepository;
         this.employeeWorkingHoursRepository = employeeWorkingHoursRepository;
         this.appointmentMapper = appointmentMapper;
+        this.employeeRepository = employeeRepository;
     }
 
     public Appointment createAppointment(Long serviceId, Timestamp timestamp) {
@@ -359,5 +363,18 @@ public class AppointmentService {
 
         LocalDate startDate = currentDate.minusMonths(monthCount);
         return appointmentRepository.getEmployeePreviousBookings(employee.getId(), startDate, AppointmentStatus.BOOKED);
+    }
+
+
+    @Transactional
+    public List<EmployeeAppointmentTableDataResponseDTO> getEmployeeAppointmentsDataForTable()
+    {
+        Employee authEmployee = SecurityUtils.getCurrentEmployee();
+        Employee foundEmployee = employeeRepository.findById(authEmployee.getId()).orElseThrow();
+
+        List<Appointment> employeeAppointments = foundEmployee.getAppointments().stream().filter((appointment -> appointment.getAppointmentStatus() == AppointmentStatus.BOOKED)).toList();
+
+        return employeeAppointments.stream().map((AppointmentMapper::toEmployeeAppointmentTableDataResponseDTO)).toList();
+
     }
 }

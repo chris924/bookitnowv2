@@ -16,7 +16,7 @@ import java.time.LocalTime;
 public class SlotResponseDTO {
 
     @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
-    private Integer id;
+    private Long id;
     @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate date;

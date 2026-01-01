@@ -1,14 +1,13 @@
-
-import { CompanyEmployeeTableQuery } from "@/COMPANY/hooks/query/CompanyDashboardQuerys";
 import Loader from "@/components/ui/own/Loader"
 import { ChartAreaInteractive } from "../components/dashboard/chart-area-interactive";
 import { DataTable } from "../components/dashboard/data-table";
 import { SectionCards } from "../components/dashboard/section-cards";
+import { EmployeeAppointmentsTableQuery } from "../hooks/query/EmployeeDashboardQuery";
 export default function EmployeeDashboard() {
 
- // const {data, isLoading} = CompanyEmployeeTableQuery();
+  const {data, isLoading} = EmployeeAppointmentsTableQuery();
   
-  //  if(isLoading || !data) return <Loader/>
+    if(isLoading || !data) return <Loader/>
 
 
   return (
@@ -18,7 +17,7 @@ export default function EmployeeDashboard() {
              <div className="px-4 lg:px-6">
                 <ChartAreaInteractive />
               </div>
-            { /*  <DataTable data={data} /> */ }
+               <DataTable data={data} /> 
             </div>
           </div>
         

@@ -41,3 +41,27 @@ export function handleAPIError(error: unknown): void {
   }
 
 }
+
+
+export function formatDuration(duration?: string) {
+  if (!duration) return '-';
+
+  const match = duration.match(/PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/);
+
+  if (!match) return '-';
+
+  const [, h, m, s] = match;
+
+  if (h && m) return `${h} óra ${m} perc`;
+  if (h) return `${h} óra`;
+  if (m) return `${m} perc`;
+  if (s) return `${s} mp`;
+
+  return '-';
+}
+
+export function formatTime(time?: string) {
+  if (!time) return '-';
+  const match = time.match(/^(\d{2}:\d{2})/);
+  return match ? match[1] : time;
+}

@@ -3,6 +3,7 @@ package com.bookitnowv2.appointment_booking.mapper;
 import com.bookitnowv2.appointment_booking.entity.*;
 import com.bookitnowv2.appointment_booking.entity.dto.appointment.AppointmentGetResponseDTO;
 import com.bookitnowv2.appointment_booking.entity.dto.appointment.SlotResponseDTO;
+import com.bookitnowv2.appointment_booking.entity.dto.employee.EmployeeAppointmentTableDataResponseDTO;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -44,6 +45,26 @@ public class AppointmentMapper {
                 appointment.getEndTime(),
                 appointmentStatus
         );
+    }
+
+    public static EmployeeAppointmentTableDataResponseDTO toEmployeeAppointmentTableDataResponseDTO(Appointment appointment)
+    {
+        User foundUser = appointment.getUser();
+        String userFullName;
+        String userAvatar;
+        if(foundUser == null) {
+            userFullName = "";
+            userAvatar = "";
+        }
+        else
+        {
+            userFullName = foundUser.getName();
+            userAvatar = foundUser.getAvatarUrl();
+        }
+
+
+        return new EmployeeAppointmentTableDataResponseDTO(appointment.getId(), userFullName, userAvatar, appointment.getDate(), appointment.getStartTime()
+        , appointment.getEndTime(), appointment.getService().getName(), appointment.getService().getDuration());
     }
 
 

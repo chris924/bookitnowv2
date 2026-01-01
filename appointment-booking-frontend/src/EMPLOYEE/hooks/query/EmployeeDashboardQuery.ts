@@ -1,4 +1,4 @@
-import { AppointmentsByDateResponseDTO, EmployeeSectionCardsResponseDTO } from "@/API";
+import { AppointmentsByDateResponseDTO, EmployeeAppointmentTableDataResponseDTO, EmployeeSectionCardsResponseDTO } from "@/API";
 import { useApi } from "@/hooks/useApi";
 import { handleAPIError } from "@/lib/utils";
 import { useQuery } from "@tanstack/react-query";
@@ -29,6 +29,21 @@ export function EmployeePastAppointmentsQuery()
         queryKey: ["pastEmployeeAppointments"],
         queryFn: async () =>{
             const data = await api.appointment.getEmployeePastAppointmentsByMonth(); 
+            return data;
+        },
+        staleTime: 1000 * 60
+    });
+}
+
+
+export function EmployeeAppointmentsTableQuery()
+{
+    const api = useApi();
+
+    return useQuery<EmployeeAppointmentTableDataResponseDTO[]>({
+        queryKey: ["EmployeeAppointments"],
+        queryFn: async () =>{
+            const data = await api.appointment.getEmployeeAppointmentsTable(); 
             return data;
         },
         staleTime: 1000 * 60

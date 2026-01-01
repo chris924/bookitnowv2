@@ -107,7 +107,7 @@ import {
   TabsTrigger,
 } from "@/components/ui/tabs"
 import { CompanyDedicatedEmployeePastBookings } from "@/COMPANY/hooks/query/CompanyDedicatedEmployeeQuery"
-import { createSlug, handleAPIError } from "@/lib/utils"
+import { createSlug, formatDuration, formatTime, handleAPIError } from "@/lib/utils"
 import Loader from "@/components/ui/own/Loader"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import ApproveDialogForm from "@/components/ui/own/ApproveDialogForm"
@@ -121,40 +121,22 @@ import { useNavigate } from "react-router-dom"
  
 
 export const schema = z.object({
-  id: z.number(),
-  name: z.string(),
-  experience: z.string(),
-  status: z.string(),
-  bookedAppointments: z.number(),
-  rating: z.number(),
-  avatarUrl: z.string(),
+  appointmentId: z.number(),
+  customerName: z.string(),
+  customerAvatar: z.string(),
+  date: z.string(),
+  startTime: z.string(),
+  endTime: z.string(),
+  serviceName: z.string(),
+  duration: z.string(),
 })
 
-// Create a separate component for the drag handle
-function DragHandle({ id }: { id: number }) {
-  const { attributes, listeners } = useSortable({
-    id,
-  })
-
-  return (
-    <Button
-      {...attributes}
-      {...listeners}
-      variant="ghost"
-      size="icon"
-      className="text-muted-foreground size-7 hover:bg-transparent"
-    >
-      <IconGripVertical className="text-muted-foreground size-3" />
-      <span className="sr-only">Drag to reorder</span>
-    </Button>
-  )
-}
 
 
 
 function DraggableRow({ row }: { row: Row<z.infer<typeof schema>> }) {
   const { transform, transition, setNodeRef, isDragging } = useSortable({
-    id: row.original.id,
+    id: row.original.appointmentId,
   })
 
   return (
@@ -240,92 +222,93 @@ function handleDeleteClick(name: string, id: number) {
   )
 
   const dataIds = React.useMemo<UniqueIdentifier[]>(
-    () => data?.map(({ id }) => id) || [],
+    () => data?.map(({ appointmentId }) => appointmentId) || [],
     [data]
   )
 
+  const centerCell = "flex justify-center items-center w-full";
+
   const columns: ColumnDef<z.infer<typeof schema>>[] = [
+ {
+  accessorKey: "Ügyfél",
+  header: () => (
+    <div className={centerCell}>
+      Ügyfél
+    </div>
+  ),
+  cell: ({ row }) => (
+    <div className={centerCell}>
+      <Avatar>
+        <AvatarImage src={row.original.customerAvatar} />
+        <AvatarFallback>
+          <img src={defaultAvatar} alt="default avatar" />
+        </AvatarFallback>
+      </Avatar>
+      <Badge variant="outline" className="text-muted-foreground px-1.5 text-lg">
+        {row.original.customerName ?? '-'}
+      </Badge>
+    </div>
+  ),
+  enableHiding: false,
+},
   {
-    id: "drag",
-    header: () => null,
-    cell: ({ row }) => <DragHandle id={row.original.id} />,
-  },
-  {
-    id: "select",
-    header: ({ table }) => (
-      <div className="flex items-center justify-center">
-        <Checkbox
-          checked={
-            table.getIsAllPageRowsSelected() ||
-            (table.getIsSomePageRowsSelected() && "indeterminate")
-          }
-          onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-          aria-label="Select all"
-        />
-      </div>
-    ),
+    accessorKey: "Dátum",
+    header: () => (
+    <div className={centerCell}>
+      Dátum
+    </div>
+  ),
     cell: ({ row }) => (
-      <div className="flex items-center justify-center">
-        <Checkbox
-          checked={row.getIsSelected()}
-          onCheckedChange={(value) => row.toggleSelected(!!value)}
-          aria-label="Select row"
-        />
-      </div>
-    ),
-    enableSorting: false,
-    enableHiding: false,
-  },
-  {
-    accessorKey: "header",
-    header: "Alkalmazott",
-
-    cell: ({ row }) => {
-      return <TableCellViewer item={row.original} />
-    },
-    enableHiding: false,
-  },
-  {
-    accessorKey: "Besorolás",
-    header: "Besorolás",
-    cell: ({ row }) => (
-       <div className="flex justify-center items-center w-16">
+       <div className={centerCell}>
       <Badge variant="outline" className="text-muted-foreground px-1.5 text-center text-lg">
-        {row.original.experience ?? '-'}
+        {row.original.date ?? '-'}
       </Badge>
     </div>
     ),
   },
   {
-    accessorKey: "Státusz",
-    header: "Státusz",
+    accessorKey: "Időpont",
+    header: () => (
+    <div className={centerCell}>
+      Időpont
+    </div>
+  ),
     cell: ({ row }) => (
-     <div className="flex justify-center items-center w-16">
+     <div className={centerCell}>
       <Badge variant="outline" className="text-muted-foreground px-1.5 text-center text-lg">
-        {row.original.status ?? '-'}
+        {formatTime(row.original.startTime) + "-" + formatTime(row.original.endTime)}
       </Badge>
     </div>
     ),
   },
   {
-    accessorKey: "lefoglalt időpontok",
-    header: "Lefoglalt Időpontok",
+    accessorKey: "Szolgáltatás",
+   header: () => (
+    <div className={centerCell}>
+      Szolgáltatás
+    </div>
+  ),
     cell: ({ row }) => (
-
-      <div className="flex justify-center items-center w-32">
+      <div className={centerCell}>
       <Badge variant="outline" className="text-muted-foreground px-1.5 text-center text-lg">
-        {row.original.bookedAppointments ?? '-'}
+        {row.original.serviceName ?? '-'}
       </Badge>
     </div>
     ),
   },
   {
-    accessorKey: "értékelés",
-    header: "Értékelés",
+    accessorKey: "Szolgáltatás időtartam",
+    header: () => (
+    <div className={centerCell}>
+      Szolgáltatás időtartam
+    </div>
+  ),
     cell: ({ row }) => (
+      <div className={centerCell}>
         <Badge variant="outline" className="text-muted-foreground px-1.5 text-xl">
-          {row.original.rating ? row.original.rating + '⭐' : '-'}
+          {formatDuration(row.original.duration)}
         </Badge>
+      </div>
     ),
   },
   {
@@ -343,9 +326,9 @@ function handleDeleteClick(name: string, id: number) {
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="w-32">
-          <DropdownMenuItem onClick={() => navigate(`company/employees/${createSlug(row.original.name, row.original.id)}`)}>Kezelés</DropdownMenuItem>
+          <DropdownMenuItem onClick={() => navigate(`company/employees/${createSlug(row.original.customerName, row.original.appointmentId)}`)}>Kezelés</DropdownMenuItem>
           <DropdownMenuSeparator />
-          <DropdownMenuItem variant="destructive" onClick={() => handleDeleteClick(row.original.name, row.original.id)}>Törlés</DropdownMenuItem>
+          <DropdownMenuItem variant="destructive" onClick={() => handleDeleteClick(row.original.customerName, row.original.appointmentId)}>Törlés</DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
     ),
@@ -362,7 +345,7 @@ function handleDeleteClick(name: string, id: number) {
       columnFilters,
       pagination,
     },
-    getRowId: (row) => row.id.toString(),
+    getRowId: (row) => row.appointmentId.toString(),
     enableRowSelection: true,
     onRowSelectionChange: setRowSelection,
     onSortingChange: setSorting,
@@ -402,7 +385,7 @@ function handleDeleteClick(name: string, id: number) {
           </SelectContent>
         </Select>
         <TabsList className="**:data-[slot=badge]:bg-muted-foreground/30 hidden **:data-[slot=badge]:size-5 **:data-[slot=badge]:rounded-full **:data-[slot=badge]:px-1 @4xl/main:flex">
-          <TabsTrigger value="outline">Alkalmazottak</TabsTrigger>
+          <TabsTrigger value="outline">Lefoglalt Időpontok</TabsTrigger>
         </TabsList>
         <div className="flex items-center gap-2">
           <DropdownMenu>
@@ -438,10 +421,6 @@ function handleDeleteClick(name: string, id: number) {
                 })}
             </DropdownMenuContent>
           </DropdownMenu>
-          <Button variant="outline" size="sm">
-            <IconPlus />
-            <span className="hidden lg:inline">Új Alkalmazott Hozzáadás</span>
-          </Button>
         </div>
       </div>
       <TabsContent
@@ -622,7 +601,7 @@ const chartConfig = {
   
 } satisfies ChartConfig
 
- function TableCellViewer({ item }: { item: z.infer<typeof schema> }) {
+ /*function TableCellViewer({ item }: { item: z.infer<typeof schema> }) {
   const isMobile = useIsMobile()
 
 
@@ -637,7 +616,7 @@ const chartConfig = {
         <Button variant="link" className="text-foreground w-fit px-0 text-left">
            <Avatar className="rounded-lg">
             <AvatarImage
-              src={item.avatarUrl}
+              src={item.}
               alt={item.name}
             />
             <AvatarFallback>{defaultAvatar}</AvatarFallback>
@@ -716,4 +695,4 @@ const chartConfig = {
       </DrawerContent>
     </Drawer>
   )
-}
+}*/

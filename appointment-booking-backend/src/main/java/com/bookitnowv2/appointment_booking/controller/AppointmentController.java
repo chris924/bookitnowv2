@@ -7,6 +7,7 @@ import com.bookitnowv2.appointment_booking.entity.User;
 import com.bookitnowv2.appointment_booking.entity.dto.appointment.AppointmentGetResponseDTO;
 import com.bookitnowv2.appointment_booking.entity.dto.appointment.AppointmentSlotResponseDTO;
 import com.bookitnowv2.appointment_booking.entity.dto.company.AppointmentsByDateResponseDTO;
+import com.bookitnowv2.appointment_booking.entity.dto.employee.EmployeeAppointmentTableDataResponseDTO;
 import com.bookitnowv2.appointment_booking.mapper.AppointmentMapper;
 import com.bookitnowv2.appointment_booking.service.AppointmentService;
 import com.bookitnowv2.appointment_booking.service.ServiceEntityService;
@@ -96,6 +97,12 @@ public class AppointmentController {
     public List<AppointmentsByDateResponseDTO> getEmployeePastAppointmentsByMonth()
     {
         return appointmentService.getEmployeeTotalAppointmentsByMonth(3);
+    }
+
+    @GetMapping("/employee-appointments-table")
+    public List<EmployeeAppointmentTableDataResponseDTO> getEmployeeAppointmentsTable()
+    {
+        return appointmentService.getEmployeeAppointmentsDataForTable();
     }
 
 
