@@ -2,8 +2,8 @@
 /* eslint-disable */
 export * from './AppointmentGetResponseDTO';
 export * from './AppointmentSlotResponseDTO';
+export * from './AppointmentsByDateResponseDTO';
 export * from './AuthInfoResponseDTO';
-export * from './CompanyAppointmentsByDateResponseDTO';
 export * from './CompanyDTO';
 export * from './CompanyGetResponseDTO';
 export * from './CompanyLoginResponseDTO';

@@ -12,7 +12,7 @@ import java.time.LocalDate;
 @Getter
 @Setter
 @Data
-public class CompanyAppointmentsByDateResponseDTO {
+public class AppointmentsByDateResponseDTO {
 
     @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     private LocalDate date;

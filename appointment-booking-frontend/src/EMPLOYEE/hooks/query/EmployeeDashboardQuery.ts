@@ -1,4 +1,4 @@
-import { EmployeeSectionCardsResponseDTO } from "@/API";
+import { AppointmentsByDateResponseDTO, EmployeeSectionCardsResponseDTO } from "@/API";
 import { useApi } from "@/hooks/useApi";
 import { handleAPIError } from "@/lib/utils";
 import { useQuery } from "@tanstack/react-query";
@@ -17,4 +17,20 @@ export function EmployeeSectionCardsQuery()
 
         staleTime: 1000 * 60,
     })
+}
+
+
+//Query for getting the employee past booked appointments. Better than a simple fetch, since it is cacheable.
+export function EmployeePastAppointmentsQuery()
+{
+    const api = useApi();
+
+    return useQuery<AppointmentsByDateResponseDTO[]>({
+        queryKey: ["pastEmployeeAppointments"],
+        queryFn: async () =>{
+            const data = await api.appointment.getEmployeePastAppointmentsByMonth(); 
+            return data;
+        },
+        staleTime: 1000 * 60
+    });
 }

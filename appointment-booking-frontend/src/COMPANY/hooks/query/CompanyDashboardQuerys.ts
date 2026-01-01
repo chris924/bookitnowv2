@@ -1,4 +1,4 @@
-import { CompanyAppointmentsByDateResponseDTO, CompanySectionCardsResponseDTO, EmployeeDataTableResponseDTO } from "@/API";
+import { AppointmentsByDateResponseDTO, CompanySectionCardsResponseDTO, EmployeeDataTableResponseDTO } from "@/API";
 import { useApi } from "@/hooks/useApi";
 import { useQuery } from "@tanstack/react-query";
 
@@ -9,7 +9,7 @@ export function CompanyPastAppointmentsQuery()
 {
     const api = useApi();
 
-    return useQuery<CompanyAppointmentsByDateResponseDTO[]>({
+    return useQuery<AppointmentsByDateResponseDTO[]>({
         queryKey: ["pastAppointments"],
         queryFn: async () =>{
             const data = await api.appointment.getCompanyPastAppointmentsByMonth(); 

@@ -6,20 +6,15 @@ import com.bookitnowv2.appointment_booking.entity.ServiceEntity;
 import com.bookitnowv2.appointment_booking.entity.User;
 import com.bookitnowv2.appointment_booking.entity.dto.appointment.AppointmentGetResponseDTO;
 import com.bookitnowv2.appointment_booking.entity.dto.appointment.AppointmentSlotResponseDTO;
-import com.bookitnowv2.appointment_booking.entity.dto.company.CompanyAppointmentsByDateResponseDTO;
+import com.bookitnowv2.appointment_booking.entity.dto.company.AppointmentsByDateResponseDTO;
 import com.bookitnowv2.appointment_booking.mapper.AppointmentMapper;
 import com.bookitnowv2.appointment_booking.service.AppointmentService;
 import com.bookitnowv2.appointment_booking.service.ServiceEntityService;
 import com.bookitnowv2.appointment_booking.service.UserService;
-import com.bookitnowv2.appointment_booking.utils.AppointmentStatus;
-import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -91,9 +86,16 @@ public class AppointmentController {
 
 
     @GetMapping("/company-total-month-data") //TODO: Replace into CompanyController, The service can stay in Appointment
-    public List<CompanyAppointmentsByDateResponseDTO> getCompanyPastAppointmentsByMonth()
+    public List<AppointmentsByDateResponseDTO> getCompanyPastAppointmentsByMonth()
     {
         return appointmentService.getCompanyTotalAppointmentsByMonth(3);
+    }
+
+
+    @GetMapping("/employee-total-month-data") //TODO: Replace into CompanyController, The service can stay in Appointment ?
+    public List<AppointmentsByDateResponseDTO> getEmployeePastAppointmentsByMonth()
+    {
+        return appointmentService.getEmployeeTotalAppointmentsByMonth(3);
     }
 
 

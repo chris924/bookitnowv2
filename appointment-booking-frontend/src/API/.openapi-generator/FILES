@@ -12,8 +12,8 @@ apis/index.ts
 index.ts
 models/AppointmentGetResponseDTO.ts
 models/AppointmentSlotResponseDTO.ts
+models/AppointmentsByDateResponseDTO.ts
 models/AuthInfoResponseDTO.ts
-models/CompanyAppointmentsByDateResponseDTO.ts
 models/CompanyDTO.ts
 models/CompanyGetResponseDTO.ts
 models/CompanyLoginResponseDTO.ts

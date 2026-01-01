@@ -28,8 +28,8 @@ import {
   ToggleGroup,
   ToggleGroupItem,
 } from "@/components/ui/toggle-group"
-import { CompanyPastAppointmentsQuery } from "@/COMPANY/hooks/query/CompanyDashboardQuerys"
 import Loader from "@/components/ui/own/Loader"
+import { EmployeePastAppointmentsQuery } from "@/EMPLOYEE/hooks/query/EmployeeDashboardQuery"
 
 export const description = "An interactive area chart"
 
@@ -49,7 +49,7 @@ export function ChartAreaInteractive() {
   const isMobile = useIsMobile()
   const [timeRange, setTimeRange] = React.useState("90d")
 
-  const {data: pastAppointments, isLoading, error} = CompanyPastAppointmentsQuery();
+  const {data: pastAppointments, isLoading, error} = EmployeePastAppointmentsQuery();
 
   React.useEffect(() => {
     if (isMobile) {

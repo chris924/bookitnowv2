@@ -1,7 +1,7 @@
 package com.bookitnowv2.appointment_booking.repository;
 
 import com.bookitnowv2.appointment_booking.entity.Appointment;
-import com.bookitnowv2.appointment_booking.entity.dto.company.CompanyAppointmentsByDateResponseDTO;
+import com.bookitnowv2.appointment_booking.entity.dto.company.AppointmentsByDateResponseDTO;
 import com.bookitnowv2.appointment_booking.entity.dto.employee.EmployeeAppointmentsByDateResponseDTO;
 import com.bookitnowv2.appointment_booking.utils.AppointmentStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -43,15 +43,29 @@ public interface IAppointmentRepository extends JpaRepository<Appointment, Long>
     );
 
     @Query("""
-    SELECT new com.bookitnowv2.appointment_booking.entity.dto.company.CompanyAppointmentsByDateResponseDTO(a.date, COUNT(DISTINCT a.id), SUM(a.service.price))
+    SELECT new com.bookitnowv2.appointment_booking.entity.dto.company.AppointmentsByDateResponseDTO(a.date, COUNT(DISTINCT a.id), SUM(a.service.price))
     FROM Appointment a
     WHERE a.service.company.id = :companyId
         AND a.date > :startDate
         AND a.appointmentStatus = :appointmentStatus
     GROUP BY a.date
 """)
-    List<CompanyAppointmentsByDateResponseDTO> countCompanyTotalAppointmentsByDate(
+    List<AppointmentsByDateResponseDTO> countCompanyTotalAppointmentsByDate(
             @Param("companyId") Long companyId,
+            @Param("startDate") LocalDate startDate,
+            @Param("appointmentStatus") AppointmentStatus appointmentStatus
+    );
+
+    @Query("""
+    SELECT new com.bookitnowv2.appointment_booking.entity.dto.company.AppointmentsByDateResponseDTO(a.date, COUNT(DISTINCT a.id), SUM(a.service.price))
+    FROM Appointment a
+    WHERE a.service.employee.id = :employeeId
+        AND a.date > :startDate
+        AND a.appointmentStatus = :appointmentStatus
+    GROUP BY a.date
+""")
+    List<AppointmentsByDateResponseDTO> countEmployeeTotalAppointmentsByDate(
+            @Param("employeeId") Long employeeId,
             @Param("startDate") LocalDate startDate,
             @Param("appointmentStatus") AppointmentStatus appointmentStatus
     );

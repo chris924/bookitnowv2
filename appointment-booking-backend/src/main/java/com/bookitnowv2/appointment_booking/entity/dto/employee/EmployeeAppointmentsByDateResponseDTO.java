@@ -14,6 +14,7 @@ import java.time.LocalDate;
 public class EmployeeAppointmentsByDateResponseDTO {
 
         @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
-        private LocalDate date;private Long count;
+        private LocalDate date;
+        private Long count;
 
 }
