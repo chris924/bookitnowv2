@@ -2,6 +2,7 @@ import CompanyDetailedEmployeePage from '@/COMPANY/pages/CompanyDetailedEmployee
 import CompanyHomePage from '@/COMPANY/pages/CompanyHomePage';
 import CompanyStatisticsPage from '@/COMPANY/pages/CompanyStatisticsPage';
 import CompanyLayout from '@/components/layout/CompanyLayout';
+import EmployeeLayout from '@/components/layout/EmployeeLayout';
 import MainLayout from '@/components/layout/MainLayout';
 import Loader from '@/components/ui/own/Loader';
 import EmployeeHomePage from '@/EMPLOYEE/pages/EmployeeHomePage';
@@ -19,6 +20,7 @@ export default function AppRoutes() {
   const {employee} = useEmployeeStore();
 
   const isCompany = !!company;
+  const isEmployee = !!employee
 
   function DetermineHomePage() {
     if (user) return <HomePage />;
@@ -29,7 +31,7 @@ export default function AppRoutes() {
 
    return (
     <Routes>
-      <Route element={isCompany ? <CompanyLayout /> : <MainLayout />}>
+      <Route element={isCompany ? <CompanyLayout /> : isEmployee ? <EmployeeLayout /> : <MainLayout />}>
         <Route path="/" element={<DetermineHomePage />} />
         <Route path="/employee/:employeeSlug" element={<DedicatedEmployeePage />} />
         <Route path="/user/:slug" element={<DedicatedUserPage />} />

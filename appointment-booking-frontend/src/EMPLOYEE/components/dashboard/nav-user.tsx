@@ -26,23 +26,23 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar"
-import { useCompanyStore } from "@/stores/AuthStore"
+import { useCompanyStore, useEmployeeStore } from "@/stores/AuthStore"
 import { useNavigate } from "react-router-dom"
-import { CompanyGetResponseDTO } from "@/API"
+import { EmployeeGetResponseDTO } from "@/API"
 
 interface NavUserProps{
-  company: CompanyGetResponseDTO;
+  employee: EmployeeGetResponseDTO;
 }
 
-export function NavUser({company}: NavUserProps)
+export function NavUser({employee}: NavUserProps)
 {
   const { isMobile } = useSidebar()
-  const {logoutCompany} = useCompanyStore();
+  const {logoutEmployee} = useEmployeeStore();
   const navigate = useNavigate();
 
-  function handleCompanyLogout()
+  function handleEmployeeLogout()
   {
-    logoutCompany();
+    logoutEmployee();
     navigate("/");
   }
 
@@ -56,13 +56,13 @@ export function NavUser({company}: NavUserProps)
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
             >
               <Avatar className="h-8 w-8 rounded-lg grayscale">
-                <AvatarImage src={company.avatarUrl} alt={company.name} />
+                <AvatarImage src={employee.avatarUrl} alt={employee.name} />
                 <AvatarFallback className="rounded-lg">CN</AvatarFallback>
               </Avatar>
               <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="truncate font-medium">{company.name}</span>
+                <span className="truncate font-medium">{employee.name}</span>
                 <span className="text-muted-foreground truncate text-xs">
-                  {company.email}
+                  {employee.email}
                 </span>
               </div>
               <IconDotsVertical className="ml-auto size-4" />
@@ -77,13 +77,13 @@ export function NavUser({company}: NavUserProps)
             <DropdownMenuLabel className="p-0 font-normal">
               <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                 <Avatar className="h-8 w-8 rounded-lg">
-                  <AvatarImage src={company.avatarUrl} alt={company.name} />
+                  <AvatarImage src={employee.avatarUrl} alt={employee.name} />
                   <AvatarFallback className="rounded-lg">CN</AvatarFallback>
                 </Avatar>
                 <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-medium">{company.name}</span>
+                  <span className="truncate font-medium">{employee.name}</span>
                   <span className="text-muted-foreground truncate text-xs">
-                    {company.email}
+                    {employee.email}
                   </span>
                 </div>
               </div>
@@ -104,7 +104,7 @@ export function NavUser({company}: NavUserProps)
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={() => handleCompanyLogout()}>
+            <DropdownMenuItem onClick={() => handleEmployeeLogout()}>
               <IconLogout />
               Kijelentkezés
             </DropdownMenuItem>

@@ -6,15 +6,10 @@ import {
   IconDatabase,
   IconFileAi,
   IconFileDescription,
-  IconFileWord,
-  IconFolder,
   IconHelp,
   IconInnerShadowTop,
   IconListDetails,
   IconReport,
-  IconSearch,
-  IconSettings,
-  IconUsers,
 } from "@tabler/icons-react"
 
 import {
@@ -27,12 +22,9 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
 import { NavDocuments } from "./nav-documents"
-import { NavMain } from "./nav-main"
 import { NavSecondary } from "./nav-secondary"
 import { NavUser } from "./nav-user"
-import { useCompanyStore, useUserStore } from "@/stores/AuthStore"
-import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from "@radix-ui/react-dropdown-menu"
-import { User2, ChevronUp } from "lucide-react"
+import { useEmployeeStore } from "@/stores/AuthStore"
 import { EmployeeDataTableResponseDTO } from "@/API/models/EmployeeDataTableResponseDTO"
 
 const data = {
@@ -123,13 +115,11 @@ const data = {
   ],
 }
 
-type AppSidebarProps = React.ComponentProps<typeof Sidebar> & {
-  employees: EmployeeDataTableResponseDTO[]; 
-};
 
-export function AppSidebar({employees, ...props }: AppSidebarProps) {
 
-const { company } = useCompanyStore();
+export function AppSidebar({ ...props }) {
+
+const { employee } = useEmployeeStore();
 
   return (
     <Sidebar collapsible="offcanvas" {...props}>
@@ -142,20 +132,19 @@ const { company } = useCompanyStore();
             >
               <a href="#">
                 <IconInnerShadowTop className="!size-5" />
-                <span className="text-base font-semibold">{company?.name}</span>
+                <span className="text-base font-semibold">{employee?.name}</span>
               </a>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent>
-        <NavMain items={data.navMain} employees={employees}/>
          
         <NavDocuments items={data.documents} />
         <NavSecondary items={data.navSecondary} className="mt-auto" />
       </SidebarContent>
       <SidebarFooter>
-       {company && <NavUser company={company} />}
+       {employee && <NavUser employee={employee} />}
       </SidebarFooter>
     </Sidebar>
   )
