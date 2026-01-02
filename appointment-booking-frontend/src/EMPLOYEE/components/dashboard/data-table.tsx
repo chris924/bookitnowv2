@@ -129,6 +129,7 @@ export const schema = z.object({
   endTime: z.string(),
   serviceName: z.string(),
   duration: z.string(),
+  isActive: z.boolean()
 })
 
 
@@ -151,7 +152,7 @@ function DraggableRow({ row }: { row: Row<z.infer<typeof schema>> }) {
       }}
     >
       {row.getVisibleCells().map((cell) => (
-        <TableCell key={cell.id}>
+        <TableCell key={cell.id} className={row.original.isActive ? "bg-green-500" : "bg-gray-500"}>
           {flexRender(cell.column.columnDef.cell, cell.getContext())}
         </TableCell>
       ))}
@@ -321,9 +322,9 @@ function handleCancelClick(id: number) {
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="w-32">
-          <DropdownMenuItem onClick={() => navigate(`company/employees/${createSlug(row.original.customerName, row.original.appointmentId)}`)}>Kezelés</DropdownMenuItem>
+          <DropdownMenuItem onClick={() => navigate(`employee/appointment/${row.original.appointmentId}`)}>Kezelés</DropdownMenuItem>
           <DropdownMenuSeparator />
-          <DropdownMenuItem variant="destructive" onClick={() => handleCancelClick(row.original.appointmentId)}>Törlés</DropdownMenuItem>
+          {row.original.isActive ? <DropdownMenuItem variant="destructive" onClick={() => handleCancelClick(row.original.appointmentId)}>Törlés</DropdownMenuItem> : ""}
         </DropdownMenuContent>
       </DropdownMenu>
     ),

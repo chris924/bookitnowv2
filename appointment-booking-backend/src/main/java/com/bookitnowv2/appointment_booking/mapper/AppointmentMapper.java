@@ -6,6 +6,10 @@ import com.bookitnowv2.appointment_booking.entity.dto.appointment.SlotResponseDT
 import com.bookitnowv2.appointment_booking.entity.dto.employee.EmployeeAppointmentTableDataResponseDTO;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+
 @Component
 public class AppointmentMapper {
 
@@ -15,6 +19,11 @@ public class AppointmentMapper {
         ServiceEntity serviceEntity = appointment.getService();
         Employee employee = serviceEntity.getEmployee();
         Company company = serviceEntity.getCompany();
+
+        LocalDateTime appointmentDateTime =
+                LocalDateTime.of(appointment.getDate(), appointment.getStartTime());
+
+        boolean isActive = appointmentDateTime.isAfter(LocalDateTime.now());
 
         return new AppointmentGetResponseDTO(
                 toSlotResponseDTO(appointment),
@@ -26,7 +35,8 @@ public class AppointmentMapper {
                 company.getName(),
                 company.getName(),
                 serviceEntity.getName(),
-                serviceEntity.getPrice()
+                serviceEntity.getPrice(),
+                isActive
         );
     }
 
@@ -62,9 +72,14 @@ public class AppointmentMapper {
             userAvatar = foundUser.getAvatarUrl();
         }
 
+        LocalDateTime appointmentDateTime =
+                LocalDateTime.of(appointment.getDate(), appointment.getStartTime());
+
+        boolean isActive = appointmentDateTime.isAfter(LocalDateTime.now());
+
 
         return new EmployeeAppointmentTableDataResponseDTO(appointment.getId(), userFullName, userAvatar, appointment.getDate(), appointment.getStartTime()
-        , appointment.getEndTime(), appointment.getService().getName(), appointment.getService().getDuration());
+        , appointment.getEndTime(), appointment.getService().getName(), appointment.getService().getDuration(), isActive);
     }
 
 

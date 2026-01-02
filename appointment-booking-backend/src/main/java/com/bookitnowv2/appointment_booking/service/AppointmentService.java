@@ -11,6 +11,7 @@ import com.bookitnowv2.appointment_booking.entity.dto.employee.EmployeeAppointme
 import com.bookitnowv2.appointment_booking.exception.CompanyNotFoundException;
 import com.bookitnowv2.appointment_booking.exception.EmployeeNotFoundException;
 import com.bookitnowv2.appointment_booking.exception.appointment.AppointmentNotBookedException;
+import com.bookitnowv2.appointment_booking.exception.appointment.AppointmentNotFoundException;
 import com.bookitnowv2.appointment_booking.exception.appointment.AppointmentNotFreeException;
 import com.bookitnowv2.appointment_booking.mapper.AppointmentMapper;
 import com.bookitnowv2.appointment_booking.repository.*;
@@ -73,6 +74,23 @@ public class AppointmentService {
     public Appointment getAppointmentById(Long appointmentId)
     {
         return appointmentRepository.findById(appointmentId).orElseThrow(() -> new RuntimeException("Error: Appointment not found by id."));
+    }
+
+    public AppointmentGetResponseDTO employeeGetAppointmentDetailsById(Long appointmentId)
+    {
+        Long authEmployeeId = SecurityUtils.getCurrentEmployeeId();
+
+        Employee foundEmployee = employeeRepository.findById(authEmployeeId).orElseThrow(() -> new EmployeeNotFoundException(authEmployeeId.toString()));
+
+        Appointment foundAppointment = appointmentRepository.findById(appointmentId).orElseThrow(() -> new AppointmentNotFoundException(appointmentId.toString()));
+
+        if(foundAppointment.getService().getEmployee() != foundEmployee)
+        {
+            throw new RuntimeException("Nem a te foglalásod!");
+        }
+
+        return AppointmentMapper.toGetDTO(foundAppointment);
+
     }
 
 

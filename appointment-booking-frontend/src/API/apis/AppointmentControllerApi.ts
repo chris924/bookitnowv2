@@ -43,6 +43,10 @@ export interface EmployeeCancelAppointmentRequest {
     appointmentId: number;
 }
 
+export interface GetEmployeeAppointmentDetailsRequest {
+    appointmentId: number;
+}
+
 export interface GetEmployeeMonthlyAppointmentsRequest {
     serviceId: number;
 }
@@ -193,6 +197,41 @@ export class AppointmentControllerApi extends runtime.BaseAPI {
      */
     async getCompanyPastAppointmentsByMonth(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<AppointmentsByDateResponseDTO>> {
         const response = await this.getCompanyPastAppointmentsByMonthRaw(initOverrides);
+        return await response.value();
+    }
+
+    /**
+     */
+    async getEmployeeAppointmentDetailsRaw(requestParameters: GetEmployeeAppointmentDetailsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<AppointmentGetResponseDTO>> {
+        if (requestParameters['appointmentId'] == null) {
+            throw new runtime.RequiredError(
+                'appointmentId',
+                'Required parameter "appointmentId" was null or undefined when calling getEmployeeAppointmentDetails().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+
+        let urlPath = `/appointments/employee/detailed-appointment/{appointmentId}`;
+        urlPath = urlPath.replace(`{${"appointmentId"}}`, encodeURIComponent(String(requestParameters['appointmentId'])));
+
+        const response = await this.request({
+            path: urlPath,
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => AppointmentGetResponseDTOFromJSON(jsonValue));
+    }
+
+    /**
+     */
+    async getEmployeeAppointmentDetails(requestParameters: GetEmployeeAppointmentDetailsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<AppointmentGetResponseDTO> {
+        const response = await this.getEmployeeAppointmentDetailsRaw(requestParameters, initOverrides);
         return await response.value();
     }
 

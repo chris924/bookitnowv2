@@ -37,4 +37,6 @@ public class AppointmentGetResponseDTO {
 
     private Integer servicePrice;
 
+    private Boolean isActive;
+
 }

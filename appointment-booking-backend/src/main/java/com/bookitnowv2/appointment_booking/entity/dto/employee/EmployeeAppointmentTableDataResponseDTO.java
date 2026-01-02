@@ -34,6 +34,9 @@ public class EmployeeAppointmentTableDataResponseDTO {
     @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     private Duration duration;
 
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
+    private Boolean isActive;
+
 
 
 }

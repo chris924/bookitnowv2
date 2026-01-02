@@ -67,6 +67,14 @@ public class AppointmentController {
         return ResponseEntity.ok("User added to appointment.");
     }
 
+    @GetMapping("/employee/detailed-appointment/{appointmentId}")
+    public ResponseEntity<AppointmentGetResponseDTO> getEmployeeAppointmentDetails(@PathVariable Long appointmentId)
+    {
+        AppointmentGetResponseDTO responseDTO = appointmentService.employeeGetAppointmentDetailsById(appointmentId);
+
+        return ResponseEntity.ok(responseDTO);
+    }
+
 
     @GetMapping("/user/booked-appointments")
     public ResponseEntity<List<AppointmentGetResponseDTO>> getUserBookedAppointments()

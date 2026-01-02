@@ -87,6 +87,12 @@ export interface AppointmentGetResponseDTO {
      * @memberof AppointmentGetResponseDTO
      */
     servicePrice?: number;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof AppointmentGetResponseDTO
+     */
+    isActive?: boolean;
 }
 
 /**
@@ -117,6 +123,7 @@ export function AppointmentGetResponseDTOFromJSONTyped(json: any, ignoreDiscrimi
         'name': json['name'] == null ? undefined : json['name'],
         'serviceName': json['serviceName'] == null ? undefined : json['serviceName'],
         'servicePrice': json['servicePrice'] == null ? undefined : json['servicePrice'],
+        'isActive': json['isActive'] == null ? undefined : json['isActive'],
     };
 }
 
@@ -141,6 +148,7 @@ export function AppointmentGetResponseDTOToJSONTyped(value?: AppointmentGetRespo
         'name': value['name'],
         'serviceName': value['serviceName'],
         'servicePrice': value['servicePrice'],
+        'isActive': value['isActive'],
     };
 }
 
