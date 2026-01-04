@@ -12,6 +12,8 @@ import { useEffect, useState } from "react";
 import ApproveDialogForm from "@/components/ui/own/ApproveDialogForm";
 import { AppointmentGetResponseDTO } from "@/API/models/AppointmentGetResponseDTO";
 import Loader from "@/components/ui/own/Loader";
+import { formatTime } from "@/lib/utils";
+import { formatDate } from "@fullcalendar/core/index.js";
 
 
 function getAppointmentStart(slot: { date: string | Date; start: string | undefined }) {
@@ -93,8 +95,8 @@ export default function UserBookedAppointmentsForm()
 
               <CardFooter className="flex justify-between items-center text-sm text-muted-foreground">
                 <p>
-                  {appointment.slotResponseDTO.date.toDateString()} • {appointment.slotResponseDTO.start}–{appointment.slotResponseDTO.end}
-                </p>
+                  {formatDate(appointment.slotResponseDTO.date)} • {formatTime(appointment.slotResponseDTO.start)}–{formatTime(appointment.slotResponseDTO.end)}
+0                </p>
                 <Button className="text-red-600 hover:text-red-800 font-medium" onClick={() => clickOnCancel(appointment)}>Foglalás törlése</Button>
               </CardFooter>
             </Card>
@@ -133,7 +135,7 @@ export default function UserBookedAppointmentsForm()
 
               <CardFooter className="flex justify-between items-center text-sm text-muted-foreground">
                 <p>
-                  {appointment.slotResponseDTO.date.toDateString()} • {appointment.slotResponseDTO.start}–{appointment.slotResponseDTO.end}
+                  {formatDate(appointment.slotResponseDTO.date.toString())} • {formatTime(appointment.slotResponseDTO.start)}–{formatTime(appointment.slotResponseDTO.end)}
                 </p>
               </CardFooter>
             </Card>

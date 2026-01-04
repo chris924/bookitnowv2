@@ -181,6 +181,7 @@ export function DataTable({
       showToast.success("Foglalás lemondva!");
       setShowCancelAppointment(false);
       setSelectedAppointmentId(0);
+      await queryClient.invalidateQueries({queryKey: ["employeeSectionCards"]});
       await queryClient.invalidateQueries({ queryKey: ["EmployeeAppointments"] });
       await queryClient.invalidateQueries({ queryKey: ["pastEmployeeAppointments"] });
     },
@@ -322,9 +323,8 @@ function handleCancelClick(id: number) {
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="w-32">
-          <DropdownMenuItem onClick={() => navigate(`employee/appointment/${row.original.appointmentId}`)}>Kezelés</DropdownMenuItem>
           <DropdownMenuSeparator />
-          {row.original.isActive ? <DropdownMenuItem variant="destructive" onClick={() => handleCancelClick(row.original.appointmentId)}>Törlés</DropdownMenuItem> : ""}
+          {row.original.isActive ? <DropdownMenuItem variant="destructive" onClick={() => handleCancelClick(row.original.appointmentId)}>Időpont lemondás</DropdownMenuItem> : ""}
         </DropdownMenuContent>
       </DropdownMenu>
     ),

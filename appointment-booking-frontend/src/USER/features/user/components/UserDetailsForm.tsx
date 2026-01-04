@@ -41,7 +41,7 @@ export default function UserDetailsForm()
   
    const fileInputRef = useRef<HTMLInputElement>(null);
 
-    const {user, loading } = useUserStore();
+    const {user} = useUserStore();
 
     const api = useApi();
 
