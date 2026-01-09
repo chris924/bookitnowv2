@@ -28,6 +28,8 @@ public class AppointmentMapper {
         return new AppointmentGetResponseDTO(
                 toSlotResponseDTO(appointment),
                 user.getId(),
+                user.getName(),
+                user.getAvatarUrl(),
                 employee.getId(),
                 employee.getName(),
                 employee.getAvatarUrl(),
@@ -36,7 +38,8 @@ public class AppointmentMapper {
                 company.getName(),
                 serviceEntity.getName(),
                 serviceEntity.getPrice(),
-                isActive
+                isActive,
+                serviceEntity.getDuration()
         );
     }
 

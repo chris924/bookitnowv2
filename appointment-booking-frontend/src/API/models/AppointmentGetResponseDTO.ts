@@ -41,6 +41,18 @@ export interface AppointmentGetResponseDTO {
     userId?: number;
     /**
      * 
+     * @type {string}
+     * @memberof AppointmentGetResponseDTO
+     */
+    userName?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof AppointmentGetResponseDTO
+     */
+    userAvatarUrl?: string;
+    /**
+     * 
      * @type {number}
      * @memberof AppointmentGetResponseDTO
      */
@@ -93,6 +105,12 @@ export interface AppointmentGetResponseDTO {
      * @memberof AppointmentGetResponseDTO
      */
     isActive?: boolean;
+    /**
+     * 
+     * @type {string}
+     * @memberof AppointmentGetResponseDTO
+     */
+    duration?: string;
 }
 
 /**
@@ -115,6 +133,8 @@ export function AppointmentGetResponseDTOFromJSONTyped(json: any, ignoreDiscrimi
         
         'slotResponseDTO': SlotResponseDTOFromJSON(json['slotResponseDTO']),
         'userId': json['userId'] == null ? undefined : json['userId'],
+        'userName': json['userName'] == null ? undefined : json['userName'],
+        'userAvatarUrl': json['userAvatarUrl'] == null ? undefined : json['userAvatarUrl'],
         'employeeId': json['employeeId'] == null ? undefined : json['employeeId'],
         'employeeName': json['employeeName'] == null ? undefined : json['employeeName'],
         'employeeAvatarUrl': json['employeeAvatarUrl'] == null ? undefined : json['employeeAvatarUrl'],
@@ -124,6 +144,7 @@ export function AppointmentGetResponseDTOFromJSONTyped(json: any, ignoreDiscrimi
         'serviceName': json['serviceName'] == null ? undefined : json['serviceName'],
         'servicePrice': json['servicePrice'] == null ? undefined : json['servicePrice'],
         'isActive': json['isActive'] == null ? undefined : json['isActive'],
+        'duration': json['duration'] == null ? undefined : json['duration'],
     };
 }
 
@@ -140,6 +161,8 @@ export function AppointmentGetResponseDTOToJSONTyped(value?: AppointmentGetRespo
         
         'slotResponseDTO': SlotResponseDTOToJSON(value['slotResponseDTO']),
         'userId': value['userId'],
+        'userName': value['userName'],
+        'userAvatarUrl': value['userAvatarUrl'],
         'employeeId': value['employeeId'],
         'employeeName': value['employeeName'],
         'employeeAvatarUrl': value['employeeAvatarUrl'],
@@ -149,6 +172,7 @@ export function AppointmentGetResponseDTOToJSONTyped(value?: AppointmentGetRespo
         'serviceName': value['serviceName'],
         'servicePrice': value['servicePrice'],
         'isActive': value['isActive'],
+        'duration': value['duration'],
     };
 }
 

@@ -2,10 +2,11 @@ import Loader from "@/components/ui/own/Loader";
 import { showToast } from "@/components/ui/own/ShowToast";
 import { useParams } from "react-router-dom";
 import { EmployeeAppointmentQuery } from "../hooks/query/EmployeeAppointmentQuery";
-import ManageAppointment from "../components/appointment-manage/ManageAppointment";
+import EmployeeDetailedAppointment from "../features/EmployeeDetailedAppointment";
 
 
-export default function EmployeeDedicatedAppointmentPage()
+
+export default function EmployeeDetailedAppointmentPage()
 {
 
     const { appointmentId } = useParams();
@@ -22,6 +23,6 @@ export default function EmployeeDedicatedAppointmentPage()
 
 
     return(
-        <ManageAppointment appointment={data} />
+        <EmployeeDetailedAppointment appointment={data} />
     )
 }

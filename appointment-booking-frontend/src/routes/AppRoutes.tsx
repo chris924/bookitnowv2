@@ -4,7 +4,7 @@ import CompanyStatisticsPage from '@/COMPANY/pages/CompanyStatisticsPage';
 import CompanyLayout from '@/components/layout/CompanyLayout';
 import EmployeeLayout from '@/components/layout/EmployeeLayout';
 import MainLayout from '@/components/layout/MainLayout';
-import EmployeeDedicatedAppointmentPage from '@/EMPLOYEE/pages/EmployeeDedicatedAppointmentPage';
+import EmployeeDedicatedAppointmentPage from '@/EMPLOYEE/pages/EmployeeDetailedAppointmentPage';
 import EmployeeHomePage from '@/EMPLOYEE/pages/EmployeeHomePage';
 import { useCompanyStore, useEmployeeStore, useUserStore } from '@/stores/AuthStore';
 import DedicatedEmployeePage from '@/USER/pages/DedicatedEmployeePage';

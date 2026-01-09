@@ -325,6 +325,7 @@ function handleCancelClick(id: number) {
         <DropdownMenuContent align="end" className="w-32">
           <DropdownMenuSeparator />
           {row.original.isActive ? <DropdownMenuItem variant="destructive" onClick={() => handleCancelClick(row.original.appointmentId)}>Időpont lemondás</DropdownMenuItem> : ""}
+          <DropdownMenuItem onClick={() => navigate(`employee/appointment/${row.original.appointmentId}`)}>Részletek</DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
     ),

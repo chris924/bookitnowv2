@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.sql.Timestamp;
+import java.time.Duration;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -20,6 +21,10 @@ public class AppointmentGetResponseDTO {
 
     @Nullable
     private Long userId;
+
+    private String userName;
+
+    private String userAvatarUrl;
 
     private Long employeeId;
 
@@ -38,5 +43,7 @@ public class AppointmentGetResponseDTO {
     private Integer servicePrice;
 
     private Boolean isActive;
+
+    private Duration duration;
 
 }
