@@ -10,6 +10,8 @@ import {
   IconInnerShadowTop,
   IconListDetails,
   IconReport,
+  IconScissors,
+  IconClock
 } from "@tabler/icons-react"
 
 import {
@@ -26,6 +28,7 @@ import { NavSecondary } from "./nav-secondary"
 import { NavUser } from "./nav-user"
 import { useEmployeeStore } from "@/stores/AuthStore"
 import { EmployeeDataTableResponseDTO } from "@/API/models/EmployeeDataTableResponseDTO"
+import { NavMain } from "./nav-main"
 
 const data = {
 
@@ -34,6 +37,16 @@ const data = {
       title: "Áttekintés",
       url: "",
       icon: IconDashboard,
+    },
+    {
+      title: "Szolgáltatások",
+      url: "company/statistics",
+      icon: IconScissors,
+    },
+    {
+      title: "Munkarend",
+      url: "company/statistics",
+      icon: IconClock,
     },
     {
       title: "Beállítások",
@@ -139,6 +152,7 @@ const { employee } = useEmployeeStore();
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent>
+        <NavMain items={data.navMain} />
          
         <NavDocuments items={data.documents} />
         <NavSecondary items={data.navSecondary} className="mt-auto" />
