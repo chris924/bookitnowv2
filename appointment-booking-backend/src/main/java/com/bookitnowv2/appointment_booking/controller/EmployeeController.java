@@ -5,6 +5,7 @@ import com.bookitnowv2.appointment_booking.configuration.SecurityUtils;
 import com.bookitnowv2.appointment_booking.elasticSearch.service.ElasticEmployeeService;
 import com.bookitnowv2.appointment_booking.entity.Company;
 import com.bookitnowv2.appointment_booking.entity.Employee;
+import com.bookitnowv2.appointment_booking.entity.EmployeeWorkingHours;
 import com.bookitnowv2.appointment_booking.entity.dto.employee.*;
 import com.bookitnowv2.appointment_booking.entity.dto.employee.SearchOptionDetails.SpecialistDTO;
 import com.bookitnowv2.appointment_booking.entity.dto.workhour.WorkhourAddDTO;
@@ -12,6 +13,7 @@ import com.bookitnowv2.appointment_booking.entity.dto.workhour.WorkhourEditDTO;
 import com.bookitnowv2.appointment_booking.exception.CompanyNotFoundException;
 import com.bookitnowv2.appointment_booking.exception.EmployeeNotFoundException;
 import com.bookitnowv2.appointment_booking.mapper.EmployeeMapper;
+import com.bookitnowv2.appointment_booking.mapper.EmployeeWorkingHoursMapper;
 import com.bookitnowv2.appointment_booking.repository.ICompanyRepository;
 import com.bookitnowv2.appointment_booking.repository.IEmployeeRepository;
 import com.bookitnowv2.appointment_booking.service.AppointmentService;
@@ -141,6 +143,22 @@ public class EmployeeController {
         EmployeePageForCompanyResponseDTO employeePageForCompanyResponseDTO = EmployeeMapper.toEmployeePageForCompanyResponseDTO(foundEmployee);
 
         return ResponseEntity.ok().body(employeePageForCompanyResponseDTO);
+
+    }
+
+
+    @GetMapping("/workhours")
+    @PreAuthorize("hasAnyRole('COMPANY','EMPLOYEE')")
+    public ResponseEntity<List<EmployeeWorkingHoursResponseDTO>> getEmployeeWorkhourData()
+    {
+        Long employeeId = SecurityUtils.getCurrentEmployeeId();
+        Employee foundEmployee = employeeService.getEmployeeById(employeeId);
+
+        List<EmployeeWorkingHours> workingHours = foundEmployee.getWorkingHours();
+
+        List<EmployeeWorkingHoursResponseDTO> dto = workingHours.stream().map((workingHour -> EmployeeWorkingHoursMapper.toEmployeeWorkingHoursResponseDTO(workingHour))).toList();
+
+        return ResponseEntity.ok(dto);
 
     }
 

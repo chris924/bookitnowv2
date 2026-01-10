@@ -1,12 +1,17 @@
 import { AppointmentGetResponseDTO } from "@/API"
-import EditSimpleData from "@/COMPANY/components/employee-components/employee-edit-simpledata"
 import { Button } from "@/components/ui/button"
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card"
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
 import { ItemContent, ItemTitle, ItemDescription, Item } from "@/components/ui/item"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import defaultAvatar from "../../../assets/default.jpg"
 import { Separator } from "@/components/ui/separator"
-import { formatDuration, formatTime } from "@/lib/utils"
+import { formatDuration, formatTime, handleAPIError } from "@/lib/utils"
+import { useState } from "react"
+import ApproveDialogForm from "@/components/ui/own/ApproveDialogForm"
+import { showToast } from "@/components/ui/own/ShowToast"
+import { useMutation, useQueryClient } from "@tanstack/react-query"
+import { useApi } from "@/hooks/useApi"
+import { useNavigate } from "react-router-dom"
 
 type EmployeeAppointmentDetailsCard = {
     appointment: AppointmentGetResponseDTO
@@ -14,9 +19,42 @@ type EmployeeAppointmentDetailsCard = {
 //TODO: Wrapper for the card sections? (Company-Employee etc.)
 export default function EmployeeAppointmentDetailsCard({appointment}: EmployeeAppointmentDetailsCard)
 {
-    console.log("APPOINTMENT: ", appointment);
+    const [showCancelAppointment, setShowCancelAppointment] = useState(false);
+     
+      const api = useApi();
+      const queryClient = useQueryClient();
+      const navigate = useNavigate();
+
+      const isFuture = new Date(appointment.slotResponseDTO.date) > new Date(); //TODO: Include time aswell, not just date
+
+ 
+
+     const {mutate, isPending, isError, error} = useMutation({
+    
+        mutationFn: (appointmentId: number) => api.appointment.employeeCancelAppointment({appointmentId}), //TODO: This mutation is in Employee/data-table aswell!!
+        onSuccess: async () => {
+          showToast.success("Foglalás lemondva!");
+          setShowCancelAppointment(false);
+          await queryClient.invalidateQueries({queryKey: ["employeeSectionCards"]});
+          await queryClient.invalidateQueries({ queryKey: ["EmployeeAppointments"] });
+          await queryClient.invalidateQueries({ queryKey: ["pastEmployeeAppointments"] });
+          await queryClient.invalidateQueries({queryKey: ["employeeDedicatedAppointment"]});
+        },
+        onError: (error) => handleAPIError(error)
+      })
+    
+    function cancelAppointment(appointmentId : number)
+    {
+      mutate(appointmentId);
+    }
+    
+    
+    function handleCancelClick(id: number) {
+      setShowCancelAppointment(true);
+    }
 
     return(
+      <>
            <Card className="p-6 md:p-8 shadow-md rounded-2xl h-auto">
       <CardHeader className="flex flex-col sm:flex-row items-center sm:items-start gap-4">
         <Avatar className="h-24 w-24">
@@ -49,7 +87,10 @@ export default function EmployeeAppointmentDetailsCard({appointment}: EmployeeAp
               <p><span className="font-medium">Szolgáltatás:</span> { appointment.serviceName || "-"}</p>
               <p><span className="font-medium">Ár:</span> {appointment.servicePrice + " Ft" || "-" }</p>
               <p><span className="font-medium">Időtartam: </span>{ formatDuration(appointment.duration) || "-"}</p>
+              <p><span className="font-medium">Státusz: </span>{ appointment.slotResponseDTO.status || "-"}</p>
             </div>
+           
+          { appointment.slotResponseDTO.status === "Booked" && <Button variant="destructive" onClick={() => handleCancelClick(appointment.slotResponseDTO.id)}>{isFuture ? "Foglalás lemondás": "Nem jött el"}</Button> }
             </div>
 
            
@@ -60,6 +101,20 @@ export default function EmployeeAppointmentDetailsCard({appointment}: EmployeeAp
     
     </CardContent>
         </Card>
+
+         {showCancelAppointment && (
+          <ApproveDialogForm
+          title="Foglalás lemondás"
+          description="Biztosan lemondod a foglalást? Az időpont újra foglalható lesz amíg a munakarend nincs átállítva!"
+          onButtonClick={() => cancelAppointment(appointment.slotResponseDTO.id)}
+          onOpenChange={setShowCancelAppointment}
+          open={showCancelAppointment}
+          buttonVariant="destructive"
+          isLoading={isPending}
+        />
+    )}
+
+    </>
   
 )
 

@@ -45,7 +45,7 @@ const data = {
     },
     {
       title: "Munkarend",
-      url: "company/statistics",
+      url: "/employee/workhours",
       icon: IconClock,
     },
     {

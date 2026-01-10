@@ -23,6 +23,7 @@ import type {
   EmployeeSearchOptionsResponseDTO,
   EmployeeSearchRequestDTO,
   EmployeeSectionCardsResponseDTO,
+  EmployeeWorkingHoursResponseDTO,
   SpecialistDTO,
   WorkhourAddDTO,
   WorkhourEditDTO,
@@ -44,6 +45,8 @@ import {
     EmployeeSearchRequestDTOToJSON,
     EmployeeSectionCardsResponseDTOFromJSON,
     EmployeeSectionCardsResponseDTOToJSON,
+    EmployeeWorkingHoursResponseDTOFromJSON,
+    EmployeeWorkingHoursResponseDTOToJSON,
     SpecialistDTOFromJSON,
     SpecialistDTOToJSON,
     WorkhourAddDTOFromJSON,
@@ -538,6 +541,33 @@ export class EmployeeControllerApi extends runtime.BaseAPI {
      */
     async getEmployeeSectionCardsData(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<EmployeeSectionCardsResponseDTO> {
         const response = await this.getEmployeeSectionCardsDataRaw(initOverrides);
+        return await response.value();
+    }
+
+    /**
+     */
+    async getEmployeeWorkhourDataRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<EmployeeWorkingHoursResponseDTO>>> {
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+
+        let urlPath = `/employees/workhours`;
+
+        const response = await this.request({
+            path: urlPath,
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(EmployeeWorkingHoursResponseDTOFromJSON));
+    }
+
+    /**
+     */
+    async getEmployeeWorkhourData(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<EmployeeWorkingHoursResponseDTO>> {
+        const response = await this.getEmployeeWorkhourDataRaw(initOverrides);
         return await response.value();
     }
 
