@@ -32,7 +32,7 @@ export default function EmployeeDetails({employeeData}: EmployeeDetails)
             </div>
     </div>
     {/* About Section */}
-        <div className=" flex flex-col text-gray-800 leading-relaxed">
+        <div className=" flex flex-col leading-relaxed">
             <p className="lg:text-3xl text-2xl p-2">Bemutatkozás</p>
             <p className="lg:text-lg text-lg">{employeeData.about}</p>
             </div>

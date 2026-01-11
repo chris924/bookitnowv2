@@ -178,6 +178,7 @@ const firstDayOfWeek = today.getDay();
       deleteAllSlotMutation.mutate({employeeSlug});
     }
 
+    const isMobile = window.innerWidth < 640;
 
     return(
       <>
@@ -189,8 +190,13 @@ const firstDayOfWeek = today.getDay();
         <Button variant="destructive" onClick={() => {setShowApproveDeleteAll(true)}}>Munakrendek törlése</Button>
       </div>
         <FullCalendar
+        windowResize={(arg) => {
+          arg.view.calendar.changeView(
+            window.innerWidth < 640 ? "timeGridDay" : "timeGridWeek"
+          )
+        }}
         plugins={[timeGridPlugin, dayGridPlugin, interactionPlugin]}
-        initialView="timeGridWeek"
+        initialView={isMobile ? "timeGridDay" : "timeGridWeek"}
         initialDate={new Date().toISOString().split('T')[0]}
         visibleRange={{
           start: todayStr, // today

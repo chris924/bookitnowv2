@@ -6,7 +6,7 @@ import Loader from "./Loader";
 type ApproveDialogFormProps = {
     title: string;
     description: string;
-    onButtonClick: (id?: string) => void;
+    onButtonClick: (id: string) => void;
     open?: boolean
     onOpenChange: (open: boolean) => void
     value?: string;
@@ -36,7 +36,7 @@ export default function ApproveDialogForm({title, description, onButtonClick, op
           <Button
             className="flex items-center gap-2 aria-label"
             disabled={isLoading}
-            onClick={() => onButtonClick(value)}
+            onClick={() =>  value && onButtonClick(value)}
             variant={buttonVariant}
           >
             {isLoading && <Loader/>}

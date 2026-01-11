@@ -26,18 +26,18 @@ export default function ProviderLoginFormWrapper({open, onOpenChange}: ProviderL
          <Switch
             checked={switchLoginForm}
             onCheckedChange={() => setSwitchLoginForm((prev) => !prev)}
-            className="flex items-center m-3"
+            className="flex items-center m-3 data-[state=checked]:bg-green-500 data-[state=unchecked]:bg-red-400"
         />
         </div>
 
         {/* Conditional form */}
-        <div className="min-h-[400px]">
+        
          {switchLoginForm ? (
           <ProviderEmployeeLoginForm onOpenChange={onOpenChange}/>
         ) : (
           <ProviderCompanyLoginForm onOpenChange={onOpenChange}/>
         )}
-        </div>
+
        
       </DialogContent>
     </Dialog>

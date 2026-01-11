@@ -67,14 +67,21 @@ export default function EmployeeBookingTable({ appointmentSlots }: EmployeeBooki
   const endDate = new Date(appointmentSlots?.lastDate!);
   endDate.setDate(endDate.getDate() + 1);
 
+  const isMobile = window.innerWidth < 640;
+
   
   return (
     <>
      
     <div>
       <FullCalendar
+       windowResize={(arg) => {
+          arg.view.calendar.changeView(
+            window.innerWidth < 640 ? "timeGridDay" : "timeGridWeek"
+          )
+        }}
         plugins={[timeGridPlugin, dayGridPlugin, interactionPlugin]}
-        initialView="timeGridWeek"
+        initialView={isMobile ? "timeGridDay" : "timeGridWeek"}
         initialDate={appointmentSlots?.firstDate || new Date().toISOString().split('T')[0]} // default to today if no date
         visibleRange={{
           start: new Date().toISOString().split("T")[0], // today
