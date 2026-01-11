@@ -9,6 +9,9 @@ import { useApi } from "@/hooks/useApi";
 import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
 import { showToast } from "./ShowToast";
+import { DialogTitle, DialogDescription } from "@radix-ui/react-dialog";
+import { Separator } from "@radix-ui/react-separator";
+import { DialogHeader, DialogFooter } from "../dialog";
 
 interface ProviderEmployeeLoginFormProps{
   onOpenChange: (open: boolean) => void;
@@ -44,7 +47,6 @@ export default function ProviderEmployeeLoginForm({onOpenChange}: ProviderEmploy
 
 
   return (
-    <div className={cn("flex flex-col gap-6")}>
       <Card>
         <CardHeader>
           <CardTitle>Alkalmazott belépés</CardTitle>
@@ -53,38 +55,48 @@ export default function ProviderEmployeeLoginForm({onOpenChange}: ProviderEmploy
         </CardHeader>
         <CardContent>
           <form>
-            <div className="flex flex-col gap-6">
-              <div className="grid gap-3">
-                <Label htmlFor="email">Email</Label>
+            <DialogHeader>
+              <DialogTitle className="text-center">Bejelentkezés</DialogTitle>
+            </DialogHeader>
+            <div className="grid gap-4 py-4">
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label className="text-right">E-mail</Label>
                 <Input
                   id="email"
-                  type="email"
-                  placeholder="m@example.com"
-                  required
+                  value={email}
+                  className="col-span-3"
                   onChange={(e) => setEmail(e.target.value)}
                 />
+              </div>          
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label className="text-right">Jelszó</Label>
+                <Input
+                  id="password"
+                  type="password"
+                  value={password}
+                  className="col-span-3"
+                  onChange={(e) => setPassword(e.target.value)}
+                />
               </div>
-              <div className="grid gap-3">
-                <div className="flex items-center">
-                  <Label htmlFor="password">Password</Label>
-                  <a
-                    href="#"
-                    className="ml-auto inline-block text-sm underline-offset-4 hover:underline"
-                  >
-                    Elfelejtett jelszó?
-                  </a>
-                </div>
-                <Input id="password" type="password" required  onChange={(e) => setPassword(e.target.value)}/>
-              </div>
-              <div className="flex flex-col gap-3">
-                <Button type="submit" className="w-full" onClick={(e) => handleSubmit(e)}>
-                  Belépés
-                </Button>
-              </div>
+            
+             
             </div>
-          </form>
+            <DialogFooter>
+              <Button
+                type="submit"
+                className="bg-blue-400"
+                onClick={(e) => handleSubmit(e)}
+              >
+                Belépés
+              </Button>
+               
+            </DialogFooter>
+            <Label className="flex justify-center p-4">Elfelejtett jelszó</Label>
+            <Separator />
+            <DialogDescription className="text-center m-5">
+            </DialogDescription>
+            </form>
         </CardContent>
       </Card>
-    </div>
   )
 }

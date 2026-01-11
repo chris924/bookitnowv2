@@ -17,11 +17,13 @@ export default function ProviderLoginFormWrapper({open, onOpenChange}: ProviderL
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[425px] p-6 md:p-8">
         {/* Switch toggle */}
-       <div className="flex items-center justify-end mb-4 gap-2">
-        <div>
-            {switchLoginForm ? "Alkalmazott belépés" : "Cég belépés"}
+       <div className="flex justify-center gap-2">
+        
+            {switchLoginForm ? "Alkalmazott belépés" : "Cég belépés"}   
+          
         </div>
-        <Switch
+        <div className="flex justify-center">
+         <Switch
             checked={switchLoginForm}
             onCheckedChange={() => setSwitchLoginForm((prev) => !prev)}
             className="flex items-center m-3"

@@ -9,6 +9,9 @@ import { useMutation } from "@tanstack/react-query";
 import { showToast } from "./ShowToast";
 import { useApi } from "@/hooks/useApi";
 import { LoginCompanyRequest } from "@/API";
+import { DialogTitle, DialogDescription } from "@radix-ui/react-dialog";
+import { Separator } from "@radix-ui/react-separator";
+import { DialogHeader, DialogFooter } from "../dialog";
 
 interface ProviderCompanyLoginFormProps{
   onOpenChange: (open: boolean) => void;
@@ -25,7 +28,6 @@ export default function ProviderCompanyLoginForm({onOpenChange} : ProviderCompan
 
     mutationFn: (request: LoginCompanyRequest) =>  api.companyAuth.loginCompany(request),
     onSuccess: async (data) => {
-      console.log('Logged in:', data);
       showToast.success("Sikeres bejelentkezés!");
       await useCompanyStore.getState().checkCompanyAuth();
       onOpenChange(false);
@@ -41,7 +43,7 @@ export default function ProviderCompanyLoginForm({onOpenChange} : ProviderCompan
 };
 
   return (
-    <div className={cn("flex flex-col gap-6")}>
+
       <Card>
         <CardHeader>
           <CardTitle>Cég belépés</CardTitle>
@@ -50,44 +52,55 @@ export default function ProviderCompanyLoginForm({onOpenChange} : ProviderCompan
         </CardHeader>
         <CardContent>
           <form>
-            <div className="flex flex-col gap-6">
-              <div className="grid gap-3">
-                <Label htmlFor="email">Email</Label>
+            <DialogHeader>
+              <DialogTitle className="text-center">Bejelentkezés</DialogTitle>
+            </DialogHeader>
+            <div className="grid gap-4 py-4">
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label className="text-right">E-mail</Label>
                 <Input
                   id="email"
-                  type="email"
-                  placeholder="m@example.com"
+                  value={email}
+                  className="col-span-3"
                   onChange={(e) => setEmail(e.target.value)}
-                  required
+                />
+              </div>          
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label className="text-right">Jelszó</Label>
+                <Input
+                  id="password"
+                  type="password"
+                  value={password}
+                  className="col-span-3"
+                  onChange={(e) => setPassword(e.target.value)}
                 />
               </div>
-              <div className="grid gap-3">
-                <div className="flex items-center">
-                  <Label htmlFor="password">Jelszó</Label>
-                  <a
+            
+             
+            </div>
+            <DialogFooter>
+              <Button
+                type="submit"
+                className="bg-blue-400"
+                onClick={(e) => handleSubmit(e)}
+              >
+                Belépés
+              </Button>
+               
+            </DialogFooter>
+            <Label className="flex justify-center p-2">Elfelejtett jelszó</Label>
+            <Separator />   
+            <DialogDescription className="text-center m-5">
+               <a
                     href="#"
                     className="ml-auto inline-block text-sm underline-offset-4 hover:underline"
                   >
-                    Elfelejtett jelszó?
-                  </a>
-                </div>
-                <Input id="password" type="password" onChange={(e) => setPassword(e.target.value)} required />
-              </div>
-              <div className="flex flex-col gap-3">
-                <Button type="submit" className="w-full" onClick={(e) => handleSubmit(e)}>
-                  Bejelentkezés
-                </Button>
-              </div>
-            </div>
-            <div className="mt-4 text-center text-sm">
-              Új fiók nyitása?{" "}
-              <a href="#" className="underline underline-offset-4">
-                Igénylés
-              </a>
-            </div>
-          </form>
+                    Fiók Igénylés
+              </a> 
+            </DialogDescription>
+            </form>
         </CardContent>
       </Card>
-    </div>
+    
   )
 }

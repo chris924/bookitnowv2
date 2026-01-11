@@ -38,6 +38,20 @@ export default function GuestRegisterForm()
    }
 
 
+   const isPasswordMatch =
+  password.length > 0 &&
+  password === passwordConfirm;
+
+  const isEmailMatch =
+    email.length > 0 &&
+    email === emailConfirm;
+
+  const isFormValid =
+    name.trim() !== "" &&
+    username.trim() !== "" &&
+    isPasswordMatch &&
+    isEmailMatch;
+
  return (
     <>
             <DialogHeader>
@@ -100,12 +114,24 @@ export default function GuestRegisterForm()
                   onChange={(e) => setPasswordConfirm(e.target.value)}
                 />
               </div>
+              {passwordConfirm && !isPasswordMatch && (
+              <p className="text-sm text-red-500">
+                A jelszavak nem egyeznek
+              </p>
+            )}
+
+            {emailConfirm && !isEmailMatch && (
+              <p className="text-sm text-red-500">
+                Az email címek nem egyeznek
+              </p>
+            )}
             </div>
             <DialogFooter>
               <Button
                 type="submit"
                 className="bg-blue-400"
                 onClick={(e) => handleRegister(e)}
+                disabled={!isFormValid}
               >
                 Regisztráció
               </Button>

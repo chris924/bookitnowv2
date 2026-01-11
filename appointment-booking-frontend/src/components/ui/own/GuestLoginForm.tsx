@@ -11,6 +11,7 @@ import { showToast } from "./ShowToast";
 import { useApi } from "@/hooks/useApi";
 import { LoginUserRequest } from "@/API";
 import { handleAPIError } from "@/lib/utils";
+import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "../card";
 
 type GuestLoginFormProps = {
   setView: React.Dispatch<React.SetStateAction<"login" | "register">>;
@@ -55,6 +56,14 @@ export default function GuestLoginForm({setView, onOpenChange, showApproveBookin
 
     return (
          <>
+          <Card>
+        <CardHeader>
+          <CardTitle>Felhasználó belépés</CardTitle>
+          <CardDescription>
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <form>
             <DialogHeader>
               <DialogTitle className="text-center">Bejelentkezés</DialogTitle>
             </DialogHeader>
@@ -67,8 +76,7 @@ export default function GuestLoginForm({setView, onOpenChange, showApproveBookin
                   className="col-span-3"
                   onChange={(e) => setEmail(e.target.value)}
                 />
-              </div>
-              <Label className="text-right">Elfelejtett jelszó</Label>
+              </div>          
               <div className="grid grid-cols-4 items-center gap-4">
                 <Label className="text-right">Jelszó</Label>
                 <Input
@@ -79,6 +87,8 @@ export default function GuestLoginForm({setView, onOpenChange, showApproveBookin
                   onChange={(e) => setPassword(e.target.value)}
                 />
               </div>
+            
+             
             </div>
             <DialogFooter>
               <Button
@@ -88,14 +98,21 @@ export default function GuestLoginForm({setView, onOpenChange, showApproveBookin
               >
                 Belépés
               </Button>
+               
             </DialogFooter>
+            <Label className="text-right p-2">Elfelejtett jelszó</Label>
             <Separator />
-            <DialogDescription className="text-center">
+            <DialogDescription className="text-center m-5">
               Ha még nem regisztráltál
             </DialogDescription>
+            <div className="flex justify-center">
             <Button variant="secondary" onClick={() => setView("register")}>
               Regisztráció
             </Button>
+            </div>
+            </form>
+        </CardContent>
+      </Card>
           </>
     )
 }
