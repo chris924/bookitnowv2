@@ -1,4 +1,3 @@
-import * as React from "react"
 import {
   IconCamera,
   IconChartBar,
@@ -27,7 +26,6 @@ import { NavDocuments } from "./nav-documents"
 import { NavSecondary } from "./nav-secondary"
 import { NavUser } from "./nav-user"
 import { useEmployeeStore } from "@/stores/AuthStore"
-import { EmployeeDataTableResponseDTO } from "@/API/models/EmployeeDataTableResponseDTO"
 import { NavMain } from "./nav-main"
 import { createSlug } from "@/lib/utils"
 import { showToast } from "@/components/ui/own/ShowToast"
