@@ -1,4 +1,4 @@
-import { EditServiceFromCompanyRequest, ServiceEntityModifyRequestDTO, ServiceGetResponseDTO } from "@/API"
+import { DeleteServiceRequest, EditServiceRequest, ServiceEntityModifyRequestDTO, ServiceGetResponseDTO } from "@/API"
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import ApproveDialogForm from "@/components/ui/own/ApproveDialogForm";
@@ -10,6 +10,7 @@ import { handleAPIError } from "@/lib/utils";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Trash2Icon } from "lucide-react";
 import { useState } from "react";
+import { useParams } from "react-router-dom";
 
 
 interface EmployeeEditServicesProps {
@@ -31,8 +32,16 @@ export default function EmployeeEditServices({service, open, onOpenChange}: Empl
     const [approveDeleteForm, setApproveDeleteForm] = useState(false);
 
 
+    const { employeeSlug } = useParams();
+
+    if(!employeeSlug){
+        showToast.error("Rossz URL cím.")
+        return;
+    }
+
+
      const editServiceMutation = useMutation({
-      mutationFn: (requestData: EditServiceFromCompanyRequest) => api.serviceEntity.editServiceFromCompany(requestData),
+      mutationFn: (requestData: EditServiceRequest) => api.serviceEntity.editService(requestData),
       onSuccess: async (response) => {
         showToast.success(response)
         onOpenChange(false);
@@ -43,12 +52,17 @@ export default function EmployeeEditServices({service, open, onOpenChange}: Empl
         await queryClient.invalidateQueries({ queryKey: ["pastAppointments"] });
 
         await queryClient.invalidateQueries({queryKey: ["employeeDataForCompany"]});
+
+        await queryClient.invalidateQueries({queryKey: ["EmployeeServices"]});
+
       },
       onError: (error) => handleAPIError(error)
     })
 
     function handleEditClick()
     {
+      if(employeeSlug)
+      {
       const serviceEntityModifyRequestDTO: ServiceEntityModifyRequestDTO = {
         name: serviceName,
         duration: serviceDuration,
@@ -57,18 +71,21 @@ export default function EmployeeEditServices({service, open, onOpenChange}: Empl
       }
 
 
-      const requestData: EditServiceFromCompanyRequest ={
+      const requestData: EditServiceRequest ={
+        employeeSlug: employeeSlug,
         serviceEntityId: service.id,
         serviceEntityModifyRequestDTO: serviceEntityModifyRequestDTO
       }
 
       editServiceMutation.mutate(requestData);
+      }
+
     }
 
 
     const deleteServiceMutation = useMutation({
 
-      mutationFn: (serviceEntityId: number) => api.serviceEntity.deleteServiceFromCompany({serviceEntityId}),
+      mutationFn: (deleteServiceRequest: DeleteServiceRequest) => api.serviceEntity.deleteService(deleteServiceRequest),
       onSuccess: async (response) => {
         showToast.success(response)
         setApproveDeleteForm(false);
@@ -80,14 +97,27 @@ export default function EmployeeEditServices({service, open, onOpenChange}: Empl
         await queryClient.invalidateQueries({ queryKey: ["pastAppointments"] });
 
         await queryClient.invalidateQueries({queryKey: ["employeeDataForCompany"]});
+
+        await queryClient.invalidateQueries({queryKey: ["EmployeeServices"]});
+
       },
       onError: (error) => handleAPIError(error)
     })
 
 
-    function handleDeleteClick(serviceEntityId: string)
+    function handleDeleteClick()
     {
-      deleteServiceMutation.mutate(Number(serviceEntityId));
+      if(employeeSlug)
+      {
+        const deleteRequest: DeleteServiceRequest = {
+        serviceEntityId: service.id,
+        employeeSlug: employeeSlug
+      }
+
+
+      deleteServiceMutation.mutate(deleteRequest);
+      }
+      
     }
 
     return(
@@ -137,7 +167,7 @@ export default function EmployeeEditServices({service, open, onOpenChange}: Empl
       </SheetContent>
     </Sheet>
     
-    {approveDeleteForm && <ApproveDialogForm open={approveDeleteForm} onOpenChange={setApproveDeleteForm} key={service.id} title="Szolgáltatás törlés" buttonVariant="destructive" description="Biztosan szeretnéd törölni a szolgáltatást?" value={service.id.toString()} onButtonClick={handleDeleteClick} isLoading={deleteServiceMutation.isPending}/>}
+    {approveDeleteForm && <ApproveDialogForm open={approveDeleteForm} onOpenChange={setApproveDeleteForm} key={service.id} title="Szolgáltatás törlés" buttonVariant="destructive" description="Biztosan szeretnéd törölni a szolgáltatást? A szolgáltatáshoz kapcsolódó adatok is törlődni fognak(foglalások,bevétel)." value={service.id.toString()} onButtonClick={handleDeleteClick} isLoading={deleteServiceMutation.isPending}/>}
 
     </>
     )

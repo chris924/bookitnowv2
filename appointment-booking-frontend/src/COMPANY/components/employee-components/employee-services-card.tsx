@@ -1,14 +1,12 @@
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ItemContent, ItemTitle, ItemDescription, Item } from "@/components/ui/item";
-import { Mail, Phone, Medal, Star, Book, ChevronDown, Scissors } from "lucide-react";
-import EditSimpleData from "./employee-edit-simpledata";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { Scissors } from "lucide-react";
 import { ServiceGetResponseDTO } from "@/API";
 import { Separator } from "@/components/ui/separator";
 import { useState } from "react";
 import EmployeeEditServices from "./employee-edit-services";
+import EmployeeAddService from "./employee-add-service";
 
 interface EmployeeServicesCardProps {
     services:  ServiceGetResponseDTO[]
@@ -18,14 +16,17 @@ interface EmployeeServicesCardProps {
 export default function EmployeeServicesCard({services}: EmployeeServicesCardProps)
 {
     const [openEditServices, setOpenEditServices] = useState(false);
+    const [openAddServices, setOpenAddServices] = useState(false);
 
       return(
        
           <Card className="p-6 md:p-8 shadow-md rounded-2xl h-auto">
       <CardHeader className="flex flex-col sm:flex-row items-center sm:items-start gap-4">
         <div className="flex-1 text-center sm:text-left">
-          <CardTitle className="text-3xl font-semibold">Szolgáltatások</CardTitle>
+          <CardTitle className="text-3xl font-semibold" >Szolgáltatások</CardTitle>
+          
         </div>
+        <Button variant="default" className="bg-green-500" onClick={()=> setOpenAddServices(true)}>Szolgáltatás létrehozás</Button>
       </CardHeader>
       <Separator className="" />
          <CardContent className="grid grid-cols-1 sm:grid-cols-2 h-auto sm:gap-4 sm:text-xl">
@@ -61,6 +62,8 @@ export default function EmployeeServicesCard({services}: EmployeeServicesCardPro
       </Item>
     </div>
     ))}
+
+    {openAddServices && <EmployeeAddService open={openAddServices} onOpenChange={setOpenAddServices} />}
     
  
   </CardContent>

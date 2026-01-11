@@ -29,10 +29,26 @@ import { NavUser } from "./nav-user"
 import { useEmployeeStore } from "@/stores/AuthStore"
 import { EmployeeDataTableResponseDTO } from "@/API/models/EmployeeDataTableResponseDTO"
 import { NavMain } from "./nav-main"
+import { createSlug } from "@/lib/utils"
+import { showToast } from "@/components/ui/own/ShowToast"
 
-const data = {
 
-  navMain: [
+
+
+export function getSidebarData() {
+
+  const { employee } = useEmployeeStore();
+
+  if (!employee || !employee.id || !employee.name) {
+    showToast.error("No employee found");
+    return null;
+  }
+
+  const employeeSlug = createSlug(employee.name, employee.id);
+
+  return {
+
+     navMain: [
     {
       title: "Áttekintés",
       url: "",
@@ -40,7 +56,7 @@ const data = {
     },
     {
       title: "Szolgáltatások",
-      url: "company/statistics",
+      url: `employee/services/${employeeSlug}`,
       icon: IconScissors,
     },
     {
@@ -126,13 +142,17 @@ const data = {
       icon: IconReport,
     },
   ],
+  }
+
 }
-
-
 
 export function AppSidebar({ ...props }) {
 
 const { employee } = useEmployeeStore();
+
+const data = getSidebarData();
+
+if(!data) return;
 
   return (
     <Sidebar collapsible="offcanvas" {...props}>

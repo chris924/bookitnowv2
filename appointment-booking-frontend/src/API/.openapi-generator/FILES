@@ -31,6 +31,7 @@ models/EmployeeSectionCardsResponseDTO.ts
 models/EmployeeWorkingHoursResponseDTO.ts
 models/LoginDTO.ts
 models/PlaceDTO.ts
+models/ServiceEntityAddRequestDTO.ts
 models/ServiceEntityModifyRequestDTO.ts
 models/ServiceGetResponseDTO.ts
 models/SlotResponseDTO.ts

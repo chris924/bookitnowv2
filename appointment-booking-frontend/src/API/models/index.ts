@@ -21,6 +21,7 @@ export * from './EmployeeSectionCardsResponseDTO';
 export * from './EmployeeWorkingHoursResponseDTO';
 export * from './LoginDTO';
 export * from './PlaceDTO';
+export * from './ServiceEntityAddRequestDTO';
 export * from './ServiceEntityModifyRequestDTO';
 export * from './ServiceGetResponseDTO';
 export * from './SlotResponseDTO';

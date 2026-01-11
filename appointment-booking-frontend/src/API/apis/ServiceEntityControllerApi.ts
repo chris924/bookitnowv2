@@ -15,19 +15,32 @@
 
 import * as runtime from '../runtime';
 import type {
+  ServiceEntityAddRequestDTO,
   ServiceEntityModifyRequestDTO,
+  ServiceGetResponseDTO,
 } from '../models/index';
 import {
+    ServiceEntityAddRequestDTOFromJSON,
+    ServiceEntityAddRequestDTOToJSON,
     ServiceEntityModifyRequestDTOFromJSON,
     ServiceEntityModifyRequestDTOToJSON,
+    ServiceGetResponseDTOFromJSON,
+    ServiceGetResponseDTOToJSON,
 } from '../models/index';
 
-export interface DeleteServiceFromCompanyRequest {
-    serviceEntityId: number;
+export interface AddServiceRequest {
+    employeeSlug: string;
+    serviceEntityAddRequestDTO: ServiceEntityAddRequestDTO;
 }
 
-export interface EditServiceFromCompanyRequest {
+export interface DeleteServiceRequest {
     serviceEntityId: number;
+    employeeSlug: string;
+}
+
+export interface EditServiceRequest {
+    serviceEntityId: number;
+    employeeSlug: string;
     serviceEntityModifyRequestDTO: ServiceEntityModifyRequestDTO;
 }
 
@@ -38,11 +51,67 @@ export class ServiceEntityControllerApi extends runtime.BaseAPI {
 
     /**
      */
-    async deleteServiceFromCompanyRaw(requestParameters: DeleteServiceFromCompanyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<string>> {
+    async addServiceRaw(requestParameters: AddServiceRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<string>> {
+        if (requestParameters['employeeSlug'] == null) {
+            throw new runtime.RequiredError(
+                'employeeSlug',
+                'Required parameter "employeeSlug" was null or undefined when calling addService().'
+            );
+        }
+
+        if (requestParameters['serviceEntityAddRequestDTO'] == null) {
+            throw new runtime.RequiredError(
+                'serviceEntityAddRequestDTO',
+                'Required parameter "serviceEntityAddRequestDTO" was null or undefined when calling addService().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
+
+
+        let urlPath = `/services/{employeeSlug}/create`;
+        urlPath = urlPath.replace(`{${"employeeSlug"}}`, encodeURIComponent(String(requestParameters['employeeSlug'])));
+
+        const response = await this.request({
+            path: urlPath,
+            method: 'POST',
+            headers: headerParameters,
+            query: queryParameters,
+            body: ServiceEntityAddRequestDTOToJSON(requestParameters['serviceEntityAddRequestDTO']),
+        }, initOverrides);
+
+        if (this.isJsonMime(response.headers.get('content-type'))) {
+            return new runtime.JSONApiResponse<string>(response);
+        } else {
+            return new runtime.TextApiResponse(response) as any;
+        }
+    }
+
+    /**
+     */
+    async addService(requestParameters: AddServiceRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<string> {
+        const response = await this.addServiceRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     */
+    async deleteServiceRaw(requestParameters: DeleteServiceRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<string>> {
         if (requestParameters['serviceEntityId'] == null) {
             throw new runtime.RequiredError(
                 'serviceEntityId',
-                'Required parameter "serviceEntityId" was null or undefined when calling deleteServiceFromCompany().'
+                'Required parameter "serviceEntityId" was null or undefined when calling deleteService().'
+            );
+        }
+
+        if (requestParameters['employeeSlug'] == null) {
+            throw new runtime.RequiredError(
+                'employeeSlug',
+                'Required parameter "employeeSlug" was null or undefined when calling deleteService().'
             );
         }
 
@@ -51,8 +120,9 @@ export class ServiceEntityControllerApi extends runtime.BaseAPI {
         const headerParameters: runtime.HTTPHeaders = {};
 
 
-        let urlPath = `/services/{serviceEntityId}`;
+        let urlPath = `/services/{employeeSlug}/delete/{serviceEntityId}`;
         urlPath = urlPath.replace(`{${"serviceEntityId"}}`, encodeURIComponent(String(requestParameters['serviceEntityId'])));
+        urlPath = urlPath.replace(`{${"employeeSlug"}}`, encodeURIComponent(String(requestParameters['employeeSlug'])));
 
         const response = await this.request({
             path: urlPath,
@@ -70,25 +140,32 @@ export class ServiceEntityControllerApi extends runtime.BaseAPI {
 
     /**
      */
-    async deleteServiceFromCompany(requestParameters: DeleteServiceFromCompanyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<string> {
-        const response = await this.deleteServiceFromCompanyRaw(requestParameters, initOverrides);
+    async deleteService(requestParameters: DeleteServiceRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<string> {
+        const response = await this.deleteServiceRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
     /**
      */
-    async editServiceFromCompanyRaw(requestParameters: EditServiceFromCompanyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<string>> {
+    async editServiceRaw(requestParameters: EditServiceRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<string>> {
         if (requestParameters['serviceEntityId'] == null) {
             throw new runtime.RequiredError(
                 'serviceEntityId',
-                'Required parameter "serviceEntityId" was null or undefined when calling editServiceFromCompany().'
+                'Required parameter "serviceEntityId" was null or undefined when calling editService().'
+            );
+        }
+
+        if (requestParameters['employeeSlug'] == null) {
+            throw new runtime.RequiredError(
+                'employeeSlug',
+                'Required parameter "employeeSlug" was null or undefined when calling editService().'
             );
         }
 
         if (requestParameters['serviceEntityModifyRequestDTO'] == null) {
             throw new runtime.RequiredError(
                 'serviceEntityModifyRequestDTO',
-                'Required parameter "serviceEntityModifyRequestDTO" was null or undefined when calling editServiceFromCompany().'
+                'Required parameter "serviceEntityModifyRequestDTO" was null or undefined when calling editService().'
             );
         }
 
@@ -99,8 +176,9 @@ export class ServiceEntityControllerApi extends runtime.BaseAPI {
         headerParameters['Content-Type'] = 'application/json';
 
 
-        let urlPath = `/services/{serviceEntityId}`;
+        let urlPath = `/services/{employeeSlug}/edit/{serviceEntityId}`;
         urlPath = urlPath.replace(`{${"serviceEntityId"}}`, encodeURIComponent(String(requestParameters['serviceEntityId'])));
+        urlPath = urlPath.replace(`{${"employeeSlug"}}`, encodeURIComponent(String(requestParameters['employeeSlug'])));
 
         const response = await this.request({
             path: urlPath,
@@ -119,8 +197,35 @@ export class ServiceEntityControllerApi extends runtime.BaseAPI {
 
     /**
      */
-    async editServiceFromCompany(requestParameters: EditServiceFromCompanyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<string> {
-        const response = await this.editServiceFromCompanyRaw(requestParameters, initOverrides);
+    async editService(requestParameters: EditServiceRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<string> {
+        const response = await this.editServiceRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     */
+    async getEmployeeServicesRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<ServiceGetResponseDTO>>> {
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+
+        let urlPath = `/services/employee/services`;
+
+        const response = await this.request({
+            path: urlPath,
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(ServiceGetResponseDTOFromJSON));
+    }
+
+    /**
+     */
+    async getEmployeeServices(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<ServiceGetResponseDTO>> {
+        const response = await this.getEmployeeServicesRaw(initOverrides);
         return await response.value();
     }
 
