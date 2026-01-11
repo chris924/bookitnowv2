@@ -1,10 +1,12 @@
 import CompanyDetailedEmployeePage from '@/COMPANY/pages/CompanyDetailedEmployeePage';
+import CompanyHelpPage from '@/COMPANY/pages/CompanyHelpPage';
 import CompanyHomePage from '@/COMPANY/pages/CompanyHomePage';
 import CompanyStatisticsPage from '@/COMPANY/pages/CompanyStatisticsPage';
 import CompanyLayout from '@/components/layout/CompanyLayout';
 import EmployeeLayout from '@/components/layout/EmployeeLayout';
 import MainLayout from '@/components/layout/MainLayout';
 import EmployeeDedicatedAppointmentPage from '@/EMPLOYEE/pages/EmployeeDetailedAppointmentPage';
+import EmployeeHelpPage from '@/EMPLOYEE/pages/EmployeeHelpPage';
 import EmployeeHomePage from '@/EMPLOYEE/pages/EmployeeHomePage';
 import EmployeeServicesPage from '@/EMPLOYEE/pages/EmployeeServicesPage';
 import EmployeeWorkhourPage from '@/EMPLOYEE/pages/EmployeeWorkhourPage';
@@ -39,10 +41,12 @@ export default function AppRoutes() {
         <Route path="/employee/appointment/:appointmentId" element={<EmployeeDedicatedAppointmentPage />} />
         <Route path="/employee/workhours" element={<EmployeeWorkhourPage/>} />
         <Route path="/employee/services/:employeeSlug"element={<EmployeeServicesPage />} />
+        <Route path="/employee/help" element={<EmployeeHelpPage/>} />
         <Route path="/user/:slug" element={<DedicatedUserPage />} />
         <Route path="/user/:slug/booked-appointments" element={<UserBookedAppointmentsPage />} />
         <Route path="/company/statistics" element={<CompanyStatisticsPage/>}/>
         <Route path="/company/employees/:employeeSlug" element={<CompanyDetailedEmployeePage />} />
+        <Route path="/company/help" element={<CompanyHelpPage />} />
       </Route>
     </Routes>
   );

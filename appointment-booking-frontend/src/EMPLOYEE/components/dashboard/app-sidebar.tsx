@@ -124,7 +124,7 @@ export function getSidebarData() {
   navSecondary: [
     {
       title: "Segítség",
-      url: "#",
+      url: "/employee/help",
       icon: IconHelp,
     }
   ],

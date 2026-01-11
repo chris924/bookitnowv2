@@ -105,7 +105,7 @@ const data = {
   navSecondary: [
     {
       title: "Segítség",
-      url: "#",
+      url: "/company/help",
       icon: IconHelp,
     }
   ],
