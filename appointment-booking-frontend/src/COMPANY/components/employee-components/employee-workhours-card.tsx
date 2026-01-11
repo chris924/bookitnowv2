@@ -32,7 +32,7 @@ function toFullCalendarEvent(slot: EmployeeWorkingHoursResponseDTO, _index: numb
 
   const event = {
     id: slot.id.toString(),
-    title: "TEST1",
+    title: slot.name,
     start: `${dateStr}T${startTime}`,
     end: `${dateStr}T${endTime}`,
     color: "red",
@@ -139,13 +139,14 @@ const firstDayOfWeek = today.getDay();
       onError: (error) => handleAPIError(error)
     });
 
-    function handleEditSlot(newStartValue: string, newEndValue: string)
+    function handleEditSlot(newSlotName: string, newStartValue: string, newEndValue: string)
     {
       if(selectedEvent)
       {
         const workhourId = parseInt(selectedEvent?.id);
 
         const workhourEditDTO = {
+          slotName: newSlotName,
           newStart: newStartValue,
           newEnd: newEndValue
         }
@@ -161,9 +162,10 @@ const firstDayOfWeek = today.getDay();
       deleteSlotMutation.mutate({employeeSlug, workhourId})
     }
 
-    function handleAddSlot(data:  {fromDate: string, toDate: string, startTime: string, endTime: string; })
+    function handleAddSlot(data:  {slotName: string, fromDate: string, toDate: string, startTime: string, endTime: string; })
     {
       const workhourAddDTO = {
+        slotName: data.slotName,
         start: data.startTime,
         end: data.endTime,
         fromDate: data.fromDate,

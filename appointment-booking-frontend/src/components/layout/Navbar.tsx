@@ -27,22 +27,43 @@ export default function Navbar()
     return (
 
         <>
-  <header className="flex justify-between items-center px-4 py-4">
-  <div className="text-m md:text-4xl font-semibold text-center justify-center">Appointment</div>
-  <div className="flex items-center gap-x-1.5 md:gap-x-4">
-  {userLoading ? (
-    <Loader/>
-  ) : isAuthenticated && user ? (
-    <DropdownUser user={user} />
-  ) : (
-    <Button onClick={() => setOpenLogin(true)} className="bg-green-200">Belépés</Button>
-  )}
-  {!isAuthenticated && location.pathname == "/" && <Button variant={"secondary"} onClick={() => setShowProviderWrapper(true)}>Szolgáltatóknak</Button>}
-  <GuestLogin open={openLogin} onOpenChange={setOpenLogin} />
-  <ProviderLoginFormWrapper open={showProviderWrapper} onOpenChange={setShowProviderWrapper}/>
-  <ModeToggle />
-</div>
-  
+  <header className="flex justify-between items-center px-4 py-2 md:py-4">
+  {/* Title */}
+  <h1 className="text-lg md:text-4xl font-semibold leading-tight">
+    Appointment
+  </h1>
+
+  {/* Right-side buttons / user */}
+  <div className="flex items-center gap-x-2 md:gap-x-4">
+    {userLoading ? (
+      <Loader />
+    ) : isAuthenticated && user ? (
+      <DropdownUser user={user} />
+    ) : (
+      <Button onClick={() => setOpenLogin(true)} className="bg-green-200">
+        Belépés
+      </Button>
+    )}
+
+    {!isAuthenticated && location.pathname === "/" && (
+      <Button
+        variant="secondary"
+        onClick={() => setShowProviderWrapper(true)}
+      >
+        Szolgáltatóknak
+      </Button>
+    )}
+
+    {/* Modals */}
+    <GuestLogin open={openLogin} onOpenChange={setOpenLogin} />
+    <ProviderLoginFormWrapper
+      open={showProviderWrapper}
+      onOpenChange={setShowProviderWrapper}
+    />
+
+    {/* Dark/Light Mode Toggle */}
+    <ModeToggle />
+  </div>
 </header>
 </>
 

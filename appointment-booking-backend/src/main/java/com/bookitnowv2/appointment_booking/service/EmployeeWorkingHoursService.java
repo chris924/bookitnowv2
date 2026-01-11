@@ -58,7 +58,7 @@ public class EmployeeWorkingHoursService
     }
 
     @Transactional
-    public void edit(Long id, Employee employee, LocalTime newStart, LocalTime newEnd)
+    public void edit(Long id, String slotName, Employee employee, LocalTime newStart, LocalTime newEnd)
     {
         EmployeeWorkingHours wh = employeeWorkingHoursRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Working hour not found"));
@@ -67,6 +67,7 @@ public class EmployeeWorkingHoursService
             throw new RuntimeException("Not allowed");
         }
 
+        wh.setName(slotName);
         wh.setStartTime(newStart);
         wh.setEndTime(newEnd);
 
@@ -104,6 +105,7 @@ public class EmployeeWorkingHoursService
             }
 
             EmployeeWorkingHours newWorkingHour = new EmployeeWorkingHours();
+            newWorkingHour.setName(workhourAddDTO.getSlotName());
             newWorkingHour.setEmployee(employee);
             newWorkingHour.setDate(date);
             newWorkingHour.setStartTime(workhourAddDTO.getStart());

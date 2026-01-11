@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button"
+import { ModeToggle } from "@/components/ui/own/theme-toggle"
 import { Separator } from "@/components/ui/separator"
 import { SidebarTrigger } from "@/components/ui/sidebar"
 
@@ -12,6 +13,11 @@ export function SiteHeader() {
           className="mx-2 data-[orientation=vertical]:h-4"
         />
         <h1 className="text-base font-medium">Áttekintés</h1>
+       
+       
+      </div>
+       <div className="flex justify-end">
+         <ModeToggle />
       </div>
     </header>
   )

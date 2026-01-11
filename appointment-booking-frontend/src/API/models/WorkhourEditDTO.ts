@@ -24,6 +24,12 @@ export interface WorkhourEditDTO {
      * @type {string}
      * @memberof WorkhourEditDTO
      */
+    slotName?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof WorkhourEditDTO
+     */
     newStart?: string;
     /**
      * 
@@ -50,6 +56,7 @@ export function WorkhourEditDTOFromJSONTyped(json: any, ignoreDiscriminator: boo
     }
     return {
         
+        'slotName': json['slotName'] == null ? undefined : json['slotName'],
         'newStart': json['newStart'] == null ? undefined : json['newStart'],
         'newEnd': json['newEnd'] == null ? undefined : json['newEnd'],
     };
@@ -66,6 +73,7 @@ export function WorkhourEditDTOToJSONTyped(value?: WorkhourEditDTO | null, ignor
 
     return {
         
+        'slotName': value['slotName'],
         'newStart': value['newStart'],
         'newEnd': value['newEnd'],
     };

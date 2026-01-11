@@ -182,7 +182,7 @@ public class EmployeeController {
         Long employeeId = employeeService.getEmployeeIdFromSlug(employeeSlug);
         Employee foundEmployee = employeeService.getEmployeeById(employeeId);
 
-        employeeWorkingHoursService.edit(workhourId, foundEmployee, workhourEditDTO.getNewStart(), workhourEditDTO.getNewEnd());
+        employeeWorkingHoursService.edit(workhourId, workhourEditDTO.getSlotName(), foundEmployee, workhourEditDTO.getNewStart(), workhourEditDTO.getNewEnd());
 
         return ResponseEntity.ok().body("Esemény módosítva");
     }

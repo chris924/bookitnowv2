@@ -23,6 +23,9 @@ public class EmployeeWorkingHoursResponseDTO {
     private LocalDate date;
 
     @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
+    private String name;
+
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     private LocalTime startTime;
     @Schema(requiredMode = Schema.RequiredMode.REQUIRED)
     private LocalTime endTime;

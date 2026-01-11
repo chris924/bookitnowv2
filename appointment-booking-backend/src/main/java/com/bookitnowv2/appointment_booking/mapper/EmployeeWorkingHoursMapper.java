@@ -10,7 +10,7 @@ public class EmployeeWorkingHoursMapper {
     public static EmployeeWorkingHoursResponseDTO toEmployeeWorkingHoursResponseDTO(EmployeeWorkingHours employeeWorkingHours)
     {
 
-        return new EmployeeWorkingHoursResponseDTO(employeeWorkingHours.getId(), employeeWorkingHours.getDate(), employeeWorkingHours.getStartTime(), employeeWorkingHours.getEndTime());
+        return new EmployeeWorkingHoursResponseDTO(employeeWorkingHours.getId(), employeeWorkingHours.getDate(), employeeWorkingHours.getName(), employeeWorkingHours.getStartTime(), employeeWorkingHours.getEndTime());
     }
 
 

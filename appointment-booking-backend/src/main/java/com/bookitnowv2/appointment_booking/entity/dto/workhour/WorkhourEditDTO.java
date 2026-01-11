@@ -8,6 +8,7 @@ import java.time.LocalTime;
 @Getter
 @Setter
 public class WorkhourEditDTO {
+    private String slotName;
     private LocalTime newStart;
     private LocalTime newEnd;
 }

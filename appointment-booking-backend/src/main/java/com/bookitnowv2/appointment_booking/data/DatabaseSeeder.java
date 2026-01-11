@@ -152,7 +152,7 @@ public class DatabaseSeeder implements CommandLineRunner {
 
 
 
-        EmployeeWorkingHours employee1WorkingHours = createEmployeeWorkingHours(employee1, LocalTime.of(8, 0), LocalTime.of(23, 0), LocalDate.now().plusDays(1) );
+        EmployeeWorkingHours employee1WorkingHours = createEmployeeWorkingHours(employee1, "TEST", LocalTime.of(8, 0), LocalTime.of(23, 0), LocalDate.now().plusDays(1) );
 
 
 
@@ -289,11 +289,12 @@ public class DatabaseSeeder implements CommandLineRunner {
         return appointment;
     }
 
-    private EmployeeWorkingHours createEmployeeWorkingHours(Employee employee, LocalTime startTime, LocalTime endTime, LocalDate date)
+    private EmployeeWorkingHours createEmployeeWorkingHours(Employee employee, String name, LocalTime startTime, LocalTime endTime, LocalDate date)
     {
         EmployeeWorkingHours employeeWorkingHours = new EmployeeWorkingHours();
 
         employeeWorkingHours.setEmployee(employee);
+        employeeWorkingHours.setName(name);
         employeeWorkingHours.setStartTime(startTime);
         employeeWorkingHours.setEndTime(endTime);
         employeeWorkingHours.setDate(date);

@@ -8,7 +8,7 @@ import { useState } from "react";
 import ApproveDialogForm from "./ApproveDialogForm";
 
 type EditSlotDialogFormProps = {
-    onEditClick: (newStartValue: string, newEndValue: string) => void;
+    onEditClick: (newSlotName: string, newStartValue: string, newEndValue: string) => void;
     onDeleteClick: (event: EventImpl) => void;
     open?: boolean
     onOpenChange: (open: boolean) => void
@@ -22,6 +22,7 @@ export default function EditSlotDialogForm({onEditClick, onDeleteClick, open, on
 
   const [deleteClicked, setDeleteClicked] = useState(false);
 
+  const [newSlotName, setNewSlotName] = useState("");
   const [newStartValue, setNewStartValue] = useState("08:00:00");
   const [newEndValue, setNewEndValue] = useState("16:00:00");
 
@@ -37,6 +38,11 @@ export default function EditSlotDialogForm({onEditClick, onDeleteClick, open, on
 
       {/* INPUT FIELDS */}
       <div className="flex flex-row gap-4 mt-4">
+        <div className="flex flex-col gap-2 flex-1">
+          <Label>Munkarend neve</Label>
+          <Input type="text" onChange={(e) => setNewSlotName(e.target.value)} />
+        </div>
+
         <div className="flex flex-col gap-2 flex-1">
           <Label>Kezdés</Label>
           <Input type="time" step="1" defaultValue="08:00:00" onChange={(e) => setNewStartValue(e.target.value)} />
@@ -54,7 +60,7 @@ export default function EditSlotDialogForm({onEditClick, onDeleteClick, open, on
           <Button
             className="w-full"
             disabled={isLoading}
-            onClick={() => onEditClick(newStartValue, newEndValue )}
+            onClick={() => onEditClick(newSlotName, newStartValue, newEndValue )}
           >
             {isLoading && <Loader />}
             {isLoading ? "Folyamatban..." : "Módosítás"}

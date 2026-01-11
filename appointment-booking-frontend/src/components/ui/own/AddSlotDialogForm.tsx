@@ -10,7 +10,7 @@ type AddSlotDialogFormProps = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   isLoading: boolean;
-  onSubmit: (data: {fromDate: string; toDate: string; startTime: string;endTime: string; }) => void;
+  onSubmit: (data: {slotName:string, fromDate: string; toDate: string; startTime: string;endTime: string; }) => void;
 };
 
 
@@ -21,6 +21,7 @@ export default function AddSlotDialogForm({open, onOpenChange, onSubmit, isLoadi
     const [date, setDate] = useState(today);
 
 
+  const [slotName, setSlotName] = useState("");
   const [fromDate, setFromDate] = useState(today);
   const [toDate, setToDate] = useState(today);
   const [startTime, setStartTime] = useState("08:00");
@@ -30,6 +31,7 @@ export default function AddSlotDialogForm({open, onOpenChange, onSubmit, isLoadi
 
   const handleSubmit = () => {
     onSubmit({
+      slotName,
       fromDate,
       toDate,
       startTime,
@@ -48,6 +50,15 @@ export default function AddSlotDialogForm({open, onOpenChange, onSubmit, isLoadi
 
         {/* INPUTS */}
         <div className="flex flex-col gap-4 mt-4">
+
+          <div className="flex flex-col gap-2">
+            <Label>Munkarend név</Label>
+            <Input
+              type="text"
+              value={slotName}
+              onChange={(e) => setSlotName(e.target.value)}
+            />
+          </div>
 
           <div className="flex flex-col gap-2">
             <Label>Munkarend kezdő dátum</Label>

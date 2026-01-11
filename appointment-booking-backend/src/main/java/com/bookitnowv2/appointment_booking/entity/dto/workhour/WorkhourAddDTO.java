@@ -11,6 +11,8 @@ import java.time.LocalTime;
 @Getter
 @Setter
 public class WorkhourAddDTO {
+    private String slotName;
+
     private LocalTime start;
     private LocalTime end;
 

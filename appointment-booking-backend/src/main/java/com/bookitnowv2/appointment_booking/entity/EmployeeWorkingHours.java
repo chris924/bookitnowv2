@@ -22,6 +22,8 @@ public class EmployeeWorkingHours {
     @Column(name="employee_working_hours_id")
     private Long id;
 
+    private String name;
+
     @ManyToOne
     private Employee employee;
 

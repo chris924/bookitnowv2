@@ -15,7 +15,7 @@ export default function GuestLogin({ open, onOpenChange, showApproveBooking  }: 
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[425px] p-6 md:p-8">
+      <DialogContent className="sm:max-w-[425px] h-auto max-h-[80vh] p-6 md:p-8 overflow-y-auto">
         {view === "login" ? (
           <GuestLoginForm setView={setView} onOpenChange={onOpenChange} showApproveBooking={showApproveBooking}/>
         ) : (

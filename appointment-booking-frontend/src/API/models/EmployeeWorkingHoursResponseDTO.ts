@@ -36,6 +36,12 @@ export interface EmployeeWorkingHoursResponseDTO {
      * @type {string}
      * @memberof EmployeeWorkingHoursResponseDTO
      */
+    name: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof EmployeeWorkingHoursResponseDTO
+     */
     startTime: string;
     /**
      * 
@@ -51,6 +57,7 @@ export interface EmployeeWorkingHoursResponseDTO {
 export function instanceOfEmployeeWorkingHoursResponseDTO(value: object): value is EmployeeWorkingHoursResponseDTO {
     if (!('id' in value) || value['id'] === undefined) return false;
     if (!('date' in value) || value['date'] === undefined) return false;
+    if (!('name' in value) || value['name'] === undefined) return false;
     if (!('startTime' in value) || value['startTime'] === undefined) return false;
     if (!('endTime' in value) || value['endTime'] === undefined) return false;
     return true;
@@ -68,6 +75,7 @@ export function EmployeeWorkingHoursResponseDTOFromJSONTyped(json: any, ignoreDi
         
         'id': json['id'],
         'date': json['date'],
+        'name': json['name'],
         'startTime': json['startTime'],
         'endTime': json['endTime'],
     };
@@ -86,6 +94,7 @@ export function EmployeeWorkingHoursResponseDTOToJSONTyped(value?: EmployeeWorki
         
         'id': value['id'],
         'date': value['date'],
+        'name': value['name'],
         'startTime': value['startTime'],
         'endTime': value['endTime'],
     };
