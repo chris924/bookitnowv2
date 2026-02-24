@@ -97,6 +97,12 @@ export interface EmployeeGetResponseDTO {
      * @memberof EmployeeGetResponseDTO
      */
     experience?: EmployeeGetResponseDTOExperienceEnum;
+    /**
+     * 
+     * @type {string}
+     * @memberof EmployeeGetResponseDTO
+     */
+    status?: EmployeeGetResponseDTOStatusEnum;
 }
 
 
@@ -109,6 +115,15 @@ export const EmployeeGetResponseDTOExperienceEnum = {
     Master: 'MASTER'
 } as const;
 export type EmployeeGetResponseDTOExperienceEnum = typeof EmployeeGetResponseDTOExperienceEnum[keyof typeof EmployeeGetResponseDTOExperienceEnum];
+
+/**
+ * @export
+ */
+export const EmployeeGetResponseDTOStatusEnum = {
+    Active: 'ACTIVE',
+    NotActive: 'NOT_ACTIVE'
+} as const;
+export type EmployeeGetResponseDTOStatusEnum = typeof EmployeeGetResponseDTOStatusEnum[keyof typeof EmployeeGetResponseDTOStatusEnum];
 
 
 /**
@@ -141,6 +156,7 @@ export function EmployeeGetResponseDTOFromJSONTyped(json: any, ignoreDiscriminat
         'email': json['email'] == null ? undefined : json['email'],
         'phoneNumber': json['phoneNumber'] == null ? undefined : json['phoneNumber'],
         'experience': json['experience'] == null ? undefined : json['experience'],
+        'status': json['status'] == null ? undefined : json['status'],
     };
 }
 
@@ -168,6 +184,7 @@ export function EmployeeGetResponseDTOToJSONTyped(value?: EmployeeGetResponseDTO
         'email': value['email'],
         'phoneNumber': value['phoneNumber'],
         'experience': value['experience'],
+        'status': value['status'],
     };
 }
 

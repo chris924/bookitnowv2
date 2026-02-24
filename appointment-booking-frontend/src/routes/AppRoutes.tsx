@@ -8,6 +8,7 @@ import MainLayout from '@/components/layout/MainLayout';
 import EmployeeDedicatedAppointmentPage from '@/EMPLOYEE/pages/EmployeeDetailedAppointmentPage';
 import EmployeeHelpPage from '@/EMPLOYEE/pages/EmployeeHelpPage';
 import EmployeeHomePage from '@/EMPLOYEE/pages/EmployeeHomePage';
+import EmployeeOptionsPage from '@/EMPLOYEE/pages/EmployeeOptionsPage';
 import EmployeeServicesPage from '@/EMPLOYEE/pages/EmployeeServicesPage';
 import EmployeeWorkhourPage from '@/EMPLOYEE/pages/EmployeeWorkhourPage';
 import { useCompanyStore, useEmployeeStore, useUserStore } from '@/stores/AuthStore';
@@ -42,6 +43,7 @@ export default function AppRoutes() {
         <Route path="/employee/workhours" element={<EmployeeWorkhourPage/>} />
         <Route path="/employee/services/:employeeSlug"element={<EmployeeServicesPage />} />
         <Route path="/employee/help" element={<EmployeeHelpPage/>} />
+        <Route path="/employee/options" element={<EmployeeOptionsPage/>}/>
         <Route path="/user/:slug" element={<DedicatedUserPage />} />
         <Route path="/user/:slug/booked-appointments" element={<UserBookedAppointmentsPage />} />
         <Route path="/company/statistics" element={<CompanyStatisticsPage/>}/>

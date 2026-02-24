@@ -2,18 +2,23 @@ package com.bookitnowv2.appointment_booking.controller;
 
 
 import com.bookitnowv2.appointment_booking.configuration.SecurityUtils;
+import com.bookitnowv2.appointment_booking.elasticSearch.repository.IElasticEmployeeRepository;
 import com.bookitnowv2.appointment_booking.elasticSearch.service.ElasticEmployeeService;
 import com.bookitnowv2.appointment_booking.entity.Company;
 import com.bookitnowv2.appointment_booking.entity.Employee;
 import com.bookitnowv2.appointment_booking.entity.EmployeeWorkingHours;
+import com.bookitnowv2.appointment_booking.entity.User;
 import com.bookitnowv2.appointment_booking.entity.dto.employee.*;
 import com.bookitnowv2.appointment_booking.entity.dto.employee.SearchOptionDetails.SpecialistDTO;
+import com.bookitnowv2.appointment_booking.entity.dto.user.UserDetailsChangeDTO;
 import com.bookitnowv2.appointment_booking.entity.dto.workhour.WorkhourAddDTO;
 import com.bookitnowv2.appointment_booking.entity.dto.workhour.WorkhourEditDTO;
 import com.bookitnowv2.appointment_booking.exception.CompanyNotFoundException;
 import com.bookitnowv2.appointment_booking.exception.EmployeeNotFoundException;
+import com.bookitnowv2.appointment_booking.exception.UserNotFoundException;
 import com.bookitnowv2.appointment_booking.mapper.EmployeeMapper;
 import com.bookitnowv2.appointment_booking.mapper.EmployeeWorkingHoursMapper;
+import com.bookitnowv2.appointment_booking.mapper.UserMapper;
 import com.bookitnowv2.appointment_booking.repository.ICompanyRepository;
 import com.bookitnowv2.appointment_booking.repository.IEmployeeRepository;
 import com.bookitnowv2.appointment_booking.service.AppointmentService;
@@ -39,10 +44,11 @@ public class EmployeeController {
     private final ServiceEntityService serviceEntityService;
     private final EmployeeWorkingHoursService employeeWorkingHoursService;
     private final ElasticEmployeeService elasticEmployeeService;
+    private final IElasticEmployeeRepository elasticEmployeeRepository;
     private final EmployeeMapper employeeMapper;
     private final ICompanyRepository companyRepository;
 
-    public EmployeeController(EmployeeService employeeService, ICompanyRepository companyRepository, IEmployeeRepository employeeRepository, ElasticEmployeeService elasticEmployeeService, ServiceEntityService serviceEntityService, AppointmentService appointmentService, EmployeeWorkingHoursService employeeWorkingHoursService, EmployeeMapper employeeMapper)
+    public EmployeeController(EmployeeService employeeService, ICompanyRepository companyRepository, IElasticEmployeeRepository elasticEmployeeRepository, IEmployeeRepository employeeRepository, ElasticEmployeeService elasticEmployeeService, ServiceEntityService serviceEntityService, AppointmentService appointmentService, EmployeeWorkingHoursService employeeWorkingHoursService, EmployeeMapper employeeMapper)
     {
         this.employeeService = employeeService;
         this.elasticEmployeeService = elasticEmployeeService;
@@ -52,6 +58,7 @@ public class EmployeeController {
         this.employeeMapper = employeeMapper;
         this.employeeRepository = employeeRepository;
         this.companyRepository = companyRepository;
+        this.elasticEmployeeRepository = elasticEmployeeRepository;
     }
 
     @GetMapping("/most-rated")
@@ -160,6 +167,53 @@ public class EmployeeController {
 
         return ResponseEntity.ok(dto);
 
+    }
+
+    @PutMapping("/change-employee-details")
+    @PreAuthorize("hasAnyRole('EMPLOYEE')")
+    public ResponseEntity<EmployeeGetResponseDTO> changeEmployeeDetails(@Valid @RequestBody EmployeeDetailsChangeDTO employeeDetailsChangeDTO)
+    {
+        Long authUserId = SecurityUtils.getCurrentEmployeeId();
+        Employee foundEmployee = employeeRepository.findById(authUserId).orElseThrow(() -> new UserNotFoundException(authUserId.toString()));
+
+        boolean changedData = false;
+        if(!employeeDetailsChangeDTO.getName().isEmpty())
+        {
+            foundEmployee.setName(employeeDetailsChangeDTO.getName());
+            changedData = true;
+        }
+        if(!employeeDetailsChangeDTO.getUsername().isEmpty())
+        {
+            foundEmployee.setUsername(employeeDetailsChangeDTO.getUsername());
+            changedData = true;
+        }
+        if(!employeeDetailsChangeDTO.getPhoneNumber().isEmpty())
+        {
+            foundEmployee.setPhoneNumber(employeeDetailsChangeDTO.getPhoneNumber());
+            changedData = true;
+        }
+        if(!employeeDetailsChangeDTO.getEmail().isEmpty())
+        {
+            foundEmployee.setEmail(employeeDetailsChangeDTO.getEmail());
+            changedData = true;
+        }
+        if (employeeDetailsChangeDTO.getStatus() != null &&
+                employeeDetailsChangeDTO.getStatus() != foundEmployee.getStatus()) {
+
+            foundEmployee.setStatus(employeeDetailsChangeDTO.getStatus());
+            changedData = true;
+        }
+        if(!employeeDetailsChangeDTO.getAbout().isEmpty())
+        {
+            foundEmployee.setAbout(employeeDetailsChangeDTO.getAbout());
+            changedData = true;
+        }
+        if(changedData)
+        {
+            employeeRepository.save(foundEmployee);
+            elasticEmployeeRepository.save(EmployeeMapper.toDocument(foundEmployee));
+        }
+        return ResponseEntity.ok(EmployeeMapper.toGetDTO(foundEmployee));
     }
 
 
