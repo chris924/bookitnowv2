@@ -313,7 +313,17 @@ function handleCancelClick(id: number) {
       columnFilters,
       pagination,
     },
-    getRowId: (row) => row.appointmentId.toString(),
+    getRowId: (row) => {
+      if (!row?.appointmentId) {
+        console.error("Missing appointmentId", row);
+        return crypto.randomUUID();
+      }
+      else
+      {
+        console.log("SIMPLE ROW: ", row)
+      }
+      return row.appointmentId.toString();
+    },
     enableRowSelection: true,
     onRowSelectionChange: setRowSelection,
     onSortingChange: setSorting,
