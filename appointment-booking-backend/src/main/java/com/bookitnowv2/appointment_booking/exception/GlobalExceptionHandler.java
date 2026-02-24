@@ -58,5 +58,12 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponseDTO);
     }
 
+    @ExceptionHandler(EmployeeNotActiveException.class)
+    public ResponseEntity<ErrorResponseDTO> handleEmployeeNotActiveException(EmployeeNotActiveException ex)
+    {
+        ErrorResponseDTO errorResponseDTO = new ErrorResponseDTO(ex.getCode(), ex.getMessage(), HttpStatus.FORBIDDEN.value());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponseDTO);
+    }
+
 
 }

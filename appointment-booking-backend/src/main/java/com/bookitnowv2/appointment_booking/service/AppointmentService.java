@@ -9,6 +9,7 @@ import com.bookitnowv2.appointment_booking.entity.dto.company.AppointmentsByDate
 import com.bookitnowv2.appointment_booking.entity.dto.employee.EmployeeAppointmentTableDataResponseDTO;
 import com.bookitnowv2.appointment_booking.entity.dto.employee.EmployeeAppointmentsByDateResponseDTO;
 import com.bookitnowv2.appointment_booking.exception.CompanyNotFoundException;
+import com.bookitnowv2.appointment_booking.exception.EmployeeNotActiveException;
 import com.bookitnowv2.appointment_booking.exception.EmployeeNotFoundException;
 import com.bookitnowv2.appointment_booking.exception.appointment.AppointmentNotBookedException;
 import com.bookitnowv2.appointment_booking.exception.appointment.AppointmentNotFoundException;
@@ -16,6 +17,7 @@ import com.bookitnowv2.appointment_booking.exception.appointment.AppointmentNotF
 import com.bookitnowv2.appointment_booking.mapper.AppointmentMapper;
 import com.bookitnowv2.appointment_booking.repository.*;
 import com.bookitnowv2.appointment_booking.utils.AppointmentStatus;
+import com.bookitnowv2.appointment_booking.utils.EmployeeStatus;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -179,6 +181,12 @@ public class AppointmentService {
         appointmentSlotResponseDTO.setSlotResponseDTO(slotResponseDTOList);
 
         Employee employee = serviceEntity.getEmployee();
+
+        if(employee.getStatus() == EmployeeStatus.NOT_ACTIVE)
+        {
+            throw new EmployeeNotActiveException("Alkalmazott nem aktív!");
+        }
+
         List<EmployeeWorkingHours> employeeWorkingHours = employee.getWorkingHours();
 
         List<Appointment> existingAppointments = appointmentRepository.findUpcomingAppointments(serviceEntity.getId(), LocalDate.now(), LocalTime.now(), AppointmentStatus.FREE);
