@@ -11,7 +11,6 @@ export * from './CompanySectionCardsResponseDTO';
 export * from './EmployeeAppointmentTableDataResponseDTO';
 export * from './EmployeeAppointmentsByDateResponseDTO';
 export * from './EmployeeDataTableResponseDTO';
-export * from './EmployeeDetailsChangeDTO';
 export * from './EmployeeEditDataRequestDTO';
 export * from './EmployeeGetResponseDTO';
 export * from './EmployeePageForCompanyResponseDTO';

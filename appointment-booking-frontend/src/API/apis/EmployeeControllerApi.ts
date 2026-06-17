@@ -17,9 +17,7 @@ import * as runtime from '../runtime';
 import type {
   EmployeeAppointmentsByDateResponseDTO,
   EmployeeDataTableResponseDTO,
-  EmployeeDetailsChangeDTO,
   EmployeeEditDataRequestDTO,
-  EmployeeGetResponseDTO,
   EmployeePageForCompanyResponseDTO,
   EmployeePageResponseDTO,
   EmployeeSearchOptionsResponseDTO,
@@ -35,12 +33,8 @@ import {
     EmployeeAppointmentsByDateResponseDTOToJSON,
     EmployeeDataTableResponseDTOFromJSON,
     EmployeeDataTableResponseDTOToJSON,
-    EmployeeDetailsChangeDTOFromJSON,
-    EmployeeDetailsChangeDTOToJSON,
     EmployeeEditDataRequestDTOFromJSON,
     EmployeeEditDataRequestDTOToJSON,
-    EmployeeGetResponseDTOFromJSON,
-    EmployeeGetResponseDTOToJSON,
     EmployeePageForCompanyResponseDTOFromJSON,
     EmployeePageForCompanyResponseDTOToJSON,
     EmployeePageResponseDTOFromJSON,
@@ -60,10 +54,6 @@ import {
     WorkhourEditDTOFromJSON,
     WorkhourEditDTOToJSON,
 } from '../models/index';
-
-export interface ChangeEmployeeDetailsRequest {
-    employeeDetailsChangeDTO: EmployeeDetailsChangeDTO;
-}
 
 export interface CreateEmployeeWorkhourRequest {
     employeeSlug: string;
@@ -114,43 +104,6 @@ export interface GetSearchEmployeeRequest {
  * 
  */
 export class EmployeeControllerApi extends runtime.BaseAPI {
-
-    /**
-     */
-    async changeEmployeeDetailsRaw(requestParameters: ChangeEmployeeDetailsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<EmployeeGetResponseDTO>> {
-        if (requestParameters['employeeDetailsChangeDTO'] == null) {
-            throw new runtime.RequiredError(
-                'employeeDetailsChangeDTO',
-                'Required parameter "employeeDetailsChangeDTO" was null or undefined when calling changeEmployeeDetails().'
-            );
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        headerParameters['Content-Type'] = 'application/json';
-
-
-        let urlPath = `/employees/change-employee-details`;
-
-        const response = await this.request({
-            path: urlPath,
-            method: 'PUT',
-            headers: headerParameters,
-            query: queryParameters,
-            body: EmployeeDetailsChangeDTOToJSON(requestParameters['employeeDetailsChangeDTO']),
-        }, initOverrides);
-
-        return new runtime.JSONApiResponse(response, (jsonValue) => EmployeeGetResponseDTOFromJSON(jsonValue));
-    }
-
-    /**
-     */
-    async changeEmployeeDetails(requestParameters: ChangeEmployeeDetailsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<EmployeeGetResponseDTO> {
-        const response = await this.changeEmployeeDetailsRaw(requestParameters, initOverrides);
-        return await response.value();
-    }
 
     /**
      */

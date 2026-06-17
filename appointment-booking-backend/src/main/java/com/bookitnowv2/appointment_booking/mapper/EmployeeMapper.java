@@ -41,7 +41,8 @@ public class EmployeeMapper {
                 employee.getAvatarUrl(),
                 employee.getEmail(),
                 employee.getPhoneNumber(),
-                employee.getExperience()
+                employee.getExperience(),
+                employee.getStatus()
         );
     }
 

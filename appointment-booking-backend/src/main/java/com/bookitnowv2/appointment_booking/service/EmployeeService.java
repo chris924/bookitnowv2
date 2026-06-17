@@ -52,9 +52,9 @@ public class EmployeeService {
 
     public EmployeeSearchOptionsResponseDTO searchByCriteria(EmployeeSearchRequestDTO dto)
     {
-        String name = blankToNull(dto.getName());
-        String company = blankToNull(dto.getCompany());
-        String place = blankToNull(dto.getPlace());
+        String name = normalize(dto.getName());
+        String company = normalize(dto.getCompany());
+        String place = normalize(dto.getPlace());
 
         List<Employee> employees = employeeRepository.searchByCriteria(name, company, place);
 
@@ -82,9 +82,9 @@ public class EmployeeService {
         return result;
     }
 
-    private static String blankToNull(String value)
+    private static String normalize(String value)
     {
-        return (value == null || value.isBlank()) ? null : value;
+        return (value == null) ? "" : value.trim();
     }
 
     public Employee getEmployeeByEmail(String email)

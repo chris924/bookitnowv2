@@ -21,7 +21,6 @@ models/CompanySectionCardsResponseDTO.ts
 models/EmployeeAppointmentTableDataResponseDTO.ts
 models/EmployeeAppointmentsByDateResponseDTO.ts
 models/EmployeeDataTableResponseDTO.ts
-models/EmployeeDetailsChangeDTO.ts
 models/EmployeeEditDataRequestDTO.ts
 models/EmployeeGetResponseDTO.ts
 models/EmployeePageForCompanyResponseDTO.ts
