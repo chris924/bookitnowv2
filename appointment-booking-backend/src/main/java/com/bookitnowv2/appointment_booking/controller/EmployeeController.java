@@ -2,7 +2,6 @@ package com.bookitnowv2.appointment_booking.controller;
 
 
 import com.bookitnowv2.appointment_booking.configuration.SecurityUtils;
-import com.bookitnowv2.appointment_booking.elasticSearch.service.ElasticEmployeeService;
 import com.bookitnowv2.appointment_booking.entity.Company;
 import com.bookitnowv2.appointment_booking.entity.Employee;
 import com.bookitnowv2.appointment_booking.entity.EmployeeWorkingHours;
@@ -26,7 +25,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -38,14 +36,12 @@ public class EmployeeController {
     private final IEmployeeRepository employeeRepository;
     private final ServiceEntityService serviceEntityService;
     private final EmployeeWorkingHoursService employeeWorkingHoursService;
-    private final ElasticEmployeeService elasticEmployeeService;
     private final EmployeeMapper employeeMapper;
     private final ICompanyRepository companyRepository;
 
-    public EmployeeController(EmployeeService employeeService, ICompanyRepository companyRepository, IEmployeeRepository employeeRepository, ElasticEmployeeService elasticEmployeeService, ServiceEntityService serviceEntityService, AppointmentService appointmentService, EmployeeWorkingHoursService employeeWorkingHoursService, EmployeeMapper employeeMapper)
+    public EmployeeController(EmployeeService employeeService, ICompanyRepository companyRepository, IEmployeeRepository employeeRepository, ServiceEntityService serviceEntityService, AppointmentService appointmentService, EmployeeWorkingHoursService employeeWorkingHoursService, EmployeeMapper employeeMapper)
     {
         this.employeeService = employeeService;
-        this.elasticEmployeeService = elasticEmployeeService;
         this.serviceEntityService = serviceEntityService;
         this.appointmentService = appointmentService;
         this.employeeWorkingHoursService = employeeWorkingHoursService;
@@ -75,12 +71,7 @@ public class EmployeeController {
             throw new RuntimeException("Bad body for criteria search!");
         }
 
-        EmployeeSearchOptionsResponseDTO employeeResult;
-        try {
-            employeeResult = elasticEmployeeService.searchByCriteria(employeeSearchRequestDTO);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        EmployeeSearchOptionsResponseDTO employeeResult = employeeService.searchByCriteria(employeeSearchRequestDTO);
 
         return ResponseEntity.ok(employeeResult);
     }

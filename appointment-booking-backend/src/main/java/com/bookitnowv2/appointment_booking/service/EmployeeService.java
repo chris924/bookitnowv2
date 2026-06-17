@@ -1,10 +1,11 @@
 package com.bookitnowv2.appointment_booking.service;
 
 import com.bookitnowv2.appointment_booking.configuration.SecurityUtils;
-import com.bookitnowv2.appointment_booking.elasticSearch.service.ElasticEmployeeService;
 import com.bookitnowv2.appointment_booking.entity.Company;
 import com.bookitnowv2.appointment_booking.entity.Employee;
 import com.bookitnowv2.appointment_booking.entity.dto.employee.*;
+import com.bookitnowv2.appointment_booking.entity.dto.employee.SearchOptionDetails.CompanyDTO;
+import com.bookitnowv2.appointment_booking.entity.dto.employee.SearchOptionDetails.PlaceDTO;
 import com.bookitnowv2.appointment_booking.entity.dto.employee.SearchOptionDetails.SpecialistDTO;
 import com.bookitnowv2.appointment_booking.exception.CompanyNotFoundException;
 import com.bookitnowv2.appointment_booking.exception.EmployeeNotFoundException;
@@ -28,26 +29,62 @@ public class EmployeeService {
 
 
     private final IEmployeeRepository employeeRepository;
-    private final ElasticEmployeeService elasticEmployeeService;
+    private final EmployeeMapper employeeMapper;
     private final EmployeeWorkingHoursService workingHoursService;
     private final IAppointmentRepository appointmentRepository;
     private final ICompanyRepository companyRepository;
 
 
     @Autowired
-    EmployeeService( IEmployeeRepository employeeRepository,ICompanyRepository companyRepository,  ElasticEmployeeService elasticEmployeeService, EmployeeWorkingHoursService workingHoursService, IAppointmentRepository appointmentRepository)
+    EmployeeService( IEmployeeRepository employeeRepository,ICompanyRepository companyRepository,  EmployeeMapper employeeMapper, EmployeeWorkingHoursService workingHoursService, IAppointmentRepository appointmentRepository)
     {
         this.companyRepository = companyRepository;
         this.employeeRepository = employeeRepository;
-        this.elasticEmployeeService = elasticEmployeeService;
+        this.employeeMapper = employeeMapper;
         this.workingHoursService = workingHoursService;
         this.appointmentRepository = appointmentRepository;
     }
 
     public Employee saveEmployee(Employee employee)
     {
-        elasticEmployeeService.saveEmployee(employee);
         return employeeRepository.save(employee);
+    }
+
+    public EmployeeSearchOptionsResponseDTO searchByCriteria(EmployeeSearchRequestDTO dto)
+    {
+        String name = blankToNull(dto.getName());
+        String company = blankToNull(dto.getCompany());
+        String place = blankToNull(dto.getPlace());
+
+        List<Employee> employees = employeeRepository.searchByCriteria(name, company, place);
+
+        EmployeeSearchOptionsResponseDTO result = new EmployeeSearchOptionsResponseDTO();
+        result.setCompanies(new ArrayList<>());
+        result.setPlaces(new ArrayList<>());
+        result.setSpecialists(new ArrayList<>());
+
+        for (Employee employee : employees) {
+            CompanyDTO companyDTO = employeeMapper.addCompanyDTO(employee);
+            PlaceDTO placeDTO = employeeMapper.addPlaceDTO(employee);
+            SpecialistDTO specialistDTO = employeeMapper.addSpecialistDTO(employee);
+
+            if (!result.companies.contains(companyDTO)) {
+                result.companies.add(companyDTO);
+            }
+            if (!result.places.contains(placeDTO)) {
+                result.places.add(placeDTO);
+            }
+            if (!result.specialists.contains(specialistDTO)) {
+                result.specialists.add(specialistDTO);
+            }
+        }
+
+        return result;
+    }
+
+    private static String blankToNull(String value)
+    {
+        return (value == null || value.isBlank()) ? null : value;
     }
 
     public Employee getEmployeeByEmail(String email)

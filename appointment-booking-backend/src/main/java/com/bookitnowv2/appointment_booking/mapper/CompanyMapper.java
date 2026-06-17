@@ -1,6 +1,5 @@
 package com.bookitnowv2.appointment_booking.mapper;
 
-import com.bookitnowv2.appointment_booking.elasticSearch.document.CompanyDocument;
 import com.bookitnowv2.appointment_booking.entity.Company;
 import com.bookitnowv2.appointment_booking.entity.dto.company.AppointmentsByDateResponseDTO;
 import com.bookitnowv2.appointment_booking.entity.dto.company.CompanyGetResponseDTO;
@@ -26,13 +25,6 @@ public class CompanyMapper {
                 company.getEmail(),
                 company.getRating()
         );
-    }
-
-    public CompanyDocument toDocument(Company company)
-    {
-        return new CompanyDocument(
-                company.getId(),
-                company.getName());
     }
 
     public static AppointmentsByDateResponseDTO toAppointmentsByDateResponseDTO(LocalDate date, Long count, Long income)

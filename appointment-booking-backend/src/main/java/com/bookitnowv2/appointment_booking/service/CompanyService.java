@@ -1,6 +1,5 @@
 package com.bookitnowv2.appointment_booking.service;
 
-import com.bookitnowv2.appointment_booking.elasticSearch.service.ElasticCompanyService;
 import com.bookitnowv2.appointment_booking.entity.Company;
 import com.bookitnowv2.appointment_booking.entity.dto.company.CompanyGetResponseDTO;
 import com.bookitnowv2.appointment_booking.entity.dto.company.CompanySectionCardsResponseDTO;
@@ -22,21 +21,17 @@ public class CompanyService {
 
     private final ICompanyRepository companyRepository;
     private final CompanyMapper companyMapper;
-    private final ElasticCompanyService elasticCompanyService;
 
 
     public CompanyService(ICompanyRepository companyRepository,
-                   ElasticCompanyService elasticCompanyService,
                    CompanyMapper companyMapper)
     {
         this.companyRepository = companyRepository;
         this.companyMapper = companyMapper;
-        this.elasticCompanyService = elasticCompanyService;
     }
 
     public Company saveCompany(Company company)
     {
-        elasticCompanyService.saveCompany(company);
         return companyRepository.save(company);
     }
 
