@@ -10,11 +10,13 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
@@ -28,16 +30,22 @@ import java.util.List;
 public class JwtAuthFilter extends OncePerRequestFilter {
 
     private final TokenService tokenService;
-    private final UserAuthService userAuthService;
+    private final UserDetailsService userAuthService;
     private final UserService userService;
-    private final CompanyAuthService companyAuthService;
+    private final UserDetailsService companyAuthService;
     private final CompanyService companyService;
 
-    private final EmployeeAuthService employeeAuthService;
+    private final UserDetailsService employeeAuthService;
     private final EmployeeService employeeService;
 
 
-    public JwtAuthFilter(TokenService tokenService, UserAuthService userAuthService, UserService userService, CompanyAuthService companyAuthService, CompanyService companyService, EmployeeAuthService employeeAuthService, EmployeeService employeeService)
+    public JwtAuthFilter(TokenService tokenService,
+                         @Qualifier("userAuthService") UserDetailsService userAuthService,
+                         UserService userService,
+                         @Qualifier("companyAuthService") UserDetailsService companyAuthService,
+                         CompanyService companyService,
+                         @Qualifier("employeeAuthService") UserDetailsService employeeAuthService,
+                         EmployeeService employeeService)
     {
         this.tokenService = tokenService;
         this.userAuthService = userAuthService;

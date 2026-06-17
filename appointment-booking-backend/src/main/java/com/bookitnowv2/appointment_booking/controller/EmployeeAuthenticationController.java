@@ -6,7 +6,6 @@ import com.bookitnowv2.appointment_booking.entity.Employee;
 import com.bookitnowv2.appointment_booking.entity.dto.LoginDTO;
 import com.bookitnowv2.appointment_booking.exception.BadCredentialException;
 import com.bookitnowv2.appointment_booking.repository.IEmployeeRepository;
-import com.bookitnowv2.appointment_booking.service.EmployeeAuthService;
 import com.bookitnowv2.appointment_booking.service.EmployeeAuthenticationService;
 import com.bookitnowv2.appointment_booking.service.EmployeeService;
 import jakarta.servlet.http.HttpServletRequest;

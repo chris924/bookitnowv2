@@ -7,7 +7,6 @@ import com.bookitnowv2.appointment_booking.entity.dto.company.CompanyLoginRespon
 import com.bookitnowv2.appointment_booking.exception.BadCredentialException;
 import com.bookitnowv2.appointment_booking.exception.CompanyNotFoundException;
 import com.bookitnowv2.appointment_booking.repository.ICompanyRepository;
-import com.bookitnowv2.appointment_booking.service.CompanyAuthService;
 import com.bookitnowv2.appointment_booking.service.CompanyAuthenticationService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -33,13 +32,11 @@ import java.time.Duration;
 public class CompanyAuthenticationController {
 
     private final CompanyAuthenticationService companyAuthenticationService;
-    private final CompanyAuthService companyAuthService;
     private final ICompanyRepository companyRepository;
 
-    public CompanyAuthenticationController(CompanyAuthenticationService companyAuthenticationService, ICompanyRepository companyRepository, CompanyAuthService companyAuthService)
+    public CompanyAuthenticationController(CompanyAuthenticationService companyAuthenticationService, ICompanyRepository companyRepository)
     {
         this.companyAuthenticationService = companyAuthenticationService;
-        this.companyAuthService = companyAuthService;
         this.companyRepository = companyRepository;
     }
 
