@@ -1,6 +1,7 @@
 package com.bookitnowv2.appointment_booking.entity.dto.employee;
 
 import com.bookitnowv2.appointment_booking.utils.EmployeeExperience;
+import com.bookitnowv2.appointment_booking.utils.EmployeeStatus;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -23,5 +24,6 @@ public class EmployeeGetResponseDTO {
     private String email;
     private String phoneNumber;
     private EmployeeExperience experience;
+    private EmployeeStatus status;
 
 }

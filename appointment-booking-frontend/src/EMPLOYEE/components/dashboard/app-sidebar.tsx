@@ -64,7 +64,7 @@ export function getSidebarData() {
     },
     {
       title: "Beállítások",
-      url: "company/options",
+      url: "employee/options",
       icon: IconListDetails,
     },
     {

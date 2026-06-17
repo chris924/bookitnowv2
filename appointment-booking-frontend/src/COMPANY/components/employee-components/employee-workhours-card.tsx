@@ -29,10 +29,10 @@ function toFullCalendarEvent(slot: EmployeeWorkingHoursResponseDTO, _index: numb
   const endTime = slot.endTime.slice(0, 5);
 
   const dateStr = new Date(slot.date).toISOString().split("T")[0];
-  const slotId = slot.id;
+  const slotId = slot.id.toString();
 
   const event = {
-    id:  slotId.toString(),
+    id:  slotId,
     title: slot.name,
     start: `${dateStr}T${startTime}`,
     end: `${dateStr}T${endTime}`,

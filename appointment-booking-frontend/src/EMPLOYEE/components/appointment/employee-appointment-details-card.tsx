@@ -104,9 +104,10 @@ export default function EmployeeAppointmentDetailsCard({appointment}: EmployeeAp
 
          {showCancelAppointment && (
           <ApproveDialogForm
-          title="Foglalás lemondás"
-          description="Biztosan lemondod a foglalást? Az időpont újra foglalható lesz amíg a munakarend nincs átállítva!"
-          onButtonClick={() => cancelAppointment(appointment.slotResponseDTO.id)}
+          title={isFuture ? "Foglalás lemondás" : "Nem jött el"}
+          description= {isFuture ? "Biztosan lemondod a foglalást? Az időpont újra foglalható lesz amíg a munakarend nincs átállítva!" : "Biztosan nem jött el az Ügyyfél?"}
+          onButtonClick={(value) => cancelAppointment(parseInt(value))}
+          value={appointment.slotResponseDTO.id.toString()}
           onOpenChange={setShowCancelAppointment}
           open={showCancelAppointment}
           buttonVariant="destructive"

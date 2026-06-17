@@ -12,6 +12,7 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { useApi } from "@/hooks/useApi";
+import { handleAPIError } from "@/lib/utils";
 
 type SpecialistServicesData = {
     employeeServices: ServiceGetResponseDTO[];
@@ -26,10 +27,13 @@ export default function EmployeeServicesTable({employeeServices, setSlots} : Spe
 async function handleBookingClick(serviceId: number) {
  
   console.log(`Booking clicked for service ID: ${serviceId}`);
-  const response = await api.appointment.getEmployeeMonthlyAppointments({serviceId}); //getMonthlyAppointments(serviceId);
-  console.log(response);
-
-  setSlots(response);
+  try {
+    const response = await api.appointment.getEmployeeMonthlyAppointments({serviceId}); //getMonthlyAppointments(serviceId);
+     setSlots(response);
+  } catch (error) {
+    handleAPIError(error)
+  }
+ 
 
 }
 
