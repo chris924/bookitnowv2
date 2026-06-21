@@ -1,6 +1,5 @@
 package com.bookitnowv2.appointment_booking.service;
 
-import co.elastic.clients.util.DateTime;
 import com.bookitnowv2.appointment_booking.entity.Appointment;
 import com.bookitnowv2.appointment_booking.entity.Employee;
 import com.bookitnowv2.appointment_booking.entity.EmployeeWorkingHours;

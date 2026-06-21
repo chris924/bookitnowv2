@@ -1,6 +1,5 @@
 package com.bookitnowv2.appointment_booking.entity.dto.appointment;
 
-import co.elastic.clients.util.DateTime;
 import com.bookitnowv2.appointment_booking.utils.AppointmentStatus;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.v3.oas.annotations.media.Schema;

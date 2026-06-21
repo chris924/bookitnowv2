@@ -4,7 +4,7 @@ package com.bookitnowv2.appointment_booking.entity.dto.employee;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 @Getter
 @Setter

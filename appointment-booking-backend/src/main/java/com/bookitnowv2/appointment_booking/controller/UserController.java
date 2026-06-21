@@ -1,9 +1,6 @@
 package com.bookitnowv2.appointment_booking.controller;
 
 import com.bookitnowv2.appointment_booking.configuration.SecurityUtils;
-import com.bookitnowv2.appointment_booking.elasticSearch.document.UserDocument;
-import com.bookitnowv2.appointment_booking.elasticSearch.repository.IElasticUserRepository;
-import com.bookitnowv2.appointment_booking.elasticSearch.service.ElasticUserService;
 import com.bookitnowv2.appointment_booking.entity.User;
 import com.bookitnowv2.appointment_booking.entity.dto.user.UserDataResponseDTO;
 import com.bookitnowv2.appointment_booking.entity.dto.user.UserDetailsChangeDTO;
@@ -30,20 +27,14 @@ public class UserController {
 
     private final Path basePath;
     private final String frontendAddress;
-    private final ElasticUserService elasticUserService;
-    private final IElasticUserRepository elasticUserRepository;
     private final IUserRepository userRepository;
 
     public UserController(@Value("${avatar.user.directory.path}") String basePath,
                           @Value("${frontend.ip.address}") String frontendAddress,
-                          ElasticUserService elasticUserService,
-                          IUserRepository userRepository,
-                          IElasticUserRepository elasticUserRepository) {
+                          IUserRepository userRepository) {
 
         this.basePath = Paths.get(basePath);
         this.frontendAddress = frontendAddress;
-        this.elasticUserService = elasticUserService;
-        this.elasticUserRepository = elasticUserRepository;
         this.userRepository = userRepository;
     }
 
@@ -77,7 +68,6 @@ public class UserController {
         if(changedData)
         {
             userRepository.save(foundUser);
-            elasticUserRepository.save(UserMapper.toDocument(foundUser));
         }
         return ResponseEntity.ok(UserMapper.toUserDataResponseDTO(foundUser));
     }
@@ -88,7 +78,6 @@ public class UserController {
 
         Long authUserId = SecurityUtils.getCurrentUserId();
         User foundUser = userRepository.findById(authUserId).orElseThrow(() -> new UserNotFoundException(authUserId.toString()));
-        UserDocument userDocument = elasticUserService.getUserDocument(foundUser);
 
         try {
             // Ensure avatars directory exists
@@ -112,11 +101,9 @@ public class UserController {
             // Build public URL
             String publicUrl =  frontendAddress +  "/avatar/user/" + filename;
 
-            // Update DB + Elastic
+            // Update DB
             foundUser.setAvatarUrl(publicUrl);
-            userDocument.setAvatarUrl(publicUrl);
             userRepository.save(foundUser);
-            elasticUserRepository.save(userDocument);
 
             return ResponseEntity.ok(publicUrl);
 

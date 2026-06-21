@@ -22,8 +22,15 @@ public interface IEmployeeRepository extends JpaRepository<Employee, Long> {
     @Query("SELECT e FROM Employee e ORDER BY e.rating DESC")
     List<Employee> findTopRatedEmployees(Pageable pageable);
 
-
-
+    @Query("""
+            SELECT e FROM Employee e JOIN e.company c
+            WHERE (:name = '' OR LOWER(e.name) LIKE LOWER(CONCAT(:name, '%')))
+              AND (:company = '' OR LOWER(c.name) LIKE LOWER(CONCAT(:company, '%')))
+              AND (:place = '' OR LOWER(c.place) LIKE LOWER(CONCAT(:place, '%')))
+            """)
+    List<Employee> searchByCriteria(@Param("name") String name,
+                                    @Param("company") String company,
+                                    @Param("place") String place);
 
 
 }

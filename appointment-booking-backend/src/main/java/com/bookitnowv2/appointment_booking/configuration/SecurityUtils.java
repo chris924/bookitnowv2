@@ -8,7 +8,6 @@ import com.bookitnowv2.appointment_booking.exception.EmployeeNotFoundException;
 import com.bookitnowv2.appointment_booking.exception.UserNotFoundException;
 import com.bookitnowv2.appointment_booking.repository.ICompanyRepository;
 import com.bookitnowv2.appointment_booking.repository.IUserRepository;
-import com.bookitnowv2.appointment_booking.service.CompanyAuthService;
 import com.bookitnowv2.appointment_booking.utils.LoggedInInfo;
 import com.bookitnowv2.appointment_booking.utils.LoggedInType;
 import org.springframework.security.core.Authentication;
@@ -21,13 +20,10 @@ public class SecurityUtils {
 
     private static IUserRepository userRepository;
     private static ICompanyRepository companyRepository;
-    private static CompanyAuthService companyAuthService;
 
-    public SecurityUtils(IUserRepository userRepository, CompanyAuthService companyAuthService)
+    public SecurityUtils(IUserRepository userRepository)
     {
         SecurityUtils.userRepository = userRepository;
-        SecurityUtils.companyRepository = companyRepository;
-        SecurityUtils.companyAuthService = companyAuthService;
     }
 
     public static Long getCurrentUserId()

@@ -1,6 +1,6 @@
 package com.bookitnowv2.appointment_booking.mapper;
 
-import com.bookitnowv2.appointment_booking.elasticSearch.document.EmployeeDocument;
+import com.bookitnowv2.appointment_booking.entity.Company;
 import com.bookitnowv2.appointment_booking.entity.Employee;
 import com.bookitnowv2.appointment_booking.entity.EmployeeWorkingHours;
 import com.bookitnowv2.appointment_booking.entity.ServiceEntity;
@@ -46,37 +46,21 @@ public class EmployeeMapper {
         );
     }
 
-    public CompanyDTO addCompanyDTO(EmployeeDocument employeeDocument)
+    public CompanyDTO addCompanyDTO(Employee employee)
     {
-        return new CompanyDTO(employeeDocument.getId(), employeeDocument.getCompany(), employeeDocument.getCompany(), employeeDocument.getCompanyAvatarUrl(), employeeDocument.getCompanyRating());
-
-
+        Company company = employee.getCompany();
+        return new CompanyDTO(employee.getId(), company.getName(), company.getName(), company.getAvatarUrl(), company.getRating());
     }
 
-    public PlaceDTO addPlaceDTO(EmployeeDocument employeeDocument)
+    public PlaceDTO addPlaceDTO(Employee employee)
     {
-        return new PlaceDTO(employeeDocument.getPlace(), employeeDocument.getPlace());
+        String place = employee.getCompany().getPlace();
+        return new PlaceDTO(place, place);
     }
 
-    public SpecialistDTO addSpecialistDTO(EmployeeDocument employeeDocument)
+    public SpecialistDTO addSpecialistDTO(Employee employee)
     {
-        return new SpecialistDTO(employeeDocument.getId(), employeeDocument.getName(), employeeDocument.getName(), employeeDocument.getAvatarUrl(), employeeDocument.getCompany(), employeeDocument.getRating());
-    }
-
-
-
-    public static EmployeeDocument toDocument(Employee employee) {
-       return new EmployeeDocument(employee.getId(),
-               employee.getName(),
-               employee.getUsername(),
-               employee.getCompany().getName(),
-               employee.getCompany().getAvatarUrl(),
-               employee.getCompany().getRating(),
-               employee.getCompany().getPlace(),
-               employee.getAvatarUrl(),
-               employee.getAbout(), 
-               employee.getRating());
-
+        return new SpecialistDTO(employee.getId(), employee.getName(), employee.getName(), employee.getAvatarUrl(), employee.getCompany().getName(), employee.getRating());
     }
 
     public static SpecialistDTO toSpecialistDTO(Employee employee)
