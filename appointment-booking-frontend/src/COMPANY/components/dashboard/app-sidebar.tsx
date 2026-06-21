@@ -108,19 +108,7 @@ const data = {
       url: "/company/help",
       icon: IconHelp,
     }
-  ],
-  documents: [
-    {
-      name: "Könyvtár",
-      url: "#",
-      icon: IconDatabase,
-    },
-    {
-      name: "Riportok",
-      url: "#",
-      icon: IconReport,
-    },
-  ],
+  ]
 }
 
 type AppSidebarProps = React.ComponentProps<typeof Sidebar> & {
@@ -150,8 +138,7 @@ const { company } = useCompanyStore();
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={data.navMain} employees={employees}/>
-         
-        <NavDocuments items={data.documents} />
+
         <NavSecondary items={data.navSecondary} className="mt-auto" />
       </SidebarContent>
       <SidebarFooter>

@@ -127,21 +127,8 @@ export function getSidebarData() {
       url: "/employee/help",
       icon: IconHelp,
     }
-  ],
-  documents: [
-    {
-      name: "Könyvtár",
-      url: "#",
-      icon: IconDatabase,
-    },
-    {
-      name: "Riportok",
-      url: "#",
-      icon: IconReport,
-    },
-  ],
+  ]
   }
-
 }
 
 export function AppSidebar({ ...props }) {
@@ -172,7 +159,6 @@ if(!data) return;
       <SidebarContent>
         <NavMain items={data.navMain} />
          
-        <NavDocuments items={data.documents} />
         <NavSecondary items={data.navSecondary} className="mt-auto" />
       </SidebarContent>
       <SidebarFooter>
