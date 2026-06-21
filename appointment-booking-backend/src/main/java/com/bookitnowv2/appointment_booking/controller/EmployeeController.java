@@ -11,6 +11,7 @@ import com.bookitnowv2.appointment_booking.entity.dto.workhour.WorkhourAddDTO;
 import com.bookitnowv2.appointment_booking.entity.dto.workhour.WorkhourEditDTO;
 import com.bookitnowv2.appointment_booking.exception.CompanyNotFoundException;
 import com.bookitnowv2.appointment_booking.exception.EmployeeNotFoundException;
+import com.bookitnowv2.appointment_booking.exception.UserNotFoundException;
 import com.bookitnowv2.appointment_booking.mapper.EmployeeMapper;
 import com.bookitnowv2.appointment_booking.mapper.EmployeeWorkingHoursMapper;
 import com.bookitnowv2.appointment_booking.repository.ICompanyRepository;
@@ -36,6 +37,7 @@ import java.nio.file.StandardCopyOption;
 import java.util.List;
 import java.util.UUID;
 
+
 @RestController
 @RequestMapping("/employees")
 public class EmployeeController {
@@ -51,7 +53,7 @@ public class EmployeeController {
     private final String frontendAddress;
 
     public EmployeeController(EmployeeService employeeService, ICompanyRepository companyRepository,@Value("${avatar.user.directory.path}") String basePath,
-                              @Value("${frontend.ip.address}") String frontendAddress, IElasticEmployeeRepository elasticEmployeeRepository, IEmployeeRepository employeeRepository, ElasticEmployeeService elasticEmployeeService, ServiceEntityService serviceEntityService, AppointmentService appointmentService, EmployeeWorkingHoursService employeeWorkingHoursService, EmployeeMapper employeeMapper)
+                              @Value("${frontend.ip.address}") String frontendAddress, IEmployeeRepository employeeRepository, ServiceEntityService serviceEntityService, AppointmentService appointmentService, EmployeeWorkingHoursService employeeWorkingHoursService, EmployeeMapper employeeMapper)
     {
         this.employeeService = employeeService;
         this.serviceEntityService = serviceEntityService;
@@ -60,7 +62,6 @@ public class EmployeeController {
         this.employeeMapper = employeeMapper;
         this.employeeRepository = employeeRepository;
         this.companyRepository = companyRepository;
-        this.elasticEmployeeRepository = elasticEmployeeRepository;
 
         this.basePath = Paths.get(basePath);
         this.frontendAddress = frontendAddress;
@@ -240,7 +241,6 @@ public class EmployeeController {
 
         Long employeeId = SecurityUtils.getCurrentEmployeeId();
         Employee foundEmployee = employeeRepository.findById(employeeId).orElseThrow(() -> new UserNotFoundException(employeeId.toString()));
-        EmployeeDocument employeeDocument = elasticEmployeeService.getEmployeeDocument(foundEmployee);
 
         try {
             // Ensure avatars directory exists
@@ -264,11 +264,8 @@ public class EmployeeController {
             // Build public URL
             String publicUrl =  frontendAddress +  "/avatar/user/" + filename;
 
-            // Update DB + Elastic
-            foundUser.setAvatarUrl(publicUrl);
-            userDocument.setAvatarUrl(publicUrl);
-            userRepository.save(foundUser);
-            elasticUserRepository.save(userDocument);
+            foundEmployee.setAvatarUrl(publicUrl);
+            employeeRepository.save(foundEmployee);
 
             return ResponseEntity.ok(publicUrl);
 
@@ -278,8 +275,13 @@ public class EmployeeController {
         }
     }
 
-
-
-
+    private String getFileExtension(String filename) {
+        if (filename == null) return null;
+        int dotIndex = filename.lastIndexOf('.');
+        if (dotIndex == -1 || dotIndex == filename.length() - 1) {
+            return null;
+        }
+        return filename.substring(dotIndex + 1).toLowerCase();
+    }
 
 }

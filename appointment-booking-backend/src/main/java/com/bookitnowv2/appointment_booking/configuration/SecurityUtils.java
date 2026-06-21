@@ -18,7 +18,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class SecurityUtils {
 
-    private static IUserRepository userRepository;
+    public static IUserRepository userRepository;
     private static ICompanyRepository companyRepository;
 
     public SecurityUtils(IUserRepository userRepository)
