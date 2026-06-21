@@ -18,6 +18,7 @@ import type {
   CompanyGetResponseDTO,
   CompanySectionCardsResponseDTO,
   CompanyUpdateDTO,
+  UploadUserAvatarRequest,
 } from '../models/index';
 import {
     CompanyGetResponseDTOFromJSON,
@@ -26,10 +27,16 @@ import {
     CompanySectionCardsResponseDTOToJSON,
     CompanyUpdateDTOFromJSON,
     CompanyUpdateDTOToJSON,
+    UploadUserAvatarRequestFromJSON,
+    UploadUserAvatarRequestToJSON,
 } from '../models/index';
 
 export interface ChangeCompanyDetailsRequest {
     companyUpdateDTO: CompanyUpdateDTO;
+}
+
+export interface UploadCompanyAvatarRequest {
+    uploadUserAvatarRequest?: UploadUserAvatarRequest;
 }
 
 /**
@@ -98,6 +105,40 @@ export class CompanyControllerApi extends runtime.BaseAPI {
      */
     async getCompanySectionCardsStatistics(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<CompanySectionCardsResponseDTO> {
         const response = await this.getCompanySectionCardsStatisticsRaw(initOverrides);
+        return await response.value();
+    }
+
+    /**
+     */
+    async uploadCompanyAvatarRaw(requestParameters: UploadCompanyAvatarRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<string>> {
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
+
+
+        let urlPath = `/company/upload-avatar`;
+
+        const response = await this.request({
+            path: urlPath,
+            method: 'POST',
+            headers: headerParameters,
+            query: queryParameters,
+            body: UploadUserAvatarRequestToJSON(requestParameters['uploadUserAvatarRequest']),
+        }, initOverrides);
+
+        if (this.isJsonMime(response.headers.get('content-type'))) {
+            return new runtime.JSONApiResponse<string>(response);
+        } else {
+            return new runtime.TextApiResponse(response) as any;
+        }
+    }
+
+    /**
+     */
+    async uploadCompanyAvatar(requestParameters: UploadCompanyAvatarRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<string> {
+        const response = await this.uploadCompanyAvatarRaw(requestParameters, initOverrides);
         return await response.value();
     }
 

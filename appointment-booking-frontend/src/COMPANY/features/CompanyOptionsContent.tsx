@@ -1,16 +1,29 @@
+import { CompanyUpdateDTO } from "@/API";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
 import { showToast } from "@/components/ui/own/ShowToast";
 import { useApi } from "@/hooks/useApi";
+import { handleAPIError } from "@/lib/utils";
 import { useCompanyStore } from "@/stores/AuthStore";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Popover, PopoverArrow, PopoverContent, PopoverTrigger } from "@radix-ui/react-popover";
 import { useMutation } from "@tanstack/react-query";
-import { useRef, useState } from "react";
+import { Loader } from "lucide-react";
+import { useState, useRef } from "react";
+import { useForm } from "react-hook-form";
 import z from "zod";
+import defaultAvatar from "@/assets/default.jpg"
 
 
 export default function CompanyOptionsContent()
 {
-     const [enableModifyCompanyData, setEnableModifyCompanyData] = useState(false);
+
+    const [enableModifyCompanyData, setEnableModifyCompanyData] = useState(false);
     const [showHint, setShowHint] = useState(false);
-      
+
     const fileInputRef = useRef<HTMLInputElement>(null);
 
     const {company} = useCompanyStore();
@@ -18,12 +31,11 @@ export default function CompanyOptionsContent()
     const api = useApi();
 
     const avatarChangeMutation = useMutation({
-    
+
     mutationFn: (file: File) =>  api.company.uploadCompanyAvatar({ uploadUserAvatarRequest: { avatar: file }}),
     onSuccess: (response) => {
       if(response)
       {
-     //   setUserData({...userData, avatarUrl: response.data})
         useCompanyStore.getState().updateCompanyAvatar(response);
         showToast.success("Sikeres profilkép módosítás!");
       }
@@ -48,7 +60,7 @@ export default function CompanyOptionsContent()
   }),
 
   email: z.string().min(5, {
-    message: "Az emailnek legalább 15 karakter hosszúnak kell lennie.",
+    message: "Az emailnek legalább 5 karakter hosszúnak kell lennie.",
   }),
 
   description: z.string().min(11, {
@@ -60,25 +72,25 @@ export default function CompanyOptionsContent()
   }),
 
   serviceDescription: z.string().min(1, {
-    message: "A szolgáltatás nevének legalább 11 karakter hosszúnak kell lennie.",
+    message: "A szolgáltatás leírásának legalább 1 karakter hosszúnak kell lennie.",
   }),
 })
 
  const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
- 
+
       name: company?.name,
       email: company?.email,
       description: company?.description,
       serviceName: company?.serviceName,
       serviceDescription: company?.serviceDescription
-      
+
     },
   })
 
   const changeCompanyDetailsMutation = useMutation({
-    mutationFn: (dto: CompanyUpdateDTO) => api.company.changeCompanyDetails({companyUpdateDTO: dto}),  
+    mutationFn: (dto: CompanyUpdateDTO) => api.company.changeCompanyDetails({companyUpdateDTO: dto}),
     onSuccess: (data) => {
       useCompanyStore.getState().updateCompanyObject(data)
       showToast.success("Adatok sikeresen frissítve!");
@@ -100,7 +112,7 @@ async function onSubmit(values: z.infer<typeof formSchema>) {
   changeCompanyDetailsMutation.mutate(dto);
 
   }
-  
+
 
   function handleCancel()
   {
@@ -131,7 +143,7 @@ async function onSubmit(values: z.infer<typeof formSchema>) {
             </PopoverContent>
              <PopoverTrigger asChild>
           <Avatar className="w-16 h-16 cursor-pointer" onClick={() => fileInputRef.current?.click()}>
-            <AvatarImage src={employee?.avatarUrl} alt="profile" />
+            <AvatarImage src={company?.avatarUrl} alt="profile" />
              <AvatarFallback>
               <img src={defaultAvatar} alt="default avatar" className="w-full h-full object-cover" />
             </AvatarFallback>
@@ -146,8 +158,8 @@ async function onSubmit(values: z.infer<typeof formSchema>) {
               onChange={handleFileChange}
             />
           <div>
-            <CardTitle className="text-xl">{employee?.name}</CardTitle>
-            <p className="text-sm text-muted-foreground">Alkalmazott</p>
+            <CardTitle className="text-xl">{company?.name}</CardTitle>
+            <p className="text-sm text-muted-foreground">Cég</p>
           </div>
         </CardHeader>
         <CardContent>
@@ -157,35 +169,19 @@ async function onSubmit(values: z.infer<typeof formSchema>) {
 
       {/* Edit Form */}
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">  
-        {enableModifyEmployeeData ?  <Button type="button" onClick={() => handleCancel()}>Vissza</Button> : <Button type="button" onClick={() => handleModifyClick()}>Adatok módosítása</Button> }
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+        {enableModifyCompanyData ?  <Button type="button" onClick={() => handleCancel()}>Vissza</Button> : <Button type="button" onClick={() => handleModifyClick()}>Adatok módosítása</Button> }
         <FormField
             control={form.control}
             name="name"
-            
+
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Név</FormLabel>
                 <FormControl>
-                  <Input placeholder={employee?.name} {...field} disabled={!enableModifyEmployeeData}/>
+                  <Input placeholder={company?.name} {...field} disabled={!enableModifyCompanyData}/>
                 </FormControl>
-                <FormDescription>Ez a teljes neved.</FormDescription>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name="username"
-            
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Felhasználónév</FormLabel>
-                <FormControl>
-                  <Input placeholder={employee?.username} {...field} disabled={!enableModifyEmployeeData} />
-                </FormControl>
-                <FormDescription>Ez a felhasználóneved.</FormDescription>
+                <FormDescription>Ez a cég neve.</FormDescription>
                 <FormMessage />
               </FormItem>
             )}
@@ -194,12 +190,12 @@ async function onSubmit(values: z.infer<typeof formSchema>) {
           <FormField
             control={form.control}
             name="email"
-            
+
             render={({ field }) => (
               <FormItem>
                 <FormLabel>E-mail</FormLabel>
                 <FormControl>
-                  <Input placeholder={employee?.email} {...field} disabled={!enableModifyEmployeeData} />
+                  <Input placeholder={company?.email} {...field} disabled={!enableModifyCompanyData} />
                 </FormControl>
                 <FormDescription>Ez az e-mail cím.</FormDescription>
                 <FormMessage />
@@ -209,15 +205,15 @@ async function onSubmit(values: z.infer<typeof formSchema>) {
 
           <FormField
             control={form.control}
-            name="about"
-            
+            name="description"
+
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Bio</FormLabel>
+                <FormLabel>Leírás</FormLabel>
                 <FormControl>
-                  <Input placeholder={employee?.about} {...field} disabled={!enableModifyEmployeeData} />
+                  <Input placeholder={company?.description} {...field} disabled={!enableModifyCompanyData} />
                 </FormControl>
-                <FormDescription>Ez a bio.</FormDescription>
+                <FormDescription>Ez a cég leírása.</FormDescription>
                 <FormMessage />
               </FormItem>
             )}
@@ -225,15 +221,15 @@ async function onSubmit(values: z.infer<typeof formSchema>) {
 
           <FormField
             control={form.control}
-            name="phoneNumber"
-            
+            name="serviceName"
+
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Telefonszám</FormLabel>
+                <FormLabel>Szolgáltatás neve</FormLabel>
                 <FormControl>
-                  <Input placeholder={employee?.phoneNumber} {...field} disabled={!enableModifyEmployeeData} />
+                  <Input placeholder={company?.serviceName} {...field} disabled={!enableModifyCompanyData} />
                 </FormControl>
-                <FormDescription>Ez a telefonszám.</FormDescription>
+                <FormDescription>Ez a szolgáltatás neve.</FormDescription>
                 <FormMessage />
               </FormItem>
             )}
@@ -241,34 +237,23 @@ async function onSubmit(values: z.infer<typeof formSchema>) {
 
           <FormField
             control={form.control}
-            name="status"
-            
+            name="serviceDescription"
+
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Státusz</FormLabel>
+                <FormLabel>Szolgáltatás leírása</FormLabel>
                 <FormControl>
-                 <Select disabled={!enableModifyEmployeeData} onValueChange={field.onChange} defaultValue={field.value}>
-                    <SelectTrigger className="w-full max-w-48">
-                        <SelectValue placeholder="Válassz státuszt"/>
-                    </SelectTrigger>
-                    <SelectContent>
-                        <SelectGroup>
-                        <SelectLabel>Státusz</SelectLabel>
-                        <SelectItem value="ACTIVE">Aktív</SelectItem>
-                        <SelectItem value="NOT_ACTIVE">Nem aktív</SelectItem>         
-                        </SelectGroup>
-                    </SelectContent>
-                    </Select>
+                  <Input placeholder={company?.serviceDescription} {...field} disabled={!enableModifyCompanyData} />
                 </FormControl>
-                <FormDescription>Ez a státusz.</FormDescription>
+                <FormDescription>Ez a szolgáltatás leírása.</FormDescription>
                 <FormMessage />
               </FormItem>
             )}
           />
 
-           
-          <Button type="submit" className="bg-green-200" disabled={!enableModifyEmployeeData}>Mentés</Button>
-          
+
+          <Button type="submit" className="bg-green-200" disabled={!enableModifyCompanyData}>Mentés</Button>
+
         </form>
       </Form>
     </div>
