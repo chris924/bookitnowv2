@@ -33,7 +33,7 @@ export default function EmployeeOptionsContent()
 
     const avatarChangeMutation = useMutation({
     
-    mutationFn: (file: File) =>  api.user.uploadUserAvatar({ uploadUserAvatarRequest: { avatar: file }}),
+    mutationFn: (file: File) =>  api.employee.uploadEmployeeAvatar({ uploadUserAvatarRequest: { avatar: file }}),
     onSuccess: (response) => {
       if(response)
       {

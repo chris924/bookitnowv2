@@ -2,6 +2,8 @@ package com.bookitnowv2.appointment_booking.controller;
 
 
 import com.bookitnowv2.appointment_booking.configuration.SecurityUtils;
+import com.bookitnowv2.appointment_booking.elasticSearch.document.EmployeeDocument;
+import com.bookitnowv2.appointment_booking.elasticSearch.document.UserDocument;
 import com.bookitnowv2.appointment_booking.elasticSearch.repository.IElasticEmployeeRepository;
 import com.bookitnowv2.appointment_booking.elasticSearch.service.ElasticEmployeeService;
 import com.bookitnowv2.appointment_booking.entity.Company;
@@ -26,13 +28,21 @@ import com.bookitnowv2.appointment_booking.service.EmployeeService;
 import com.bookitnowv2.appointment_booking.service.EmployeeWorkingHoursService;
 import com.bookitnowv2.appointment_booking.service.ServiceEntityService;
 import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/employees")
@@ -47,8 +57,11 @@ public class EmployeeController {
     private final IElasticEmployeeRepository elasticEmployeeRepository;
     private final EmployeeMapper employeeMapper;
     private final ICompanyRepository companyRepository;
+    private final Path basePath;
+    private final String frontendAddress;
 
-    public EmployeeController(EmployeeService employeeService, ICompanyRepository companyRepository, IElasticEmployeeRepository elasticEmployeeRepository, IEmployeeRepository employeeRepository, ElasticEmployeeService elasticEmployeeService, ServiceEntityService serviceEntityService, AppointmentService appointmentService, EmployeeWorkingHoursService employeeWorkingHoursService, EmployeeMapper employeeMapper)
+    public EmployeeController(EmployeeService employeeService, ICompanyRepository companyRepository,@Value("${avatar.user.directory.path}") String basePath,
+                              @Value("${frontend.ip.address}") String frontendAddress, IElasticEmployeeRepository elasticEmployeeRepository, IEmployeeRepository employeeRepository, ElasticEmployeeService elasticEmployeeService, ServiceEntityService serviceEntityService, AppointmentService appointmentService, EmployeeWorkingHoursService employeeWorkingHoursService, EmployeeMapper employeeMapper)
     {
         this.employeeService = employeeService;
         this.elasticEmployeeService = elasticEmployeeService;
@@ -59,6 +72,10 @@ public class EmployeeController {
         this.employeeRepository = employeeRepository;
         this.companyRepository = companyRepository;
         this.elasticEmployeeRepository = elasticEmployeeRepository;
+
+        this.basePath = Paths.get(basePath);
+        this.frontendAddress = frontendAddress;
+
     }
 
     @GetMapping("/most-rated")
@@ -280,6 +297,49 @@ public class EmployeeController {
 
     }
 
+
+    @PostMapping("/upload-avatar")
+    public ResponseEntity<String> uploadEmployeeAvatar(@RequestParam("avatar") MultipartFile file) {
+
+        Long employeeId = SecurityUtils.getCurrentEmployeeId();
+        Employee foundEmployee = employeeRepository.findById(employeeId).orElseThrow(() -> new UserNotFoundException(employeeId.toString()));
+        EmployeeDocument employeeDocument = elasticEmployeeService.getEmployeeDocument(foundEmployee);
+
+        try {
+            // Ensure avatars directory exists
+            Files.createDirectories(basePath);
+
+            // Detect file extension safely
+            String originalFilename = file.getOriginalFilename();
+            String ext = getFileExtension(originalFilename);
+            if (ext == null) {
+                // fallback if user uploads without extension
+                ext = "png";
+            }
+
+            // Generate unique filename
+            String filename = UUID.randomUUID() + "." + ext;
+            Path targetPath = basePath.resolve(filename);
+
+            // Save the uploaded file
+            Files.copy(file.getInputStream(), targetPath, StandardCopyOption.REPLACE_EXISTING);
+
+            // Build public URL
+            String publicUrl =  frontendAddress +  "/avatar/user/" + filename;
+
+            // Update DB + Elastic
+            foundUser.setAvatarUrl(publicUrl);
+            userDocument.setAvatarUrl(publicUrl);
+            userRepository.save(foundUser);
+            elasticUserRepository.save(userDocument);
+
+            return ResponseEntity.ok(publicUrl);
+
+        } catch (IOException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Could not upload avatar: " + e.getMessage());
+        }
+    }
 
 
 

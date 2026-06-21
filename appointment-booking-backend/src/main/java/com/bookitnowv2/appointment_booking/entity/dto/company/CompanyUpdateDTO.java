@@ -10,10 +10,8 @@ import org.jetbrains.annotations.NotNull;
 @Getter
 public class CompanyUpdateDTO {
 
-    @NotNull
-    private Long id;
-
     private String name;
+    private String email;
     private String description;
     private String serviceName;
     private String serviceDescription;

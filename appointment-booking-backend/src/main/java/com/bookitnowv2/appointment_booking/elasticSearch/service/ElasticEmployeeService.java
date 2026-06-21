@@ -5,8 +5,10 @@ import co.elastic.clients.elasticsearch._types.query_dsl.BoolQuery;
 import co.elastic.clients.elasticsearch.core.SearchResponse;
 import co.elastic.clients.elasticsearch.core.search.Hit;
 import com.bookitnowv2.appointment_booking.elasticSearch.document.EmployeeDocument;
+import com.bookitnowv2.appointment_booking.elasticSearch.document.UserDocument;
 import com.bookitnowv2.appointment_booking.elasticSearch.repository.IElasticEmployeeRepository;
 import com.bookitnowv2.appointment_booking.entity.Employee;
+import com.bookitnowv2.appointment_booking.entity.User;
 import com.bookitnowv2.appointment_booking.entity.dto.employee.EmployeeSearchOptionsResponseDTO;
 import com.bookitnowv2.appointment_booking.entity.dto.employee.EmployeeSearchRequestDTO;
 import com.bookitnowv2.appointment_booking.entity.dto.employee.SearchOptionDetails.CompanyDTO;
@@ -134,4 +136,10 @@ public class ElasticEmployeeService {
 
         return boolQuery;
     }
+
+    public EmployeeDocument getEmployeeDocument(Employee employee)
+    {
+        return elasticEmployeeRepository.findById(String.valueOf(employee.getId())).orElseThrow(() -> new RuntimeException("User not found in elastic repository!"));
+    }
+
 }

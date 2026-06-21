@@ -6,6 +6,7 @@ import com.bookitnowv2.appointment_booking.entity.dto.company.CompanyGetResponse
 import com.bookitnowv2.appointment_booking.entity.dto.company.CompanySectionCardsResponseDTO;
 import com.bookitnowv2.appointment_booking.entity.dto.company.CompanyUpdateDTO;
 import com.bookitnowv2.appointment_booking.exception.CompanyNotFoundException;
+import com.bookitnowv2.appointment_booking.exception.UserNotFoundException;
 import com.bookitnowv2.appointment_booking.mapper.CompanyMapper;
 import com.bookitnowv2.appointment_booking.repository.*;
 import com.bookitnowv2.appointment_booking.utils.AppointmentStatus;
@@ -73,7 +74,8 @@ public class CompanyService {
 
     public CompanyGetResponseDTO updateCompany(CompanyUpdateDTO updateDTO)
     {
-        Company foundCompany = companyRepository.findById(updateDTO.getId()).orElseThrow(() -> new CompanyNotFoundException(updateDTO.getId().toString()));
+        Long authUserId = SecurityUtils.getCurrentEmployeeId();
+        Company foundCompany = companyRepository.findById(authUserId).orElseThrow(() -> new UserNotFoundException(authUserId.toString()));
 
         if(updateDTO.getName() != null) foundCompany.setName(updateDTO.getName());
         if(updateDTO.getServiceName() != null) foundCompany.setServiceName(updateDTO.getServiceName());

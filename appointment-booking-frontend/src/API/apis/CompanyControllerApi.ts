@@ -15,17 +15,64 @@
 
 import * as runtime from '../runtime';
 import type {
+  CompanyGetResponseDTO,
   CompanySectionCardsResponseDTO,
+  CompanyUpdateDTO,
 } from '../models/index';
 import {
+    CompanyGetResponseDTOFromJSON,
+    CompanyGetResponseDTOToJSON,
     CompanySectionCardsResponseDTOFromJSON,
     CompanySectionCardsResponseDTOToJSON,
+    CompanyUpdateDTOFromJSON,
+    CompanyUpdateDTOToJSON,
 } from '../models/index';
+
+export interface ChangeCompanyDetailsRequest {
+    companyUpdateDTO: CompanyUpdateDTO;
+}
 
 /**
  * 
  */
 export class CompanyControllerApi extends runtime.BaseAPI {
+
+    /**
+     */
+    async changeCompanyDetailsRaw(requestParameters: ChangeCompanyDetailsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<CompanyGetResponseDTO>> {
+        if (requestParameters['companyUpdateDTO'] == null) {
+            throw new runtime.RequiredError(
+                'companyUpdateDTO',
+                'Required parameter "companyUpdateDTO" was null or undefined when calling changeCompanyDetails().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
+
+
+        let urlPath = `/company/change-company-details`;
+
+        const response = await this.request({
+            path: urlPath,
+            method: 'PUT',
+            headers: headerParameters,
+            query: queryParameters,
+            body: CompanyUpdateDTOToJSON(requestParameters['companyUpdateDTO']),
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => CompanyGetResponseDTOFromJSON(jsonValue));
+    }
+
+    /**
+     */
+    async changeCompanyDetails(requestParameters: ChangeCompanyDetailsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<CompanyGetResponseDTO> {
+        const response = await this.changeCompanyDetailsRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
 
     /**
      */
