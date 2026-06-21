@@ -1,4 +1,4 @@
-import { EmployeeDetailsChangeDTO, UserDetailsChangeDTO } from "@/API";
+import { EmployeeDetailsChangeDTO } from "@/API";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
@@ -93,7 +93,7 @@ export default function EmployeeOptionsContent()
   })
 
   const changeUserDetailsMutation = useMutation({
-    mutationFn: (dto: UserDetailsChangeDTO) => api.employee.changeEmployeeDetails({employeeDetailsChangeDTO: dto}),  //changeUserDetails(dto),
+    mutationFn: (dto: EmployeeDetailsChangeDTO) => api.employee.changeEmployeeDetails({employeeDetailsChangeDTO: dto}),  //changeUserDetails(dto),
     onSuccess: (data) => {
    //   setUserData(data.data);
       useEmployeeStore.getState().updateEmployeeObject(data)

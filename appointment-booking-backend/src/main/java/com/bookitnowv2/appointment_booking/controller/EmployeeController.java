@@ -235,6 +235,17 @@ public class EmployeeController {
 
     }
 
+    @PostMapping("/change-employee-details")
+    @PreAuthorize("hasAnyRole('COMPANY','EMPLOYEE')")
+    public ResponseEntity<EmployeeGetResponseDTO> changeEmployeeDetails(@Valid @RequestBody EmployeeDetailsChangeDTO employeeDetailsChangeDTO)
+    {
+        Long employeeId = SecurityUtils.getCurrentEmployeeId();
+        Employee foundEmployee = employeeService.getEmployeeById(employeeId);
+
+        EmployeeGetResponseDTO responseDTO = employeeService.changeEmployeeDetails(foundEmployee, employeeDetailsChangeDTO);
+
+        return ResponseEntity.ok(responseDTO);
+    }
 
     @PostMapping("/upload-avatar")
     public ResponseEntity<String> uploadEmployeeAvatar(@RequestParam("avatar") MultipartFile file) {

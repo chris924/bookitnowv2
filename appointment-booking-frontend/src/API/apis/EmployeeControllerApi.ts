@@ -17,7 +17,9 @@ import * as runtime from '../runtime';
 import type {
   EmployeeAppointmentsByDateResponseDTO,
   EmployeeDataTableResponseDTO,
+  EmployeeDetailsChangeDTO,
   EmployeeEditDataRequestDTO,
+  EmployeeGetResponseDTO,
   EmployeePageForCompanyResponseDTO,
   EmployeePageResponseDTO,
   EmployeeSearchOptionsResponseDTO,
@@ -25,6 +27,7 @@ import type {
   EmployeeSectionCardsResponseDTO,
   EmployeeWorkingHoursResponseDTO,
   SpecialistDTO,
+  UploadUserAvatarRequest,
   WorkhourAddDTO,
   WorkhourEditDTO,
 } from '../models/index';
@@ -33,8 +36,12 @@ import {
     EmployeeAppointmentsByDateResponseDTOToJSON,
     EmployeeDataTableResponseDTOFromJSON,
     EmployeeDataTableResponseDTOToJSON,
+    EmployeeDetailsChangeDTOFromJSON,
+    EmployeeDetailsChangeDTOToJSON,
     EmployeeEditDataRequestDTOFromJSON,
     EmployeeEditDataRequestDTOToJSON,
+    EmployeeGetResponseDTOFromJSON,
+    EmployeeGetResponseDTOToJSON,
     EmployeePageForCompanyResponseDTOFromJSON,
     EmployeePageForCompanyResponseDTOToJSON,
     EmployeePageResponseDTOFromJSON,
@@ -49,11 +56,17 @@ import {
     EmployeeWorkingHoursResponseDTOToJSON,
     SpecialistDTOFromJSON,
     SpecialistDTOToJSON,
+    UploadUserAvatarRequestFromJSON,
+    UploadUserAvatarRequestToJSON,
     WorkhourAddDTOFromJSON,
     WorkhourAddDTOToJSON,
     WorkhourEditDTOFromJSON,
     WorkhourEditDTOToJSON,
 } from '../models/index';
+
+export interface ChangeEmployeeDetailsRequest {
+    employeeDetailsChangeDTO: EmployeeDetailsChangeDTO;
+}
 
 export interface CreateEmployeeWorkhourRequest {
     employeeSlug: string;
@@ -100,10 +113,51 @@ export interface GetSearchEmployeeRequest {
     employeeSearchRequestDTO: EmployeeSearchRequestDTO;
 }
 
+export interface UploadEmployeeAvatarRequest {
+    uploadUserAvatarRequest?: UploadUserAvatarRequest;
+}
+
 /**
  * 
  */
 export class EmployeeControllerApi extends runtime.BaseAPI {
+
+    /**
+     */
+    async changeEmployeeDetailsRaw(requestParameters: ChangeEmployeeDetailsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<EmployeeGetResponseDTO>> {
+        if (requestParameters['employeeDetailsChangeDTO'] == null) {
+            throw new runtime.RequiredError(
+                'employeeDetailsChangeDTO',
+                'Required parameter "employeeDetailsChangeDTO" was null or undefined when calling changeEmployeeDetails().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
+
+
+        let urlPath = `/employees/change-employee-details`;
+
+        const response = await this.request({
+            path: urlPath,
+            method: 'POST',
+            headers: headerParameters,
+            query: queryParameters,
+            body: EmployeeDetailsChangeDTOToJSON(requestParameters['employeeDetailsChangeDTO']),
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => EmployeeGetResponseDTOFromJSON(jsonValue));
+    }
+
+    /**
+     */
+    async changeEmployeeDetails(requestParameters: ChangeEmployeeDetailsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<EmployeeGetResponseDTO> {
+        const response = await this.changeEmployeeDetailsRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
 
     /**
      */
@@ -632,6 +686,40 @@ export class EmployeeControllerApi extends runtime.BaseAPI {
      */
     async getSearchEmployee(requestParameters: GetSearchEmployeeRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<EmployeeSearchOptionsResponseDTO> {
         const response = await this.getSearchEmployeeRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     */
+    async uploadEmployeeAvatarRaw(requestParameters: UploadEmployeeAvatarRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<string>> {
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
+
+
+        let urlPath = `/employees/upload-avatar`;
+
+        const response = await this.request({
+            path: urlPath,
+            method: 'POST',
+            headers: headerParameters,
+            query: queryParameters,
+            body: UploadUserAvatarRequestToJSON(requestParameters['uploadUserAvatarRequest']),
+        }, initOverrides);
+
+        if (this.isJsonMime(response.headers.get('content-type'))) {
+            return new runtime.JSONApiResponse<string>(response);
+        } else {
+            return new runtime.TextApiResponse(response) as any;
+        }
+    }
+
+    /**
+     */
+    async uploadEmployeeAvatar(requestParameters: UploadEmployeeAvatarRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<string> {
+        const response = await this.uploadEmployeeAvatarRaw(requestParameters, initOverrides);
         return await response.value();
     }
 

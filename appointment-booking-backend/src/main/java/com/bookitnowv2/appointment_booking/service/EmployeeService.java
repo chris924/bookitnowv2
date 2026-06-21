@@ -180,6 +180,39 @@ public class EmployeeService {
 
     }
 
+    public EmployeeGetResponseDTO changeEmployeeDetails(Employee employee, EmployeeDetailsChangeDTO dto) {
+        boolean changed = false;
 
+        if (dto.getName() != null && !dto.getName().isEmpty()) {
+            employee.setName(dto.getName());
+            changed = true;
+        }
+        if (dto.getUsername() != null && !dto.getUsername().isEmpty()) {
+            employee.setUsername(dto.getUsername());
+            changed = true;
+        }
+        if (dto.getEmail() != null && !dto.getEmail().isEmpty()) {
+            employee.setEmail(dto.getEmail());
+            changed = true;
+        }
+        if (dto.getAbout() != null && !dto.getAbout().isEmpty()) {
+            employee.setAbout(dto.getAbout());
+            changed = true;
+        }
+        if (dto.getPhoneNumber() != null && !dto.getPhoneNumber().isEmpty()) {
+            employee.setPhoneNumber(dto.getPhoneNumber());
+            changed = true;
+        }
+        if (dto.getStatus() != null) {
+            employee.setStatus(dto.getStatus());
+            changed = true;
+        }
+
+        if (changed) {
+            employeeRepository.save(employee);
+        }
+
+        return EmployeeMapper.toGetDTO(employee);
+    }
 
 }
