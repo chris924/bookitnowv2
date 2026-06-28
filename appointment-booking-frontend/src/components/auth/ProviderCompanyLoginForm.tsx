@@ -9,15 +9,16 @@ import { useMutation } from "@tanstack/react-query";
 import { showToast } from "@/components/ui/own/ShowToast";
 import { useApi } from "@/hooks/useApi";
 import { LoginCompanyRequest } from "@/API";
-import { DialogTitle, DialogDescription } from "@radix-ui/react-dialog";
+import { DialogTitle } from "@radix-ui/react-dialog";
 import { Separator } from "@radix-ui/react-separator";
 import { DialogHeader, DialogFooter } from "@/components/ui/dialog";
 
 interface ProviderCompanyLoginFormProps{
   onOpenChange: (open: boolean) => void;
+  onRegisterClick: () => void;
 }
 
-export default function ProviderCompanyLoginForm({onOpenChange} : ProviderCompanyLoginFormProps) {
+export default function ProviderCompanyLoginForm({onOpenChange, onRegisterClick} : ProviderCompanyLoginFormProps) {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -90,14 +91,11 @@ export default function ProviderCompanyLoginForm({onOpenChange} : ProviderCompan
             </DialogFooter>
             <Label className="flex justify-center p-2">Elfelejtett jelszó</Label>
             <Separator />   
-            <DialogDescription className="text-center m-5">
-               <a
-                    href="#"
-                    className="ml-auto inline-block text-sm underline-offset-4 hover:underline"
-                  >
-                    Fiók Igénylés
-              </a> 
-            </DialogDescription>
+            <div className="flex justify-center m-5">
+              <Button variant="ghost" onClick={onRegisterClick}>
+                Fiók Igénylés
+              </Button>
+            </div>
             </form>
         </CardContent>
       </Card>

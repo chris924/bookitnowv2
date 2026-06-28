@@ -16,17 +16,27 @@
 import * as runtime from '../runtime';
 import type {
   CompanyLoginResponseDTO,
+  CompanyRegistrationDTO,
+  CompanyRegistrationResponseDTO,
   LoginDTO,
 } from '../models/index';
 import {
     CompanyLoginResponseDTOFromJSON,
     CompanyLoginResponseDTOToJSON,
+    CompanyRegistrationDTOFromJSON,
+    CompanyRegistrationDTOToJSON,
+    CompanyRegistrationResponseDTOFromJSON,
+    CompanyRegistrationResponseDTOToJSON,
     LoginDTOFromJSON,
     LoginDTOToJSON,
 } from '../models/index';
 
 export interface LoginCompanyRequest {
     loginDTO: LoginDTO;
+}
+
+export interface RegisterCompanyRequest {
+    companyRegistrationDTO: CompanyRegistrationDTO;
 }
 
 /**
@@ -99,6 +109,43 @@ export class CompanyAuthenticationControllerApi extends runtime.BaseAPI {
      */
     async logoutCompany(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<string> {
         const response = await this.logoutCompanyRaw(initOverrides);
+        return await response.value();
+    }
+
+    /**
+     */
+    async registerCompanyRaw(requestParameters: RegisterCompanyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<CompanyRegistrationResponseDTO>> {
+        if (requestParameters['companyRegistrationDTO'] == null) {
+            throw new runtime.RequiredError(
+                'companyRegistrationDTO',
+                'Required parameter "companyRegistrationDTO" was null or undefined when calling registerCompany().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
+
+
+        let urlPath = `/auth/company/register`;
+
+        const response = await this.request({
+            path: urlPath,
+            method: 'POST',
+            headers: headerParameters,
+            query: queryParameters,
+            body: CompanyRegistrationDTOToJSON(requestParameters['companyRegistrationDTO']),
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => CompanyRegistrationResponseDTOFromJSON(jsonValue));
+    }
+
+    /**
+     */
+    async registerCompany(requestParameters: RegisterCompanyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<CompanyRegistrationResponseDTO> {
+        const response = await this.registerCompanyRaw(requestParameters, initOverrides);
         return await response.value();
     }
 

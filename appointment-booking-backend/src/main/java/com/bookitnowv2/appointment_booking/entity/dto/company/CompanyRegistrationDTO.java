@@ -22,4 +22,6 @@ public class CompanyRegistrationDTO {
 
     private String  description;
 
+    private String place;
+
 }

@@ -17,6 +17,8 @@ models/AuthInfoResponseDTO.ts
 models/CompanyDTO.ts
 models/CompanyGetResponseDTO.ts
 models/CompanyLoginResponseDTO.ts
+models/CompanyRegistrationDTO.ts
+models/CompanyRegistrationResponseDTO.ts
 models/CompanySectionCardsResponseDTO.ts
 models/CompanyUpdateDTO.ts
 models/EmployeeAppointmentTableDataResponseDTO.ts

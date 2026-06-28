@@ -9,7 +9,7 @@ export function CompanyPastAppointmentsQuery()
     return useQuery<AppointmentsByDateResponseDTO[]>({
         queryKey: ["pastAppointments"],
         queryFn: async () =>{
-            const data = await api.appointment.getCompanyPastAppointmentsByMonth();
+            const data = await api.company.getCompanyPastAppointmentsByMonth();
             return data;
         },
         staleTime: 1000 * 60

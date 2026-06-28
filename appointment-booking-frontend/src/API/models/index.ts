@@ -7,6 +7,8 @@ export * from './AuthInfoResponseDTO';
 export * from './CompanyDTO';
 export * from './CompanyGetResponseDTO';
 export * from './CompanyLoginResponseDTO';
+export * from './CompanyRegistrationDTO';
+export * from './CompanyRegistrationResponseDTO';
 export * from './CompanySectionCardsResponseDTO';
 export * from './CompanyUpdateDTO';
 export * from './EmployeeAppointmentTableDataResponseDTO';

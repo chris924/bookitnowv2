@@ -43,7 +43,7 @@ public class CompanyAuthenticationService {
     }
 
 
-    public CompanyRegistrationResponseDTO registerCompany(String name, String password, String email, String appServiceName, String appServiceDescription, String description)
+    public CompanyRegistrationResponseDTO registerCompany(String name, String password, String email, String appServiceName, String appServiceDescription, String description, String place)
     {
         try{
 
@@ -66,6 +66,7 @@ public class CompanyAuthenticationService {
             newCompany.setServiceName(appServiceName);
             newCompany.setEmployees(employees);
             newCompany.setServiceDescription(appServiceDescription);
+            newCompany.setPlace(place);
 
            Company savedCompany = companyService.saveCompany(newCompany);
 

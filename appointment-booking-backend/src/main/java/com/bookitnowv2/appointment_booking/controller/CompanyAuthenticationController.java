@@ -4,6 +4,8 @@ import com.bookitnowv2.appointment_booking.configuration.SecurityUtils;
 import com.bookitnowv2.appointment_booking.entity.Company;
 import com.bookitnowv2.appointment_booking.entity.dto.auth.LoginDTO;
 import com.bookitnowv2.appointment_booking.entity.dto.company.CompanyLoginResponseDTO;
+import com.bookitnowv2.appointment_booking.entity.dto.company.CompanyRegistrationDTO;
+import com.bookitnowv2.appointment_booking.entity.dto.company.CompanyRegistrationResponseDTO;
 import com.bookitnowv2.appointment_booking.exception.BadCredentialException;
 import com.bookitnowv2.appointment_booking.exception.CompanyNotFoundException;
 import com.bookitnowv2.appointment_booking.repository.ICompanyRepository;
@@ -64,6 +66,21 @@ public class CompanyAuthenticationController {
 
     }
 
+
+    @PostMapping("/register")
+    public ResponseEntity<CompanyRegistrationResponseDTO> registerCompany(@Valid @RequestBody CompanyRegistrationDTO body, @NotNull BindingResult bindingResult)
+    {
+        if (bindingResult.hasErrors())
+        {
+            throw new BadCredentialsException("Invalid company register request body!");
+        }
+
+        CompanyRegistrationResponseDTO response = companyAuthenticationService.registerCompany(
+                body.getName(), body.getPassword(), body.getEmail(),
+                body.getAppServiceName(), body.getAppServiceDescription(), body.getDescription(), body.getPlace());
+
+        return ResponseEntity.ok(response);
+    }
 
     @PostMapping("/logout")
     @Transactional

@@ -27,7 +27,7 @@ export function EmployeePastAppointmentsQuery()
     return useQuery<AppointmentsByDateResponseDTO[]>({
         queryKey: ["pastEmployeeAppointments"],
         queryFn: async () =>{
-            const data = await api.appointment.getEmployeePastAppointmentsByMonth(); 
+            const data = await api.employee.getEmployeePastAppointmentsByMonth(); 
             return data;
         },
         staleTime: 1000 * 60
