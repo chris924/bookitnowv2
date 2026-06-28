@@ -22,54 +22,31 @@ public class AvatarController {
 
     private final Path avatarBasePath;
 
-    public AvatarController(@Value("${avatar.user.directory.path}") String basePath) {
+    public AvatarController(@Value("${avatar.directory.path}") String basePath) {
         this.avatarBasePath = Paths.get(basePath);
     }
 
-
     @GetMapping("/employee/{filename}")
     public ResponseEntity<?> getEmployeeAvatar(@PathVariable String filename) {
-        Path avatarPath = avatarBasePath.resolve("employeeavatars").resolve(filename);
-
-        try {
-            UrlResource resource = new UrlResource(avatarPath.toUri());
-
-            if (!resource.exists() || !resource.isReadable()) {
-                return ResponseEntity.notFound().build();
-            }
-
-            // Detect MIME type from file
-            String mimeType = Files.probeContentType(avatarPath);
-            if (mimeType == null) {
-                mimeType = MediaType.APPLICATION_OCTET_STREAM_VALUE; // fallback
-            }
-
-            return ResponseEntity.ok()
-                    .contentType(MediaType.parseMediaType(mimeType))
-                    .body(resource);
-
-        } catch (MalformedURLException e) {
-            return ResponseEntity.badRequest().build();
-        } catch (IOException e) {
-            return ResponseEntity.internalServerError().build();
-        }
+        return serveAvatar(avatarBasePath.resolve("employeeavatars").resolve(filename));
     }
 
     @GetMapping("/user/{filename}")
     public ResponseEntity<?> getUserAvatar(@PathVariable String filename) {
-        Path avatarPath = avatarBasePath.resolve("useravatars").resolve(filename);
+        return serveAvatar(avatarBasePath.resolve("useravatars").resolve(filename));
+    }
 
+    private ResponseEntity<?> serveAvatar(Path avatarPath) {
         try {
             UrlResource resource = new UrlResource(avatarPath.toUri());
 
             if (!resource.exists() || !resource.isReadable()) {
-                return ResponseEntity.notFound().build();
+                return serveDefaultAvatar();
             }
 
-            // Detect MIME type from file
             String mimeType = Files.probeContentType(avatarPath);
             if (mimeType == null) {
-                mimeType = MediaType.APPLICATION_OCTET_STREAM_VALUE; // fallback
+                mimeType = MediaType.APPLICATION_OCTET_STREAM_VALUE;
             }
 
             return ResponseEntity.ok()
@@ -83,4 +60,21 @@ public class AvatarController {
         }
     }
 
+    private ResponseEntity<?> serveDefaultAvatar() throws IOException {
+        Path defaultAvatarPath = avatarBasePath.resolve("default-avatar.jpg");
+        UrlResource defaultResource = new UrlResource(defaultAvatarPath.toUri());
+
+        if (!defaultResource.exists() || !defaultResource.isReadable()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        String mimeType = Files.probeContentType(defaultAvatarPath);
+        if (mimeType == null) {
+            mimeType = MediaType.IMAGE_JPEG_VALUE;
+        }
+
+        return ResponseEntity.ok()
+                .contentType(MediaType.parseMediaType(mimeType))
+                .body(defaultResource);
+    }
 }

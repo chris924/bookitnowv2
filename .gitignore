@@ -3,7 +3,9 @@
 .env
 /appointment-booking-backend/src/main/resources/
 /appointment-booking-backend/.env
-/appointment-booking-backend/uploads
+/appointment-booking-backend/uploads/avatars/useravatars
+/appointment-booking-backend/uploads/avatars/employeeavatars
+!/appointment-booking-backend/uploads/avatars/default-avatar.jpg
 openapi.json
 openapi.md5
 /appointment-booking-frontend/src/API/models/
