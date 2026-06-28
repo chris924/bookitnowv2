@@ -2,9 +2,8 @@ import { Outlet } from "react-router-dom";
 import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar";
 
 import React from "react";
-import { AppSidebar } from "@/EMPLOYEE/components/dashboard/app-sidebar";
-import { SiteHeader } from "@/EMPLOYEE/components/dashboard/site-header";
-import { ModeToggle } from "../ui/own/theme-toggle";
+import { AppSidebar } from "@/EMPLOYEE/features/dashboard/components/app-sidebar";
+import { SiteHeader } from "@/components/dashboard/site-header";
 
 
 export default function EmployeeLayout() {

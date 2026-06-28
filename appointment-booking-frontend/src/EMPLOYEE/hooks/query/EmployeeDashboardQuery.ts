@@ -1,6 +1,5 @@
 import { AppointmentsByDateResponseDTO, EmployeeAppointmentTableDataResponseDTO, EmployeeSectionCardsResponseDTO } from "@/API";
 import { useApi } from "@/hooks/useApi";
-import { handleAPIError } from "@/lib/utils";
 import { useQuery } from "@tanstack/react-query";
 
 export function EmployeeSectionCardsQuery()

@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { UserDataResponseDTO } from "@/API/models/UserDataResponseDTO";
-import { AuthInfoResponseDTO, CompanyGetResponseDTO, EmployeeGetResponseDTO } from "@/API";
+import { CompanyGetResponseDTO, EmployeeGetResponseDTO } from "@/API";
 import { api } from "@/lib/apiClient";
 import { showToast } from "@/components/ui/own/ShowToast";
 
@@ -59,7 +59,7 @@ export const useUserStore = create<UserState>((set) => ({
   })),
 
   updateUserObject: (updatedUser: UserDataResponseDTO) =>
-    set((state) => ({
+    set(() => ({
       user: updatedUser
     })),
 
@@ -99,7 +99,7 @@ export const useEmployeeStore = create<EmployeeState>((set) => ({
   })),
 
   updateEmployeeObject: (updatedUser: EmployeeGetResponseDTO) =>
-    set((state) => ({
+    set(() => ({
       employee: updatedUser
     })),
 
@@ -122,15 +122,12 @@ export const useCompanyStore = create<CompanyState>((set) => ({
   checkCompanyAuth: async () => {
     try {
       const res = await api.authInfo.checkAuth();
-      console.log("RES: ", res);
       if (res.companyGetResponseDTO) {
         set({ company: res.companyGetResponseDTO, isAuthenticated: true, companyLoading: false });
-        console.log("FFFF");
       }
       else
         set({ company: null, isAuthenticated: false, companyLoading: false });
-    } catch(error){
-        console.error("checkAuth error:", error);
+    } catch {
       set({ company: null, isAuthenticated: false, companyLoading: false });
     }
   },
@@ -141,7 +138,7 @@ export const useCompanyStore = create<CompanyState>((set) => ({
   })),
 
   updateCompanyObject: (updatedUser: CompanyGetResponseDTO) =>
-    set((state) => ({
+    set(() => ({
       company: updatedUser
     })),
 

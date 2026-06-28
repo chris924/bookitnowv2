@@ -1,11 +1,11 @@
 import { useUserStore } from "@/stores/AuthStore";
 import { useEffect, useState } from "react";
-import GuestLogin from "../ui/own/GuestLogin";
+import GuestLogin from "../auth/GuestLogin";
 import { ModeToggle } from "../ui/own/theme-toggle";
 import { Button } from "../ui/button";
 import Loader from "../ui/own/Loader";
 import { useLocation } from "react-router-dom";
-import ProviderLoginFormWrapper from "../ui/own/ProviderLoginFormWrapper";
+import ProviderLoginFormWrapper from "../auth/ProviderLoginFormWrapper";
 import DropdownUser from "@/USER/features/home/components/UserDropdown";
 
 

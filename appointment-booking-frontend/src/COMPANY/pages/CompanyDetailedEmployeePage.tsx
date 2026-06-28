@@ -1,5 +1,5 @@
 import { useParams } from "react-router-dom";
-import CompanyDetailedEmployeeContent from "../features/CompanyDetailedEmployeeContent";
+import CompanyDetailedEmployeeContent from "../features/employee/CompanyDetailedEmployeeContent";
 import { CompanyDedicatedEmployeeData } from "../hooks/query/CompanyDedicatedEmployeeQuery";
 import { showToast } from "@/components/ui/own/ShowToast";
 import Loader from "@/components/ui/own/Loader";

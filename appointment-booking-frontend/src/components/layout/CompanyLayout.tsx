@@ -3,9 +3,9 @@ import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar";
 
 import React from "react";
 import Loader from "../ui/own/Loader";
-import { CompanyEmployeeTableQuery } from "@/COMPANY/hooks/query/CompanyDashboardQuerys";
-import { AppSidebar } from "@/COMPANY/components/dashboard/app-sidebar";
-import { SiteHeader } from "@/COMPANY/components/dashboard/site-header";
+import { CompanyEmployeeTableQuery } from "@/COMPANY/hooks/query/CompanyDashboardQueries";
+import { AppSidebar } from "@/COMPANY/features/dashboard/components/app-sidebar";
+import { SiteHeader } from "@/components/dashboard/site-header";
 
 export default function CompanyLayout() {
   const { data, isLoading } = CompanyEmployeeTableQuery(); // TODO: Refactor so only a dto which has employee name, and id gets into data

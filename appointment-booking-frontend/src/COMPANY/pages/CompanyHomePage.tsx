@@ -1,4 +1,4 @@
-import CompanyDashboard from "../features/CompanyDashboard";
+import CompanyDashboard from "../features/dashboard/CompanyDashboard";
 
 
 

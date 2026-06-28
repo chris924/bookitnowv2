@@ -1,0 +1,43 @@
+import { AppointmentsByDateResponseDTO, CompanySectionCardsResponseDTO, EmployeeDataTableResponseDTO } from "@/API";
+import { useApi } from "@/hooks/useApi";
+import { useQuery } from "@tanstack/react-query";
+
+export function CompanyPastAppointmentsQuery()
+{
+    const api = useApi();
+
+    return useQuery<AppointmentsByDateResponseDTO[]>({
+        queryKey: ["pastAppointments"],
+        queryFn: async () =>{
+            const data = await api.appointment.getCompanyPastAppointmentsByMonth();
+            return data;
+        },
+        staleTime: 1000 * 60
+    });
+}
+
+export function CompanyTotalRevenueQuery()
+{
+    const api = useApi();
+    return useQuery<CompanySectionCardsResponseDTO>({
+        queryKey: ["sectionCardStatistics"],
+        queryFn: async () => {
+            const data = await api.company.getCompanySectionCardsStatistics();
+            return data;
+        },
+        staleTime: 1000 * 60
+    })
+}
+
+export function CompanyEmployeeTableQuery()
+{
+    const api = useApi();
+    return useQuery<EmployeeDataTableResponseDTO[]>({
+        queryKey: ["employeeTable"],
+        queryFn: async () => {
+            const data = await api.employee.getCompanyEmployeeTable();
+            return data;
+        },
+        staleTime: 1000 * 60
+    })
+}

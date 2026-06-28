@@ -1,5 +1,5 @@
 import { ServiceGetResponseDTO } from "@/API"
-import EmployeeServicesCard from "@/COMPANY/components/employee-components/employee-services-card"
+import EmployeeServicesCard from "@/COMPANY/features/employee/components/employee-services-card"
 
 type EmployeeServicesContentProps = {
 

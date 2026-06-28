@@ -7,9 +7,9 @@ import interactionPlugin from '@fullcalendar/interaction'; // for click/select
 import { useEmployeeStore, useUserStore } from '@/stores/AuthStore';
 
 
-import GuestLogin from '@/components/ui/own/GuestLogin';
+import GuestLogin from '@/components/auth/GuestLogin';
 import { EventImpl } from '@fullcalendar/core/internal';
-import ApproveDialogForm from '@/components/ui/own/ApproveDialogForm';
+import ApproveDialogForm from '@/components/dialogs/ApproveDialogForm';
 import { useBookAppointment } from '@/USER/hooks/query/UserAppointmentsQuery';
 import { AppointmentSlotResponseDTO, SlotResponseDTO } from '@/API';
 

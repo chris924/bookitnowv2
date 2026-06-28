@@ -1,5 +1,5 @@
 import { EmployeeWorkingHoursResponseDTO } from "@/API"
-import EmployeeWorkingHoursCard from "@/COMPANY/components/employee-components/employee-workhours-card"
+import EmployeeWorkingHoursCard from "@/COMPANY/features/employee/components/employee-workhours-card"
 import { showToast } from "@/components/ui/own/ShowToast"
 import { createSlug } from "@/lib/utils"
 import { useEmployeeStore } from "@/stores/AuthStore"

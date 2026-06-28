@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/card"
 import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
-import ApproveDialogForm from "@/components/ui/own/ApproveDialogForm";
+import ApproveDialogForm from "@/components/dialogs/ApproveDialogForm";
 import { AppointmentGetResponseDTO } from "@/API/models/AppointmentGetResponseDTO";
 import Loader from "@/components/ui/own/Loader";
 import { formatTime } from "@/lib/utils";

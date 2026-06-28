@@ -2,7 +2,7 @@ import Loader from "@/components/ui/own/Loader";
 import { showToast } from "@/components/ui/own/ShowToast";
 import { useParams } from "react-router-dom";
 import { EmployeeAppointmentQuery } from "../hooks/query/EmployeeAppointmentQuery";
-import EmployeeDetailedAppointment from "../features/EmployeeDetailedAppointment";
+import EmployeeDetailedAppointment from "../features/appointment/EmployeeDetailedAppointment";
 
 
 
