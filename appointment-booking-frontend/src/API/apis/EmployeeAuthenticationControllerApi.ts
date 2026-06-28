@@ -16,11 +16,18 @@
 import * as runtime from '../runtime';
 import type {
   LoginDTO,
+  PasswordChangeDTO,
 } from '../models/index';
 import {
     LoginDTOFromJSON,
     LoginDTOToJSON,
+    PasswordChangeDTOFromJSON,
+    PasswordChangeDTOToJSON,
 } from '../models/index';
+
+export interface ChangePassword1Request {
+    passwordChangeDTO: PasswordChangeDTO;
+}
 
 export interface LoginEmployeeRequest {
     loginDTO: LoginDTO;
@@ -30,6 +37,47 @@ export interface LoginEmployeeRequest {
  * 
  */
 export class EmployeeAuthenticationControllerApi extends runtime.BaseAPI {
+
+    /**
+     */
+    async changePassword1Raw(requestParameters: ChangePassword1Request, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<string>> {
+        if (requestParameters['passwordChangeDTO'] == null) {
+            throw new runtime.RequiredError(
+                'passwordChangeDTO',
+                'Required parameter "passwordChangeDTO" was null or undefined when calling changePassword1().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
+
+
+        let urlPath = `/auth/employee/change-password`;
+
+        const response = await this.request({
+            path: urlPath,
+            method: 'POST',
+            headers: headerParameters,
+            query: queryParameters,
+            body: PasswordChangeDTOToJSON(requestParameters['passwordChangeDTO']),
+        }, initOverrides);
+
+        if (this.isJsonMime(response.headers.get('content-type'))) {
+            return new runtime.JSONApiResponse<string>(response);
+        } else {
+            return new runtime.TextApiResponse(response) as any;
+        }
+    }
+
+    /**
+     */
+    async changePassword1(requestParameters: ChangePassword1Request, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<string> {
+        const response = await this.changePassword1Raw(requestParameters, initOverrides);
+        return await response.value();
+    }
 
     /**
      */

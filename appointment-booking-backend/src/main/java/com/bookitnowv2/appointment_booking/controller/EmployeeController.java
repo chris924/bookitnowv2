@@ -7,6 +7,7 @@ import com.bookitnowv2.appointment_booking.entity.Employee;
 import com.bookitnowv2.appointment_booking.entity.EmployeeWorkingHours;
 import com.bookitnowv2.appointment_booking.entity.dto.company.AppointmentsByDateResponseDTO;
 import com.bookitnowv2.appointment_booking.entity.dto.employee.*;
+import com.bookitnowv2.appointment_booking.service.EmployeeAuthenticationService;
 import com.bookitnowv2.appointment_booking.entity.dto.employee.SearchOptionDetails.SpecialistDTO;
 import com.bookitnowv2.appointment_booking.entity.dto.workhour.WorkhourAddDTO;
 import com.bookitnowv2.appointment_booking.entity.dto.workhour.WorkhourEditDTO;
@@ -44,6 +45,7 @@ import java.util.UUID;
 public class EmployeeController {
 
     private final EmployeeService employeeService;
+    private final EmployeeAuthenticationService employeeAuthenticationService;
     private final AppointmentService appointmentService;
     private final IEmployeeRepository employeeRepository;
     private final ServiceEntityService serviceEntityService;
@@ -53,10 +55,11 @@ public class EmployeeController {
     private final Path basePath;
     private final String frontendAddress;
 
-    public EmployeeController(EmployeeService employeeService, ICompanyRepository companyRepository,@Value("${avatar.user.directory.path}") String basePath,
+    public EmployeeController(EmployeeService employeeService, EmployeeAuthenticationService employeeAuthenticationService, ICompanyRepository companyRepository,@Value("${avatar.user.directory.path}") String basePath,
                               @Value("${frontend.ip.address}") String frontendAddress, IEmployeeRepository employeeRepository, ServiceEntityService serviceEntityService, AppointmentService appointmentService, EmployeeWorkingHoursService employeeWorkingHoursService, EmployeeMapper employeeMapper)
     {
         this.employeeService = employeeService;
+        this.employeeAuthenticationService = employeeAuthenticationService;
         this.serviceEntityService = serviceEntityService;
         this.appointmentService = appointmentService;
         this.employeeWorkingHoursService = employeeWorkingHoursService;
@@ -101,6 +104,17 @@ public class EmployeeController {
     {
         List<EmployeeDataTableResponseDTO> employeeTableData = employeeService.getCompanyEmployeeTable();
         return ResponseEntity.ok(employeeTableData);
+    }
+
+    @PostMapping("/create-employee")
+    @PreAuthorize("hasRole('COMPANY')")
+    public ResponseEntity<EmployeeGetResponseDTO> createEmployee(@Valid @RequestBody EmployeeCreateDTO employeeCreateDTO)
+    {
+        Long companyId = SecurityUtils.getCurrentCompanyId();
+        Company foundCompany = companyRepository.findById(companyId).orElseThrow(() -> new CompanyNotFoundException(companyId.toString()));
+
+        EmployeeGetResponseDTO response = employeeAuthenticationService.createEmployeeForCompany(employeeCreateDTO, foundCompany);
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/{employeeSlug}/previous-booking-stat")

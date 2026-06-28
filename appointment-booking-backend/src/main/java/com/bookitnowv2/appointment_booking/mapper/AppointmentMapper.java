@@ -39,7 +39,8 @@ public class AppointmentMapper {
                 serviceEntity.getName(),
                 serviceEntity.getPrice(),
                 isActive,
-                serviceEntity.getDuration()
+                serviceEntity.getDuration(),
+                appointment.getRating()
         );
     }
 

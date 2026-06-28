@@ -111,6 +111,7 @@ import { createSlug, handleAPIError } from "@/lib/utils"
 import Loader from "@/components/ui/own/Loader"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import ApproveDialogForm from "@/components/dialogs/ApproveDialogForm"
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog"
 import { useState } from "react"
 import { useApi } from "@/hooks/useApi"
 import { LoginUserRequest } from "@/API"
@@ -188,6 +189,8 @@ export function DataTable({
   id: number
 } | null>(null);
  const [showDeleteEmployee, setShowDeleteEmployee] = useState(false);
+  const [showCreateEmployee, setShowCreateEmployee] = useState(false);
+  const [newEmployee, setNewEmployee] = useState({ name: "", username: "", email: "", password: "" });
 
   const api = useApi();
   const queryClient = useQueryClient();
@@ -213,6 +216,17 @@ function deleteEmployee(employeeSlug : string)
 {
   mutate(employeeSlug);
 }
+
+  const createEmployeeMutation = useMutation({
+    mutationFn: () => api.employee.createEmployee({ employeeCreateDTO: newEmployee }),
+    onSuccess: async () => {
+      showToast.success("Alkalmazott létrehozva!");
+      setShowCreateEmployee(false);
+      setNewEmployee({ name: "", username: "", email: "", password: "" });
+      await queryClient.invalidateQueries({ queryKey: ["employeeTable"] });
+    },
+    onError: (error) => handleAPIError(error)
+  })
 
 
 function handleDeleteClick(name: string, id: number) {
@@ -438,7 +452,7 @@ function handleDeleteClick(name: string, id: number) {
                 })}
             </DropdownMenuContent>
           </DropdownMenu>
-          <Button variant="outline" size="sm">
+          <Button variant="outline" size="sm" onClick={() => setShowCreateEmployee(true)}>
             <IconPlus />
             <span className="hidden lg:inline">Új Alkalmazott Hozzáadás</span>
           </Button>
@@ -604,6 +618,36 @@ function handleDeleteClick(name: string, id: number) {
     isLoading={isPending}
   />
 )}
+    <Dialog open={showCreateEmployee} onOpenChange={setShowCreateEmployee}>
+      <DialogContent className="sm:max-w-[425px]">
+        <DialogHeader>
+          <DialogTitle>Új alkalmazott hozzáadása</DialogTitle>
+        </DialogHeader>
+        <form onSubmit={(e) => { e.preventDefault(); createEmployeeMutation.mutate(); }} className="grid gap-4 py-4">
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="emp-name" className="text-right">Név</Label>
+            <Input id="emp-name" value={newEmployee.name} onChange={(e) => setNewEmployee({...newEmployee, name: e.target.value})} className="col-span-3" required />
+          </div>
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="emp-username" className="text-right">Felhasználónév</Label>
+            <Input id="emp-username" value={newEmployee.username} onChange={(e) => setNewEmployee({...newEmployee, username: e.target.value})} className="col-span-3" required />
+          </div>
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="emp-email" className="text-right">E-mail</Label>
+            <Input id="emp-email" type="email" value={newEmployee.email} onChange={(e) => setNewEmployee({...newEmployee, email: e.target.value})} className="col-span-3" required />
+          </div>
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="emp-password" className="text-right">Jelszó</Label>
+            <Input id="emp-password" type="password" value={newEmployee.password} onChange={(e) => setNewEmployee({...newEmployee, password: e.target.value})} className="col-span-3" required />
+          </div>
+          <DialogFooter>
+            <Button type="submit" disabled={createEmployeeMutation.isPending}>
+              {createEmployeeMutation.isPending ? "Létrehozás..." : "Létrehozás"}
+            </Button>
+          </DialogFooter>
+        </form>
+      </DialogContent>
+    </Dialog>
     </>
   )
 }

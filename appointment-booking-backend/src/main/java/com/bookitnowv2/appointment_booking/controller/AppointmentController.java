@@ -7,6 +7,7 @@ import com.bookitnowv2.appointment_booking.entity.ServiceEntity;
 import com.bookitnowv2.appointment_booking.entity.User;
 import com.bookitnowv2.appointment_booking.entity.dto.appointment.AppointmentGetResponseDTO;
 import com.bookitnowv2.appointment_booking.entity.dto.appointment.AppointmentSlotResponseDTO;
+import com.bookitnowv2.appointment_booking.entity.dto.appointment.RateAppointmentDTO;
 import com.bookitnowv2.appointment_booking.entity.dto.company.AppointmentsByDateResponseDTO;
 import com.bookitnowv2.appointment_booking.entity.dto.employee.EmployeeAppointmentTableDataResponseDTO;
 import com.bookitnowv2.appointment_booking.exception.UserNotFoundException;
@@ -128,6 +129,14 @@ public class AppointmentController {
 
 
 
+
+    @PostMapping("/rate")
+    public ResponseEntity<String> rateAppointment(@RequestBody RateAppointmentDTO body)
+    {
+        Long userId = SecurityUtils.getCurrentUserId();
+        appointmentService.rateAppointment(body.getAppointmentId(), body.getRating(), userId);
+        return ResponseEntity.ok("Értékelés elmentve!");
+    }
 
     @GetMapping("/employee-appointments-table")
     public List<EmployeeAppointmentTableDataResponseDTO> getEmployeeAppointmentsTable()

@@ -23,6 +23,7 @@ models/CompanySectionCardsResponseDTO.ts
 models/CompanyUpdateDTO.ts
 models/EmployeeAppointmentTableDataResponseDTO.ts
 models/EmployeeAppointmentsByDateResponseDTO.ts
+models/EmployeeCreateDTO.ts
 models/EmployeeDataTableResponseDTO.ts
 models/EmployeeDetailsChangeDTO.ts
 models/EmployeeEditDataRequestDTO.ts
@@ -34,7 +35,9 @@ models/EmployeeSearchRequestDTO.ts
 models/EmployeeSectionCardsResponseDTO.ts
 models/EmployeeWorkingHoursResponseDTO.ts
 models/LoginDTO.ts
+models/PasswordChangeDTO.ts
 models/PlaceDTO.ts
+models/RateAppointmentDTO.ts
 models/ServiceEntityAddRequestDTO.ts
 models/ServiceEntityModifyRequestDTO.ts
 models/ServiceGetResponseDTO.ts

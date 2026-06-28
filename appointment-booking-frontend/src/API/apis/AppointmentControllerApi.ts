@@ -18,6 +18,7 @@ import type {
   AppointmentGetResponseDTO,
   AppointmentSlotResponseDTO,
   EmployeeAppointmentTableDataResponseDTO,
+  RateAppointmentDTO,
 } from '../models/index';
 import {
     AppointmentGetResponseDTOFromJSON,
@@ -26,6 +27,8 @@ import {
     AppointmentSlotResponseDTOToJSON,
     EmployeeAppointmentTableDataResponseDTOFromJSON,
     EmployeeAppointmentTableDataResponseDTOToJSON,
+    RateAppointmentDTOFromJSON,
+    RateAppointmentDTOToJSON,
 } from '../models/index';
 
 export interface BookAppointmentRequest {
@@ -46,6 +49,10 @@ export interface GetEmployeeAppointmentDetailsRequest {
 
 export interface GetEmployeeMonthlyAppointmentsRequest {
     serviceId: number;
+}
+
+export interface RateAppointmentRequest {
+    rateAppointmentDTO: RateAppointmentDTO;
 }
 
 /**
@@ -291,6 +298,47 @@ export class AppointmentControllerApi extends runtime.BaseAPI {
      */
     async getUserBookedAppointments(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<AppointmentGetResponseDTO>> {
         const response = await this.getUserBookedAppointmentsRaw(initOverrides);
+        return await response.value();
+    }
+
+    /**
+     */
+    async rateAppointmentRaw(requestParameters: RateAppointmentRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<string>> {
+        if (requestParameters['rateAppointmentDTO'] == null) {
+            throw new runtime.RequiredError(
+                'rateAppointmentDTO',
+                'Required parameter "rateAppointmentDTO" was null or undefined when calling rateAppointment().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
+
+
+        let urlPath = `/appointments/rate`;
+
+        const response = await this.request({
+            path: urlPath,
+            method: 'POST',
+            headers: headerParameters,
+            query: queryParameters,
+            body: RateAppointmentDTOToJSON(requestParameters['rateAppointmentDTO']),
+        }, initOverrides);
+
+        if (this.isJsonMime(response.headers.get('content-type'))) {
+            return new runtime.JSONApiResponse<string>(response);
+        } else {
+            return new runtime.TextApiResponse(response) as any;
+        }
+    }
+
+    /**
+     */
+    async rateAppointment(requestParameters: RateAppointmentRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<string> {
+        const response = await this.rateAppointmentRaw(requestParameters, initOverrides);
         return await response.value();
     }
 

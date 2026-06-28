@@ -12,7 +12,10 @@ import { useEffect, useState } from "react";
 import ApproveDialogForm from "@/components/dialogs/ApproveDialogForm";
 import { AppointmentGetResponseDTO } from "@/API/models/AppointmentGetResponseDTO";
 import Loader from "@/components/ui/own/Loader";
-import { formatTime } from "@/lib/utils";
+import { formatTime, handleAPIError } from "@/lib/utils";
+import { useApi } from "@/hooks/useApi";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { showToast } from "@/components/ui/own/ShowToast";
 import { formatDate } from "@fullcalendar/core/index.js";
 
 
@@ -30,6 +33,20 @@ export default function UserBookedAppointmentsForm()
     const cancelMutation = useCancelAppointment();
     const [showApproveForm, setShowApproveForm] = useState(false);
     const [cancelAppointmentData, setCancelAppointmentData] = useState<AppointmentGetResponseDTO>();
+    const [hoverRating, setHoverRating] = useState<{ id: number; stars: number } | null>(null);
+
+    const api = useApi();
+    const queryClient = useQueryClient();
+
+    const rateMutation = useMutation({
+      mutationFn: (params: { appointmentId: number; rating: number }) =>
+        api.appointment.rateAppointment({ rateAppointmentDTO: params }),
+      onSuccess: async () => {
+        showToast.success("Értékelés elmentve!");
+        await queryClient.invalidateQueries({ queryKey: ["appointments"] });
+      },
+      onError: handleAPIError,
+    });
     
     const now = new Date();
 
@@ -133,6 +150,31 @@ export default function UserBookedAppointmentsForm()
                 </div>
               </CardContent>
 
+              <CardContent>
+                {appointment.rating ? (
+                  <p className="text-sm text-yellow-600 font-medium">
+                    {"★".repeat(appointment.rating)}{"☆".repeat(5 - appointment.rating)} Értékelve
+                  </p>
+                ) : appointment.slotResponseDTO.status !== "Cancelled" ? (
+                  <div className="flex items-center gap-1">
+                    <span className="text-sm text-muted-foreground mr-1">Értékelés:</span>
+                    {[1, 2, 3, 4, 5].map((star) => (
+                      <button
+                        key={star}
+                        type="button"
+                        className="text-xl cursor-pointer transition-colors hover:text-yellow-500"
+                        style={{ color: hoverRating?.id === appointment.slotResponseDTO.id && hoverRating.stars >= star ? "#eab308" : "#d1d5db" }}
+                        onMouseEnter={() => setHoverRating({ id: appointment.slotResponseDTO.id, stars: star })}
+                        onMouseLeave={() => setHoverRating(null)}
+                        onClick={() => rateMutation.mutate({ appointmentId: appointment.slotResponseDTO.id, rating: star })}
+                        disabled={rateMutation.isPending}
+                      >
+                        ★
+                      </button>
+                    ))}
+                  </div>
+                ) : null}
+              </CardContent>
               <CardFooter className="flex justify-between items-center text-sm text-muted-foreground">
                 <p>
                   {formatDate(appointment.slotResponseDTO.date.toString())} • {formatTime(appointment.slotResponseDTO.start)}–{formatTime(appointment.slotResponseDTO.end)}

@@ -3,6 +3,7 @@ package com.bookitnowv2.appointment_booking.controller;
 import com.bookitnowv2.appointment_booking.configuration.SecurityUtils;
 import com.bookitnowv2.appointment_booking.entity.User;
 import com.bookitnowv2.appointment_booking.entity.dto.auth.LoginDTO;
+import com.bookitnowv2.appointment_booking.entity.dto.auth.PasswordChangeDTO;
 import com.bookitnowv2.appointment_booking.entity.dto.user.UserLoginResponseDTO;
 import com.bookitnowv2.appointment_booking.entity.dto.user.UserRegistrationDTO;
 import com.bookitnowv2.appointment_booking.entity.dto.user.UserRegistrationResponseDTO;
@@ -11,6 +12,7 @@ import com.bookitnowv2.appointment_booking.exception.UserNotFoundException;
 import com.bookitnowv2.appointment_booking.repository.IUserRepository;
 import com.bookitnowv2.appointment_booking.service.UserAuthenticationService;
 import com.bookitnowv2.appointment_booking.utils.CookieUtils;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.transaction.Transactional;
@@ -32,11 +34,13 @@ public class UserAuthenticationController {
 
     private final UserAuthenticationService userAuthenticationService;
     private final IUserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public UserAuthenticationController(UserAuthenticationService userAuthenticationService, IUserRepository userRepository)
+    public UserAuthenticationController(UserAuthenticationService userAuthenticationService, IUserRepository userRepository, PasswordEncoder passwordEncoder)
     {
         this.userAuthenticationService = userAuthenticationService;
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @PostMapping("/login")
@@ -77,6 +81,21 @@ public class UserAuthenticationController {
 
         return ResponseEntity.ok(response);
 
+    }
+
+    @PostMapping("/change-password")
+    public ResponseEntity<String> changePassword(@Valid @RequestBody PasswordChangeDTO body)
+    {
+        Long userId = SecurityUtils.getCurrentUserId();
+        User foundUser = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId.toString()));
+
+        if (!passwordEncoder.matches(body.getOldPassword(), foundUser.getPassword())) {
+            throw new BadCredentialException("A régi jelszó nem egyezik!");
+        }
+
+        foundUser.setPassword(passwordEncoder.encode(body.getNewPassword()));
+        userRepository.save(foundUser);
+        return ResponseEntity.ok("Jelszó sikeresen megváltoztatva!");
     }
 
     @PostMapping("/logout")

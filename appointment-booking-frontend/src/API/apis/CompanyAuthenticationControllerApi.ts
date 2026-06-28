@@ -19,6 +19,7 @@ import type {
   CompanyRegistrationDTO,
   CompanyRegistrationResponseDTO,
   LoginDTO,
+  PasswordChangeDTO,
 } from '../models/index';
 import {
     CompanyLoginResponseDTOFromJSON,
@@ -29,7 +30,13 @@ import {
     CompanyRegistrationResponseDTOToJSON,
     LoginDTOFromJSON,
     LoginDTOToJSON,
+    PasswordChangeDTOFromJSON,
+    PasswordChangeDTOToJSON,
 } from '../models/index';
+
+export interface ChangePassword2Request {
+    passwordChangeDTO: PasswordChangeDTO;
+}
 
 export interface LoginCompanyRequest {
     loginDTO: LoginDTO;
@@ -43,6 +50,47 @@ export interface RegisterCompanyRequest {
  * 
  */
 export class CompanyAuthenticationControllerApi extends runtime.BaseAPI {
+
+    /**
+     */
+    async changePassword2Raw(requestParameters: ChangePassword2Request, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<string>> {
+        if (requestParameters['passwordChangeDTO'] == null) {
+            throw new runtime.RequiredError(
+                'passwordChangeDTO',
+                'Required parameter "passwordChangeDTO" was null or undefined when calling changePassword2().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
+
+
+        let urlPath = `/auth/company/change-password`;
+
+        const response = await this.request({
+            path: urlPath,
+            method: 'POST',
+            headers: headerParameters,
+            query: queryParameters,
+            body: PasswordChangeDTOToJSON(requestParameters['passwordChangeDTO']),
+        }, initOverrides);
+
+        if (this.isJsonMime(response.headers.get('content-type'))) {
+            return new runtime.JSONApiResponse<string>(response);
+        } else {
+            return new runtime.TextApiResponse(response) as any;
+        }
+    }
+
+    /**
+     */
+    async changePassword2(requestParameters: ChangePassword2Request, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<string> {
+        const response = await this.changePassword2Raw(requestParameters, initOverrides);
+        return await response.value();
+    }
 
     /**
      */

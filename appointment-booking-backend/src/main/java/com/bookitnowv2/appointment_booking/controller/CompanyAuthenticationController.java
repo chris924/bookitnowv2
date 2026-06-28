@@ -3,6 +3,7 @@ package com.bookitnowv2.appointment_booking.controller;
 import com.bookitnowv2.appointment_booking.configuration.SecurityUtils;
 import com.bookitnowv2.appointment_booking.entity.Company;
 import com.bookitnowv2.appointment_booking.entity.dto.auth.LoginDTO;
+import com.bookitnowv2.appointment_booking.entity.dto.auth.PasswordChangeDTO;
 import com.bookitnowv2.appointment_booking.entity.dto.company.CompanyLoginResponseDTO;
 import com.bookitnowv2.appointment_booking.entity.dto.company.CompanyRegistrationDTO;
 import com.bookitnowv2.appointment_booking.entity.dto.company.CompanyRegistrationResponseDTO;
@@ -11,6 +12,7 @@ import com.bookitnowv2.appointment_booking.exception.CompanyNotFoundException;
 import com.bookitnowv2.appointment_booking.repository.ICompanyRepository;
 import com.bookitnowv2.appointment_booking.service.CompanyAuthenticationService;
 import com.bookitnowv2.appointment_booking.utils.CookieUtils;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.transaction.Transactional;
@@ -34,11 +36,13 @@ public class CompanyAuthenticationController {
 
     private final CompanyAuthenticationService companyAuthenticationService;
     private final ICompanyRepository companyRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public CompanyAuthenticationController(CompanyAuthenticationService companyAuthenticationService, ICompanyRepository companyRepository)
+    public CompanyAuthenticationController(CompanyAuthenticationService companyAuthenticationService, ICompanyRepository companyRepository, PasswordEncoder passwordEncoder)
     {
         this.companyAuthenticationService = companyAuthenticationService;
         this.companyRepository = companyRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @PostMapping("/login")
@@ -80,6 +84,21 @@ public class CompanyAuthenticationController {
                 body.getAppServiceName(), body.getAppServiceDescription(), body.getDescription(), body.getPlace());
 
         return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/change-password")
+    public ResponseEntity<String> changePassword(@Valid @RequestBody PasswordChangeDTO body)
+    {
+        Long companyId = SecurityUtils.getCurrentCompanyId();
+        Company foundCompany = companyRepository.findById(companyId).orElseThrow(() -> new CompanyNotFoundException(companyId.toString()));
+
+        if (!passwordEncoder.matches(body.getOldPassword(), foundCompany.getPassword())) {
+            throw new BadCredentialException("A régi jelszó nem egyezik!");
+        }
+
+        foundCompany.setPassword(passwordEncoder.encode(body.getNewPassword()));
+        companyRepository.save(foundCompany);
+        return ResponseEntity.ok("Jelszó sikeresen megváltoztatva!");
     }
 
     @PostMapping("/logout")

@@ -32,6 +32,7 @@ import Loader from "@/components/ui/own/Loader"
 import { useUserStore } from "@/stores/AuthStore"
 import { useApi } from "@/hooks/useApi"
 import { UploadUserAvatarRequest, UserDetailsChangeDTO } from "@/API"
+import PasswordChangeCard from "@/components/auth/PasswordChangeCard"
 
 
 export default function UserDetailsForm()
@@ -201,9 +202,11 @@ async function onSubmit(values: z.infer<typeof formSchema>) {
 
            
           <Button type="submit" className="bg-green-200" disabled={!enableModifyUserData}>Mentés</Button>
-          
+
         </form>
       </Form>
+
+      <PasswordChangeCard onChangePassword={(dto) => api.userAuth.changePassword(dto)} />
     </div>
     </>
   )

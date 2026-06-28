@@ -16,6 +16,7 @@ import { useState, useRef } from "react";
 import { useForm } from "react-hook-form";
 import z from "zod";
 import defaultAvatar from "@/assets/default.jpg"
+import PasswordChangeCard from "@/components/auth/PasswordChangeCard"
 
 
 export default function CompanyOptionsContent()
@@ -256,6 +257,8 @@ async function onSubmit(values: z.infer<typeof formSchema>) {
 
         </form>
       </Form>
+
+      <PasswordChangeCard onChangePassword={(dto) => api.companyAuth.changePassword2(dto)} />
     </div>
     </>
     )

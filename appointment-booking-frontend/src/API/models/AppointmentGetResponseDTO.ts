@@ -111,6 +111,12 @@ export interface AppointmentGetResponseDTO {
      * @memberof AppointmentGetResponseDTO
      */
     duration?: string;
+    /**
+     * 
+     * @type {number}
+     * @memberof AppointmentGetResponseDTO
+     */
+    rating?: number;
 }
 
 /**
@@ -145,6 +151,7 @@ export function AppointmentGetResponseDTOFromJSONTyped(json: any, ignoreDiscrimi
         'servicePrice': json['servicePrice'] == null ? undefined : json['servicePrice'],
         'isActive': json['isActive'] == null ? undefined : json['isActive'],
         'duration': json['duration'] == null ? undefined : json['duration'],
+        'rating': json['rating'] == null ? undefined : json['rating'],
     };
 }
 
@@ -173,6 +180,7 @@ export function AppointmentGetResponseDTOToJSONTyped(value?: AppointmentGetRespo
         'servicePrice': value['servicePrice'],
         'isActive': value['isActive'],
         'duration': value['duration'],
+        'rating': value['rating'],
     };
 }
 

@@ -17,6 +17,7 @@ import * as runtime from '../runtime';
 import type {
   AppointmentsByDateResponseDTO,
   EmployeeAppointmentsByDateResponseDTO,
+  EmployeeCreateDTO,
   EmployeeDataTableResponseDTO,
   EmployeeDetailsChangeDTO,
   EmployeeEditDataRequestDTO,
@@ -37,6 +38,8 @@ import {
     AppointmentsByDateResponseDTOToJSON,
     EmployeeAppointmentsByDateResponseDTOFromJSON,
     EmployeeAppointmentsByDateResponseDTOToJSON,
+    EmployeeCreateDTOFromJSON,
+    EmployeeCreateDTOToJSON,
     EmployeeDataTableResponseDTOFromJSON,
     EmployeeDataTableResponseDTOToJSON,
     EmployeeDetailsChangeDTOFromJSON,
@@ -69,6 +72,10 @@ import {
 
 export interface ChangeEmployeeDetailsRequest {
     employeeDetailsChangeDTO: EmployeeDetailsChangeDTO;
+}
+
+export interface CreateEmployeeRequest {
+    employeeCreateDTO: EmployeeCreateDTO;
 }
 
 export interface CreateEmployeeWorkhourRequest {
@@ -159,6 +166,43 @@ export class EmployeeControllerApi extends runtime.BaseAPI {
      */
     async changeEmployeeDetails(requestParameters: ChangeEmployeeDetailsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<EmployeeGetResponseDTO> {
         const response = await this.changeEmployeeDetailsRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     */
+    async createEmployeeRaw(requestParameters: CreateEmployeeRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<EmployeeGetResponseDTO>> {
+        if (requestParameters['employeeCreateDTO'] == null) {
+            throw new runtime.RequiredError(
+                'employeeCreateDTO',
+                'Required parameter "employeeCreateDTO" was null or undefined when calling createEmployee().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
+
+
+        let urlPath = `/employees/create-employee`;
+
+        const response = await this.request({
+            path: urlPath,
+            method: 'POST',
+            headers: headerParameters,
+            query: queryParameters,
+            body: EmployeeCreateDTOToJSON(requestParameters['employeeCreateDTO']),
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => EmployeeGetResponseDTOFromJSON(jsonValue));
+    }
+
+    /**
+     */
+    async createEmployee(requestParameters: CreateEmployeeRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<EmployeeGetResponseDTO> {
+        const response = await this.createEmployeeRaw(requestParameters, initOverrides);
         return await response.value();
     }
 

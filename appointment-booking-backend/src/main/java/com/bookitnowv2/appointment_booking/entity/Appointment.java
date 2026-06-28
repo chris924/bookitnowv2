@@ -57,5 +57,7 @@ public class Appointment {
     @Enumerated(EnumType.STRING)
     private AppointmentStatus appointmentStatus;
 
+    private Integer rating;
+
 }
 

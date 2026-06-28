@@ -145,6 +145,44 @@ public class AppointmentService {
         return newAppointment;
     }
 
+    @Transactional
+    public void rateAppointment(Long appointmentId, Integer rating, Long userId)
+    {
+        Appointment appointment = appointmentRepository.findById(appointmentId)
+                .orElseThrow(() -> new AppointmentNotFoundException(appointmentId.toString()));
+
+        if (appointment.getUser() == null || !appointment.getUser().getId().equals(userId)) {
+            throw new AppointmentAccessDeniedException("Nem a te foglalásod!");
+        }
+
+        if (appointment.getAppointmentStatus() != AppointmentStatus.BOOKED) {
+            throw new AppointmentNotBookedException("Csak lefoglalt időpontot lehet értékelni!");
+        }
+
+        if (rating < 1 || rating > 5) {
+            throw new IllegalArgumentException("Az értékelés 1 és 5 közötti szám kell legyen!");
+        }
+
+        appointment.setRating(rating);
+        appointmentRepository.save(appointment);
+
+        Employee employee = appointment.getService().getEmployee();
+        recalculateEmployeeRating(employee);
+    }
+
+    private void recalculateEmployeeRating(Employee employee)
+    {
+        List<Appointment> allAppointments = employee.getAppointments();
+        double avgRating = allAppointments.stream()
+                .filter(a -> a.getRating() != null)
+                .mapToInt(Appointment::getRating)
+                .average()
+                .orElse(0.0);
+
+        employee.setRating(Math.round(avgRating * 10.0) / 10.0);
+        employeeRepository.save(employee);
+    }
+
     public void cancelBookedAppointment(Appointment appointment)
     {
         User appointmentUser = appointment.getUser();

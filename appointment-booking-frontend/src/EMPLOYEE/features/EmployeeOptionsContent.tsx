@@ -16,6 +16,7 @@ import { useState, useRef } from "react";
 import { useForm } from "react-hook-form";
 import z from "zod";
 import defaultAvatar from "@/assets/default.jpg"
+import PasswordChangeCard from "@/components/auth/PasswordChangeCard"
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 
@@ -286,9 +287,11 @@ async function onSubmit(values: z.infer<typeof formSchema>) {
 
            
           <Button type="submit" className="bg-green-200" disabled={!enableModifyEmployeeData}>Mentés</Button>
-          
+
         </form>
       </Form>
+
+      <PasswordChangeCard onChangePassword={(dto) => api.employeeAuth.changePassword1(dto)} />
     </div>
     </>
     )

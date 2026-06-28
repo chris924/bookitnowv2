@@ -1,7 +1,12 @@
 package com.bookitnowv2.appointment_booking.controller;
 
+import com.bookitnowv2.appointment_booking.configuration.SecurityUtils;
+import com.bookitnowv2.appointment_booking.entity.Employee;
 import com.bookitnowv2.appointment_booking.entity.dto.auth.LoginDTO;
+import com.bookitnowv2.appointment_booking.entity.dto.auth.PasswordChangeDTO;
 import com.bookitnowv2.appointment_booking.exception.BadCredentialException;
+import com.bookitnowv2.appointment_booking.exception.EmployeeNotFoundException;
+import com.bookitnowv2.appointment_booking.repository.IEmployeeRepository;
 import com.bookitnowv2.appointment_booking.service.EmployeeAuthenticationService;
 import com.bookitnowv2.appointment_booking.utils.CookieUtils;
 import jakarta.servlet.http.HttpServletRequest;
@@ -14,6 +19,7 @@ import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -26,10 +32,14 @@ import org.springframework.web.bind.annotation.RestController;
 public class EmployeeAuthenticationController {
 
     private final EmployeeAuthenticationService employeeAuthenticationService;
+    private final IEmployeeRepository employeeRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public EmployeeAuthenticationController(EmployeeAuthenticationService employeeAuthenticationService)
+    public EmployeeAuthenticationController(EmployeeAuthenticationService employeeAuthenticationService, IEmployeeRepository employeeRepository, PasswordEncoder passwordEncoder)
     {
         this.employeeAuthenticationService = employeeAuthenticationService;
+        this.employeeRepository = employeeRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @PostMapping("/login")
@@ -52,6 +62,20 @@ public class EmployeeAuthenticationController {
         }
     }
 
+    @PostMapping("/change-password")
+    public ResponseEntity<String> changePassword(@Valid @RequestBody PasswordChangeDTO body)
+    {
+        Long employeeId = SecurityUtils.getCurrentEmployeeId();
+        Employee foundEmployee = employeeRepository.findById(employeeId).orElseThrow(() -> new EmployeeNotFoundException(employeeId.toString()));
+
+        if (!passwordEncoder.matches(body.getOldPassword(), foundEmployee.getPassword())) {
+            throw new BadCredentialException("A régi jelszó nem egyezik!");
+        }
+
+        foundEmployee.setPassword(passwordEncoder.encode(body.getNewPassword()));
+        employeeRepository.save(foundEmployee);
+        return ResponseEntity.ok("Jelszó sikeresen megváltoztatva!");
+    }
 
     @PostMapping("/logout")
     @Transactional

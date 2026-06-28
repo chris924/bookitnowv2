@@ -46,4 +46,6 @@ public class AppointmentGetResponseDTO {
 
     private Duration duration;
 
+    private Integer rating;
+
 }

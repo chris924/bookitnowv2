@@ -1,6 +1,7 @@
 package com.bookitnowv2.appointment_booking.service;
 
 import com.bookitnowv2.appointment_booking.entity.*;
+import com.bookitnowv2.appointment_booking.entity.dto.employee.EmployeeCreateDTO;
 import com.bookitnowv2.appointment_booking.entity.dto.employee.EmployeeGetResponseDTO;
 import com.bookitnowv2.appointment_booking.mapper.EmployeeMapper;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -57,6 +58,29 @@ public class EmployeeAuthenticationService {
         newEmployee.setPassword(encodedPassword);
         newEmployee.setAuthorities(authorities);
         newEmployee.setServices(services);
+
+        Employee savedEmployee = employeeService.saveEmployee(newEmployee);
+        return employeeMapper.toGetDTO(savedEmployee);
+    }
+
+    public EmployeeGetResponseDTO createEmployeeForCompany(EmployeeCreateDTO dto, Company company)
+    {
+        String encodedPassword = passwordEncoder.encode(dto.getPassword());
+        Role employeeRole = roleService.findByAuthority("EMPLOYEE");
+
+        Set<Role> authorities = new HashSet<>();
+        List<ServiceEntity> services = new ArrayList<>();
+
+        authorities.add(employeeRole);
+        Employee newEmployee = new Employee();
+        newEmployee.setName(dto.getName());
+        newEmployee.setUsername(dto.getUsername());
+        newEmployee.setEmail(dto.getEmail());
+        newEmployee.setPassword(encodedPassword);
+        newEmployee.setAuthorities(authorities);
+        newEmployee.setServices(services);
+        newEmployee.setCompany(company);
+        newEmployee.setWorkingHours(new ArrayList<>());
 
         Employee savedEmployee = employeeService.saveEmployee(newEmployee);
         return employeeMapper.toGetDTO(savedEmployee);
