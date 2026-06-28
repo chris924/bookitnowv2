@@ -6,8 +6,7 @@ import com.bookitnowv2.appointment_booking.entity.Employee;
 import com.bookitnowv2.appointment_booking.entity.ServiceEntity;
 import com.bookitnowv2.appointment_booking.entity.dto.service.ServiceEntityAddRequestDTO;
 import com.bookitnowv2.appointment_booking.entity.dto.service.ServiceEntityModifyRequestDTO;
-import com.bookitnowv2.appointment_booking.exception.CompanyNotFoundException;
-import com.bookitnowv2.appointment_booking.exception.EmployeeNotFoundException;
+import com.bookitnowv2.appointment_booking.exception.*;
 import com.bookitnowv2.appointment_booking.repository.ICompanyRepository;
 import com.bookitnowv2.appointment_booking.repository.IEmployeeRepository;
 import com.bookitnowv2.appointment_booking.repository.IServiceEntityRepository;
@@ -37,7 +36,7 @@ public class ServiceEntityService {
 
     public ServiceEntity getServiceEntityById(Long serviceId)
     {
-        return serviceEntityRepository.findById(serviceId).orElseThrow(() -> new RuntimeException("Service entity not found")); //TODO: REFACTOR EXCEPTION
+        return serviceEntityRepository.findById(serviceId).orElseThrow(() -> new ServiceNotFoundException("Service entity not found"));
     }
 
     public void deleteService(ServiceEntity serviceEntity)
@@ -52,7 +51,7 @@ public class ServiceEntityService {
         Employee foundEmployee;
         Company foundCompany;
 
-        ServiceEntity foundService = serviceEntityRepository.findById(serviceEntityId).orElseThrow(()-> new RuntimeException("Service not found"));
+        ServiceEntity foundService = serviceEntityRepository.findById(serviceEntityId).orElseThrow(()-> new ServiceNotFoundException("Service not found"));
 
         foundService.setName(modifyRequestDTO.getName());
         Duration newDuration = Duration.ofMinutes(modifyRequestDTO.getDuration());
@@ -69,7 +68,7 @@ public class ServiceEntityService {
 
             if(foundService.getEmployee().getId() != foundEmployee.getId())
             {
-                throw new RuntimeException("Not own service!");
+                throw new ServiceAccessDeniedException("Not own service!");
             }
 
         } else if (info.type() == LoggedInType.COMPANY) {
@@ -163,11 +162,11 @@ public class ServiceEntityService {
                     .orElseThrow(() -> new EmployeeNotFoundException(info.id().toString()));
 
 
-           foundService = serviceEntityRepository.findById(serviceEntityId).orElseThrow(() -> new RuntimeException("Service not found!"));
+           foundService = serviceEntityRepository.findById(serviceEntityId).orElseThrow(() -> new ServiceNotFoundException("Service not found!"));
 
            if(foundService.getEmployee().getId() != foundEmployee.getId())
            {
-               throw new RuntimeException("Not own service!");
+               throw new ServiceAccessDeniedException("Not own service!");
            }
 
             serviceEntityRepository.delete(foundService);
@@ -186,11 +185,11 @@ public class ServiceEntityService {
                 throw new AccessDeniedException("Not your employee!");
             }
 
-            foundService = serviceEntityRepository.findById(serviceEntityId).orElseThrow(() -> new RuntimeException("Service not found!"));
+            foundService = serviceEntityRepository.findById(serviceEntityId).orElseThrow(() -> new ServiceNotFoundException("Service not found!"));
 
             if(foundService.getEmployee().getId() != foundEmployee.getId())
             {
-                throw new RuntimeException("Not own service!");
+                throw new ServiceAccessDeniedException("Not own service!");
             }
 
             serviceEntityRepository.delete(foundService);

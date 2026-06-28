@@ -5,6 +5,7 @@ import com.bookitnowv2.appointment_booking.configuration.SecurityUtils;
 import com.bookitnowv2.appointment_booking.entity.Company;
 import com.bookitnowv2.appointment_booking.entity.Employee;
 import com.bookitnowv2.appointment_booking.entity.EmployeeWorkingHours;
+import com.bookitnowv2.appointment_booking.entity.dto.company.AppointmentsByDateResponseDTO;
 import com.bookitnowv2.appointment_booking.entity.dto.employee.*;
 import com.bookitnowv2.appointment_booking.entity.dto.employee.SearchOptionDetails.SpecialistDTO;
 import com.bookitnowv2.appointment_booking.entity.dto.workhour.WorkhourAddDTO;
@@ -86,7 +87,7 @@ public class EmployeeController {
     @PostMapping("/search-employee")
     public ResponseEntity<EmployeeSearchOptionsResponseDTO> getSearchEmployee(@Valid @RequestBody EmployeeSearchRequestDTO employeeSearchRequestDTO, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
-            throw new RuntimeException("Bad body for criteria search!");
+            throw new IllegalArgumentException("Bad body for criteria search!");
         }
 
         EmployeeSearchOptionsResponseDTO employeeResult = employeeService.searchByCriteria(employeeSearchRequestDTO);
@@ -219,6 +220,13 @@ public class EmployeeController {
         employeeWorkingHoursService.deleteWorkhoursForEmployee(foundEmployee);
 
         return ResponseEntity.ok().body("Munkaidők törölve!");
+    }
+
+    @GetMapping("/past-appointments-by-month")
+    @PreAuthorize("hasAnyRole('EMPLOYEE')")
+    public List<AppointmentsByDateResponseDTO> getEmployeePastAppointmentsByMonth()
+    {
+        return appointmentService.getEmployeeTotalAppointmentsByMonth(3);
     }
 
     @GetMapping("/section-cards-statistics")

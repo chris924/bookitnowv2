@@ -5,8 +5,8 @@ import com.bookitnowv2.appointment_booking.entity.Employee;
 import com.bookitnowv2.appointment_booking.entity.User;
 import com.bookitnowv2.appointment_booking.exception.CompanyNotFoundException;
 import com.bookitnowv2.appointment_booking.exception.EmployeeNotFoundException;
+import com.bookitnowv2.appointment_booking.exception.NotAuthenticatedException;
 import com.bookitnowv2.appointment_booking.exception.UserNotFoundException;
-import com.bookitnowv2.appointment_booking.repository.ICompanyRepository;
 import com.bookitnowv2.appointment_booking.repository.IUserRepository;
 import com.bookitnowv2.appointment_booking.utils.LoggedInInfo;
 import com.bookitnowv2.appointment_booking.utils.LoggedInType;
@@ -18,8 +18,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class SecurityUtils {
 
-    public static IUserRepository userRepository;
-    private static ICompanyRepository companyRepository;
+    private static IUserRepository userRepository;
 
     public SecurityUtils(IUserRepository userRepository)
     {
@@ -55,7 +54,7 @@ public class SecurityUtils {
 
     public static UserDetails getCurrentPrincipal() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        if (auth == null || auth.getPrincipal() == null) throw new RuntimeException("No principal");
+        if (auth == null || auth.getPrincipal() == null) throw new NotAuthenticatedException("No principal");
         return (UserDetails) auth.getPrincipal();
     }
 
@@ -76,7 +75,7 @@ public class SecurityUtils {
             return new LoggedInInfo(company.getId(),LoggedInType.COMPANY);
         }
 
-        throw new RuntimeException("Logged in type not found!");
+        throw new NotAuthenticatedException("Logged in type not found!");
     }
 
 }

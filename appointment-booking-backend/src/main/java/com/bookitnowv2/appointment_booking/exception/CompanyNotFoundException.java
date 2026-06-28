@@ -1,7 +1,12 @@
 package com.bookitnowv2.appointment_booking.exception;
 
+import lombok.Getter;
+
+@Getter
 public class CompanyNotFoundException extends RuntimeException {
-    public CompanyNotFoundException(String exception) {
-        super("Company not found: " + exception);
+    private final String code = "COMPANY_NOT_FOUND";
+
+    public CompanyNotFoundException(String message) {
+        super(message);
     }
 }

@@ -8,12 +8,7 @@ import com.bookitnowv2.appointment_booking.entity.dto.appointment.SlotResponseDT
 import com.bookitnowv2.appointment_booking.entity.dto.company.AppointmentsByDateResponseDTO;
 import com.bookitnowv2.appointment_booking.entity.dto.employee.EmployeeAppointmentTableDataResponseDTO;
 import com.bookitnowv2.appointment_booking.entity.dto.employee.EmployeeAppointmentsByDateResponseDTO;
-import com.bookitnowv2.appointment_booking.exception.CompanyNotFoundException;
-import com.bookitnowv2.appointment_booking.exception.EmployeeNotActiveException;
-import com.bookitnowv2.appointment_booking.exception.EmployeeNotFoundException;
-import com.bookitnowv2.appointment_booking.exception.appointment.AppointmentNotBookedException;
-import com.bookitnowv2.appointment_booking.exception.appointment.AppointmentNotFoundException;
-import com.bookitnowv2.appointment_booking.exception.appointment.AppointmentNotFreeException;
+import com.bookitnowv2.appointment_booking.exception.*;
 import com.bookitnowv2.appointment_booking.mapper.AppointmentMapper;
 import com.bookitnowv2.appointment_booking.repository.*;
 import com.bookitnowv2.appointment_booking.utils.AppointmentStatus;
@@ -53,7 +48,7 @@ public class AppointmentService {
 
     public Appointment createAppointment(Long serviceId, Timestamp timestamp) {
         ServiceEntity foundService = serviceRepository.findById(serviceId)
-                .orElseThrow(() -> new RuntimeException("Error: Service not found by Id!"));
+                .orElseThrow(() -> new ServiceNotFoundException("Service not found by Id: " + serviceId));
 
         Appointment newAppointment = createAppointmentFromService(foundService, timestamp);
 
@@ -67,15 +62,14 @@ public class AppointmentService {
 
     public void deleteAppointmentById(Long id)
     {
-        Appointment foundAppointment = appointmentRepository.findById(id).orElseThrow(() -> new RuntimeException("Error: Appointment not found by Id!"));
-
+        Appointment foundAppointment = appointmentRepository.findById(id).orElseThrow(() -> new AppointmentNotFoundException(id.toString()));
 
         appointmentRepository.deleteById(id);
     }
 
     public Appointment getAppointmentById(Long appointmentId)
     {
-        return appointmentRepository.findById(appointmentId).orElseThrow(() -> new RuntimeException("Error: Appointment not found by id."));
+        return appointmentRepository.findById(appointmentId).orElseThrow(() -> new AppointmentNotFoundException(appointmentId.toString()));
     }
 
     public AppointmentGetResponseDTO employeeGetAppointmentDetailsById(Long appointmentId)
@@ -88,7 +82,7 @@ public class AppointmentService {
 
         if(foundAppointment.getService().getEmployee() != foundEmployee)
         {
-            throw new RuntimeException("Nem a te foglalásod!");
+            throw new AppointmentAccessDeniedException("Nem a te foglalásod!");
         }
 
         return AppointmentMapper.toGetDTO(foundAppointment);
@@ -108,7 +102,7 @@ public class AppointmentService {
         for (Appointment app : userAppointments) {
             if (appointment.getStartTime().isBefore(app.getEndTime()) &&
                     appointment.getEndTime().isAfter(app.getStartTime()) && app.getAppointmentStatus() == AppointmentStatus.BOOKED) {
-                throw new RuntimeException("Error: Appointment overlapping with already booked appointment.");
+                throw new AppointmentOverlapException("Az időpont ütközik egy már lefoglalt időponttal.");
             }
         }
 
@@ -129,7 +123,7 @@ public class AppointmentService {
 
     public void deleteUserFromAppointment(Long id)
     {
-        Appointment foundAppointment = appointmentRepository.findById(id).orElseThrow(() -> new RuntimeException("Error: Appointment not found by Id!"));
+        Appointment foundAppointment = appointmentRepository.findById(id).orElseThrow(() -> new AppointmentNotFoundException(id.toString()));
 
         foundAppointment.setUser(null);
         appointmentRepository.save(foundAppointment);
@@ -141,8 +135,8 @@ public class AppointmentService {
         Company foundCompany = foundService.getCompany();
         Employee foundEmployee = foundService.getEmployee();
 
-        if (foundCompany == null) throw new RuntimeException("Error: Company not found!");
-        if (foundEmployee == null) throw new RuntimeException("Error: Employee not found!");
+        if (foundCompany == null) throw new CompanyNotFoundException("Company not found for service!");
+        if (foundEmployee == null) throw new EmployeeNotFoundException("Employee not found for service!");
 
         Appointment newAppointment = new Appointment();
         newAppointment.setService(foundService);

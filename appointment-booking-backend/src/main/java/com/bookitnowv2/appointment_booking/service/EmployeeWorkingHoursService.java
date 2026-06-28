@@ -8,6 +8,8 @@ import com.bookitnowv2.appointment_booking.entity.dto.workhour.WorkhourAddDTO;
 import com.bookitnowv2.appointment_booking.repository.IAppointmentRepository;
 import com.bookitnowv2.appointment_booking.repository.IEmployeeRepository;
 import com.bookitnowv2.appointment_booking.repository.IEmployeeWorkingHoursRepository;
+import com.bookitnowv2.appointment_booking.exception.WorkingHourAccessDeniedException;
+import com.bookitnowv2.appointment_booking.exception.WorkingHourNotFoundException;
 import com.bookitnowv2.appointment_booking.utils.AppointmentStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -41,10 +43,10 @@ public class EmployeeWorkingHoursService
     @Transactional
     public void delete(Long id, Long employeeId) {
         EmployeeWorkingHours wh = employeeWorkingHoursRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Working hour not found"));
+                .orElseThrow(() -> new WorkingHourNotFoundException("Working hour not found"));
 
         if (!wh.getEmployee().getId().equals(employeeId)) {
-            throw new RuntimeException("Not allowed");
+            throw new WorkingHourAccessDeniedException("Not allowed");
         }
         for (Appointment app : wh.getAppointments()) {
             app.setAppointmentStatus(AppointmentStatus.CANCELLED);
@@ -60,10 +62,10 @@ public class EmployeeWorkingHoursService
     public void edit(Long id, String slotName, Employee employee, LocalTime newStart, LocalTime newEnd)
     {
         EmployeeWorkingHours wh = employeeWorkingHoursRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Working hour not found"));
+                .orElseThrow(() -> new WorkingHourNotFoundException("Working hour not found"));
 
         if (!wh.getEmployee().getId().equals(employee.getId())) {
-            throw new RuntimeException("Not allowed");
+            throw new WorkingHourAccessDeniedException("Not allowed");
         }
 
         wh.setName(slotName);

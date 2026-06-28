@@ -2,7 +2,7 @@ package com.bookitnowv2.appointment_booking.controller;
 
 import com.bookitnowv2.appointment_booking.configuration.SecurityUtils;
 import com.bookitnowv2.appointment_booking.entity.User;
-import com.bookitnowv2.appointment_booking.entity.dto.LoginDTO;
+import com.bookitnowv2.appointment_booking.entity.dto.auth.LoginDTO;
 import com.bookitnowv2.appointment_booking.entity.dto.user.UserLoginResponseDTO;
 import com.bookitnowv2.appointment_booking.entity.dto.user.UserRegistrationDTO;
 import com.bookitnowv2.appointment_booking.entity.dto.user.UserRegistrationResponseDTO;
@@ -10,6 +10,7 @@ import com.bookitnowv2.appointment_booking.exception.BadCredentialException;
 import com.bookitnowv2.appointment_booking.exception.UserNotFoundException;
 import com.bookitnowv2.appointment_booking.repository.IUserRepository;
 import com.bookitnowv2.appointment_booking.service.UserAuthenticationService;
+import com.bookitnowv2.appointment_booking.utils.CookieUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.transaction.Transactional;
@@ -23,7 +24,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import java.time.Duration;
 
 
 @RestController
@@ -53,15 +53,7 @@ public class UserAuthenticationController {
         try{
             String token = userAuthenticationService.loginUser(body.getEmail(), body.getPassword());
 
-            ResponseCookie cookie = ResponseCookie.from("jwt", token)
-                    .httpOnly(true)
-                    // ! ONLY FOR LOCALHOST TESTING !
-                    .secure(false) //TODO: Change in the future
-                    // ! ONLY FOR LOCALHOST TESTING !
-                    .sameSite("Strict")
-                    .path("/")
-                    .maxAge(Duration.ofHours(2))
-                    .build();
+            ResponseCookie cookie = CookieUtils.createJwtCookie(token);
 
             return ResponseEntity.ok()
                     .header(HttpHeaders.SET_COOKIE, cookie.toString())
@@ -88,7 +80,7 @@ public class UserAuthenticationController {
     }
 
     @PostMapping("/logout")
-    @Transactional //TODO: Add Redis blacklist JWT for more security?
+    @Transactional
     public ResponseEntity<String> logoutUser(Authentication authentication, HttpServletRequest request, HttpServletResponse response)
     {
         Long authUserId = SecurityUtils.getCurrentUserId();
@@ -99,14 +91,7 @@ public class UserAuthenticationController {
 
         new SecurityContextLogoutHandler().logout(request, response, authentication);
 
-        ResponseCookie jwtCookie = ResponseCookie.from("jwt", "")
-                .httpOnly(true)
-                .secure(false)          // only send over HTTPS TODO: use true here
-                .path("/")
-                .maxAge(0)             // expire immediately
-                .sameSite("Strict")    // prevents CSRF-like attacks
-                .build();
-
+        ResponseCookie jwtCookie = CookieUtils.createExpiredJwtCookie();
         response.addHeader(HttpHeaders.SET_COOKIE, jwtCookie.toString());
 
         return ResponseEntity.ok("Logged out successfully");

@@ -2,9 +2,11 @@ package com.bookitnowv2.appointment_booking.controller;
 
 import com.bookitnowv2.appointment_booking.configuration.SecurityUtils;
 import com.bookitnowv2.appointment_booking.entity.Company;
+import com.bookitnowv2.appointment_booking.entity.dto.company.AppointmentsByDateResponseDTO;
 import com.bookitnowv2.appointment_booking.entity.dto.company.CompanyGetResponseDTO;
 import com.bookitnowv2.appointment_booking.entity.dto.company.CompanySectionCardsResponseDTO;
 import com.bookitnowv2.appointment_booking.entity.dto.company.CompanyUpdateDTO;
+import com.bookitnowv2.appointment_booking.service.AppointmentService;
 import com.bookitnowv2.appointment_booking.exception.CompanyNotFoundException;
 import com.bookitnowv2.appointment_booking.repository.ICompanyRepository;
 import com.bookitnowv2.appointment_booking.service.CompanyService;
@@ -21,6 +23,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -28,15 +31,17 @@ import java.util.UUID;
 public class CompanyController {
 
     private final CompanyService companyService;
+    private final AppointmentService appointmentService;
     private final ICompanyRepository companyRepository;
     private final Path basePath;
     private final String frontendAddress;
 
-    public CompanyController(CompanyService companyService, ICompanyRepository companyRepository,
+    public CompanyController(CompanyService companyService, AppointmentService appointmentService, ICompanyRepository companyRepository,
                              @Value("${avatar.user.directory.path}") String basePath,
                              @Value("${frontend.ip.address}") String frontendAddress)
     {
         this.companyService = companyService;
+        this.appointmentService = appointmentService;
         this.companyRepository = companyRepository;
         this.basePath = Paths.get(basePath);
         this.frontendAddress = frontendAddress;
@@ -46,6 +51,12 @@ public class CompanyController {
     public CompanySectionCardsResponseDTO getCompanySectionCardsStatistics()
     {
         return companyService.getCompanySectionCardsData();
+    }
+
+    @GetMapping("/past-appointments-by-month")
+    public List<AppointmentsByDateResponseDTO> getCompanyPastAppointmentsByMonth()
+    {
+        return appointmentService.getCompanyTotalAppointmentsByMonth(3);
     }
 
     @PutMapping("/change-company-details")

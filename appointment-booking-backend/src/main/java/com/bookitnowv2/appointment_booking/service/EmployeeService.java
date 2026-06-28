@@ -93,9 +93,6 @@ public class EmployeeService {
     }
 
     public Employee getEmployeeById(Long id) {
-        System.out.println("Searching for ID: " + id); // Debug log
-        boolean exists = employeeRepository.existsById(id);
-        System.out.println("Exists in DB: " + exists); // Debug log
         return employeeRepository.findById(id)
                 .orElseThrow(() -> new EmployeeNotFoundException(id.toString()));
     }

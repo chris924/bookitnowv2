@@ -15,12 +15,15 @@
 
 import * as runtime from '../runtime';
 import type {
+  AppointmentsByDateResponseDTO,
   CompanyGetResponseDTO,
   CompanySectionCardsResponseDTO,
   CompanyUpdateDTO,
   UploadUserAvatarRequest,
 } from '../models/index';
 import {
+    AppointmentsByDateResponseDTOFromJSON,
+    AppointmentsByDateResponseDTOToJSON,
     CompanyGetResponseDTOFromJSON,
     CompanyGetResponseDTOToJSON,
     CompanySectionCardsResponseDTOFromJSON,
@@ -78,6 +81,33 @@ export class CompanyControllerApi extends runtime.BaseAPI {
      */
     async changeCompanyDetails(requestParameters: ChangeCompanyDetailsRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<CompanyGetResponseDTO> {
         const response = await this.changeCompanyDetailsRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     */
+    async getCompanyPastAppointmentsByMonthRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<AppointmentsByDateResponseDTO>>> {
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+
+        let urlPath = `/company/past-appointments-by-month`;
+
+        const response = await this.request({
+            path: urlPath,
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(AppointmentsByDateResponseDTOFromJSON));
+    }
+
+    /**
+     */
+    async getCompanyPastAppointmentsByMonth(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<AppointmentsByDateResponseDTO>> {
+        const response = await this.getCompanyPastAppointmentsByMonthRaw(initOverrides);
         return await response.value();
     }
 

@@ -15,6 +15,7 @@
 
 import * as runtime from '../runtime';
 import type {
+  AppointmentsByDateResponseDTO,
   EmployeeAppointmentsByDateResponseDTO,
   EmployeeDataTableResponseDTO,
   EmployeeDetailsChangeDTO,
@@ -32,6 +33,8 @@ import type {
   WorkhourEditDTO,
 } from '../models/index';
 import {
+    AppointmentsByDateResponseDTOFromJSON,
+    AppointmentsByDateResponseDTOToJSON,
     EmployeeAppointmentsByDateResponseDTOFromJSON,
     EmployeeAppointmentsByDateResponseDTOToJSON,
     EmployeeDataTableResponseDTOFromJSON,
@@ -533,6 +536,33 @@ export class EmployeeControllerApi extends runtime.BaseAPI {
      */
     async getEmployeePageDataForCompany(requestParameters: GetEmployeePageDataForCompanyRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<EmployeePageForCompanyResponseDTO> {
         const response = await this.getEmployeePageDataForCompanyRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     */
+    async getEmployeePastAppointmentsByMonthRaw(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<AppointmentsByDateResponseDTO>>> {
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+
+        let urlPath = `/employees/past-appointments-by-month`;
+
+        const response = await this.request({
+            path: urlPath,
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(AppointmentsByDateResponseDTOFromJSON));
+    }
+
+    /**
+     */
+    async getEmployeePastAppointmentsByMonth(initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<AppointmentsByDateResponseDTO>> {
+        const response = await this.getEmployeePastAppointmentsByMonthRaw(initOverrides);
         return await response.value();
     }
 

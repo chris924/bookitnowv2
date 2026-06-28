@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import org.springframework.beans.factory.annotation.Value;
+
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.nio.file.Files;
@@ -18,7 +20,11 @@ import java.nio.file.Paths;
 @RequestMapping("/avatar")
 public class AvatarController {
 
-    private final Path avatarBasePath = Paths.get("appointment-booking-backend/uploads/avatars"); //TODO: Refactor with application.properties
+    private final Path avatarBasePath;
+
+    public AvatarController(@Value("${avatar.user.directory.path}") String basePath) {
+        this.avatarBasePath = Paths.get(basePath);
+    }
 
 
     @GetMapping("/employee/{filename}")

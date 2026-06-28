@@ -11,6 +11,7 @@ import com.bookitnowv2.appointment_booking.repository.IUserRepository;
 import com.bookitnowv2.appointment_booking.entity.*;
 import com.bookitnowv2.appointment_booking.repository.*;
 import com.bookitnowv2.appointment_booking.service.AppointmentService;
+import com.bookitnowv2.appointment_booking.exception.RoleNotFoundException;
 import com.bookitnowv2.appointment_booking.utils.AppointmentStatus;
 import com.bookitnowv2.appointment_booking.utils.EmployeeExperience;
 import com.bookitnowv2.appointment_booking.utils.EmployeeStatus;
@@ -86,7 +87,7 @@ public class DatabaseSeeder implements CommandLineRunner {
     private void createAdmin() {
 
         Set<Role> adminRoles = new HashSet<>();
-        adminRoles.add(roleRepository.findByAuthority("ADMIN").orElseThrow(() -> new RuntimeException("USER role not found")));
+        adminRoles.add(roleRepository.findByAuthority("ADMIN").orElseThrow(() -> new RoleNotFoundException("USER role not found")));
 
         User admin = new User();
         admin.setName("admin");
@@ -105,7 +106,7 @@ public class DatabaseSeeder implements CommandLineRunner {
 
     private void createEntities() {
         Set<Role> userRoles = new HashSet<>();
-        userRoles.add(roleRepository.findByAuthority("USER").orElseThrow(() -> new RuntimeException("USER role not found")));
+        userRoles.add(roleRepository.findByAuthority("USER").orElseThrow(() -> new RoleNotFoundException("USER role not found")));
 
         User user1 = createUser("John Doe", "john.doe", "john.doe@email.com", "password123", new Timestamp(System.currentTimeMillis()), new ArrayList<>(), userRoles);
         createUser("Alice Smith", "alice.smith", "alice.smith@email.com", "securePass", new Timestamp(System.currentTimeMillis()), new ArrayList<>(), userRoles);
@@ -113,7 +114,7 @@ public class DatabaseSeeder implements CommandLineRunner {
 
 
         Set<Role> companyRoles = new HashSet<>();
-        companyRoles.add(roleRepository.findByAuthority("COMPANY").orElseThrow(() -> new RuntimeException("COMPANY role not found")));
+        companyRoles.add(roleRepository.findByAuthority("COMPANY").orElseThrow(() -> new RoleNotFoundException("COMPANY role not found")));
 
 
         Company company1 = createCompany("Car Detailing", "cardetailing@gmail.com", "password", "We work with cars with passion", "Car detailing", "We detail and customize your car!", companyRoles, "Budapest");
@@ -125,7 +126,7 @@ public class DatabaseSeeder implements CommandLineRunner {
 
 
         Set<Role> employeeRoles = new HashSet<>();
-        employeeRoles.add(roleRepository.findByAuthority("EMPLOYEE").orElseThrow(() -> new RuntimeException("EMPLOYEE role not found")));
+        employeeRoles.add(roleRepository.findByAuthority("EMPLOYEE").orElseThrow(() -> new RoleNotFoundException("EMPLOYEE role not found")));
 
 
         Employee employee1 = createEmployee("John David", "jdavid", "jdavid@gmail.com", "password", new Timestamp(System.currentTimeMillis()), employeeRoles, company1, 4.9, serverAddress + "/avatar/employee/default-avatar.jpg", "This is the about section. This is the about section. This is the about section.", EmployeeStatus.ACTIVE, EmployeeExperience.JUNIOR, "+36304325674");

@@ -73,8 +73,7 @@ public class CompanyAuthenticationService {
 
         }catch (Exception e)
         {
-            System.out.println("ERROR: " + e);
-            return new CompanyRegistrationResponseDTO("","");
+            throw new RuntimeException("Company registration failed: " + e.getMessage(), e);
         }
 
     }

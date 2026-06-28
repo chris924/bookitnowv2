@@ -4,7 +4,7 @@ import com.bookitnowv2.appointment_booking.configuration.SecurityUtils;
 import com.bookitnowv2.appointment_booking.entity.Company;
 import com.bookitnowv2.appointment_booking.entity.Employee;
 import com.bookitnowv2.appointment_booking.entity.User;
-import com.bookitnowv2.appointment_booking.entity.dto.AuthInfoResponseDTO;
+import com.bookitnowv2.appointment_booking.entity.dto.auth.AuthInfoResponseDTO;
 import com.bookitnowv2.appointment_booking.mapper.CompanyMapper;
 import com.bookitnowv2.appointment_booking.mapper.EmployeeMapper;
 import com.bookitnowv2.appointment_booking.mapper.UserMapper;

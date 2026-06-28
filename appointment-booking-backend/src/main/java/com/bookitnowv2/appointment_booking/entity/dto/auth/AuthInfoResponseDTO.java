@@ -1,4 +1,4 @@
-package com.bookitnowv2.appointment_booking.entity.dto;
+package com.bookitnowv2.appointment_booking.entity.dto.auth;
 
 import com.bookitnowv2.appointment_booking.entity.dto.company.CompanyGetResponseDTO;
 import com.bookitnowv2.appointment_booking.entity.dto.employee.EmployeeGetResponseDTO;
