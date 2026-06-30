@@ -2,7 +2,6 @@
 
 ## Critical — App breaks or is insecure without these
 
-- [ ] **DatabaseSeeder wipes all data on startup** — Add `@Profile("dev")` to `DatabaseSeeder.java` so it only runs in development
 - [ ] **Cookie `secure(false)`** — Make `CookieUtils.java` configurable per profile (`secure(true)` for prod, `false` for local dev)
 - [ ] **CORS hardcoded to localhost** — Externalize allowed origins in `SecurityConfiguration.java` to an environment variable instead of hardcoded `localhost:5173/3000/8080`
 - [ ] **Secrets in source code** — `secrets.properties` contains DB password, Elasticsearch password, SSL certs. Production must use environment variables or Docker secrets, not a file

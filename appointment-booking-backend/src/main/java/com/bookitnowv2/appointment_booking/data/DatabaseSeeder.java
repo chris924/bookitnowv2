@@ -18,6 +18,7 @@ import com.bookitnowv2.appointment_booking.utils.EmployeeStatus;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.context.annotation.Profile;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
@@ -29,6 +30,7 @@ import java.util.List;
 import java.util.Set;
 
 @Component
+@Profile("dev")
 public class DatabaseSeeder implements CommandLineRunner {
 
     private final IUserRepository userRepository;
