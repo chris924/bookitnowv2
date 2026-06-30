@@ -2,7 +2,6 @@
 
 ## Critical — App breaks or is insecure without these
 
-- [ ] **Cookie `secure(false)`** — Make `CookieUtils.java` configurable per profile (`secure(true)` for prod, `false` for local dev)
 - [ ] **CORS hardcoded to localhost** — Externalize allowed origins in `SecurityConfiguration.java` to an environment variable instead of hardcoded `localhost:5173/3000/8080`
 - [ ] **Secrets in source code** — `secrets.properties` contains DB password, Elasticsearch password, SSL certs. Production must use environment variables or Docker secrets, not a file
 - [ ] **Frontend API URL defaults to localhost** — Create `.env.production` with `VITE_API_BASE_URL=https://yourdomain.com` so the React app calls the correct backend
