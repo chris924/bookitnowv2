@@ -37,12 +37,14 @@ public class CompanyAuthenticationController {
     private final CompanyAuthenticationService companyAuthenticationService;
     private final ICompanyRepository companyRepository;
     private final PasswordEncoder passwordEncoder;
+    private final CookieUtils cookieUtils;
 
-    public CompanyAuthenticationController(CompanyAuthenticationService companyAuthenticationService, ICompanyRepository companyRepository, PasswordEncoder passwordEncoder)
+    public CompanyAuthenticationController(CompanyAuthenticationService companyAuthenticationService, ICompanyRepository companyRepository, PasswordEncoder passwordEncoder, CookieUtils cookieUtils)
     {
         this.companyAuthenticationService = companyAuthenticationService;
         this.companyRepository = companyRepository;
         this.passwordEncoder = passwordEncoder;
+        this.cookieUtils = cookieUtils;
     }
 
     @PostMapping("/login")
@@ -59,7 +61,7 @@ public class CompanyAuthenticationController {
         try {
             String token = companyAuthenticationService.loginCompany(body.getEmail(), body.getPassword());
 
-            ResponseCookie cookie = CookieUtils.createJwtCookie(token);
+            ResponseCookie cookie = cookieUtils.createJwtCookie(token);
 
             return ResponseEntity.ok()
                     .header(HttpHeaders.SET_COOKIE, cookie.toString())
@@ -113,7 +115,7 @@ public class CompanyAuthenticationController {
 
         new SecurityContextLogoutHandler().logout(request, response, authentication);
 
-        ResponseCookie jwtCookie = CookieUtils.createExpiredJwtCookie();
+        ResponseCookie jwtCookie = cookieUtils.createExpiredJwtCookie();
         response.addHeader(HttpHeaders.SET_COOKIE, jwtCookie.toString());
 
         return ResponseEntity.ok("Logged out successfully");

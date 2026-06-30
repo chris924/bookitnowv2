@@ -34,12 +34,14 @@ public class EmployeeAuthenticationController {
     private final EmployeeAuthenticationService employeeAuthenticationService;
     private final IEmployeeRepository employeeRepository;
     private final PasswordEncoder passwordEncoder;
+    private final CookieUtils cookieUtils;
 
-    public EmployeeAuthenticationController(EmployeeAuthenticationService employeeAuthenticationService, IEmployeeRepository employeeRepository, PasswordEncoder passwordEncoder)
+    public EmployeeAuthenticationController(EmployeeAuthenticationService employeeAuthenticationService, IEmployeeRepository employeeRepository, PasswordEncoder passwordEncoder, CookieUtils cookieUtils)
     {
         this.employeeAuthenticationService = employeeAuthenticationService;
         this.employeeRepository = employeeRepository;
         this.passwordEncoder = passwordEncoder;
+        this.cookieUtils = cookieUtils;
     }
 
     @PostMapping("/login")
@@ -52,7 +54,7 @@ public class EmployeeAuthenticationController {
         try {
             String token = employeeAuthenticationService.loginEmployee(loginDTO.getEmail(), loginDTO.getPassword());
 
-            ResponseCookie cookie = CookieUtils.createJwtCookie(token);
+            ResponseCookie cookie = cookieUtils.createJwtCookie(token);
 
             return ResponseEntity.ok()
                     .header(HttpHeaders.SET_COOKIE, cookie.toString())
@@ -86,7 +88,7 @@ public class EmployeeAuthenticationController {
 
         new SecurityContextLogoutHandler().logout(request, response, authentication);
 
-        ResponseCookie jwtCookie = CookieUtils.createExpiredJwtCookie();
+        ResponseCookie jwtCookie = cookieUtils.createExpiredJwtCookie();
         response.addHeader(HttpHeaders.SET_COOKIE, jwtCookie.toString());
 
         return ResponseEntity.ok("Logged out successfully");
