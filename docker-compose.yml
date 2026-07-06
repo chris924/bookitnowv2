@@ -1,0 +1,100 @@
+# Production orchestration: PostgreSQL + backend + frontend (nginx) + DB backups.
+# Values come from a root .env file — copy .env.example to .env and fill it in.
+#
+#   docker compose up -d --build
+#
+services:
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - internal
+
+  backend:
+    build: ./appointment-booking-backend
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+      DRIVER_CLASSNAME: org.postgresql.Driver
+      DB_URL: jdbc:postgresql://postgres:5432/${POSTGRES_DB}
+      DB_USERNAME: ${POSTGRES_USER}
+      DB_PASSWORD: ${POSTGRES_PASSWORD}
+      HIBERNATE_DDL: validate
+      HIBERNATE_DIALECT: org.hibernate.dialect.PostgreSQLDialect
+      # Unused with the internal (sslmode=disable) DB, but the placeholder must resolve.
+      SSL_CA: ""
+      # Linux upload paths (mounted volume below).
+      AVATAR_DIRECTORY: /var/uploads/avatars
+      AVATAR_USER_DIRECTORY: /var/uploads/avatars/useravatars
+      FRONTEND_IP_ADDRESS: ${PUBLIC_URL}
+      CORS_ALLOWED_ORIGINS: ${PUBLIC_URL}
+      # JWT signing keys mounted read-only (see volumes) rather than baked into the image.
+      APP_KEYS_PUBLIC_LOCATION: file:/app/keys/public.pem
+      APP_KEYS_PRIVATE_LOCATION: file:/app/keys/private.pem
+    volumes:
+      - avatars:/var/uploads/avatars
+      - ./appointment-booking-backend/src/main/resources/keys:/app/keys:ro
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q -O /dev/null http://localhost:8080/actuator/health || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 60s
+    networks:
+      - internal
+
+  frontend:
+    build:
+      context: ./appointment-booking-frontend
+      args:
+        VITE_API_BASE_URL: /api
+    restart: unless-stopped
+    depends_on:
+      - backend
+    ports:
+      - "80:80"
+      # - "443:443"   # enable once TLS is configured (see DEPLOYMENT.md)
+    networks:
+      - internal
+
+  # Nightly PostgreSQL dumps retained on a schedule. See DEPLOYMENT.md for restore steps.
+  db-backup:
+    image: prodrigestivill/postgres-backup-local:16-alpine
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      POSTGRES_HOST: postgres
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      SCHEDULE: "@daily"
+      BACKUP_KEEP_DAYS: "7"
+      BACKUP_KEEP_WEEKS: "4"
+      BACKUP_KEEP_MONTHS: "6"
+    volumes:
+      - ./backups:/backups
+    networks:
+      - internal
+
+volumes:
+  pgdata:
+  avatars:
+
+networks:
+  internal:
