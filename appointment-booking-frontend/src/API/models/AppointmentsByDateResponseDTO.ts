@@ -16,42 +16,42 @@ import { mapValues } from '../runtime';
 /**
  * 
  * @export
- * @interface CompanyAppointmentsByDateResponseDTO
+ * @interface AppointmentsByDateResponseDTO
  */
-export interface CompanyAppointmentsByDateResponseDTO {
+export interface AppointmentsByDateResponseDTO {
     /**
      * 
      * @type {string}
-     * @memberof CompanyAppointmentsByDateResponseDTO
+     * @memberof AppointmentsByDateResponseDTO
      */
     date: string;
     /**
      * 
      * @type {number}
-     * @memberof CompanyAppointmentsByDateResponseDTO
+     * @memberof AppointmentsByDateResponseDTO
      */
     count?: number;
     /**
      * 
      * @type {number}
-     * @memberof CompanyAppointmentsByDateResponseDTO
+     * @memberof AppointmentsByDateResponseDTO
      */
     income?: number;
 }
 
 /**
- * Check if a given object implements the CompanyAppointmentsByDateResponseDTO interface.
+ * Check if a given object implements the AppointmentsByDateResponseDTO interface.
  */
-export function instanceOfCompanyAppointmentsByDateResponseDTO(value: object): value is CompanyAppointmentsByDateResponseDTO {
+export function instanceOfAppointmentsByDateResponseDTO(value: object): value is AppointmentsByDateResponseDTO {
     if (!('date' in value) || value['date'] === undefined) return false;
     return true;
 }
 
-export function CompanyAppointmentsByDateResponseDTOFromJSON(json: any): CompanyAppointmentsByDateResponseDTO {
-    return CompanyAppointmentsByDateResponseDTOFromJSONTyped(json, false);
+export function AppointmentsByDateResponseDTOFromJSON(json: any): AppointmentsByDateResponseDTO {
+    return AppointmentsByDateResponseDTOFromJSONTyped(json, false);
 }
 
-export function CompanyAppointmentsByDateResponseDTOFromJSONTyped(json: any, ignoreDiscriminator: boolean): CompanyAppointmentsByDateResponseDTO {
+export function AppointmentsByDateResponseDTOFromJSONTyped(json: any, ignoreDiscriminator: boolean): AppointmentsByDateResponseDTO {
     if (json == null) {
         return json;
     }
@@ -63,11 +63,11 @@ export function CompanyAppointmentsByDateResponseDTOFromJSONTyped(json: any, ign
     };
 }
 
-export function CompanyAppointmentsByDateResponseDTOToJSON(json: any): CompanyAppointmentsByDateResponseDTO {
-    return CompanyAppointmentsByDateResponseDTOToJSONTyped(json, false);
+export function AppointmentsByDateResponseDTOToJSON(json: any): AppointmentsByDateResponseDTO {
+    return AppointmentsByDateResponseDTOToJSONTyped(json, false);
 }
 
-export function CompanyAppointmentsByDateResponseDTOToJSONTyped(value?: CompanyAppointmentsByDateResponseDTO | null, ignoreDiscriminator: boolean = false): any {
+export function AppointmentsByDateResponseDTOToJSONTyped(value?: AppointmentsByDateResponseDTO | null, ignoreDiscriminator: boolean = false): any {
     if (value == null) {
         return value;
     }
