@@ -39,4 +39,5 @@ build/
 
 
 .env
-src/main/resources
+# Local-only secrets; every other resource under src/main/resources IS tracked.
+src/main/resources/secrets.properties

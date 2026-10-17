@@ -2,7 +2,9 @@
 /appointment-booking-backend/src/main/resources/keys/
 .env
 /backups/
-/appointment-booking-backend/src/main/resources/
+# Local-only secrets. Do NOT ignore the whole resources dir — application*.properties
+# must be tracked so clean-checkout CI/Docker builds have their config.
+/appointment-booking-backend/src/main/resources/secrets.properties
 /appointment-booking-backend/.env
 /appointment-booking-backend/uploads/avatars/useravatars
 /appointment-booking-backend/uploads/avatars/employeeavatars

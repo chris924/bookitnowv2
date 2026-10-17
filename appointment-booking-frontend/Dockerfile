@@ -14,11 +14,8 @@ ENV VITE_API_BASE_URL=$VITE_API_BASE_URL
 
 # Bundle with Vite directly, bypassing the "prebuild" hook (which fetches the
 # OpenAPI spec from a running backend). Type-checking (tsc) runs in CI, not here.
-#
-# IMPORTANT: this requires a COMPLETE generated API client under src/API. Because
-# src/API/models is currently git-ignored, a clean checkout is missing several DTOs
-# and this step will fail with "Could not resolve ./XxxDTO". See DEPLOYMENT.md
-# ("Generated API client") for the one-time fix.
+# The complete generated API client (incl. src/API/models) is committed, so this
+# builds reproducibly from a clean checkout with no backend running.
 RUN npx vite build
 
 # ---- Runtime stage: nginx serving the SPA + proxying /api ----

@@ -46,8 +46,8 @@ jobs:
           cache-dependency-path: appointment-booking-frontend/package-lock.json
       - run: npm ci
       # Skip the "prebuild" API-generation hook (needs a running backend).
-      # NOTE: requires a complete generated client committed under src/API —
-      # see DEPLOYMENT.md "Known blocker — Generated API client".
+      # The complete generated client is committed under src/API, so this builds
+      # from a clean checkout — see DEPLOYMENT.md "Generated API client".
       - run: npx vite build
 
   images:
