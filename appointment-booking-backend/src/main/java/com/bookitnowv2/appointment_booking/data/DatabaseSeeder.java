@@ -146,17 +146,27 @@ public class DatabaseSeeder implements CommandLineRunner {
 
 
         ServiceEntity service1 = createService("Shave", "Shaving",  15, employee1, company1, Duration.ofMinutes(30));
+        ServiceEntity service2 = createService("Külső kézi mosás", "Alapos kézi mosás, felnitisztítás és szárítás", 6000, employee1, company1, Duration.ofMinutes(45));
+        ServiceEntity service3 = createService("Belső takarítás", "Porszívózás, műszerfal- és üvegtisztítás", 8000, employee1, company1, Duration.ofMinutes(60));
 
-        List<ServiceEntity> serviceList = new ArrayList<>();
+        ServiceEntity service4 = createService("Gépi polírozás", "Karcok és hologramok eltávolítása, magasfényű felület", 35000, employee2, company1, Duration.ofMinutes(180));
+        ServiceEntity service5 = createService("Kerámia bevonat", "Tartós fény- és vegyszervédelem akár 2 évig", 90000, employee2, company1, Duration.ofMinutes(240));
+        ServiceEntity service6 = createService("Fényszóró felújítás", "Bemattult fényszórók csiszolása és UV-védelme", 12000, employee2, company1, Duration.ofMinutes(60));
+
+        ServiceEntity service7 = createService("Kárpittisztítás", "Ülések és kárpitok mélytisztítása", 20000, employee3, company1, Duration.ofMinutes(120));
+        ServiceEntity service8 = createService("Bőrápolás", "Bőrülések tisztítása és kondicionálása", 15000, employee3, company1, Duration.ofMinutes(90));
+        ServiceEntity service9 = createService("Motortér tisztítás", "A motortér kíméletes tisztítása és konzerválása", 10000, employee3, company1, Duration.ofMinutes(60));
+
         List<Appointment> appointmentList = new ArrayList<>();
 
-        serviceList.add(service1);
-
-        employee1.setServices(serviceList);
+        employee1.setServices(new ArrayList<>(List.of(service1, service2, service3)));
         employee1.setWorkingHours(employee1WorkingHoursList);
 
-        employee2.setServices(serviceList);
-        employee3.setServices(serviceList);
+        employee2.setServices(new ArrayList<>(List.of(service4, service5, service6)));
+        employee2.setWorkingHours(new ArrayList<>(List.of(createEmployeeWorkingHours(employee2, "Nappali műszak", LocalTime.of(8, 0), LocalTime.of(18, 0), LocalDate.now().plusDays(1)))));
+
+        employee3.setServices(new ArrayList<>(List.of(service7, service8, service9)));
+        employee3.setWorkingHours(new ArrayList<>(List.of(createEmployeeWorkingHours(employee3, "Nappali műszak", LocalTime.of(8, 0), LocalTime.of(18, 0), LocalDate.now().plusDays(1)))));
 
         LocalDate now = LocalDate.now();
         LocalDate yesterday = now.minusDays(1);
@@ -176,7 +186,8 @@ public class DatabaseSeeder implements CommandLineRunner {
         appointmentList.add(appointment5);
         service1.setAppointments(appointmentList);
 
-        appointmentService.createFreeAppointmentSlotsFromService(service1);
+        List.of(service1, service2, service3, service4, service5, service6, service7, service8, service9)
+                .forEach(appointmentService::createFreeAppointmentSlotsFromService);
     }
 
 

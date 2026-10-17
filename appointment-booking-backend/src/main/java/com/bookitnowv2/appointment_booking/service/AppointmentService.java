@@ -305,7 +305,9 @@ public class AppointmentService {
 
             List<Appointment> currentExistingAppointments= existingAppointments.stream().filter(z -> z.getDate().equals(workingHourDate)).toList();
 
-            while (!current.plus(serviceDuration).isAfter(dayEndTime)) {
+            // LocalTime wraps at midnight (23:00 + 1h = 00:00), so also stop once a slot would cross it.
+            while (!current.plus(serviceDuration).isAfter(dayEndTime)
+                    && !current.plus(serviceDuration).isBefore(current)) {
                 LocalTime slotStart = current;
                 LocalTime slotEnd = current.plus(serviceDuration);
 
