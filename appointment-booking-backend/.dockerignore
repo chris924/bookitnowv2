@@ -1,0 +1,11 @@
+target/
+*.iml
+.idea/
+.git/
+.gitignore
+# Never bake local secrets into the image — provided at runtime as env vars.
+src/main/resources/secrets.properties
+# JWT signing keys are mounted at runtime (file: location), not baked in.
+src/main/resources/keys/
+uploads/
+HELP.md
