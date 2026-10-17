@@ -1,6 +1,7 @@
 package com.bookitnowv2.appointment_booking.configuration;
 
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
@@ -31,6 +32,10 @@ import java.util.Arrays;
 public class SecurityConfiguration {
 
     private final JwtAuthFilter jwtAuthFilter;
+
+    // Comma-separated list of allowed origins, externalized per profile / environment.
+    @Value("${cors.allowed-origins}")
+    private String[] allowedOrigins;
 
     public SecurityConfiguration(JwtAuthFilter jwtAuthFilter) {
         this.jwtAuthFilter = jwtAuthFilter;
@@ -76,6 +81,7 @@ public class SecurityConfiguration {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> {
+                    auth.requestMatchers("/actuator/health", "/actuator/health/**").permitAll();
                     auth.requestMatchers("/avatar/**").permitAll();
                     auth.requestMatchers("/auth/auth-info").permitAll();
                     auth.requestMatchers("/auth/**").permitAll();
@@ -112,11 +118,7 @@ public class SecurityConfiguration {
     @Bean
     UrlBasedCorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList(
-                "http://localhost:5173",
-                "http://localhost:3000",
-                "http://localhost:8080"
-        ));
+        configuration.setAllowedOrigins(Arrays.asList(allowedOrigins));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "DELETE", "PUT"));
         configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type"));
         configuration.setAllowCredentials(true);
