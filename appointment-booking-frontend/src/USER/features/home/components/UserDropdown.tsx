@@ -41,19 +41,19 @@ export default function DropdownUser({user}: {user: UserDataResponseDTO} )
 
     return(
         <DropdownMenu>
-      <DropdownMenuTrigger>
+      <DropdownMenuTrigger className="rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500">
         <Avatar>
-          <AvatarImage src={user.avatarUrl} className="h-20 w-20 rounded-full" />
+          <AvatarImage src={user.avatarUrl} className="size-10 rounded-full object-cover" />
           <AvatarFallback>
-            <img src={defaultAvatar} alt="default avatar" className="h-20 w-20 rounded-full" />
+            <img src={defaultAvatar} alt="default avatar" className="size-10 rounded-full object-cover" />
           </AvatarFallback>
         </Avatar>
       </DropdownMenuTrigger>
-        <DropdownMenuContent>
+        <DropdownMenuContent align="end" sideOffset={8} className="z-50 min-w-44 rounded-xl border bg-popover p-1 text-popover-foreground shadow-lg">
           <DropdownMenuSeparator />
-          <DropdownMenuItem className="cursor-pointer text-2xl" onClick={() => handleDropDownClick("account")}>Fiókom</DropdownMenuItem>
-          <DropdownMenuItem className="cursor-pointer text-2xl" onClick={() => handleDropDownClick("appointments")}>Időpontjaim</DropdownMenuItem>
-          <DropdownMenuItem className="cursor-pointer text-2xl text-red-600" onClick={() => handleDropDownClick("exit")}>Kijelentkezés</DropdownMenuItem>
+          <DropdownMenuItem className="cursor-pointer rounded-md px-3 py-2 text-sm outline-none data-[highlighted]:bg-accent" onClick={() => handleDropDownClick("account")}>Fiókom</DropdownMenuItem>
+          <DropdownMenuItem className="cursor-pointer rounded-md px-3 py-2 text-sm outline-none data-[highlighted]:bg-accent" onClick={() => handleDropDownClick("appointments")}>Időpontjaim</DropdownMenuItem>
+          <DropdownMenuItem className="cursor-pointer rounded-md px-3 py-2 text-sm text-red-600 outline-none data-[highlighted]:bg-accent" onClick={() => handleDropDownClick("exit")}>Kijelentkezés</DropdownMenuItem>
         </DropdownMenuContent>
   </DropdownMenu>
     )

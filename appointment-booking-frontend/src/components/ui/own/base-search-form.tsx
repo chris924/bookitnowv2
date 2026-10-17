@@ -22,7 +22,7 @@ import {
 
 import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { Check, ChevronsUpDown } from "lucide-react"
+import { Check, ChevronsUpDown, type LucideIcon } from "lucide-react"
 import { useForm } from "react-hook-form"
 import { Button } from "../button"
 import { cn } from "@/lib/utils"
@@ -35,6 +35,7 @@ interface SearchFormPropInterface<T>
 {
     title: string;
     type: string;
+    icon?: LucideIcon;
     options: T[];
     selected?: T;
     onSelect: (selected: T | undefined)  => void;
@@ -43,7 +44,7 @@ interface SearchFormPropInterface<T>
 
 
  
-export default function BaseSearchForm<T extends SpecialistDTO & CompanyDTO & PlaceDTO>({ title, options, selected, onSelect, onChange }: SearchFormPropInterface<T>) {
+export default function BaseSearchForm<T extends SpecialistDTO & CompanyDTO & PlaceDTO>({ title, icon: Icon, options, selected, onSelect, onChange }: SearchFormPropInterface<T>) {
 
   const FormSchema = z.object({
     type: z.string({
@@ -66,14 +67,14 @@ export default function BaseSearchForm<T extends SpecialistDTO & CompanyDTO & Pl
     onSelect(undefined);
     form.setValue("type", "");
   }
-}} className="space-y-6">
+}} className="w-full">
       <FormField
           control={form.control}
           name="type"
           render={({ field }) => {
             return (
-              <FormItem className="flex flex-col">
-                <FormLabel>{title}</FormLabel>
+              <FormItem className="flex flex-col gap-1.5">
+                <FormLabel className="px-1 text-xs font-medium uppercase tracking-wide text-muted-foreground">{title}</FormLabel>
                 
                 <Popover open={open} onOpenChange={(nextOpen) => {
                     setOpen(nextOpen);
@@ -91,33 +92,37 @@ export default function BaseSearchForm<T extends SpecialistDTO & CompanyDTO & Pl
                         variant="outline"
                         role="combobox"
                         className={cn(
-                          "w-[300px] h-[60px] md:h-[70px] md:w-[350px] justify-between text-xl md:text-2xl",
+                          "h-12 w-full justify-between gap-2 rounded-xl px-3 text-base font-normal md:h-14",
                           !field.value && "text-muted-foreground"
                         )}
                         onClick={() => setOpen(true)}
                       >
                         {selected ? (
-                          <div className="flex items-center gap-2">
-                            {selected.image &&
+                          <div className="flex min-w-0 items-center gap-2">
+                            {selected.image ?
                             <img
                             src={selected.image}
                             alt={selected.label}
-                            className="w-12 h-12 rounded-full object-cover"
+                            className="size-7 shrink-0 rounded-full object-cover"
                           />
+                            : Icon && <Icon className="size-4 shrink-0 text-emerald-600 dark:text-emerald-400" />
                             }
                             
-                            <span>{selected.label}</span>
+                            <span className="truncate text-foreground">{selected.label}</span>
                           </div>
                         ) : (
-                            title
+                          <div className="flex min-w-0 items-center gap-2">
+                            {Icon && <Icon className="size-4 shrink-0 text-emerald-600 dark:text-emerald-400" />}
+                            <span className="truncate">{title} keresése…</span>
+                          </div>
                         )}
                         <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                       </Button>
                     </FormControl>
                   </PopoverTrigger>
-                  <PopoverContent className="w-[300px] md:w-[500px] p-0">
+                  <PopoverContent align="start" className="w-(--radix-popover-trigger-width) min-w-72 overflow-hidden rounded-xl p-0">
                     <Command>
-                      <input type="text" className="outline-double w-full p-2" placeholder={title + " Keresés"} onChange={(e) =>onChange(e.target.value)}>
+                      <input type="text" autoFocus className="w-full border-b bg-transparent px-3 py-2.5 text-sm outline-none placeholder:text-muted-foreground" placeholder={title + " keresése…"} onChange={(e) =>onChange(e.target.value)}>
                       </input>
                       <CommandList>
                         <CommandEmpty>{"Nem található "+ title}</CommandEmpty>
@@ -141,25 +146,25 @@ export default function BaseSearchForm<T extends SpecialistDTO & CompanyDTO & Pl
                                 setOpen(false);
                               }}
                               
-                              className="py-2 md:text-2xl"
+                              className="cursor-pointer py-2"
                             >
                               <div className="flex items-center gap-3 w-full">
                                 {option.image && 
                                 <img
                                 src={option.image}
                                 alt={option.label}
-                                className="w-12 h-12 rounded-full object-cover"
+                                className="size-9 shrink-0 rounded-full object-cover"
                               />                           
                                 }                           
                                 <div className="flex flex-col text-left">
                                   <span className="font-medium">
                                     {option.label}
                                   </span>
-                                  <span className="text-base text-muted-foreground">
+                                  <span className="text-xs text-muted-foreground">
                                     {option.company}
                                   </span>
                                   {option.rating && (
-                                    <span className="text-sm text-yellow-500">
+                                    <span className="text-xs text-amber-500">
                                         ⭐ {option.rating}
                                     </span>
                                     )}                              

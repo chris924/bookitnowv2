@@ -4,6 +4,7 @@ import BaseSearchForm from "@/components/ui/own/base-search-form";
 import { UserSearchResultsQuery } from "@/USER/hooks/query/UserSearchResultsQuery";
 import Loader from "@/components/ui/own/Loader";
 import { SpecialistDTO, PlaceDTO, CompanyDTO, EmployeeSearchRequestDTO, GetSearchEmployeeRequest } from "@/API";
+import { Building2, MapPin, UserRound } from "lucide-react";
 
 export default function SearchForm() {
   const [specialistName, setSpecialistName] = useState("");
@@ -60,12 +61,13 @@ interface EmployeeSearchPayload {
   const shouldShowGrid = selectedSpecialist || selectedCompany || selectedPlace;
 
   return (
-    <div className="w-full flex flex-col justify-center items-center">
-      <div className="max-w-5xl">
-        <section className="space-y-5">
+    <div className="w-full flex flex-col items-center">
+      <div className="w-full max-w-4xl rounded-2xl border bg-card/80 p-3 text-left shadow-xl shadow-emerald-950/5 backdrop-blur sm:p-4">
+        <section className="grid grid-cols-1 gap-3 md:grid-cols-3">
           <BaseSearchForm<SpecialistDTO>
             title="Szakember"
             type="specialist"
+            icon={UserRound}
             options={specialists}
             onSelect={setSelectedSpecialist}
             onChange={setSpecialistName}
@@ -74,6 +76,7 @@ interface EmployeeSearchPayload {
           <BaseSearchForm<CompanyDTO>
             title="Üzlet"
             type="company"
+            icon={Building2}
             options={companies}
             onSelect={setSelectedCompany}
             onChange={setSpecialistCompany}
@@ -82,6 +85,7 @@ interface EmployeeSearchPayload {
           <BaseSearchForm<PlaceDTO>
             title="Hely"
             type="place"
+            icon={MapPin}
             options={places}
             onSelect={setSelectedPlace}
             onChange={setSpecialistPlace}
@@ -91,15 +95,14 @@ interface EmployeeSearchPayload {
       </div>
 
       {shouldShowGrid && (
-        <div className="w-full mt-4 flex flex-grow justify-center">
-          <section className="p-5 rounded-lg">
-            {isFetching ? (
-              <Loader></Loader>
-            ) : (
-              <SpecialistGrid specialists={specialists} />
-            )}
-          </section>
-        </div>
+        <section className="mt-10 w-full max-w-6xl text-left">
+          <h2 className="mb-4 text-lg font-semibold md:text-xl">Találatok</h2>
+          {isFetching ? (
+            <div className="flex justify-center py-6"><Loader /></div>
+          ) : (
+            <SpecialistGrid specialists={specialists} />
+          )}
+        </section>
       )}
     </div>
   );

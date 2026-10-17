@@ -1,68 +1,80 @@
 import { useUserStore } from "@/stores/AuthStore";
-import { useEffect, useState } from "react";
+import { useLoginDialogStore } from "@/stores/LoginDialogStore";
+import { useEffect } from "react";
 import GuestLogin from "../auth/GuestLogin";
 import { ModeToggle } from "../ui/own/theme-toggle";
 import { Button } from "../ui/button";
 import Loader from "../ui/own/Loader";
-import { useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import ProviderLoginFormWrapper from "../auth/ProviderLoginFormWrapper";
 import DropdownUser from "@/USER/features/home/components/UserDropdown";
+import { CalendarCheck } from "lucide-react";
 
 
 
 export default function Navbar()
 {
-  
+
   const { checkUserAuth, isAuthenticated, user, userLoading } = useUserStore();
-  
-  const [openLogin, setOpenLogin] = useState(false);
-  const [showProviderWrapper, setShowProviderWrapper] = useState(false);
+  const { openDialog, setOpenDialog } = useLoginDialogStore();
 
   const location = useLocation();
 
   useEffect(() => {
-    checkUserAuth();    
+    checkUserAuth();
   }, [])
 
     return (
 
         <>
-  <header className="flex justify-between items-center px-4 py-2 md:py-4">
+  <header className="sticky top-0 z-40 border-b bg-background/80 backdrop-blur-md">
+  <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-3 px-4">
   {/* Title */}
-  <h1 className="text-lg md:text-4xl font-semibold leading-tight">
-    Appointment Booking
-  </h1>
+  <Link to="/" className="flex min-w-0 items-center gap-2.5">
+    <span className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-emerald-600 text-white shadow-sm">
+      <CalendarCheck className="size-5" />
+    </span>
+    <span className="truncate text-base font-semibold tracking-tight md:text-xl">
+      Appointment Booking
+    </span>
+  </Link>
 
   {/* Right-side buttons / user */}
-  <div className="flex items-center gap-x-2 md:gap-x-4">
+  <div className="flex shrink-0 items-center gap-1.5 md:gap-3">
     {userLoading ? (
       <Loader />
     ) : isAuthenticated && user ? (
       <DropdownUser user={user} />
     ) : (
-      <Button onClick={() => setOpenLogin(true)} className="bg-green-200">
+      <Button onClick={() => setOpenDialog("guest")} className="bg-emerald-600 text-white hover:bg-emerald-700">
         Belépés
       </Button>
     )}
 
+    {/* On phones the home page's provider banner offers this instead. */}
     {!isAuthenticated && location.pathname === "/" && (
       <Button
-        variant="secondary"
-        onClick={() => setShowProviderWrapper(true)}
+        variant="ghost"
+        className="hidden sm:inline-flex"
+        onClick={() => setOpenDialog("provider")}
       >
         Szolgáltatóknak
       </Button>
     )}
 
     {/* Modals */}
-    <GuestLogin open={openLogin} onOpenChange={setOpenLogin} />
+    <GuestLogin
+      open={openDialog === "guest"}
+      onOpenChange={(open) => setOpenDialog(open ? "guest" : null)}
+    />
     <ProviderLoginFormWrapper
-      open={showProviderWrapper}
-      onOpenChange={setShowProviderWrapper}
+      open={openDialog === "provider"}
+      onOpenChange={(open) => setOpenDialog(open ? "provider" : null)}
     />
 
     {/* Dark/Light Mode Toggle */}
     <ModeToggle />
+  </div>
   </div>
 </header>
 </>
