@@ -30,7 +30,7 @@ export default function Navbar()
   <header className="flex justify-between items-center px-4 py-2 md:py-4">
   {/* Title */}
   <h1 className="text-lg md:text-4xl font-semibold leading-tight">
-    Appointment
+    Appointment Booking
   </h1>
 
   {/* Right-side buttons / user */}

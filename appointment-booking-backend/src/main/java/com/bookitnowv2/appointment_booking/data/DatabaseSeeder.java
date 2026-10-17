@@ -18,7 +18,6 @@ import com.bookitnowv2.appointment_booking.utils.EmployeeStatus;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.context.annotation.Profile;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
@@ -30,7 +29,6 @@ import java.util.List;
 import java.util.Set;
 
 @Component
-@Profile("dev")
 public class DatabaseSeeder implements CommandLineRunner {
 
     private final IUserRepository userRepository;
@@ -133,7 +131,7 @@ public class DatabaseSeeder implements CommandLineRunner {
 
         Employee employee1 = createEmployee("John David", "jdavid", "jdavid@gmail.com", "password", new Timestamp(System.currentTimeMillis()), employeeRoles, company1, 4.9, serverAddress + "/avatar/employee/default-avatar.jpg", "This is the about section. This is the about section. This is the about section.", EmployeeStatus.ACTIVE, EmployeeExperience.JUNIOR, "+36304325674");
         Employee employee2 = createEmployee("John Mike", "dds", "dds@gmail.com", "jdavidpass", new Timestamp(System.currentTimeMillis()), employeeRoles, company1, 4.5, serverAddress + "/avatar/employee/default-avatar.jpg", "This is the about section. This is the about section. This is the about section.", EmployeeStatus.ACTIVE, EmployeeExperience.MASTER, "+36205435345");
-        Employee employee3 = createEmployee("John XD", "sad", "edwdwd@gmail.com", "jdavidpass", new Timestamp(System.currentTimeMillis()), employeeRoles, company1, 4.5, serverAddress + "/avatar/employee/default-avatar.jpg", "This is the about section. This is the about section. This is the about section.", EmployeeStatus.ACTIVE, EmployeeExperience.SENIOR, "+363053422");
+        Employee employee3 = createEmployee("John Mark", "sad", "edwdwd@gmail.com", "jdavidpass", new Timestamp(System.currentTimeMillis()), employeeRoles, company1, 4.5, serverAddress + "/avatar/employee/default-avatar.jpg", "This is the about section. This is the about section. This is the about section.", EmployeeStatus.ACTIVE, EmployeeExperience.SENIOR, "+363053422");
 
         List<EmployeeWorkingHours> employee1WorkingHoursList = new ArrayList<>();
 

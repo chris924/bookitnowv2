@@ -1,0 +1,11 @@
+{
+  "name": "bookitnowv2",
+  "private": true,
+  "description": "BookItNow appointment booking — run the whole app locally with `npm start`.",
+  "scripts": {
+    "start": "node scripts/start.mjs"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

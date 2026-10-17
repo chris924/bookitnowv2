@@ -27,8 +27,8 @@ export default function HomeContent()
         },
         {
           id: 2,
-          label: "Buckó",
-          value: "anna-smith",
+          label: "David John",
+          value: "david-john",
           image:  defaultImage,
           company: "HealthPlus",
           rating: 4.9,

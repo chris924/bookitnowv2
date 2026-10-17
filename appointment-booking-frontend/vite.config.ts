@@ -11,5 +11,10 @@ export default defineConfig({
       "@": path.resolve(__dirname, "./src"),
     },
   },
-  
+  server: {
+    // The backend's CORS config allows exactly this origin, so fail loudly
+    // instead of silently moving to another port.
+    port: 5173,
+    strictPort: true,
+  },
 })

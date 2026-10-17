@@ -33,7 +33,7 @@ public class SecurityConfiguration {
 
     private final JwtAuthFilter jwtAuthFilter;
 
-    // Comma-separated list of allowed origins, externalized per profile / environment.
+    // Comma-separated list of allowed origins (cors.allowed-origins).
     @Value("${cors.allowed-origins}")
     private String[] allowedOrigins;
 
